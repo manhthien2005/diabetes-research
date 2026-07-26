@@ -20,33 +20,80 @@ export default async function PaperPage({
   const layer = layerById(paper.layer);
   const summary = readPaperSummary(paper.folder);
 
-  return (
-    <div>
-      <Link href="/" className="detail-back">
+  const headline = (
+    <>
+      <Link href="/thu-vien" className="detail-back">
         <MdArrowBack /> Thư viện
       </Link>
-      <h1 className="page-title" style={{ fontSize: 18, marginTop: 4 }}>
+      <h1 className="pd-title">
         {paper.is_chosen && (
-          <MdStar
-            style={{ color: 'var(--amber)', verticalAlign: '-3px', marginRight: 4 }}
-          />
+          <MdStar className="pt-star" style={{ color: 'var(--amber)' }} />
         )}
         {paper.title}
       </h1>
-      <p className="page-sub">
-        <span
-          className="layer-tag"
-          data-tip={layer?.focus}
-          style={{ marginRight: 8 }}
-        >
-          L{paper.layer} · {layer?.name}
-        </span>
+      <p className="pd-authors">
         {paper.authors.slice(0, 4).join(', ')}
-        {paper.authors.length > 4 ? ' et al.' : ''} · {paper.year ?? '—'} ·{' '}
-        {paper.venue ?? '—'} · {paper.citations ?? '?'} citations
+        {paper.authors.length > 4 ? ' et al.' : ''}
       </p>
+    </>
+  );
 
-      <PaperActions paper={paper} layerDir={layerDir} />
+  const side = (
+    <>
+      <div className="pd-meta">
+        <div className="pd-meta-title">Thông tin</div>
+        <div className="kv">
+          <span>Layer</span>
+          <span>
+            <span className="layer-tag" data-tip={layer?.focus}>
+              L{paper.layer} · {layer?.name}
+            </span>
+          </span>
+          <span>Năm</span>
+          <span className="num">{paper.year ?? '—'}</span>
+          <span>Venue</span>
+          <span>{paper.venue ?? '—'}</span>
+          <span>Cite</span>
+          <span className="num">
+            {paper.citations != null
+              ? paper.citations.toLocaleString('en-US')
+              : '?'}
+          </span>
+          <span>DOI</span>
+          <span>
+            {paper.doi ? (
+              <a
+                href={`https://doi.org/${paper.doi}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {paper.doi}
+              </a>
+            ) : (
+              <span className="muted">—</span>
+            )}
+          </span>
+          <span>arXiv</span>
+          <span>
+            {paper.arxiv ? (
+              <a
+                href={`https://arxiv.org/abs/${paper.arxiv}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {paper.arxiv}
+              </a>
+            ) : (
+              <span className="muted">—</span>
+            )}
+          </span>
+        </div>
+      </div>
+
+      <div className="pd-meta">
+        <div className="pd-meta-title">Hành động</div>
+        <PaperActions paper={paper} layerDir={layerDir} />
+      </div>
 
       {summary && (
         <div className="verdict-card">
@@ -55,46 +102,54 @@ export default async function PaperPage({
             <VerdictBadge verdict={paper.verdict} reason={paper.verdict_reason} />
             {summary.reproducible && (
               <span className="badge" data-tip="Khả năng tái lập">
-                🔁 tái lập: {summary.reproducible}
+                tái lập: {summary.reproducible}
               </span>
             )}
           </div>
           <div className="vc-grid">
             {summary.contribution && (
               <div className="vc-row">
-                <span className="vc-label">🎯 Đóng góp</span>
+                <span className="vc-label">Đóng góp</span>
                 <span>{summary.contribution}</span>
               </div>
             )}
             {summary.best_metric && (
               <div className="vc-row">
-                <span className="vc-label">🏆 Best metric</span>
+                <span className="vc-label">Best metric</span>
                 <span>{summary.best_metric}</span>
               </div>
             )}
             {summary.vs_baseline && (
               <div className="vc-row">
-                <span className="vc-label">🔄 So baseline</span>
+                <span className="vc-label">So baseline</span>
                 <span>{summary.vs_baseline}</span>
               </div>
             )}
             {summary.gap && (
               <div className="vc-row">
-                <span className="vc-label">🕳️ Gap</span>
+                <span className="vc-label">Gap</span>
                 <span>{summary.gap}</span>
               </div>
             )}
             {paper.verdict_reason && (
               <div className="vc-row">
-                <span className="vc-label">💬 Vì sao</span>
+                <span className="vc-label">Vì sao</span>
                 <span>{paper.verdict_reason}</span>
               </div>
             )}
           </div>
         </div>
       )}
+    </>
+  );
 
-      <PaperDetail paper={paper} layerDir={layerDir} folder={decodeURIComponent(folder)} />
-    </div>
+  return (
+    <PaperDetail
+      paper={paper}
+      layerDir={layerDir}
+      folder={decodeURIComponent(folder)}
+      headline={headline}
+      side={side}
+    />
   );
 }

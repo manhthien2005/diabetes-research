@@ -74,7 +74,7 @@ export function PaperActions({
         }),
       });
       // /review đã ẩn khỏi menu — quay về Thư viện thay vì trang ẩn
-      router.push('/');
+      router.push('/thu-vien');
     } finally {
       setBusy(false);
     }

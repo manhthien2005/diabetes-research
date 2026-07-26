@@ -16,10 +16,14 @@ export function PaperDetail({
   paper,
   layerDir,
   folder,
+  headline,
+  side,
 }: {
   paper: PaperMeta;
   layerDir: string;
   folder: string;
+  headline?: React.ReactNode;
+  side?: React.ReactNode;
 }) {
   const [tab, setTab] = useState<Tab>(paper.has_pdf ? 'pdf' : 'note');
   const base = `/api/paper/${encodeURIComponent(layerDir)}/${encodeURIComponent(
@@ -29,44 +33,52 @@ export function PaperDetail({
   const tabs: { id: Tab; label: string; show: boolean }[] = [
     {
       id: 'pdf',
-      label: paper.has_extracted_vi ? '📄 PDF + Bản dịch' : '📄 PDF',
+      label: paper.has_extracted_vi ? 'PDF + Bản dịch' : 'PDF',
       show: paper.has_pdf,
     },
-    { id: 'reading', label: '📖 Đọc song ngữ', show: paper.has_extracted },
-    { id: 'note', label: '📝 Ghi chú', show: true },
-    { id: 'analysis', label: '📊 Phân tích', show: paper.has_analysis },
-    { id: 'code', label: '💻 Code / Dataset', show: true },
+    { id: 'reading', label: 'Đọc song ngữ', show: paper.has_extracted },
+    { id: 'note', label: 'Ghi chú', show: true },
+    { id: 'analysis', label: 'Phân tích', show: paper.has_analysis },
+    { id: 'code', label: 'Code / Dataset', show: true },
   ];
 
+  // tab cần bề rộng (viewer PDF / song ngữ) → panel phải dồn lên trên
+  const wide = tab === 'pdf' || tab === 'reading';
+
   return (
-    <div>
-      <div className="tabbar">
-        {tabs
-          .filter((t) => t.show)
-          .map((t) => (
-            <button
-              key={t.id}
-              className={`tab${tab === t.id ? ' active' : ''}`}
-              onClick={() => setTab(t.id)}
-            >
-              {t.label}
-            </button>
-          ))}
+    <div className={`pd-grid${wide ? ' wide' : ''}`}>
+      <div className="pd-content">
+        {headline}
+        <div className="tabbar">
+          {tabs
+            .filter((t) => t.show)
+            .map((t) => (
+              <button
+                key={t.id}
+                className={`tab${tab === t.id ? ' active' : ''}`}
+                onClick={() => setTab(t.id)}
+              >
+                {t.label}
+              </button>
+            ))}
+        </div>
+
+        <div className="tab-panel">
+          {tab === 'pdf' && <PdfHighlighter base={base} />}
+          {tab === 'reading' && <BilingualReader base={base} />}
+          {tab === 'note' && <NoteEditor base={base} />}
+          {tab === 'analysis' && (
+            <iframe
+              className="analysis-frame"
+              src={`${base}/analysis`}
+              title="Analysis"
+            />
+          )}
+          {tab === 'code' && <CodeDataset paper={paper} />}
+        </div>
       </div>
 
-      <div className="tab-panel">
-        {tab === 'pdf' && <PdfHighlighter base={base} />}
-        {tab === 'reading' && <BilingualReader base={base} />}
-        {tab === 'note' && <NoteEditor base={base} />}
-        {tab === 'analysis' && (
-          <iframe
-            className="analysis-frame"
-            src={`${base}/analysis`}
-            title="Analysis"
-          />
-        )}
-        {tab === 'code' && <CodeDataset paper={paper} />}
-      </div>
+      {side && <aside className="pd-side">{side}</aside>}
     </div>
   );
 }
