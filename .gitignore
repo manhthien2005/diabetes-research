@@ -1,0 +1,58 @@
+# --- Secrets & local config ---
+.env
+.env.local
+*.key
+*.pem
+
+# --- Python ---
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# --- Node / Codex CLI cache ---
+node_modules/
+
+# --- Research Hub webapp (Next.js local) ---
+webapp/node_modules/
+webapp/.next/
+webapp/out/
+webapp/data/
+webapp/*.tsbuildinfo
+webapp/next-env.d.ts
+
+# --- Data (KHÔNG commit data thật) ---
+data/
+!data/.gitkeep
+
+# --- Reproduce runs (code clone + weights, giữ lại metadata) ---
+runs/*/code/
+runs/*/checkpoints/
+runs/*/.venv/
+runs/*/data/
+runs/*/wandb/
+
+# --- Logs ---
+logs/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+
+# --- OS ---
+Thumbs.db
+.DS_Store
+
+# --- PDF: chỉ giữ seed papers ---
+*.pdf
+!inputs/seed_papers/*.pdf
+
+# --- Build artifacts ---
+dist/
+build/
+*.egg-info/
