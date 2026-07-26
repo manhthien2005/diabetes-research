@@ -54,7 +54,10 @@ export function Sidebar() {
   const [layers, setLayers] = useState<LayerStat[]>([]);
 
   useEffect(() => {
-    setCollapsed(localStorage.getItem('explorex.sidebar') === 'collapsed');
+    const saved = localStorage.getItem('explorex.sidebar');
+    // màn hình hẹp: mặc định thu gọn (trừ khi user đã chủ động mở)
+    const mobile = window.matchMedia('(max-width: 768px)').matches;
+    setCollapsed(saved === 'collapsed' || (mobile && saved !== 'open'));
     setReady(true);
   }, []);
 

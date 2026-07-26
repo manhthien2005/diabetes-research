@@ -135,3 +135,15 @@ code {
     padding: 20px 16px 56px;
   }
 }
+
+/* mobile: khối rộng tự cuộn trong khung */
+@media (max-width: 768px) {
+  .tab-panel,
+  .analysis-frame,
+  .kbx-stats {
+    max-width: 100%;
+  }
+  .tab-panel {
+    overflow-x: auto;
+  }
+}

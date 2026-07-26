@@ -184,3 +184,15 @@
 .st-theme .theme-seg {
   min-width: 132px;
 }
+
+/* mobile: bảng key cuộn trong khung */
+@media (max-width: 768px) {
+  .key-table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .key-tag {
+    overflow-wrap: anywhere;
+  }
+}

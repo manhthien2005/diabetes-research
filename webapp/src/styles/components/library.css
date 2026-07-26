@@ -354,3 +354,13 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* mobile: bảng cuộn ngang trong khung, không đẩy cả trang */
+@media (max-width: 768px) {
+  .layer-acc-body {
+    overflow-x: auto;
+  }
+  .paper-table {
+    min-width: 640px;
+  }
+}

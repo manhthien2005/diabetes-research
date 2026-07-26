@@ -17,6 +17,11 @@
 @import '../styles/components/settings.css';
 
 /* ============================================================
+   LEGACY — các trang ẩn (/sources, /search, /review) + trang
+   Kiến thức. Ăn theme qua token; sẽ dọn tiếp khi trang được mở lại.
+   ============================================================ */
+
+/* ============================================================
    Sources analytics
    ============================================================ */
 .section-title {
@@ -26,7 +31,7 @@
 }
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
   gap: 12px;
 }
 .stat-box {
@@ -449,7 +454,7 @@
     font-size: 15px;
   }
   .stat-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
   }
 }
 
@@ -746,7 +751,7 @@
 /* 1. type cards */
 .kb-type-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: 12px;
 }
 .kb-type-card {
@@ -777,7 +782,7 @@
 /* 2. biomarker sliders */
 .kb-marker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 14px;
 }
 .kb-marker {
@@ -1076,7 +1081,7 @@
   font-size: 10px;
   font-weight: 700;
   color: var(--purple);
-  background: rgba(163, 133, 224, 0.14);
+  background: var(--purple-soft);
   border-radius: 5px;
   padding: 1px 7px;
 }
@@ -1314,7 +1319,7 @@
 /* pitfall cards */
 .kb-pit-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
   gap: 12px;
 }
 .kb-pit-card {
@@ -1640,7 +1645,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(360px 200px at 50% -20%, rgba(94, 156, 234, 0.22), transparent 70%);
+  background: radial-gradient(360px 200px at 50% -20%, color-mix(in srgb, var(--ch-blue) 14%, transparent), transparent 70%);
   pointer-events: none;
 }
 .quiz-score-card > * {
@@ -2511,10 +2516,13 @@
 }
 .rk-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 12px;
 }
 .rk-card {
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  overflow-wrap: anywhere;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -3031,7 +3039,7 @@
 /* --- hai chiều: tiến triển / ổn định / đảo ngược --- */
 .kb-prog {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
   gap: 10px;
   margin: 8px 0 4px;
 }
@@ -3073,7 +3081,7 @@
 /* --- staging như bài toán ML --- */
 .kb-mlp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
   gap: 10px;
   margin: 8px 0 4px;
 }
@@ -3280,5 +3288,69 @@
   }
   .kb-ltp-win {
     display: none;
+  }
+}
+
+/* ============================================================
+   Mobile hardening (redesign đợt 7) — khối rộng của trang
+   Kiến thức/NCKH cuộn hoặc bó trong khung thay vì đẩy trang
+   ============================================================ */
+@media (max-width: 768px) {
+  .kb-marker,
+  .kb-stage-wrap,
+  .rk-evi-chip,
+  .rk-rung,
+  .rk-exp-block,
+  .kb-callout {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .rk-evi-chip {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .kb-crit-scroll,
+  .kb-crit-table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .rk-rung-ex,
+  .kb-evi-chip2 {
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .rk-exp-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rk-section li,
+  .kb-section li {
+    overflow-wrap: anywhere;
+  }
+  .kb-stage {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 768px) {
+  /* flex item không tự co nếu thiếu min-width:0 */
+  .rk-exp-live > *,
+  .rk-exp-block,
+  .rk-exp-stats,
+  .rk-stat {
+    min-width: 0;
+  }
+  /* chốt chặn cuối: widget legacy lệch vài px không được đẩy cả trang */
+  .kb-section,
+  .rk-section,
+  .kb,
+  .rk {
+    overflow-x: clip;
   }
 }
