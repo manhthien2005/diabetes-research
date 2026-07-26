@@ -1,0 +1,341 @@
+/* ============================================================
+   ExploreX — shared: buttons, inputs, cards, tables, badges,
+   tooltip, pool panel, verdict card, theme toggle
+   ============================================================ */
+
+/* ---------- Tooltip — portal-based ---------- */
+.tooltip-portal {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  background: var(--surface-3);
+  color: var(--text);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 6px 9px;
+  border-radius: 7px;
+  border: 1px solid var(--border-strong);
+  white-space: pre-wrap;
+  max-width: 300px;
+  width: max-content;
+  box-shadow: var(--shadow-lg);
+  transition: opacity 0.12s;
+}
+
+/* ---------- Buttons ---------- */
+button,
+.btn {
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 550;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background 0.18s var(--ease), border-color 0.18s var(--ease),
+    color 0.18s var(--ease), box-shadow 0.18s var(--ease),
+    transform 0.18s var(--ease), opacity 0.18s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+button:hover,
+.btn:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+button.primary,
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 600;
+}
+button.primary:hover,
+.btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+button.ghost {
+  background: transparent;
+  border-color: transparent;
+}
+button.ghost:hover {
+  background: var(--surface-2);
+  box-shadow: none;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+.icon-btn {
+  padding: 7px;
+  font-size: 17px;
+  line-height: 1;
+}
+
+/* ---------- Inputs ---------- */
+input[type='text'],
+input[type='search'],
+input[type='number'],
+textarea,
+select {
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  width: 100%;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+input::placeholder {
+  color: var(--text-faint);
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.22s var(--ease), transform 0.22s var(--ease);
+}
+
+/* ---------- Tables ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+th,
+td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+tbody tr:last-child td {
+  border-bottom: none;
+}
+th {
+  color: var(--text-faint);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+tbody tr {
+  transition: background 0.12s var(--ease);
+}
+tbody tr:hover {
+  background: var(--surface-2);
+}
+
+/* ---------- Badges / dots ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.badge.green {
+  color: var(--green);
+  border-color: transparent;
+  background: var(--green-soft);
+}
+.badge.red {
+  color: var(--red);
+  border-color: transparent;
+  background: var(--red-soft);
+}
+.badge.amber {
+  color: var(--amber);
+  border-color: transparent;
+  background: var(--amber-soft);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.dot.green {
+  background: var(--green);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--green) 60%, transparent);
+}
+.dot.red {
+  background: var(--red);
+}
+.dot.gray {
+  background: var(--text-faint);
+}
+.dot.amber {
+  background: var(--amber);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--amber) 50%, transparent);
+}
+
+.muted {
+  color: var(--text-dim);
+}
+.faint {
+  color: var(--text-faint);
+}
+.empty-state {
+  text-align: center;
+  padding: 52px 20px;
+  color: var(--text-faint);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  font-size: 13.5px;
+}
+
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* ---------- Pool panel (sidebar phụ / trang ẩn) ---------- */
+.pool-panel {
+  padding: 0;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.pool-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.pool-head:hover {
+  background: var(--surface-2);
+}
+.pool-ico {
+  color: var(--accent);
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.pool-title {
+  font-size: 13px;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pool-stats {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.pool-body {
+  border-top: 1px solid var(--border);
+  padding: 12px 14px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+/* ---------- Verdict card ---------- */
+.verdict-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 12px 0 14px;
+  box-shadow: var(--shadow-sm);
+}
+.vc-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.vc-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--accent-ink);
+}
+.vc-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.vc-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.vc-label {
+  font-weight: 600;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* ---------- Theme toggle (segmented) ---------- */
+.theme-seg {
+  display: flex;
+  gap: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px;
+}
+.theme-seg button {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 6px 0;
+  font-size: 15px;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease);
+}
+.theme-seg button:hover {
+  color: var(--text);
+  background: var(--surface-3);
+  box-shadow: none;
+}
+.theme-seg button.active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}

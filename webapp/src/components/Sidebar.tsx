@@ -17,6 +17,7 @@ import {
   MdMenu,
 } from 'react-icons/md';
 import type { IconType } from 'react-icons';
+import { ThemeToggle } from './ThemeToggle';
 
 interface NavItem {
   href: string;
@@ -81,8 +82,11 @@ export function Sidebar() {
       style={ready ? undefined : { visibility: 'hidden' }}
     >
       <div className="brand">
-        <div className="brand-mark">E</div>
-        {!collapsed && (
+        {collapsed ? (
+          <div className="brand-mark">
+            E<b>x</b>
+          </div>
+        ) : (
           <div className="brand-name">
             Explore<b>X</b>
           </div>
@@ -132,6 +136,8 @@ export function Sidebar() {
       )}
 
       <div className="sidebar-spacer" />
+
+      <ThemeToggle />
 
       <button
         className="collapse-btn"

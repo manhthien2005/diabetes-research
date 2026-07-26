@@ -1,0 +1,188 @@
+/* ============================================================
+   ExploreX — sidebar: logotype serif, nav, layer progress,
+   theme toggle, collapse
+   ============================================================ */
+
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 16px 12px 14px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: width 0.22s var(--ease), background 0.25s var(--ease);
+}
+.sidebar.collapsed {
+  width: var(--sidebar-w-collapsed);
+  padding: 16px 8px 14px;
+}
+
+/* logotype chữ serif thay khối vuông */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 18px;
+  min-height: 44px;
+}
+.brand-mark {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 550;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.brand-name b {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 11px;
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-weight: 500;
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease);
+}
+.nav-link:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.nav-link.active {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22%;
+  height: 56%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--accent);
+}
+.nav-link .nav-ico {
+  font-size: 20px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 22px;
+}
+.sidebar.collapsed .nav-link {
+  justify-content: center;
+  padding: 9px 0;
+}
+
+/* ---------- Tiến độ layer mini ---------- */
+.layer-progress {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lp-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
+  padding: 0 11px 4px;
+}
+.lp-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 11px;
+  border-radius: var(--radius-sm);
+  cursor: default;
+}
+.lp-row:hover {
+  background: var(--surface-2);
+}
+.lp-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 1px 7px;
+  flex-shrink: 0;
+}
+.lp-row.weak .lp-tag {
+  color: var(--red);
+  background: var(--red-soft);
+}
+.lp-nums {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.lp-row.weak .lp-nums {
+  color: var(--red);
+}
+.sidebar.collapsed .lp-row {
+  justify-content: center;
+  padding: 4px 0;
+}
+
+.sidebar-spacer {
+  flex: 1;
+}
+
+/* theme toggle nằm trên nút collapse */
+.sidebar .theme-seg {
+  margin: 0 4px 8px;
+}
+.sidebar.collapsed .theme-seg {
+  flex-direction: column;
+  border-radius: var(--radius);
+  margin: 0 0 8px;
+}
+.sidebar.collapsed .theme-seg button {
+  padding: 7px 0;
+  border-radius: 7px;
+}
+
+.collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
+  padding: 9px;
+  border-radius: var(--radius-sm);
+  font-size: 20px;
+}
+.collapse-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: none;
+}
