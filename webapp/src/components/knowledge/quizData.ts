@@ -1,0 +1,510 @@
+/* ============================================================
+   Ngân hàng câu hỏi ôn tập — sinh từ chính nội dung trang Đọc.
+   `chapter` khớp id chương trong data.ts để nút "Ôn lại chương"
+   nhảy đúng chỗ. `answer` = chỉ số đáp án đúng trong `options`.
+   ============================================================ */
+
+export interface QuizQuestion {
+  id: string;
+  chapter: string; // id chương (overview/biomarkers/tiers/criteria/risks/longterm/dataset/pitfalls/checklist)
+  prompt: string;
+  options: string[];
+  answer: number;
+  explain: string;
+}
+
+export const QUIZ: QuizQuestion[] = [
+  /* ---- Tổng quan ---- */
+  {
+    id: 'ov1',
+    chapter: 'overview',
+    prompt: 'Loại đái tháo đường nào phổ biến nhất và là trọng tâm chính của đề tài?',
+    options: ['Type 1', 'Type 2', 'Tiểu đường thai kỳ', 'Tiền tiểu đường'],
+    answer: 1,
+    explain: 'Type 2 là loại phổ biến nhất. Nguy cơ chịu ảnh hưởng của di truyền, tuổi, cân nặng, vận động và nhiều yếu tố khác; đây là trọng tâm của đề tài.',
+  },
+  {
+    id: 'ov2',
+    chapter: 'overview',
+    prompt: 'Loại tiểu đường nào là bệnh TỰ MIỄN (cơ thể phá huỷ tế bào beta)?',
+    options: ['Type 1', 'Type 2', 'Thai kỳ', 'Cả ba'],
+    answer: 0,
+    explain: 'Type 1 là bệnh tự miễn phá huỷ tế bào beta tuỵ, gây thiếu insulin. Bệnh có thể xuất hiện ở mọi tuổi, dù thường gặp ở người trẻ.',
+  },
+  {
+    id: 'ov3',
+    chapter: 'overview',
+    prompt: 'Bài toán dự đoán tiểu đường trên dữ liệu tabular thuộc dạng nào?',
+    options: ['Hồi quy giá trị liên tục', 'Phân loại nhị phân (0/1)', 'Phân cụm', 'Dự báo chuỗi thời gian'],
+    answer: 1,
+    explain: 'Là phân loại nhị phân: từ các chỉ số sức khoẻ, dự đoán 1 = có hay 0 = không mắc tiểu đường.',
+  },
+
+  /* ---- Đọc chỉ số ---- */
+  {
+    id: 'bm1',
+    chapter: 'biomarkers',
+    prompt: 'Glucose huyết tương 2h (OGTT) từ mức nào được xem là TIỂU ĐƯỜNG?',
+    options: ['≥ 140 mg/dL', '≥ 200 mg/dL', '≥ 100 mg/dL', '≥ 126 mg/dL'],
+    answer: 1,
+    explain: 'Glucose 2h ≥ 200 mg/dL là ngưỡng tiểu đường; 140–199 là tiền tiểu đường.',
+  },
+  {
+    id: 'bm2',
+    chapter: 'biomarkers',
+    prompt: 'HbA1c từ mức nào được chẩn đoán TIỂU ĐƯỜNG?',
+    options: ['≥ 5.7%', '≥ 6.0%', '≥ 6.5%', '≥ 7.0%'],
+    answer: 2,
+    explain: 'HbA1c ≥ 6.5% = tiểu đường; 5.7–6.4% là tiền tiểu đường. HbA1c phản ánh đường huyết trung bình 2–3 tháng.',
+  },
+  {
+    id: 'bm3',
+    chapter: 'biomarkers',
+    prompt: 'Trong hầu hết mô hình dự đoán tiểu đường, feature nào thường MẠNH NHẤT?',
+    options: ['BMI', 'Tuổi', 'Glucose', 'Huyết áp'],
+    answer: 2,
+    explain: 'Glucose là chỉ số trực tiếp nhất — một mình nó đã phân loại khá tốt, thường là feature quan trọng nhất.',
+  },
+  {
+    id: 'bm4',
+    chapter: 'biomarkers',
+    prompt: 'Insulin huyết thanh cao kéo dài là dấu hiệu của điều gì?',
+    options: ['Đề kháng insulin', 'Thiếu insulin tuyệt đối', 'Huyết áp thấp', 'Suy thận'],
+    answer: 0,
+    explain: 'Insulin cao kéo dài = cơ thể phải tiết nhiều để ép đường vào tế bào → dấu hiệu đề kháng insulin (đặc trưng type 2).',
+  },
+  {
+    id: 'bm5',
+    chapter: 'biomarkers',
+    prompt: 'Glucose lúc ĐÓI (fasting) bao nhiêu là TIỀN tiểu đường?',
+    options: ['< 100 mg/dL', '100 – 125 mg/dL', '≥ 126 mg/dL', '≥ 200 mg/dL'],
+    answer: 1,
+    explain: 'Glucose đói 100–125 mg/dL là tiền tiểu đường; < 100 bình thường; ≥ 126 là tiểu đường.',
+  },
+  {
+    id: 'bm6',
+    chapter: 'biomarkers',
+    prompt: 'BMI cao ảnh hưởng tới tiểu đường như thế nào?',
+    options: [
+      'Trực tiếp dùng để chẩn đoán bệnh',
+      'Không liên quan',
+      'Là yếu tố nguy cơ mạnh (gây đề kháng insulin), không chẩn đoán trực tiếp',
+      'Chỉ ảnh hưởng tới type 1',
+    ],
+    answer: 2,
+    explain: 'BMI cao gây đề kháng insulin → yếu tố nguy cơ rất mạnh, nhưng tự nó KHÔNG dùng để kết luận bệnh.',
+  },
+
+  /* ---- Tiêu chí chẩn đoán ---- */
+  {
+    id: 'cr1',
+    chapter: 'criteria',
+    prompt: 'Xét nghiệm nào phản ánh đường huyết khoảng 2–3 tháng và không cần nhịn đói?',
+    options: ['Glucose ngẫu nhiên', 'Glucose lúc đói', 'HbA1c', 'Insulin'],
+    answer: 2,
+    explain: 'HbA1c phản ánh phơi nhiễm glucose khoảng 2–3 tháng và không cần nhịn đói. Đây là một lựa chọn chẩn đoán, nhưng có thể sai lệch trong thai kỳ, thiếu máu hoặc khi vòng đời hồng cầu bất thường.',
+  },
+  {
+    id: 'cr2',
+    chapter: 'criteria',
+    prompt: 'Glucose lúc đói trong khoảng 100–125 mg/dL được xếp loại?',
+    options: ['Bình thường', 'Tiền tiểu đường', 'Tiểu đường', 'Hạ đường huyết'],
+    answer: 1,
+    explain: 'Theo ADA, glucose đói 100–125 mg/dL = tiền tiểu đường.',
+  },
+  {
+    id: 'cr3',
+    chapter: 'criteria',
+    prompt: 'Khi nào dùng HbA1c/glucose làm feature dễ tạo circularity hoặc rò rỉ nhãn?',
+    options: [
+      'Vì chúng khó đo',
+      'Khi chính cùng phép đo đó cũng được dùng để tạo nhãn hiện tại',
+      'Vì chúng không quan trọng',
+      'Vì chúng luôn bằng 0',
+    ],
+    answer: 1,
+    explain: 'Nếu cùng một phép đo vừa tạo nhãn hiện tại vừa làm đầu vào, mô hình có thể chỉ đọc lại định nghĩa nhãn. Glucose baseline đo trước outcome dài hạn vẫn có thể là predictor hợp lệ.',
+  },
+  {
+    id: 'cr4',
+    chapter: 'criteria',
+    prompt: 'Glucose 2h (OGTT) trong khoảng 140–199 mg/dL là?',
+    options: ['Bình thường', 'Tiền tiểu đường', 'Tiểu đường', 'Không xác định'],
+    answer: 1,
+    explain: 'OGTT 2h: < 140 bình thường, 140–199 tiền tiểu đường, ≥ 200 tiểu đường.',
+  },
+
+  /* ---- Yếu tố nguy cơ ---- */
+  {
+    id: 'rk1',
+    chapter: 'risks',
+    prompt: 'Yếu tố nào sau đây có thể thay đổi và liên quan rõ với nguy cơ ĐTĐ type 2?',
+    options: ['Tiền sử gia đình', 'Tuổi cao', 'Béo phì / BMI cao', 'Giới tính'],
+    answer: 2,
+    explain: 'Thừa cân/béo phì là yếu tố nguy cơ có thể thay đổi. Không nên hiểu bảng này như một xếp hạng tuyệt đối vì mức ảnh hưởng tuỳ quần thể và bối cảnh.',
+  },
+  {
+    id: 'rk2',
+    chapter: 'risks',
+    prompt: 'Yếu tố nào sau đây là CỐ ĐỊNH (không thay đổi được)?',
+    options: ['Ít vận động', 'Tăng huyết áp', 'Tiền sử gia đình', 'Béo phì'],
+    answer: 2,
+    explain: 'Tiền sử gia đình (gen) là cố định — không đổi được nhưng cần biết để đánh giá nguy cơ.',
+  },
+  {
+    id: 'rk3',
+    chapter: 'risks',
+    prompt: 'Tăng vận động thể chất cải thiện điều gì?',
+    options: ['Độ nhạy insulin', 'Chiều cao', 'Số lần mang thai', 'Tuổi sinh học'],
+    answer: 0,
+    explain: 'Vận động cải thiện độ nhạy insulin → giảm nguy cơ type 2. Đây là yếu tố thay đổi được.',
+  },
+
+  /* ---- Dataset Pima ---- */
+  {
+    id: 'ds1',
+    chapter: 'dataset',
+    prompt: 'Dataset Pima Indians Diabetes có bao nhiêu mẫu?',
+    options: ['268', '500', '768', '1000'],
+    answer: 2,
+    explain: '768 phụ nữ, 8 đặc trưng + 1 nhãn. Tỉ lệ ~268 mắc / 500 không.',
+  },
+  {
+    id: 'ds2',
+    chapter: 'dataset',
+    prompt: 'Cột nào của Pima có ~49% giá trị bằng 0 (thiếu nhiều nhất)?',
+    options: ['Glucose', 'Insulin', 'Age', 'Pregnancies'],
+    answer: 1,
+    explain: 'Insulin ~49% là 0 — cột thiếu nhiều nhất. Giá trị 0 ở đây là missing trá hình, không phải số thật.',
+  },
+  {
+    id: 'ds3',
+    chapter: 'dataset',
+    prompt: 'Trong Pima, BloodPressure = 0 nên hiểu là gì?',
+    options: [
+      'Huyết áp thật bằng 0',
+      'Dữ liệu thiếu (missing) trá hình',
+      'Người khoẻ mạnh',
+      'Lỗi nhãn',
+    ],
+    answer: 1,
+    explain: 'BloodPressure = 0 không phải phép đo hợp lệ trong bối cảnh Pima, nên thường được quy ước là missing rồi xử lý bằng quy trình fit trên train.',
+  },
+  {
+    id: 'ds4',
+    chapter: 'dataset',
+    prompt: 'Cột nào là BIẾN MỤC TIÊU (nhãn) của Pima?',
+    options: ['Glucose', 'BMI', 'Outcome', 'DiabetesPedigreeFunction'],
+    answer: 2,
+    explain: 'Outcome là nhãn nhị phân: 1 = tiểu đường, 0 = không. Đây là cái mô hình phải dự đoán.',
+  },
+  {
+    id: 'ds5',
+    chapter: 'dataset',
+    prompt: 'Ở cột Pregnancies, giá trị 0 nên hiểu thế nào?',
+    options: ['Là missing', 'Là hợp lệ (chưa từng mang thai)', 'Là lỗi', 'Là nhãn'],
+    answer: 1,
+    explain: 'Pregnancies = 0 hoàn toàn hợp lệ (chưa từng mang thai). Không phải cột nào 0 cũng là missing — phải xét từng cột.',
+  },
+
+  /* ---- Bẫy khi làm ML ---- */
+  {
+    id: 'pf1',
+    chapter: 'pitfalls',
+    prompt: 'Mô hình "đoán tất cả KHÔNG bệnh" trên Pima vẫn đạt accuracy ~?',
+    options: ['~35%', '~50%', '~65%', '~90%'],
+    answer: 2,
+    explain: '500/768 ≈ 65%. Accuracy cao nhưng bỏ sót 100% bệnh nhân → accuracy lừa người khi dữ liệu lệch lớp.',
+  },
+  {
+    id: 'pf2',
+    chapter: 'pitfalls',
+    prompt: 'Vì sao accuracy gây hiểu lầm trên dữ liệu tiểu đường?',
+    options: [
+      'Vì khó tính toán',
+      'Vì dữ liệu lệch lớp — lớp bệnh là thiểu số',
+      'Vì luôn bằng 100%',
+      'Vì phụ thuộc thứ tự dữ liệu',
+    ],
+    answer: 1,
+    explain: 'Lớp "có bệnh" là thiểu số, nên đoán toàn bộ "không bệnh" vẫn có accuracy cao. Cần xem sensitivity, specificity, precision, AUROC/AUPRC và calibration.',
+  },
+  {
+    id: 'pf3',
+    chapter: 'pitfalls',
+    prompt: 'Trong một chương trình SÀNG LỌC ưu tiên không bỏ sót ca bệnh, lỗi nào cần đặc biệt hạn chế?',
+    options: [
+      'FP — báo động nhầm người khoẻ',
+      'FN — BỎ SÓT người bệnh',
+      'TP — bắt đúng bệnh',
+      'TN — đúng người khoẻ',
+    ],
+    answer: 1,
+    explain: 'Trong sàng lọc, FN thường được ưu tiên giảm. Tuy nhiên FP cũng gây xét nghiệm, lo lắng và chi phí; ngưỡng phải cân bằng hai hậu quả theo bối cảnh.',
+  },
+  {
+    id: 'pf4',
+    chapter: 'pitfalls',
+    prompt: 'Để hạn chế bỏ sót bệnh nhân, nên ưu tiên metric nào cao?',
+    options: ['Accuracy', 'Precision', 'Recall', 'Specificity'],
+    answer: 2,
+    explain: 'Recall = tỉ lệ bắt được ca bệnh thật. Recall cao → ít FN (ít bỏ sót), phù hợp mục tiêu sàng lọc lâm sàng.',
+  },
+  {
+    id: 'pf5',
+    chapter: 'pitfalls',
+    prompt: 'Tính mean/std để chuẩn hoá dữ liệu nên thực hiện trên tập nào?',
+    options: [
+      'Toàn bộ dữ liệu trước khi chia',
+      'Chỉ tập train, rồi áp cho test',
+      'Chỉ tập test',
+      'Không cần chuẩn hoá',
+    ],
+    answer: 1,
+    explain: 'Fit scaler trên TRAIN rồi transform test. Tính trên toàn bộ trước khi chia = rò rỉ thông tin test (data leakage).',
+  },
+  {
+    id: 'pf6',
+    chapter: 'pitfalls',
+    prompt: 'Kỹ thuật nào KHÔNG dùng để xử lý lớp thiểu số (lệch lớp)?',
+    options: ['SMOTE (oversampling)', 'Class weight', 'Đổi ngưỡng quyết định', 'Tăng learning rate'],
+    answer: 3,
+    explain: 'Xử lý lệch lớp: SMOTE, class weight, đổi ngưỡng. Tăng learning rate không liên quan tới cân bằng lớp.',
+  },
+
+  /* ---- Phân tầng chỉ số ---- */
+  {
+    id: 'ti1',
+    chapter: 'tiers',
+    prompt: 'Vì sao glucose/HbA1c thường là feature MẠNH NHẤT trong các mô hình dự đoán ĐTĐ?',
+    options: [
+      'Vì chúng dễ đo và rẻ tiền',
+      'Vì chúng gần như CHÍNH LÀ tiêu chí chẩn đoán (rủi ro rò rỉ nhãn)',
+      'Vì chúng là yếu tố cố định không đổi',
+      'Vì mô hình chọn ngẫu nhiên',
+    ],
+    answer: 1,
+    explain: 'Glucose/HbA1c thường mạnh vì gần tiêu chí chẩn đoán. Chúng gây circularity khi cùng phép đo tạo nhãn hiện tại; nếu đo trước outcome tương lai, chúng có thể là predictor hợp lệ. Feature mạnh không đồng nghĩa nguyên nhân.',
+  },
+  {
+    id: 'ti2',
+    chapter: 'tiers',
+    prompt: 'BMI và vòng eo thuộc tầng chỉ số nào?',
+    options: [
+      'Tầng 1 — Trực tiếp / Chẩn đoán',
+      'Tầng 2 — Ảnh hưởng nguy cơ (thay đổi được)',
+      'Tầng 3 — Bối cảnh (cố định)',
+      'Tầng 4 — Mới / Nâng cao',
+    ],
+    answer: 1,
+    explain: 'BMI, vòng eo, HDL, huyết áp… là yếu tố chuyển hoá CAN THIỆP ĐƯỢC bằng lối sống/thuốc — không định nghĩa bệnh nhưng làm tăng/giảm nguy cơ. Đây là đích can thiệp dự phòng.',
+  },
+  {
+    id: 'ti3',
+    chapter: 'tiers',
+    prompt: 'Yếu tố nào thuộc tầng "Bối cảnh (cố định)" — không thể thay đổi?',
+    options: ['BMI', 'Triglyceride', 'Tiền sử gia đình mắc ĐTĐ', 'Huyết áp'],
+    answer: 2,
+    explain: 'Tuổi, giới, tiền sử gia đình, sắc tộc là yếu tố cố định — dùng để PHÂN TẦNG nguy cơ và hiệu chỉnh, không phải đích can thiệp.',
+  },
+  {
+    id: 'ti4',
+    chapter: 'tiers',
+    prompt: 'Đâu là predictor "Mới / Nâng cao" (ngoài bộ kinh điển) do chính các paper khám phá?',
+    options: ['HbA1c', 'GGT / men gan & acid uric', 'Tuổi', 'Số lần mang thai'],
+    answer: 1,
+    explain: 'GGT (men gan) và urate/acid uric được pipeline data-driven chọn vào top-10/top-12 (lugner2024, deberneh2021) dù không phải biến chẩn đoán truyền thống — dấu hiệu rối loạn chuyển hoá/gan nhiễm mỡ.',
+  },
+  {
+    id: 'ti5',
+    chapter: 'tiers',
+    prompt: 'Trong cohort nông thôn Hà Nam (zhang2020), yếu tố HÀNH VI nào bất ngờ đứng #1 SHAP toàn cục?',
+    options: ['Hút thuốc', 'Sở thích vị ngọt (sweet flavor)', 'Giờ đi ngủ', 'Số bước chân'],
+    answer: 1,
+    explain: 'Sở thích vị ngọt lọt #1 top-10 SHAP — biến hành vi ăn uống chưa từng có trong risk score truyền thống. Cùng nhóm "mới" còn có chỉ số nước tiểu (đường/protein niệu).',
+  },
+  {
+    id: 'ti6',
+    chapter: 'tiers',
+    prompt: 'Mục đích của việc PHÂN TẦNG chỉ số là gì?',
+    options: [
+      'Để mô hình chạy nhanh hơn',
+      'Để tách bạch: cái gì để CHẨN ĐOÁN, cái gì để CAN THIỆP, cái gì chỉ là BỐI CẢNH, cái gì là phát hiện nâng cao',
+      'Vì chuẩn ADA bắt buộc',
+      'Để luôn giảm số feature xuống còn 5',
+    ],
+    answer: 1,
+    explain: 'Phân tầng giúp không nhầm "feature mạnh nhất" (thường là glucose/HbA1c, gần nhãn) với "yếu tố có thể can thiệp" — và biết chỉ số nào chỉ để hiệu chỉnh nguy cơ.',
+  },
+
+  /* ---- Dự đoán dài hạn ---- */
+  {
+    id: 'lt1',
+    chapter: 'longterm',
+    prompt: 'Điểm KHÁC biệt cốt lõi giữa sàng lọc CẮT NGANG và dự đoán ONSET dài hạn là gì?',
+    options: [
+      'Số lượng feature dùng',
+      'Có khoảng cách thời gian feature→nhãn: đo baseline rồi gán nhãn người MỚI mắc sau N năm',
+      'Có dùng deep learning hay không',
+      'Cỡ mẫu lớn hay nhỏ',
+    ],
+    answer: 1,
+    explain: 'Cắt ngang gán nhãn ĐỒNG THỜI lúc đo feature (vd PIMA, BRFSS). Dự đoán dài hạn đo feature tại baseline, đã LOẠI người mắc sẵn, rồi chờ xem ai MỚI mắc sau khoảng thời gian thực.',
+  },
+  {
+    id: 'lt2',
+    chapter: 'longterm',
+    prompt: 'Nghiên cứu lugner2024 dự báo ĐTĐ với cửa sổ thời gian & cohort nào?',
+    options: [
+      '1 năm — EHR Hàn Quốc',
+      '10 năm — UK Biobank (~448.000 người)',
+      '2 năm — ELSA người ≥50 tuổi',
+      'Lần khám kế — CPRD Anh',
+    ],
+    answer: 1,
+    explain: 'lugner2024: UK Biobank 448.277 người, dự báo onset 10 năm. Chỉ 10 biến (chọn bằng SHAP) vẫn giữ AUC 0.881 so với 0.903 của mô hình 419 biến.',
+  },
+  {
+    id: 'lt3',
+    chapter: 'longterm',
+    prompt: 'Trong top-10 SHAP của lugner2024 (dự báo 10 năm), yếu tố mạnh #1 là?',
+    options: ['BMI', 'HbA1c', 'Vòng eo', 'Tuổi'],
+    answer: 1,
+    explain: 'Thứ tự top-10: HbA1c, BMI, vòng eo, glucose, tiền sử gia đình, GGT, eo-hông, HDL, tuổi, urate. HbA1c đứng đầu — phản ánh kiểm soát đường huyết tích luỹ.',
+  },
+  {
+    id: 'lt4',
+    chapter: 'longterm',
+    prompt: 'Mô hình BEHRT (li2020) học từ loại dữ liệu nào để dự báo các bệnh ở lần khám tương lai?',
+    options: [
+      'Biomarker xét nghiệm đo tại một thời điểm',
+      'CHUỖI mã chẩn đoán EHR (mỗi mã = 1 "từ") qua Transformer',
+      'Ảnh chụp võng mạc',
+      'Dữ liệu giải trình tự gen',
+    ],
+    answer: 1,
+    explain: 'BEHRT biểu diễn chuỗi mã chẩn đoán theo lần khám rồi pre-train tự giám sát. ĐTĐ chỉ là 1 trong 301 nhãn và paper không báo riêng hiệu năng ĐTĐ, nên đây là ví dụ phương pháp chứ chưa phải bằng chứng cho mô hình ĐTĐ chuyên biệt.',
+  },
+  {
+    id: 'lt5',
+    chapter: 'longterm',
+    prompt: 'Mô hình no-lab của dinh2019 cố ý LOẠI glucose & insulin nhằm mục đích gì — mà vẫn đạt AUC bao nhiêu?',
+    options: [
+      'Để tiết kiệm chi phí; AUC ~0.50',
+      'Để tránh rò rỉ nhãn (biến gần định nghĩa nhãn); AUC ~0.862',
+      'Để chống overfitting; AUC ~0.99',
+      'Không loại gì; AUC ~0.70',
+    ],
+    answer: 1,
+    explain: 'dinh2019 quét vét cạn ~3.900 biến NHANES, cố ý bỏ plasma glucose & serum insulin để tránh trùng biến định nghĩa nhãn; mô hình no-lab vẫn đạt AUC 0.862 (top-5: vòng eo, tuổi, cân nặng, chiều dài chân, natri).',
+  },
+  {
+    id: 'lt6',
+    chapter: 'longterm',
+    prompt: 'deberneh2021 (EHR Hàn Quốc, dự đoán năm kế tiếp Y→Y+1) chọn 2 chỉ số "ngoài bộ truyền thống" nào vào 12 feature?',
+    options: [
+      'GGT / gamma-GTP (men gan) & acid uric',
+      'Đường niệu & protein niệu',
+      'Sắc tộc & lượng natri',
+      'Nhịp tim & vị ngọt',
+    ],
+    answer: 0,
+    explain: 'Pipeline data-driven (ANOVA + chi-squared + tree-RFE) chọn gamma-GTP và acid uric ngoài 5 biến kinh điển; bộ 12 feature đạt CV ~81% so với ~77% của 5 feature truyền thống.',
+  },
+  {
+    id: 'lt7',
+    chapter: 'longterm',
+    prompt: 'Điều kiện cốt lõi để gọi một mô hình là dự báo ĐTĐ dài hạn là gì?',
+    options: [
+      'Chỉ cần dùng nhiều feature',
+      'Feature phải có trước outcome, loại người đã mắc ở baseline và theo dõi ca mới sau một khoảng thời gian rõ',
+      'Chỉ tuổi và giới tính',
+      'Ảnh X-quang phổi',
+    ],
+    answer: 1,
+    explain: 'Dự báo dài hạn đòi hỏi trật tự thời gian rõ: feature ở baseline, loại người đã mắc, rồi theo dõi người mới mắc sau N năm. Loại dữ liệu hay thuật toán không tự quyết định horizon.',
+  },
+
+  /* ---- Giai đoạn tiến triển ---- */
+  {
+    id: 'st1',
+    chapter: 'staging',
+    prompt: 'Ba giai đoạn glycemic theo ngưỡng ADA (từ nhẹ đến nặng) là gì?',
+    options: [
+      'Type 1 → Type 2 → Thai kỳ',
+      'Bình thường → Tiền ĐTĐ → Đái tháo đường',
+      'IFG → IGT → HbA1c',
+      'Nhẹ → Vừa → Nặng theo biến chứng',
+    ],
+    answer: 1,
+    explain: 'ĐTĐ type 2 là một phổ liên tục: Bình thường (Normoglycemia) → Tiền ĐTĐ (Prediabetes) → Đái tháo đường, chia bằng chính các ngưỡng chẩn đoán HbA1c/FPG/OGTT.',
+  },
+  {
+    id: 'st2',
+    chapter: 'staging',
+    prompt: 'HbA1c trong khoảng 5,7–6,4% ứng với giai đoạn nào?',
+    options: ['Bình thường', 'Tiền đái tháo đường', 'Đái tháo đường', 'Không xác định'],
+    answer: 1,
+    explain: 'HbA1c 5,7–6,4% = tiền ĐTĐ (< 5,7% bình thường; ≥ 6,5% đái tháo đường). Tương ứng FPG 100–125 và OGTT 2h 140–199.',
+  },
+  {
+    id: 'st3',
+    chapter: 'staging',
+    prompt: 'Điều gì khiến "giai đoạn" khác với một nhãn nhị phân cố định?',
+    options: [
+      'Giai đoạn luôn xấu đi theo thời gian',
+      'Giai đoạn có thể TIẾN triển hoặc ĐẢO NGƯỢC — nên phải gắn với mốc thời gian đo',
+      'Giai đoạn chỉ áp dụng cho type 1',
+      'Giai đoạn không cần ngưỡng xét nghiệm',
+    ],
+    answer: 1,
+    explain: 'Trên cohort dọc, người tiền ĐTĐ có thể tiến triển lên ĐTĐ, giữ ổn định, hoặc đảo ngược về bình thường (regression). Vì vậy "giai đoạn" gắn với thời điểm đo, không phải nhãn vĩnh viễn.',
+  },
+  {
+    id: 'st4',
+    chapter: 'staging',
+    prompt: 'Vì sao giữ HbA1c/FPG làm feature khi phân 3 lớp giai đoạn lại nguy hiểm?',
+    options: [
+      'Vì chúng khó đo',
+      'Vì chúng chính là biến ĐỊNH NGHĨA nhãn giai đoạn → rò rỉ nhãn kép, accuracy ~100% giả',
+      'Vì chúng luôn bằng 0',
+      'Vì ADA cấm dùng',
+    ],
+    answer: 1,
+    explain: 'Nhãn giai đoạn được định nghĩa bằng HbA1c/FPG/OGTT. Giữ chính chúng làm feature = mô hình "đọc lại định nghĩa" → ~99–100% giả (như IPDD/abnoosian2023). Phải bỏ chúng hoặc reframe.',
+  },
+  {
+    id: 'st5',
+    chapter: 'staging',
+    prompt: 'Trong bài toán 3 lớp, lớp nào thường khó phân nhất (đặt "trần" độ chính xác)?',
+    options: ['Bình thường', 'Tiền đái tháo đường (lớp giữa)', 'Đái tháo đường', 'Không lớp nào'],
+    answer: 1,
+    explain: 'Lớp giữa (tiền ĐTĐ) chồng lấn hai bên nên khó nhất: deberneh2021 đạt precision lớp ĐTĐ 90% nhưng lớp tiền ĐTĐ chỉ 61%. Vì vậy phải báo cáo theo từng lớp, không chỉ accuracy tổng.',
+  },
+  {
+    id: 'st6',
+    chapter: 'staging',
+    prompt: 'Cách làm "phân loại giai đoạn" leakage-safe (đúng tinh thần đề tài) là gì?',
+    options: [
+      'Thêm thật nhiều feature xét nghiệm',
+      'Bỏ biến định nghĩa nhãn (glucose/HbA1c) HOẶC dự báo CHUYỂN giai đoạn theo thời gian',
+      'Chỉ dùng accuracy tổng',
+      'Dùng dataset càng nhỏ càng tốt',
+    ],
+    answer: 1,
+    explain: 'Hai khung leakage-safe: (1) phân giai đoạn từ yếu tố dễ đo mà bỏ glucose/HbA1c (như dinh2019/choi2014/sgchoi2023); (2) dự báo ai SẼ chuyển giai đoạn sau N năm (feature đo trước outcome).',
+  },
+  {
+    id: 'st7',
+    chapter: 'staging',
+    prompt: 'Dataset nào KHÔNG nên dùng làm benchmark chính cho staging (chỉ làm ca cảnh báo)?',
+    options: [
+      'NHANES',
+      'KNHANES',
+      'IPDD / Multiclass Diabetes Dataset',
+      'CHARLS',
+    ],
+    answer: 2,
+    explain: 'IPDD (3 lớp Iraqi) nhỏ, lệch nặng và giữ HbA1c định nghĩa nhãn → leaky-by-construction (~100% giả). Chỉ dùng để minh hoạ hậu quả rò rỉ. Benchmark tốt: NHANES (3 lớp) + cohort dọc cho progression.',
+  },
+];
