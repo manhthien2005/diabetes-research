@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   MdLibraryBooks,
-  MdMenuBook,
   MdSchool,
   MdQuestionAnswer,
   MdRocketLaunch,
@@ -30,8 +29,8 @@ const NAV: NavItem[] = [
   // Tổng quan (trang chủ) đứng đầu: mở app là thấy ngay "bước tiếp theo".
   { href: '/', label: 'Tổng quan', Icon: MdRocketLaunch, exact: true },
   { href: '/thu-vien', label: 'Thư viện', Icon: MdLibraryBooks },
-  { href: '/kien-thuc', label: 'Kiến thức ĐTĐ', Icon: MdMenuBook },
-  { href: '/kien-thuc-nckh', label: 'Phương pháp NCKH', Icon: MdSchool },
+  // Học tập gom Kiến thức ĐTĐ + Phương pháp NCKH (route cũ redirect vào trong)
+  { href: '/hoc-tap', label: 'Học tập', Icon: MdSchool },
   { href: '/qa-log', label: 'Hỏi–Đáp định hướng', Icon: MdQuestionAnswer },
   // Ẩn theo yêu cầu (làm việc 1-1 với Claude thay vì search trong app) — chỉ ẩn, không xoá:
   // { href: '/search', label: 'Tìm bài báo', Icon: MdTravelExplore },

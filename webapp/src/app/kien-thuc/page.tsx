@@ -1,7 +1,6 @@
-import { KnowledgeClient } from '@/components/KnowledgeClient';
+import { redirect } from 'next/navigation';
 
-export const dynamic = 'force-static';
-
-export default function KnowledgePage() {
-  return <KnowledgeClient />;
+// Trang Kiến thức ĐTĐ đã gom về mục Học tập sau redesign.
+export default function KnowledgeRedirect() {
+  redirect('/hoc-tap/dtd');
 }

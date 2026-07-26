@@ -1,0 +1,107 @@
+/* ============================================================
+   ExploreX — Học tập: trang bìa 2 khoá học
+   ============================================================ */
+
+.learn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+}
+.learn-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 26px 26px 22px;
+  box-shadow: var(--shadow-sm);
+  color: var(--text);
+  transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease),
+    border-color 0.22s var(--ease);
+  overflow: hidden;
+}
+.learn-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(
+    360px 240px at 90% -20%,
+    color-mix(in srgb, var(--accent) 10%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+.learn-card > * {
+  position: relative;
+  z-index: 1;
+}
+.learn-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-border);
+  box-shadow: var(--shadow-hover);
+  color: var(--text);
+}
+.learn-ico {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  border-radius: var(--radius);
+}
+.learn-title {
+  margin: 4px 0 0;
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--text);
+}
+.learn-desc {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-dim);
+  flex: 1;
+}
+.learn-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+.learn-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+.learn-quiz {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.learn-quiz svg {
+  font-size: 14px;
+  color: var(--amber);
+}
+.learn-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+.learn-go svg {
+  transition: transform 0.2s var(--ease);
+}
+.learn-card:hover .learn-go svg {
+  transform: translateX(3px);
+}

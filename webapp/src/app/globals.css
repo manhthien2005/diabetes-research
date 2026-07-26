@@ -12,6 +12,7 @@
 @import '../styles/components/overview.css';
 @import '../styles/components/library.css';
 @import '../styles/components/paper.css';
+@import '../styles/components/learn.css';
 
 /* ============================================================
    Sources analytics
@@ -647,9 +648,21 @@
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(420px 300px at 8% -10%, rgba(94, 156, 234, 0.22), transparent 70%),
-    radial-gradient(460px 320px at 78% 4%, rgba(163, 133, 224, 0.2), transparent 70%),
-    radial-gradient(380px 300px at 105% 110%, rgba(79, 195, 176, 0.16), transparent 70%);
+    radial-gradient(
+      420px 300px at 8% -10%,
+      color-mix(in srgb, var(--ch-blue) 14%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      460px 320px at 78% 4%,
+      color-mix(in srgb, var(--ch-purple) 12%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      380px 300px at 105% 110%,
+      color-mix(in srgb, var(--ch-teal) 10%, transparent),
+      transparent 70%
+    );
   pointer-events: none;
 }
 .kbx-hero-inner > * {
@@ -666,9 +679,9 @@
 }
 .kbx-title {
   font-size: 30px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-weight: 560;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
   margin: 0 0 10px;
 }
 .kbx-grad {

@@ -1,10 +1,6 @@
-import { ResearchKnowledgeClient } from '@/components/ResearchKnowledgeClient';
+import { redirect } from 'next/navigation';
 
-export const metadata = {
-  title: 'Phương pháp NCKH · ExploreX',
-  description: 'Xây dựng nghiên cứu khoa học có giá trị thực tiễn — đúc kết từ kho paper.',
-};
-
-export default function ResearchKnowledgePage() {
-  return <ResearchKnowledgeClient />;
+// Trang Phương pháp NCKH đã gom về mục Học tập sau redesign.
+export default function ResearchKnowledgeRedirect() {
+  redirect('/hoc-tap/nckh');
 }
