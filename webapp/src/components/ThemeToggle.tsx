@@ -24,6 +24,13 @@ export function ThemeToggle() {
   useEffect(() => {
     const saved = localStorage.getItem('explorex.theme');
     setPref(saved === 'light' || saved === 'dark' ? saved : 'system');
+    // đồng bộ khi toggle khác (sidebar/settings) đổi theme
+    const onTheme = (e: Event) => {
+      const v = (e as CustomEvent<string>).detail;
+      setPref(v === 'light' || v === 'dark' ? v : 'system');
+    };
+    window.addEventListener('explorex-theme', onTheme);
+    return () => window.removeEventListener('explorex-theme', onTheme);
   }, []);
 
   const choose = (v: ThemePref) => {

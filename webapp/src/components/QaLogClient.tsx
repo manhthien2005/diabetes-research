@@ -184,7 +184,9 @@ export function QaLogClient({ entries }: { entries: QaEntry[] }) {
                   </div>
 
                   <p className="qa-q">
-                    <span className="qa-q-mark">❓</span>
+                    <span className="qa-q-mark">
+                      <MdQuestionAnswer />
+                    </span>
                     <span>{e.question}</span>
                   </p>
 

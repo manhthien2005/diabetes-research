@@ -9,7 +9,9 @@ import {
   MdCheckCircle,
   MdError,
   MdRemoveCircleOutline,
+  MdContrast,
 } from 'react-icons/md';
+import { ThemeToggle } from './ThemeToggle';
 
 interface KeyStatus {
   key: string;
@@ -114,7 +116,34 @@ export function SettingsClient() {
     });
   };
 
-  if (!config) return <div className="muted">Đang tải cài đặt…</div>;
+  // Giao diện không phụ thuộc API nguồn — luôn hiển thị được
+  const themeSection = (
+    <>
+      <div className="section-title">
+        <MdContrast /> Giao diện
+      </div>
+      <div className="card st-theme">
+        <div className="st-theme-row">
+          <div>
+            <div className="st-theme-label">Chế độ màu</div>
+            <div className="muted" style={{ fontSize: 12.5 }}>
+              Sáng / Theo hệ thống / Tối — lưu trên máy này, đồng bộ với nút ở
+              sidebar.
+            </div>
+          </div>
+          <ThemeToggle />
+        </div>
+      </div>
+    </>
+  );
+
+  if (!config)
+    return (
+      <div className="settings">
+        {themeSection}
+        <div className="muted">Đang tải cài đặt nguồn…</div>
+      </div>
+    );
 
   // chỉ tính các nguồn KHẢ DỤNG (đủ key) vào "sẵn sàng"
   const usable = connectors.filter(
@@ -128,6 +157,8 @@ export function SettingsClient() {
   return (
     <div className="settings">
       {savedAt && <div className="saved-toast">✓ Đã lưu lúc {savedAt}</div>}
+
+      {themeSection}
 
       {/* Readiness summary — tự kiểm tra mỗi lần mở trang */}
       <div className="readiness">

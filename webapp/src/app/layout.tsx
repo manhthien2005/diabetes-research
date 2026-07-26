@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 // Chạy TRƯỚC hydration: set data-theme từ localStorage để không nháy màu sai.
 // Đồng thời expose window.__setTheme cho ThemeToggle dùng ở mọi nơi.
-const THEME_SCRIPT = `(function(){function apply(v){var t=(v==='light'||v==='dark')?v:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}try{apply(localStorage.getItem('explorex.theme'));}catch(e){apply(null);}window.__setTheme=function(v){try{localStorage.setItem('explorex.theme',v);}catch(e){}apply(v);};matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){var s=null;try{s=localStorage.getItem('explorex.theme');}catch(e){}if(s!=='light'&&s!=='dark')apply(null);});})();`;
+const THEME_SCRIPT = `(function(){function apply(v){var t=(v==='light'||v==='dark')?v:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}try{apply(localStorage.getItem('explorex.theme'));}catch(e){apply(null);}window.__setTheme=function(v){try{localStorage.setItem('explorex.theme',v);}catch(e){}apply(v);window.dispatchEvent(new CustomEvent('explorex-theme',{detail:v}));};matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){var s=null;try{s=localStorage.getItem('explorex.theme');}catch(e){}if(s!=='light'&&s!=='dark')apply(null);});})();`;
 
 export default function RootLayout({
   children,

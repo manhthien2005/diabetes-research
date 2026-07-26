@@ -1,0 +1,186 @@
+/* ============================================================
+   Settings
+   ============================================================ */
+.settings {
+  position: relative;
+}
+.saved-toast {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: var(--green);
+  color: #07101d;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 650;
+  z-index: 50;
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.2s var(--ease);
+}
+.source-cfg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.source-cfg {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 15px;
+}
+.source-cfg-body {
+  flex: 1;
+  min-width: 0;
+}
+.source-cfg-label {
+  font-weight: 600;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.source-cfg-label .key-tag {
+  font-size: 10.5px;
+  color: var(--amber);
+  font-weight: 500;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  transition: 0.2s;
+}
+.slider::before {
+  content: '';
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background: var(--text-dim);
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.switch input:checked + .slider {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.switch input:checked + .slider::before {
+  transform: translateX(18px);
+  background: var(--accent);
+}
+.param-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.param-row:last-child {
+  border-bottom: none;
+}
+.param-row label {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.key-table code {
+  background: none;
+  color: var(--text);
+}
+
+/* readiness bar — tự kiểm tra mỗi lần mở Settings */
+.readiness {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 11px 15px;
+  margin-bottom: 4px;
+}
+.readiness-info {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+.readiness-info b {
+  color: var(--text);
+}
+.source-cfg .st-ico {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.st-ico.ready {
+  color: var(--green);
+}
+.st-ico.down {
+  color: var(--red);
+}
+.st-ico.needkey {
+  color: var(--amber);
+}
+.source-status-msg {
+  font-size: 11.5px;
+  margin-top: 1px;
+}
+.source-cfg.dim {
+  opacity: 0.6;
+}
+.key-tag.ok {
+  color: var(--green);
+}
+.key-tag.missing {
+  color: var(--amber);
+}
+.skip-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--amber);
+  background: var(--amber-soft);
+  border-radius: 5px;
+  padding: 1px 6px;
+}
+
+/* ---------- Giao diện (theme) ---------- */
+.st-theme {
+  margin-bottom: 20px;
+}
+.st-theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.st-theme-label {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+.st-theme .theme-seg {
+  min-width: 132px;
+}
