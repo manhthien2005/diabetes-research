@@ -27,9 +27,9 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  // Tiến độ đứng đầu: mở app là thấy ngay "bước tiếp theo", không phải đi tìm.
-  { href: '/tien-do', label: 'Tiến độ', Icon: MdRocketLaunch },
-  { href: '/', label: 'Thư viện', Icon: MdLibraryBooks, exact: true },
+  // Tổng quan (trang chủ) đứng đầu: mở app là thấy ngay "bước tiếp theo".
+  { href: '/', label: 'Tổng quan', Icon: MdRocketLaunch, exact: true },
+  { href: '/thu-vien', label: 'Thư viện', Icon: MdLibraryBooks },
   { href: '/kien-thuc', label: 'Kiến thức ĐTĐ', Icon: MdMenuBook },
   { href: '/kien-thuc-nckh', label: 'Phương pháp NCKH', Icon: MdSchool },
   { href: '/qa-log', label: 'Hỏi–Đáp định hướng', Icon: MdQuestionAnswer },

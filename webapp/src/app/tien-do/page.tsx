@@ -1,15 +1,6 @@
-import { readProgress } from '@/lib/progress';
-import { ProgressClient } from '@/components/ProgressClient';
+import { redirect } from 'next/navigation';
 
-// Đọc lại PROGRESS.json mỗi lần vào trang → thay đổi của Claude ở phiên CLI tự hiện.
-export const dynamic = 'force-dynamic';
-
-export const metadata = {
-  title: 'Tiến độ · ExploreX',
-  description:
-    'Workflow thi công đề tài: bước tiếp theo, đường găng, các mốc và việc cần xác minh.',
-};
-
-export default function ProgressPage() {
-  return <ProgressClient initial={readProgress()} />;
+// Trang Tiến độ đã trở thành Tổng quan (trang chủ) sau redesign.
+export default function ProgressRedirect() {
+  redirect('/');
 }

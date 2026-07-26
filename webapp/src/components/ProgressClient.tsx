@@ -51,7 +51,27 @@ const CYCLE: Record<TaskStatus, TaskStatus> = {
   blocked: 'doing',
 };
 
-export function ProgressClient({ initial }: { initial: ProgressData }) {
+export interface LibraryStatsSummary {
+  total: number;
+  chosen: number;
+  withCode: number;
+  withAnalysis: number;
+  byLayer: {
+    id: number;
+    name: string;
+    count: number;
+    chosen: number;
+    analyzed: number;
+  }[];
+}
+
+export function ProgressClient({
+  initial,
+  stats,
+}: {
+  initial: ProgressData;
+  stats?: LibraryStatsSummary;
+}) {
   const [data, setData] = useState(initial);
   const [showTiers, setShowTiers] = useState<number[]>([0]);
   const [hideDone, setHideDone] = useState(false);
@@ -199,6 +219,50 @@ export function ProgressClient({ initial }: { initial: ProgressData }) {
             Mọi task ở các tầng đang xem đã xong hoặc đang bị chặn. Bật thêm tầng bên
             dưới, hoặc mở phiên với Claude và hỏi <b>&ldquo;tuần này làm gì?&rdquo;</b>
           </p>
+        </section>
+      )}
+
+      {/* -------------------------------------------- thư viện tổng quát */}
+      {stats && (
+        <section className="ov-stats">
+          <div className="ov-tiles">
+            <div className="ov-tile">
+              <div className="ov-num">{stats.total}</div>
+              <div className="ov-label">paper trong kho</div>
+            </div>
+            <div className="ov-tile">
+              <div className="ov-num">{stats.chosen}</div>
+              <div className="ov-label">đã chọn</div>
+            </div>
+            <div className="ov-tile">
+              <div className="ov-num">{stats.withAnalysis}</div>
+              <div className="ov-label">có phân tích</div>
+            </div>
+            <div className="ov-tile">
+              <div className="ov-num">{stats.withCode}</div>
+              <div className="ov-label">có code</div>
+            </div>
+          </div>
+          <div className="ov-layers">
+            {stats.byLayer.map((l) => {
+              const pct = l.count ? Math.round((l.chosen / l.count) * 100) : 0;
+              return (
+                <div
+                  key={l.id}
+                  className="ov-layerbar"
+                  data-tip={`${l.name}: ${l.chosen} chọn · ${l.analyzed} phân tích · ${l.count} tổng`}
+                >
+                  <span className="ov-ltag">L{l.id}</span>
+                  <div className="ov-bar">
+                    <div className="ov-bar-fill" style={{ width: `${pct}%` }} />
+                  </div>
+                  <span className="ov-lnums">
+                    {l.chosen}/{l.count}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </section>
       )}
 

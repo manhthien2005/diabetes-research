@@ -1,20 +1,16 @@
-import { listPapersByLayer, libraryStats } from '@/lib/papers';
-import { LibraryView } from '@/components/LibraryView';
+import { readProgress } from '@/lib/progress';
+import { libraryStats } from '@/lib/papers';
+import { ProgressClient } from '@/components/ProgressClient';
 
+// Đọc lại PROGRESS.json + metadata paper mỗi lần vào trang
 export const dynamic = 'force-dynamic';
 
-export default function LibraryPage() {
-  const buckets = listPapersByLayer();
-  const stats = libraryStats();
+export const metadata = {
+  title: 'Tổng quan · ExploreX',
+  description:
+    'Bức tranh toàn cảnh: bước tiếp theo, tiến độ từng tầng, thư viện paper theo layer.',
+};
 
-  return (
-    <div>
-      <h1 className="page-title">Thư viện</h1>
-      <p className="page-sub">
-        {stats.total} paper · {stats.chosen} đã chọn · {stats.withCode} có code ·{' '}
-        {stats.withAnalysis} có phân tích
-      </p>
-      <LibraryView buckets={buckets} />
-    </div>
-  );
+export default function OverviewPage() {
+  return <ProgressClient initial={readProgress()} stats={libraryStats()} />;
 }
