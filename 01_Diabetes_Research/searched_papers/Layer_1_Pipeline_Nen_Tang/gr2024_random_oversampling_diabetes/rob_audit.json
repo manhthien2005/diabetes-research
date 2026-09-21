@@ -1,0 +1,14 @@
+{
+  "paper_id": "gr2024_random_oversampling_diabetes",
+  "audited_at": "2026-09-21T23:52:00+07:00",
+  "auditor": "paper-analyzer v2 (chore/skills-upgrade test run)",
+  "probe_hits": ["CP1", "CP2", "CP3", "CP4"],
+  "leakage_types": ["B", "C", "D"],
+  "validation_level": "internal",
+  "calibration_reported": false,
+  "survey_design_handled": null,
+  "prevalence_realistic": false,
+  "evidence_ref": "Section 3.1.1 (split mo ta truoc oversample) / Table 6 (khong co AUC-ROC so) / phan Methods (khong noi ro fit-only-on-train)",
+  "confidence": "medium",
+  "notes": "CP1: Chi co 1 split 80/20 + 10-fold CV; khong co nested CV (inner tuning, outer eval). CP2: Boruta feature selection mo ta chung chung, khong khang dinh chi fit tren train set. CP3: Random Oversampling mo ta truoc khi split (Section 3.1.1 - 'oversampling is applied... then split'), nghi nghi vi pham D nhung phan mo ta khong ro rang (confidence=medium). CP4: AUC-ROC duoc nhac den nhu metric nhung KO CO SO trong tat ca bang ket qua - UNKNOWN (Table 6/7/8 chi co Acc/Pre/Rec/F1). Khong bao calibration. Leakage B: imputation/IQR mo ta tren toan data truoc split. Leakage C: Boruta feature selection khong ro rang la trong fold hay tren toan data. Prevalence_realistic=false: PIDD dung ty le 65/35 sau oversample, BRFSS khong neu prevalence thuc te. Xac nhan tu summary.json.gap da phan tich truoc."
+}
