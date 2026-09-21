@@ -411,3 +411,26 @@ File **`PROGRESS.json`** (root) là **nguồn chân lý về "đang ở đâu, l
 **Bộ file định hướng hiện tại (đọc theo thứ tự này):**
 `START_HERE.md` (ngắn, chống ngợp) → `PROGRESS.json` (làm gì tiếp) →
 `CHEATSHEET.md` (tra cứu thay cho đọc paper) → `TO_DO.md` (bản đồ đầy đủ) → `QA_LOG.md` (vì sao quyết vậy).
+
+---
+
+## 14. Skill bên thứ ba (medsci-skills) — quy tắc tích hợp
+
+> Thêm 2026-09-21 (chore/skills-upgrade). Áp dụng cho mọi skill trong medsci-skills đã cài vào .claude/skills/ và .agents/skills/.
+
+**(1) Thứ tự ưu tiên: AGENTS.md > SKILL.md**
+Khi có xung đột giữa hướng dẫn trong AGENTS.md và SKILL.md của skill bên thứ ba → AGENTS.md thắng tuyệt đối. Skill là công cụ; chính sách nghiên cứu do AGENTS.md định.
+
+**(2) Output QC ghi vào  2_Implementation/<Paper_XX>/qc/**
+Thư mục  2_Implementation/<Paper_XX>/qc/ được phép tạo. Mọi file QA/audit do skill sinh (design_audit.md, rob_audit.json, checklist output...) ghi vào đây — không ghi vào searched_papers/ hay chosed_papers/. Xem mẫu:  2_Implementation/Paper_01_NHANES_NoLab/qc/.
+
+**(3) Verdict/gate của skill chỉ là GỢI Ý — quyết định cuối là của user**
+Skill peer-review, self-review, design-study, adiomics-ml có thể trả về verdict (MAJOR/MINOR/reject/keep...). Đây chỉ là input để user xem xét. Quyết định promote/reject paper, dừng/tiếp tục thí nghiệm vẫn là của user — không phải của agent hay skill.
+
+**(4) Số liệu do skill sinh phải có provenance hoặc ghi UNKNOWN**
+Mọi metric, thống kê, kết quả mà skill tự tính (design-study, radiomics-ml, analyze-stats) phải kèm provenance (file input, hàm/script cụ thể, random seed nếu có). Thiếu provenance → ghi UNKNOWN. Không bịa số. Đây là nguyên tắc chung của AGENTS.md §8 áp thêm cho output skill.
+
+**(5) Skill KHÔNG được ghi vào chosed_papers/**
+Skill bên thứ ba không có quyền move, copy hay tạo file trong chosed_papers/. Chỉ user mới promote. (Kế thừa AGENTS.md §4.)
+
+**(6) Danh sách skill đã cài và trạng thái: xem .claude/skills/SKILLS_LOCK.md**
