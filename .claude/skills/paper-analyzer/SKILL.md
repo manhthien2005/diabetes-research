@@ -1,117 +1,156 @@
 ---
 name: paper-analyzer
 description: |
-  Phân tích SÂU một bài báo trong `searched_papers/Layer_X/<paper_id>/`,
-  xuất ra `analysis.html` (tiếng Việt, 8 khối theo AGENTS.md §6) VÀ
-  `summary.json` (máy đọc được, để sinh research brief). Mục tiêu: user
-  quyết promote/loại mà không cần mở PDF.
+  Phan tich SAU mot bai bao trong `searched_papers/Layer_X/<paper_id>/`,
+  xuat ra `analysis.html` (tieng Viet, 8 khoi theo AGENTS.md §6) VA
+  `summary.json` (may doc duoc, de sinh research brief). Muc tieu: user
+  quyet promote/loai ma khong can mo PDF.
 inputs:
-  - searched_papers/Layer_<n>/<paper_id>/extracted.md   # full text — ĐỌC KỸ
-  - searched_papers/Layer_<n>/<paper_id>/source.pdf      # khi cần bảng/hình
+  - searched_papers/Layer_<n>/<paper_id>/extracted.md
+  - searched_papers/Layer_<n>/<paper_id>/source.pdf
   - searched_papers/Layer_<n>/<paper_id>/metadata.json
-  - chosed_papers/Layer_<n>/                             # baseline để so sánh
+  - chosed_papers/Layer_<n>/
 outputs:
   - searched_papers/Layer_<n>/<paper_id>/analysis.html
   - searched_papers/Layer_<n>/<paper_id>/summary.json
+  - searched_papers/Layer_<n>/<paper_id>/rob_audit.json
 ---
 
 # paper-analyzer
 
-## Mục đích
-Biến 1 PDF khoa học thành phân tích tiếng Việt SÂU + một bản tóm tắt máy
-đọc được, để user quyết "promote lên `chosed_papers/` hay loại".
+## Muc dich
+Bien 1 PDF khoa hoc thanh phan tich tieng Viet SAU + mot ban tom tat may
+doc duoc, de user quyet "promote len `chosed_papers/` hay loai".
 
-## Quy trình
-1. **Đọc full text**: ưu tiên `extracted.md`. Nếu chưa có → chạy `pdf-extract`
-   (hoặc ExploreX đã tự trích bản text-only khi đưa vào queue). Đọc HẾT, không
-   chỉ abstract.
-2. Đọc `metadata.json` (paper_id, citations, layer) + đọc các paper trong
-   `chosed_papers/Layer_<n>/` cùng layer để có baseline so sánh.
-3. Render `analysis.html` theo **8 khối** (AGENTS.md §6) — đúng thứ tự, đúng
-   Compare Card 4 field. KHÔNG đổi cấu trúc.
-4. Ghi `summary.json` (schema dưới).
-5. Set `analysis_status: "analyzed"` + xác nhận/điền `prediction_horizon` (§3b) trong metadata.
+## Quy trinh
+1. **Doc full text**: uu tien `extracted.md`. Neu chua co → chay `pdf-extract`.
+2. Doc `metadata.json` + doc paper trong `chosed_papers/Layer_<n>/` cung layer.
+3. Render `analysis.html` theo **8 khoi** (AGENTS.md §6). KHONG doi cau truc.
+4. Ghi `summary.json` (schema duoi) — bao gom key `rob_audit` moi.
+5. Ghi `rob_audit.json` (ban rieng cho QC).
+6. Set `analysis_status: "analyzed"` + xac nhan `prediction_horizon` trong metadata.
 
-## Đi SÂU — bắt buộc moi đủ (đây là điểm khác biệt)
-Không dừng ở mô tả chung. PHẢI rút được:
-- **Prediction horizon** (§3b): bài thuộc `cross_sectional` / `early_detection` /
-  `long_term_risk`? Căn cứ cách paper lập label (feature→label có khoảng cách thời
-  gian? có follow-up N năm? early detection/screening?). Ghi rõ + 1 câu lý do.
-- **Pipeline chính xác**: từng bước tiền xử lý → cân bằng → feature → model →
-  tuning, theo đúng thứ tự paper làm.
-- **Dataset & split**: tên, số mẫu, số feature, tỉ lệ train/test, CV mấy fold,
-  có cân bằng lớp không.
-- **Metric kèm NGUỒN**: mỗi số phải ghi `Table X` / `Fig Y` / `Section Z`.
-  Không có số → `UNKNOWN`, không bịa.
-- **Khả năng tái lập** (high/medium/low) + lý do: có code public? có đủ
-  hyperparam? mô tả method đủ chi tiết để code lại?
-- **So với baseline**: hơn/kém các paper trong `chosed_papers/` cùng layer ở
-  điểm cụ thể nào (không nói chung chung "tốt hơn").
-- **Gap / điểm yếu**: chỗ paper hổng — chính là cơ hội cải tiến cho đề tài.
+## Di SAU — bat buoc moi du
+Khong dung o mo ta chung. PHAI rut duoc:
+- **Prediction horizon** (§3b)
+- **Pipeline chinh xac**: tung buoc tien xu ly → can bang → feature → model → tuning
+- **Dataset & split**: ten, so mau, so feature, ti le train/test, CV, can bang lop
+- **Metric kem NGUON**: ghi "Table X / Fig Y / Section Z". Khong co → UNKNOWN.
+- **Kha nang tai lap** (high/medium/low) + ly do
+- **So voi baseline**: hon/kem cu the
+- **Gap / diem yeu**: co hoi cai tien cho de tai
 
-## summary.json (schema — máy đọc, để sinh research brief)
+## RoB mini-audit (them 2026-09-21)
+
+Sau khi phan tich pipeline, chay **6 probe CP + 1 probe O11** (tu skill peer-review):
+
+### Probe CP1-CP6 (Clinical Prediction Model)
+- **CP1**: Co nested CV hoac held-out test set that su? (Tuning va reporting TACH biet?)
+- **CP2**: Feature selection co nam TRONG fold khong, hay fit tren toan data?
+- **CP3**: Oversampling/SMOTE co TRONG fold khong, hay truoc khi split?
+- **CP4**: Co bao calibration (slope, intercept, calibration plot) khong?
+- **CP5**: Co external/temporal validation khong?
+- **CP6**: Co bien dinh-nghia-nhan (HbA1c/FPG/OGTT/glucose) nam trong feature khong?
+
+### Probe O11 (Complex Survey / NHANES)
+- **O11**: Neu dung NHANES/BRFSS/KNHANES: co ap survey weights? Co bao prevalence co trong so?
+
+### Taxonomy ro ri (LEAKAGE_MAP.md §2)
+Doi chieu voi 6 dang vi pham:
+- **B**: Impute/scale tren toan bo data truoc split
+- **C**: Feature selection tren toan bo data
+- **D**: SMOTE/oversample truoc split
+- **E**: Chon model tren test set (winner curse)
+- **F**: Bien dinh-nghia-nhan trong feature
+- **G**: Ep 50/50 roi doc accuracy o prevalence gia
+
+Ghi vao `leakage_types[]` moi loai vi pham tim thay (ky hieu "B"..."G").
+
+---
+
+## summary.json (schema)
+
 ```json
 {
   "paper_id": "<id>",
   "layer": 2,
   "prediction_horizon": "cross_sectional|early_detection|long_term_risk",
-  "contribution": "1 câu đóng góp chính",
-  "method": "method/kỹ thuật chính",
-  "best_metric": "vd: 98.2% acc trên PIMA (Table 3)",
+  "contribution": "1 cau dong gop chinh",
+  "method": "method/ky thuat chinh",
+  "best_metric": "vd: 98.2% acc tren PIMA (Table 3)",
   "datasets": ["pima-indians-diabetes"],
   "has_code": true,
-  "code_url": "<url hoặc null>",
+  "code_url": "<url hoac null>",
   "reproducible": "high|medium|low",
-  "vs_baseline": "hơn <paper_id> ở <điểm cụ thể>",
-  "gap": "điểm yếu / khoảng trống chính",
+  "vs_baseline": "hon <paper_id> o <diem cu the>",
+  "gap": "diem yeu / khoang trong chinh",
   "verdict": "strong|maybe|weak",
-  "verdict_reason": "1 câu vì sao",
-  "analyzed_at": "<ISO-8601>"
+  "verdict_reason": "1 cau vi sao",
+  "analyzed_at": "<ISO-8601>",
+  "rob_audit": {
+    "probe_hits": ["CP2", "E"],
+    "leakage_types": ["C", "E"],
+    "validation_level": "internal|temporal|external|UNKNOWN",
+    "calibration_reported": true,
+    "survey_design_handled": null,
+    "prevalence_realistic": false,
+    "evidence_ref": "Table 2 / Sec 2.3",
+    "confidence": "high|medium|low"
+  }
 }
 ```
-- `verdict`: đánh giá độ phù hợp với đề tài + chất lượng. `strong` = nên promote,
-  `weak` = nên loại (xem mục tự reject).
 
-## Tự reject khi bài dở (user đã uỷ quyền — AGENTS.md §11)
-Nếu phân tích thấy bài KHÔNG đạt (sai scope §1, không thoả §7, method không
-tái lập được) → thêm vào `rejected.json` kèm **lý do cụ thể**, `by: "claude"`,
-set metadata `status: "rejected"`. KHÔNG xoá folder. Báo user.
+**Ghi chu schema rob_audit**:
+- `probe_hits[]`: probe THAT BAI (CP1-CP6, O11). Rong = khong tim thay vi pham.
+- `leakage_types[]`: loai vi pham ro ri (B-G). Rong = khong xac dinh.
+- `validation_level`: cap do cao nhat (external > temporal > internal > UNKNOWN).
+- `calibration_reported`: co bao calibration khong.
+- `survey_design_handled`: chi dien neu paper dung NHANES/BRFSS; else null.
+- `prevalence_realistic`: danh gia co o prevalence thuc te khong.
+- `evidence_ref`: nguon bang chung ("Table X / Sec Y") hoac UNKNOWN.
+- `confidence`: muc tin cay (high=co quote, medium=suy luan, low=thieu thong tin).
 
-## Ràng buộc
-- `analysis.html` đứng độc lập (inline CSS, không CDN), tiếng Việt, giữ thuật
-  ngữ EN trong ngoặc.
-- Khối **Header** của `analysis.html` PHẢI có badge `⏱️ Horizon` lấy từ
-  `prediction_horizon` (AGENTS.md §6).
-- KHÔNG bịa số. Thiếu → `UNKNOWN`.
-- KHÔNG ghi đè `analysis.html` đã có → tạo `analysis.v2.html`, cập nhật summary.
-- KHÔNG tự đụng `chosed_papers/` (chỉ user promote).
+---
 
-## Orchestration — fetch ở main loop, analyze chạy song song
-- **Tải PDF**: LÀM Ở MAIN LOOP (skill `pdf-fetch`). Subagent bị **403 với HTTP ngoài** → đừng giao việc tải/gọi API cho subagent.
-- **Phân tích**: parallel hoá được — mỗi agent chỉ đọc/ghi **file local** (extracted.md + SKILL + ví dụ + baseline → analysis.html + summary.json + metadata). Local nên subagent làm tốt.
-- **Bài học 402/timeout**: nếu Workflow báo agent "failed" ở bước trả kết quả nhưng agent ĐÃ ghi file xong trước đó → **KIỂM TRA DISK trước khi chạy lại** (đừng tốn quota phân tích lại). Lỗi "socket closed" thường transient → re-invoke cùng `scriptPath`.
-
-## Phân tích hàng loạt (Workflow fan-out — pattern đã chạy tốt)
-Khi có ≥3 bài cần phân tích, dùng Workflow `parallel()` thay vì tuần tự:
-```js
-export const meta = { name:'analyze-papers', description:'...', phases:[{title:'Analyze'}] }
-const PAPERS = [
-  { id:'<paper_id>', dir:'searched_papers/Layer_X/<paper_id>', pages:12,
-    example:'searched_papers/Layer_4_XAI_Trien_Khai/kaliappan2024_featsel_diverse_datasets/analysis.html', // file mẫu chuẩn
-    baselines:['searched_papers/Layer_X/<peer>/summary.json'],   // so sánh cùng layer
-    hint:'<điểm cần moi: dataset, horizon, gì đặc biệt>' },
-  // ...
-]
-const RET = { type:'object', required:['paper_id','verdict','best_metric','wrote_files'],
-  properties:{ paper_id:{type:'string'}, verdict:{type:'string'}, best_metric:{type:'string'}, wrote_files:{type:'boolean'} } }
-phase('Analyze')
-const out = await parallel(PAPERS.map(p => () => agent(
-  `Đọc ${p.dir}/extracted.md + .claude/skills/paper-analyzer/SKILL.md + ví dụ ${p.example} + baselines ${p.baselines.join(', ')}.
-   Phân tích bài ${p.id} (${p.pages} trang). Ghi ${p.dir}/analysis.html (8 khối §6) + ${p.dir}/summary.json (15 key)
-   + cập nhật ${p.dir}/metadata.json (status & analysis_status = analyzed, xác nhận prediction_horizon,
-   sửa dataset/method/code nếu đọc full thấy sai → ghi vào field corrections).
-   Gợi ý: ${p.hint}. KHÔNG bịa số — thiếu thì UNKNOWN. KHÔNG đụng chosed_papers/.`,
-  { label:`analyze:${p.id}`, schema:RET })))
-return out.filter(Boolean)
+## rob_audit.json (ban rieng QC)
+```json
+{
+  "paper_id": "<id>",
+  "audited_at": "<ISO-8601>",
+  "auditor": "paper-analyzer v2",
+  "probe_hits": [],
+  "leakage_types": [],
+  "validation_level": "UNKNOWN",
+  "calibration_reported": false,
+  "survey_design_handled": null,
+  "prevalence_realistic": true,
+  "evidence_ref": "UNKNOWN",
+  "confidence": "low",
+  "notes": ""
+}
 ```
-Sau khi workflow xong: main loop `grep` lại headline metric trong extracted.md để chống bịa, và verify mỗi folder đủ analysis.html + summary.json (15 key) + metadata=analyzed.
+
+> **Khi kiem thu (Buoc 5)**: ghi `rob_audit.json` canh `summary.json` nhung KHONG sua `summary.json` o luot thu. Sau khi user duyet moi merge.
+
+---
+
+## Tu reject khi bai do (user da uy quyen — AGENTS.md §11)
+Neu phan tich thay bai KHONG dat → them vao `rejected.json` kem ly do cu the, `by: "Codex"`, set `status: "rejected"`. KHONG xoa folder.
+
+## Rang buoc
+- `analysis.html` doc lap (inline CSS, khong CDN), tieng Viet, giu thuat ngu EN.
+- Khoi **Header** PHAI co badge Horizon tu `prediction_horizon`.
+- **8 KHOI HTML KHONG DOI** — rob_audit KHONG xuat hien trong analysis.html.
+- KHONG bia so. Thieu → UNKNOWN.
+- KHONG ghi de `analysis.html` da co → tao `analysis.v2.html`.
+- KHONG tu dung `chosed_papers/`.
+
+## Orchestration
+- **Tai PDF**: MAIN LOOP (skill pdf-fetch). Subagent bi 403.
+- **Phan tich**: parallel hoa duoc (doc/ghi file local).
+
+## Changelog cuc bo
+
+| Ngay | Thay doi | Nguoi thuc hien |
+|------|---------|----------------|
+| 2026-09-21 | v2: Them buoc RoB mini-audit (probe CP1-CP6 + O11), taxonomy ro ri tu LEAKAGE_MAP. Them key `rob_audit` vao summary.json. Them output `rob_audit.json`. KHONG doi 8 khoi HTML, KHONG doi field webapp doc. | agent (chore/skills-upgrade) |
