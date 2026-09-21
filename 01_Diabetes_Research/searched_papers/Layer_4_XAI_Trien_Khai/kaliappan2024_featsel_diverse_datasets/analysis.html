@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analyzing classification and feature selection strategies for diabetes prediction — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: var(--success-soft); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Analyzing classification and feature selection strategies for diabetes prediction across diverse diabetes datasets</h1>
+    <div class="meta">
+      <span>📅 <strong>2024</strong></span>
+      <span>📰 Frontiers in Artificial Intelligence (7:1421751)</span>
+      <span>📚 <strong>35</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.3389/frai.2024.1421751" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (4 dataset công khai)</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.kaggle.com/datasets/tigganeha4/diabetes-dataset-2019" target="_blank">Dataset-1 — Diabetes Dataset 2019 (Kaggle tigganeha4)</a> — 17 thuộc tính, 760 train / 191 test</li>
+      <li>🔹 <a href="https://www.kaggle.com/datasets/iammustafatz/diabetes-prediction-dataset" target="_blank">Dataset-2 — Diabetes Prediction Dataset (Kaggle iammustafatz)</a> — 8 thuộc tính, 1199 train / 300 test</li>
+      <li>🔹 <a href="https://www.kaggle.com/datasets/andrewmvd/early-diabetes-classification" target="_blank">Dataset-3 — Early Diabetes Classification (Sylhet / UCI)</a> — 16 thuộc tính, 416 train / 104 test</li>
+      <li>🔹 <a href="https://www.kaggle.com/datasets/mathchi/diabetes-dataset" target="_blank">Dataset-4 — PIMA Indians Diabetes (Kaggle mathchi)</a> — 8 thuộc tính, 2214 train / 554 test (⚠ PIMA gốc chỉ 768 dòng)</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">So sánh có hệ thống <strong>filter-based</strong> vs <strong>wrapper-based feature selection</strong> trên <strong>4 dataset ĐTĐ đa dạng</strong>, kết hợp stacking ensemble và giải thích bằng <strong>SHAP + LIME</strong>; kết luận FS không cải thiện đồng đều accuracy nhưng giúp giảm độ phức tạp.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>Random Forest — Accuracy 0.990, F1 0.993</strong> trên Dataset-3 (Early Diabetes, Sylhet), cả trước (Table 8) và sau (Table 9) feature selection. <strong>KHÔNG báo AUC</strong> ở bảng chính.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Tiền xử lý → FS song song <strong>filter (Chi-square, Fisher, Missing value, Information Gain)</strong> + <strong>wrapper (RF/XGB/GB/SVM/LR)</strong> → train RF/XGB/GB/SVM → stacking (meta = Logistic Regression) → XAI SHAP + LIME. <strong>Không K-fold CV, không cân bằng lớp.</strong></span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">vs <strong>tasin2022</strong> (baseline Layer 4): kaliappan rộng hơn (4 dataset, so sánh FS) nhưng yếu hơn về sản phẩm — <strong>không code, không deploy, không CV, không AUC</strong>. SHAP/LIME chỉ định tính giống <strong>ahmed2024</strong> nhưng ahmed có so sánh phương pháp XAI bài bản hơn.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 4
+    </h2>
+    <p class="lead">
+      Bài báo (Frontiers in AI, 2024) khảo sát <strong>chiến lược chọn đặc trưng (feature selection)</strong> và phân loại
+      cho dự đoán đái tháo đường (ĐTĐ) trên <strong>4 dataset khác nhau</strong>. Hai họ FS được đối chiếu trực tiếp:
+      <strong>filter-based</strong> (Chi-square, Fisher's Score, phân tích missing value, Information Gain) và
+      <strong>wrapper-based</strong> (dùng RF / XGBoost / Gradient Boosting / SVM / Linear Regression làm "wrapper").
+      Các classifier RF, XGB, GB, SVM được đánh giá <em>trước và sau</em> FS, có thêm một <strong>stacking ensemble</strong>
+      (meta-model Logistic Regression). Cuối cùng <strong>SHAP + LIME</strong> được dùng để giải thích quyết định mô hình.
+      Phát hiện đáng chú ý: feature selection <strong>không cải thiện đồng đều</strong> độ chính xác (Dataset-1 còn giảm khi
+      chỉ giữ feature quan trọng — §5.7), nhưng có ích để giảm độ phức tạp và tăng khả năng diễn giải.
+    </p>
+    <h3>Vì sao là Layer 4 (XAI / Triển khai)?</h3>
+    <table>
+      <tr><td>✔ Có XAI thực sự</td><td>Dùng cả <strong>SHAP</strong> (global feature importance + summary plot) và <strong>LIME</strong> (giải thích cục bộ từng record) — đúng trọng tâm Layer 4 (§4.3, §5.9)</td></tr>
+      <tr><td>✔ Diễn giải lâm sàng</td><td>Đối chiếu feature quan trọng (age, BMI, glucose, polyuria, polydipsia, HbA1c) với hiểu biết y khoa để bác sĩ tin được quyết định AI (§5.9, Conclusion)</td></tr>
+      <tr><td>✔ Đa dataset</td><td>SHAP/LIME chạy trên cả 4 dataset, không chỉ PIMA → minh hoạ tính khái quát của phần giải thích</td></tr>
+      <tr><td>⚠ Chạm Layer 1</td><td>Phần lõi là so sánh feature-selection (nghiệp vụ Layer 1) → metadata để <code>layer_uncertain=true</code></td></tr>
+      <tr><td>✘ Chưa deploy</td><td>Không có web/app/API như tasin2022 — XAI dừng ở mức phân tích, không có sản phẩm triển khai</td></tr>
+      <tr><td>✘ Không code public</td><td>Chỉ công khai 4 link dataset Kaggle, không có repo → khó tái lập đầy đủ</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Chi-square</code></td><td>Filter FS (biến categorical)</td><td>Rẻ, độc lập mô hình</td><td>Chỉ hợp dữ liệu rời rạc</td></tr>
+        <tr><td><code>Fisher's Score</code></td><td>Filter FS (phân biệt lớp)</td><td>Tác giả đánh giá là filter tốt nhất (Conclusion)</td><td>Giả định phân phối</td></tr>
+        <tr><td><code>Information Gain</code></td><td>Filter FS (entropy)</td><td>Đo trực tiếp độ giảm bất định</td><td>Thiên về feature nhiều giá trị</td></tr>
+        <tr><td><code>Missing value (mean/median impute)</code></td><td>Filter FS + xử lý thiếu</td><td>Đơn giản</td><td>Gây bias (tác giả tự thừa nhận §3.3.3)</td></tr>
+        <tr><td><code>Wrapper FS (RF/XGB/GB/SVM/LR)</code></td><td>Chấm importance bằng mô hình</td><td>Phù hợp mô hình đích, chính xác hơn filter</td><td>Tốn tính toán, dễ overfit</td></tr>
+        <tr><td><code>Stacking ensemble</code></td><td>Gộp dự đoán (meta = LR)</td><td>Tăng nhẹ accuracy so với từng model đơn</td><td>Tăng độ phức tạp; vẫn thua FS theo bài</td></tr>
+        <tr><td><code>SHAP</code></td><td>XAI global + summary plot</td><td>Định lượng đóng góp feature, nhất quán lý thuyết</td><td>Chỉ trình bày định tính, không có bảng giá trị Shapley</td></tr>
+        <tr><td><code>LIME</code></td><td>XAI cục bộ (per-record)</td><td>Giải thích từng dự đoán (confidence %)</td><td>Chỉ minh hoạ 1 record (thứ 13) mỗi dataset</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp theo <strong>Accuracy cao nhất đạt được (qua 4 dataset, Table 8–10)</strong>. ⭐ = mô hình tác giả kết luận tốt nhất tổng thể. Lưu ý: accuracy theo từng dataset, không phải một con số chung.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Accuracy tốt nhất (dataset)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>Random Forest</code> ⭐</td><td>Classifier chính</td><td><strong>0.990</strong> (Dataset-3, Table 8/9)</td><td>Tác giả kết luận RF tổng thể mạnh nhất với dữ liệu ĐTĐ</td><td>Cần XAI bổ sung; nghi overfit trên D4</td></tr>
+        <tr><td>2</td><td><code>XGBoost</code></td><td>Classifier + wrapper FS</td><td><strong>0.990</strong> (Dataset-3, sau FS, Table 9)</td><td>Đồng hạng RF trên D3/D4; scalable</td><td>Cần tuning (không nêu hyperparameter)</td></tr>
+        <tr><td>3</td><td><code>Gradient Boosting</code></td><td>Classifier + wrapper FS</td><td><strong>0.937</strong> (Dataset-2, Table 8)</td><td>Thắng trên Dataset-2; wrapper FS tốt nhất (Conclusion)</td><td>Tụt mạnh trên D4 (0.847–0.881)</td></tr>
+        <tr><td>4</td><td><code>Stacking ensemble</code> (meta=LR)</td><td>Ensemble so sánh</td><td><strong>0.982</strong> (Dataset-4, Table 10)</td><td>Vượt metric thường quy từng dataset</td><td>Vẫn thua phương pháp FS; phức tạp hơn</td></tr>
+        <tr><td>5</td><td><code>SVM</code></td><td>Classifier + wrapper FS</td><td><strong>0.923</strong> (Dataset-3, sau FS, Table 9)</td><td>Ổn trên D3</td><td>Yếu nhất trên D4 (0.767–0.780)</td></tr>
+        <tr><td>—</td><td><code>Linear Regression</code></td><td>Chỉ làm wrapper FS</td><td>UNKNOWN (không báo accuracy)</td><td>Cho hệ số importance</td><td>Không dùng làm classifier báo cáo</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu (train/test)</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Dataset-1</strong><br>Diabetes Dataset 2019</td><td>760 / 191</td><td>17</td><td>Khảo sát lối sống + bệnh sử (age, family diabetes, high BP, BMI, smoking, junk food, stress, regular medicine…). Label nhị phân.</td><td><a href="https://www.kaggle.com/datasets/tigganeha4/diabetes-dataset-2019" target="_blank">Kaggle</a></td></tr>
+        <tr><td><strong>Dataset-2</strong><br>Diabetes Prediction Dataset</td><td>1199 / 300</td><td>8 <span style="color:var(--muted);font-size:12px">(text §5.1 ghi 9 — lấy theo Table 2)</span></td><td>Demographic + lâm sàng: gender, age, hypertension, heart disease, smoking, BMI, HbA1c, blood glucose. Label nhị phân.</td><td><a href="https://www.kaggle.com/datasets/iammustafatz/diabetes-prediction-dataset" target="_blank">Kaggle</a></td></tr>
+        <tr><td><strong>Dataset-3</strong><br>Early Diabetes Classification (Sylhet/UCI)</td><td>416 / 104</td><td>16 <span style="color:var(--muted);font-size:12px">(text §5.1 ghi 17 — lấy theo Table 2)</span></td><td>Triệu chứng sớm: polyuria, polydipsia, sudden weight loss, partial paresis, alopecia… Đây là dataset cho <strong>best metric</strong>.</td><td><a href="https://www.kaggle.com/datasets/andrewmvd/early-diabetes-classification" target="_blank">Kaggle</a></td></tr>
+        <tr><td><strong>Dataset-4</strong><br>PIMA Indians Diabetes</td><td>2214 / 554<br><span style="color:var(--danger);font-size:12px">⚠ PIMA gốc chỉ 768 dòng</span></td><td>8</td><td>Benchmark NIDDK nữ PIMA: pregnancies, glucose, BP, skin thickness, insulin, BMI, pedigree, age. Số mẫu ~3,6× bản gốc, không giải thích augment.</td><td><a href="https://www.kaggle.com/datasets/mathchi/diabetes-dataset" target="_blank">Kaggle</a></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Cả 4 dataset đều có biến mục tiêu nhị phân (§5.1). Link đầy đủ ở "Data availability statement" của bài. Không nêu fold CV; train/test theo Table 2.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước (Figure 1, §3)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Tiền xử lý</td><td>Làm sạch, xử lý missing (mean/median impute)</td><td>Data sạch</td></tr>
+        <tr><td>2</td><td>Feature importance — filter</td><td>Chi-square, Fisher's Score, Missing value, Information Gain</td><td>Bảng top feature (Table 3–6)</td></tr>
+        <tr><td>3</td><td>Feature importance — wrapper</td><td>RF, XGBoost, Gradient Boosting, SVM, Linear Regression làm wrapper</td><td>Điểm importance (Suppl. Fig 3–7)</td></tr>
+        <tr><td>4</td><td>Chọn best feature set</td><td>Giao của filter + wrapper cho từng dataset</td><td>Best set (Table 7)</td></tr>
+        <tr><td>5</td><td>Train classifier (toàn bộ vs subset)</td><td>RF, XGBoost, Gradient Boosting, SVM</td><td>Metric trước/sau FS (Table 8/9)</td></tr>
+        <tr><td>6</td><td>Ensemble so sánh</td><td>Stacking — base = RF/GB/SVM/XGB, meta = Logistic Regression</td><td>Metric stacking (Table 10)</td></tr>
+        <tr><td>7</td><td>Giải thích (XAI)</td><td>LIME (cục bộ, record 13) + SHAP (global summary)</td><td>Fig 4–15</td></tr>
+        <tr><td>8</td><td>Đánh giá</td><td>Accuracy, Precision, Recall, F1 (KHÔNG AUC, KHÔNG K-fold CV)</td><td>Báo cáo metric</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Chi-square — filter FS (Eq. 6)</span>
+      χ² = Σ (Oᵢ − Eᵢ)² / Eᵢ<br>
+      Oᵢ = tần suất quan sát của category Cᵢ; Eᵢ = tần suất kỳ vọng nếu feature ⊥ target. χ² càng cao → feature càng quan trọng.
+    </div>
+    <div class="formula">
+      <span class="label">Information Gain — filter FS (Eq. 10–12)</span>
+      IG(F) = H(T) − H(T | F)<br>
+      H(T) = − Σ pᵢ log pᵢ   (entropy của target)<br>
+      H(T | F) = Σⱼ (|Fⱼ| / |T|) · H(Tⱼ)   (entropy điều kiện)
+    </div>
+    <div class="formula">
+      <span class="label">Wrapper importance — RF (Gini, Eq. 1) &amp; SVM (Eq. 4)</span>
+      imp(F)_RF = (1 / N_trees) · Σᵢ imp(F, i)   — trung bình Gini impurity reduction<br>
+      imp(Fᵢ)_SVM = |wᵢ|   — trị tuyệt đối trọng số hyperplane
+    </div>
+    <div class="formula">
+      <span class="label">Metrics (Eq. 17–20)</span>
+      Accuracy  = (TP + TN) / (TP + TN + FP + FN)<br>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F1        = 2 · Precision · Recall / (Precision + Recall)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Figure 1 (sơ đồ pipeline đề xuất), Figure 5–15 (SHAP summary + LIME per-record) trong PDF gốc.
+      <span class="caption">Hình chưa được crop/embed base64 (tuỳ chọn) — số liệu chốt đã lấy trực tiếp từ Table 8–10 và formula block ở trên.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.990</span><span class="label">RF Acc — Dataset-3 (Table 8/9)</span></div>
+      <div class="metric"><span class="value">0.993</span><span class="label">RF F1 — Dataset-3 (Table 8/9)</span></div>
+      <div class="metric"><span class="value">0.986</span><span class="label">RF Acc — Dataset-4 sau FS (Table 9)</span></div>
+      <div class="metric"><span class="value">0.940</span><span class="label">RF Acc — Dataset-2 sau FS (Table 9)</span></div>
+    </div>
+
+    <h3>Accuracy / F1 chi tiết (mỗi số kèm nguồn)</h3>
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Acc / F1</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>Dataset-3 (Early/Sylhet)</td><td>Random Forest</td><td>Trước FS</td><td><strong>0.990 / 0.993</strong></td><td>Table 8</td></tr>
+        <tr class="win"><td>Dataset-3 (Early/Sylhet)</td><td>RF &amp; XGBoost (đồng hạng)</td><td>Sau FS</td><td><strong>0.990 / 0.993</strong></td><td>Table 9</td></tr>
+        <tr><td>Dataset-4 (PIMA)</td><td>XGBoost / RF</td><td>Trước FS</td><td>0.982 / 0.973</td><td>Table 8</td></tr>
+        <tr><td>Dataset-4 (PIMA)</td><td>Random Forest</td><td>Sau FS</td><td>0.986 / 0.978</td><td>Table 9</td></tr>
+        <tr><td>Dataset-1 (2019)</td><td>Random Forest</td><td>Trước FS</td><td>0.942 / 0.956</td><td>Table 8</td></tr>
+        <tr><td>Dataset-1 (2019)</td><td>XGB / RF (đồng hạng)</td><td>Sau FS</td><td>0.937 / 0.952</td><td>Table 9</td></tr>
+        <tr><td>Dataset-2 (Pred.)</td><td>Gradient Boosting</td><td>Trước FS</td><td>0.937 / 0.796</td><td>Table 8</td></tr>
+        <tr><td>Dataset-2 (Pred.)</td><td>Random Forest</td><td>Sau FS</td><td>0.940 / 0.804</td><td>Table 9</td></tr>
+        <tr><td>D1 / D2 / D3 / D4</td><td>Stacking (meta=LR)</td><td>Ensemble</td><td>0.963 / 0.933 / 0.981 / 0.982 (Acc)</td><td>Table 10</td></tr>
+        <tr><td>Tất cả</td><td>Tất cả</td><td>AUC</td><td><strong>UNKNOWN</strong> — không báo AUC ở bảng chính</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Abstract nêu precision/recall "lên đến 0.9" (Results §abstract). Kết luận chính: RF tổng thể mạnh nhất; wrapper thường hơn filter (vài ngoại lệ); FS <strong>không cải thiện đồng đều</strong> (Dataset-1 giảm khi chỉ giữ feature quan trọng — §5.7); stacking vượt metric thường quy nhưng <strong>thua FS</strong> (§5.8). Precision/Recall đầy đủ có trong Table 8/9; ở đây trích Acc/F1 đại diện.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro độ tin cậy số liệu</strong>
+      <ul>
+        <li><strong>Dataset-4 (PIMA) báo 2214 + 554 ≈ 2768 mẫu</strong> trong khi PIMA gốc chỉ 768 dòng (~3,6×) — không mô tả oversampling/augmentation → nghi nhân bản ngầm, làm acc 0.98–0.99 trở nên lạc quan.</li>
+        <li><strong>Không K-fold cross-validation</strong> — chỉ một train/test split (Table 2). Tác giả tự đưa CV vào "Suggestions for improvement" (§5.7.3) → acc cao chưa được kiểm định độ ổn định.</li>
+        <li><strong>Không nêu hyperparameter</strong> cho bất kỳ model nào; cũng vào danh mục "cần cải thiện".</li>
+        <li><strong>Không cân bằng lớp</strong> (không SMOTE/ADASYN) → F1 lệch acc rõ ở Dataset-2 (F1 ~0.80 dù Acc ~0.94) gợi ý mất cân bằng.</li>
+        <li><strong>Mâu thuẫn nội tại</strong> số thuộc tính: D2 text 9 vs Table 2 = 8; D3 text 17 vs Table 2 = 16. Đã lấy theo Table 2.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li><strong>Không AUC</strong> ở bảng chính → khó so công bằng với baseline báo AUC (tasin2022 AUC 0.84).</li>
+        <li><strong>Không code public</strong> — chỉ 4 link dataset Kaggle, không repo → tái lập thấp.</li>
+        <li><strong>SHAP/LIME chỉ định tính</strong>: LIME minh hoạ duy nhất record thứ 13 mỗi dataset; SHAP chỉ summary plot, không bảng giá trị Shapley, không đo fidelity/stability.</li>
+        <li><strong>Feature selection không có lợi đồng đều</strong> — kết quả chính lại là một negative finding về FS; đóng góp thực nằm ở khảo sát so sánh, không phải SOTA accuracy.</li>
+        <li><strong>Tính khái quát hạn chế</strong>: kết quả phụ thuộc dataset và phụ thuộc mạnh vào RF (tác giả tự nêu ở Conclusion/Limitations).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài (Layer 4)</strong>
+      <ul>
+        <li>Dùng làm <strong>tham chiếu phương pháp</strong> cho khảo sát filter vs wrapper FS trên nhiều dataset ĐTĐ — không dùng làm baseline số liệu (acc 0.99 nghi augment + không CV).</li>
+        <li>Bổ trợ Layer 4 đang mỏng: cho thấy SHAP + LIME có thể chạy đồng thời trên 4 dataset khác cấu trúc và quy về cùng nhóm feature lâm sàng (age, BMI, glucose, polyuria/polydipsia, HbA1c).</li>
+        <li>Bài học để cải tiến: thêm <strong>K-fold CV</strong>, báo <strong>AUC</strong>, kiểm soát augment Dataset-4, và lượng hoá XAI (fidelity/stability) — đúng những gap mà đề tài có thể lấp.</li>
+        <li>So với baseline <strong>tasin2022</strong> (code + deploy web/Android + AUC): kaliappan rộng về dataset/FS nhưng thiếu tính sản phẩm và tính tái lập → vị trí "maybe".</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

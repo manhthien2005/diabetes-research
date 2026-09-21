@@ -1,0 +1,23 @@
+{
+  "paper_id": "choi2014_prediabetes_screening",
+  "layer": 2,
+  "prediction_horizon": "early_detection",
+  "contribution": "Xây & kiểm định mô hình ML (ANN + SVM) sàng lọc TIỀN ĐTĐ (IFG) trên khảo sát quốc gia KNHANES 2010 với EXTERNAL validation trên KNHANES 2011 (cohort năm sau, không trùng người) — điểm rigor hiếm; so trực tiếp với screening score hồi quy logistic (Lee et al.). Loại toàn bộ ĐTĐ (chỉ tiền ĐTĐ vs bình thường); đặc trưng no-lab không chứa glucose/HbA1c (leakage-safe). Kết luận trung thực: ML nhỉnh hơn score nhưng khiêm tốn (~0.02 AUC).",
+  "method": "Backward logistic regression chọn 7 biến no-lab (từ 9) → ANN = MLP 1 hidden layer, batch + momentum, backprop (NeuroSolution 6.0, MLP-1-B-M) + SVM Gaussian kernel grid-search C=10/σ=10, 10-fold CV (MATLAB 2012a); baseline = screening score Lee et al. (hồi quy logistic, 6 biến, cutoff Youden ≥5). Đánh giá ROC trên internal (KNHANES 2010, split 2:1) + external (KNHANES 2011).",
+  "best_metric": "SVM AUC 0.731 — external (KNHANES 2011, Table 2; Acc 66,1%/Sn 69,4%/Sp 65,3%), cao nhất external (> ANN 0.729 > score 0.712). ANN thắng internal: AUC 0.768 (KNHANES 2010, Table 2; Acc 69,0%/Sn 74,1%/Sp 67,5%).",
+  "datasets": [
+    "knhanes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Bài chị em trực tiếp của yu2010 (SVM prediabetes NHANES, searched Layer 2): cùng khung no-lab screening tiền ĐTĐ, AUC tương đương (~0.73), NHƯNG choi2014 THÊM external validation (KNHANES 2011) mà yu2010 THIẾU, và tách sạch tiền ĐTĐ (loại mọi ĐTĐ) thay vì trộn undiagnosed ĐTĐ + tiền ĐTĐ như yu2010 Scheme II; cả hai đều thấy ML ≈/chỉ nhỉnh hơn hồi quy logistic. So hasan2020 (baseline Layer 2 chosen, PIMA, ensemble AB+XB AUC 0.950, có code, reproducible high): choi2014 AUC thấp hơn nhiều & không code, nhưng task khó hơn thật (no-lab + external + prediabetes screening) còn PIMA giữ glucose làm feature (leakage-prone) & không external validation.",
+  "gap": "Gain ML rất khiêm tốn (external SVM hơn score chỉ 0.019 AUC); nhãn dựa 1 lần FPG (không OGTT/HbA1c → chỉ IFG, bỏ IGT, không đo lặp); baseline score vốn xây cho ĐTĐ chỉ chỉnh cutoff sang tiền ĐTĐ (so không hoàn hảo); ANN kém khái quát (0.768 internal → 0.729 external); không code repo + ANN dùng phần mềm thương mại, hyperparam cuối không báo cáo; một nguồn KNHANES Hàn Quốc; model đơn 2014 chưa boosting/deep/ensemble; AUC ~0.73 modest.",
+  "verdict": "strong",
+  "verdict_reason": "Anchor phương pháp mạnh cho nhánh early_detection/tầm soát tiền ĐTĐ: là bài chị em của yu2010 nhưng RIGOR hơn nhờ có external validation (KNHANES 2011) + feature no-lab leakage-safe + báo cáo trung thực rằng ML chỉ nhỉnh hơn hồi quy logistic ~0.02 AUC (củng cố mũi nhọn 'đánh giá trung thực' của đề tài); dữ liệu KNHANES công khai, 111 cite (>3 năm ≥100, đạt §7). Dùng như điểm neo tường thuật/related-work, không phải component xây model chính (2014, model đơn, không code, AUC modest) — nên promote.",
+  "analyzed_at": "2026-07-06T00:00:00+07:00",
+  "role": "design",
+  "role_note": "Khuôn mẫu external validation sạch (KNHANES 2010→2011) + bằng chứng 'ML chỉ hơn score ~0.02 AUC' cho claim C5.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

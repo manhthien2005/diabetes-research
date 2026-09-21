@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning as a Support for the Diagnosis of Type 2 Diabetes — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure (crop từ PDF, embed base64) ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Machine Learning as a Support for the Diagnosis of Type 2 Diabetes</h1>
+    <div class="meta">
+      <span>📅 <strong>2023</strong></span>
+      <span>📰 International Journal of Molecular Sciences (IJMS)</span>
+      <span>📚 <strong>61</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.3390/ijms24076775" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.cdc.gov/nchs/nhanes/index.htm" target="_blank">NHANES 1999–2018</a> — khảo sát sức khoẻ-dinh dưỡng đại diện quốc gia Mỹ (National Center for Health Statistics)</li>
+      <li>🔹 <a href="https://physionet.org/content/mimiciii/" target="_blank">MIMIC-III</a> — dữ liệu lâm sàng ICU, Beth Israel Deaconess Medical Center (2001–2012)</li>
+      <li>🔹 <a href="https://physionet.org/content/mimiciv/" target="_blank">MIMIC-IV</a> — bản nâng cấp hiện đại của MIMIC-III</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Lần đầu <strong>hợp nhất 3 nguồn công khai dị nguồn</strong> (NHANES + MIMIC-III + MIMIC-IV) qua khoá định danh thành 1 dataset cân bằng <strong>13.687 mẫu</strong>, chỉ 9 đặc trưng dễ đo, rồi huấn luyện <strong>ANN nông + ensemble bỏ phiếu</strong> để chẩn đoán T2D.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>ROC AUC = 0.934</strong> (ensemble, test set, Section 2.5 / Figure 3); Accuracy ~<strong>86%</strong> (Abstract / Section 5); ensemble SGD acc <strong>0.862</strong> (Table 5).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">ANN fully-connected 1 hidden layer (grid search 5–15 node) → chọn optimizer bằng k-fold CV (k=9, 11 lần) → <strong>ensemble 99 model bỏ phiếu đa số</strong>; under-sampling cân bằng; z-score; calibration + Brier.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Cùng nguồn NHANES với <strong>dinh2019</strong> (XGBoost, AUC 0.957 có-lab / 0.862 survey-only): AUC 0.934 của bài này <strong>THẤP HƠN</strong> ca có-lab. Khác <strong>deberneh2021</strong> (early_detection, onset Y+1): bài này là cross_sectional. Điểm sáng riêng: <strong>có calibration + Brier</strong> mà cả 2 baseline đều thiếu.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">
+      Bài báo xây dựng <strong>bộ phân loại nhị phân (binary classifier)</strong> chẩn đoán T2D bằng cách
+      <strong>hợp nhất 3 dataset công khai dị nguồn</strong>: NHANES 1999–2018 (khảo sát cộng đồng), MIMIC-III và
+      MIMIC-IV (EHR ICU). Sau khi gộp theo khoá định danh và tiền xử lý mạnh tay (loại giá trị bất khả/thiếu,
+      under-sampling cân bằng lớp), thu được dataset cuối <strong>13.687 mẫu</strong> chỉ với <strong>9 đặc trưng dễ đo</strong>.
+      Mô hình là <strong>ANN nông 1 hidden layer</strong>, tinh chỉnh số node + optimizer, rồi gộp <strong>ensemble 99 model
+      bỏ phiếu đa số</strong>; cuối cùng đánh giá bằng ROC AUC <strong>0.934</strong> và Accuracy ~<strong>86%</strong>,
+      kèm <strong>calibration + Brier score</strong>.
+    </p>
+    <p style="font-size:13px;color:var(--muted)">
+      Lưu ý quan trọng về horizon: abstract quảng cáo "khả năng dự đoán dài hạn (long-term)", nhưng theo cách
+      <strong>lập nhãn thực tế</strong> (nhãn Diabetes được trích CÙNG thời điểm với các đặc trưng — không có follow-up N năm),
+      đây là bài <strong>cross-sectional</strong> (chẩn đoán hiện trạng). LSTM / đo nhiều lần theo thời gian chỉ là
+      <em>future work</em> (Section 5).
+    </p>
+    <h3>Vì sao là Layer 3 (Dataset / EHR nâng cao)?</h3>
+    <table>
+      <tr><td>✔ Dữ liệu EHR/khảo sát thật</td><td>NHANES (khảo sát dịch tễ quốc gia) + MIMIC-III/IV (EHR ICU thật) — KHÔNG phải PIMA benchmark đồ chơi</td></tr>
+      <tr><td>✔ Hợp nhất đa nguồn</td><td>Merge 3 nguồn qua khoá <code>SEQN</code> (NHANES) / admission ID (MIMIC) — kỹ thuật ghép dữ liệu multi-source đặc trưng của layer dữ liệu</td></tr>
+      <tr><td>✔ Quy mô thật</td><td>52.640 mẫu thô → 13.687 sau tiền xử lý; prevalence thật ~13% trước cân bằng (Table 1)</td></tr>
+      <tr><td>~ Chạm Layer 2 (mô hình)</td><td>Trọng tâm có cả phần mô hình ANN + ensemble → <code>layer_uncertain=true</code>, nhưng giá trị cốt lõi là nguồn dữ liệu</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI (SHAP/LIME), chưa có deployment</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Python 3.8.11 + Pandas 1.2.4</code></td><td>Gộp/merge dữ liệu theo khoá SEQN &amp; admission ID</td><td>Linh hoạt, chuẩn cho ETL</td><td>Logic merge thủ công, dễ sai khi nhiều bảng</td></tr>
+        <tr><td><code>Under-sampling</code></td><td>Cân bằng lớp (ép 50/50 non-diab/diab)</td><td>Đơn giản, không tạo mẫu giả</td><td>Vứt mẫu; accuracy không phản ánh prevalence thật ~13%</td></tr>
+        <tr><td><code>Z-score standardization</code></td><td>Chuẩn hoá đặc trưng khác đơn vị</td><td>Cần thiết cho NN hội tụ</td><td>Không nêu rõ fit trên train hay toàn bộ → rủi ro leakage</td></tr>
+        <tr><td><code>Grid search</code></td><td>Tìm số node hidden layer (5–15)</td><td>Vét cạn không gian nhỏ → đáng tin</td><td>Chỉ tinh 1 siêu tham số (số node)</td></tr>
+        <tr><td><code>k-fold CV (k=9, ×11)</code></td><td>Chọn optimizer ổn định</td><td>Giảm phương sai ước lượng</td><td>k=9 phi tiêu chuẩn, tốn tính toán</td></tr>
+        <tr><td><code>Ensemble voting (9×11=99)</code></td><td>Bỏ phiếu đa số → dự đoán cuối</td><td>Giảm variance, ổn định hơn 1 NN đơn</td><td>Khó giải thích, nặng inference</td></tr>
+        <tr><td><code>Calibration plot + Brier score</code></td><td>Kiểm tra độ tin cậy xác suất</td><td>Hiếm gặp trong cùng layer — giá trị bổ trợ thật</td><td>Chỉ trên test set, chưa external</td></tr>
+        <tr><td><code>Feature reduction (ablation)</code></td><td>Loại dần đặc trưng ít quan trọng</td><td>Cho thấy 9 feature đủ ổn định tới khi còn 6</td><td>Chỉ dựa accuracy, không kiểm định thống kê</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">
+      Mô hình lõi duy nhất là <strong>ANN nông 1 hidden layer</strong>; bảng dưới so 4 <em>optimizer</em> ở chế độ ensemble,
+      sắp xếp giảm dần theo <strong>Accuracy (Table 5 — ensemble trên test set)</strong>. ⭐ = cấu hình paper kết luận tốt nhất (Section 5).
+    </p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình / Optimizer</th><th>Vai trò</th><th>Accuracy (ensemble, Table 5)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>ANN + SGD</code></td><td>Ensemble 99 model</td><td><strong>0.862</strong></td><td>Acc ensemble cao nhất; calibrated tốt (Brier 0.103)</td><td>SGD chậm hội tụ</td></tr>
+        <tr><td>2</td><td><code>ANN + RMSPROP</code></td><td>Ensemble 99 model</td><td><strong>0.861</strong></td><td>Sát SGD</td><td>Nhạy learning rate</td></tr>
+        <tr><td>3</td><td><code>ANN + ADAM</code> ⭐</td><td>Ensemble 99 model</td><td><strong>0.858</strong></td><td>Optimizer "best" ở CV (Table 4: 0.855±0.008); paper chọn ADAM cho ablation cuối &amp; báo Brier 0.101 cho ensemble</td><td>Acc ensemble không phải cao nhất tuyệt đối</td></tr>
+        <tr><td>4</td><td><code>ANN + LM (Levenberg-Marquardt)</code></td><td>Ensemble 99 model</td><td><strong>0.840</strong></td><td>—</td><td>Phương sai lớn nhất (Table 4: std 0.049)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Mâu thuẫn nhỏ trong paper: ở <strong>CV chọn optimizer (Table 4)</strong> ADAM tốt nhất (0.855), nhưng ở
+      <strong>ensemble trên test (Table 5)</strong> SGD lại cao nhất (0.862). Conclusions (Section 5) chốt
+      "ensemble tối ưu bằng ADAM" → ⭐ gắn cho ADAM theo lựa chọn cuối cùng của nhóm tác giả, dù về con số acc ensemble SGD nhỉnh hơn.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>NHANES 1999–2018</strong></td>
+          <td>48.067 trích (chỉ 4.415 có T2D)<br><span style="color:var(--muted);font-size:12px">(Section 4.2)</span></td>
+          <td>9 chung</td>
+          <td>Khảo sát dinh dưỡng-sức khoẻ đại diện quốc gia Mỹ (≥18 tuổi), gộp qua khoá <code>SEQN</code> qua nhiều bảng/năm 1999–2018</td>
+          <td><a href="https://www.cdc.gov/nchs/nhanes/index.htm" target="_blank">CDC NHANES</a></td>
+        </tr>
+        <tr>
+          <td><strong>MIMIC-III</strong></td>
+          <td>2.997 trích<br><span style="color:var(--muted);font-size:12px">(Section 4.2)</span></td>
+          <td>9 chung</td>
+          <td>EHR ICU &gt;40.000 BN, Beth Israel 2001–2012; BMI tự tính từ cân nặng/chiều cao; loại bệnh nhân không-T2D</td>
+          <td><a href="https://physionet.org/content/mimiciii/" target="_blank">PhysioNet</a></td>
+        </tr>
+        <tr>
+          <td><strong>MIMIC-IV</strong></td>
+          <td>1.576 trích<br><span style="color:var(--muted);font-size:12px">(Section 4.2)</span></td>
+          <td>9 chung</td>
+          <td>Bản nâng cấp hiện đại của MIMIC-III; cùng quy trình trích &amp; lọc (glucose lúc đói, ≤10h sáng, nhịn ≥8h)</td>
+          <td><a href="https://physionet.org/content/mimiciv/" target="_blank">PhysioNet</a></td>
+        </tr>
+        <tr>
+          <td><strong>Dataset hợp nhất (cuối)</strong></td>
+          <td><strong>13.687</strong> (cân bằng ~50/50)<br><span style="color:var(--muted);font-size:12px">(Table 2 / Section 2.1)</span></td>
+          <td>9</td>
+          <td>Split 80/20 (train/test); train tách tiếp 80/20 cho validation (Section 4.5)</td>
+          <td><a href="https://www.mdpi.com/article/10.3390/ijms24076775/s1" target="_blank">Suppl. Material</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      9 đặc trưng (Section 4.1): <code>Glucose</code>, <code>Triglycerides</code>, <code>HDL-cholesterol</code>, <code>Systolic BP</code>,
+      <code>Diastolic BP</code>, <code>Gender/Sex</code>, <code>Age</code>, <code>Weight</code>, <code>BMI</code>.
+      95 hàng bị loại do giá trị bất khả; <strong>outlier KHÔNG bị loại</strong> (Section 4.3).
+      Đặc trưng quan trọng nhất (Section 3): glucose, HDL, diastolic BP, gender, weight; ít quan trọng: triglycerides, age, BMI, systolic BP.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Trích &amp; gộp đa nguồn</td><td>Merge NHANES qua <code>SEQN</code>, MIMIC qua admission ID (Pandas); BMI tính <code>w/h²</code> khi thiếu</td><td>Bảng thô ~52.640 hàng</td></tr>
+        <tr><td>2</td><td>Loại bất khả / thiếu</td><td>Tiêu chí: diastolic &gt;220, BMI &gt;100, age &gt;100, triglycerides &gt;900 → loại 95 hàng; bỏ NaN (Section 4.3)</td><td>Dữ liệu sạch</td></tr>
+        <tr><td>3</td><td>Cân bằng lớp</td><td><strong>Under-sampling</strong> lớp non-diabetic (Section 4.3)</td><td>~13.687 hàng cân bằng 50/50</td></tr>
+        <tr><td>4</td><td>Chuẩn hoá</td><td>Z-score standardization (đặc trưng khác đơn vị)</td><td>Feature chuẩn hoá</td></tr>
+        <tr><td>5</td><td>Chia tập</td><td>Train 80% / Test 20%; train tách tiếp 80/20 cho validation (Section 4.5)</td><td>Train / Val / Test</td></tr>
+        <tr><td>6</td><td>Tinh số node</td><td>Grid search hidden node ∈ [5,15], 100 epoch, lặp 10 lần (Section 2.2, Table 3)</td><td>Số node tối ưu (~12–13)</td></tr>
+        <tr><td>7</td><td>Chọn optimizer</td><td>k-fold CV (k=9), lặp 11 lần; so SGD/ADAM/RMSPROP/LM (Table 4)</td><td>ADAM tốt nhất ở CV</td></tr>
+        <tr><td>8</td><td>Ensemble</td><td>9×11 = <strong>99 model</strong> bỏ phiếu đa số cho mỗi optimizer (Section 2.3 / 4.5, Table 5)</td><td>Dự đoán ensemble</td></tr>
+        <tr><td>9</td><td>Ablation feature</td><td>Loại dần feature ít quan trọng (triglycerides → age → BMI → systolic BP), retrain ADAM ×30 (Section 2.4, Figure 2)</td><td>Acc ổn định tới khi còn 6 feature</td></tr>
+        <tr><td>10</td><td>Validation &amp; calibration</td><td>ROC AUC (Figure 3); calibration plot + Brier score (Figure 4)</td><td>AUC 0.934; Brier 0.101</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">BMI — tự tính khi thiếu (Section 4.2)</span>
+      BMI = w / h²   &nbsp;(w = cân nặng [kg], h = chiều cao [m])
+    </div>
+
+    <div class="formula">
+      <span class="label">Brier score — calibration (Section 2.6)</span>
+      Brier = (1/N) · Σ (p̂ᵢ − yᵢ)²   &nbsp;(0 = hoàn hảo; càng thấp càng tốt)<br>
+      Kết quả: ensemble = 0.101 ; SGD NN đơn = 0.103
+    </div>
+
+    <div class="formula">
+      <span class="label">Cấu hình ANN cơ sở (Section 2.2)</span>
+      Hidden activation = ReLU ; Output activation = sigmoid<br>
+      Loss = Binary cross-entropy ; Learning rate = 0.001 ; Epochs = 100
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Hình từ PDF chưa được crop (môi trường không có công cụ render PDF — <code>pdftoppm</code> không khả dụng).
+      <span class="caption">Tham chiếu trong PDF gốc: Figure 1 (phân bố dân số theo tuổi/giới/sắc tộc), Figure 2 (accuracy khi loại dần feature), Figure 3 (ROC curve, AUC = 0.934), Figure 4 (calibration plot ensemble &amp; SGD), Figure 5 (sơ đồ kiến trúc ANN).</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.934</span><span class="label">ROC AUC ensemble (Section 2.5 / Fig 3)</span></div>
+      <div class="metric"><span class="value">~86%</span><span class="label">Accuracy test set (Abstract / Section 5)</span></div>
+      <div class="metric"><span class="value">0.862</span><span class="label">Acc ensemble SGD (Table 5)</span></div>
+      <div class="metric"><span class="value">0.101</span><span class="label">Brier ensemble (Section 2.6)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN ensemble (best)</td><td>Test set</td><td><strong>ROC AUC = 0.934</strong></td><td>Section 2.5 / Figure 3</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN ensemble (ADAM)</td><td>Test set, accuracy</td><td><strong>~86%</strong></td><td>Abstract / Section 5 (Conclusions)</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN ensemble SGD</td><td>Test set, accuracy</td><td><strong>0.862</strong></td><td>Table 5</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN ensemble RMSPROP</td><td>Test set, accuracy</td><td>0.861</td><td>Table 5</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN ensemble ADAM</td><td>Test set, accuracy</td><td>0.858</td><td>Table 5</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN ensemble LM</td><td>Test set, accuracy</td><td>0.840</td><td>Table 5</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN (đơn) ADAM</td><td>CV chọn optimizer, acc mean±std</td><td>0.855 ± 0.008</td><td>Table 4</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN (đơn) SGD</td><td>CV chọn optimizer</td><td>0.853 ± 0.009</td><td>Table 4</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN (đơn) RMSPROP</td><td>CV chọn optimizer</td><td>0.852 ± 0.009</td><td>Table 4</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN (đơn) LM</td><td>CV chọn optimizer</td><td>0.835 ± 0.049</td><td>Table 4</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN (số node tốt nhất)</td><td>Grid search hidden node (12–13 node)</td><td>0.838 (cao nhất)</td><td>Table 3</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>SGD NN (đơn)</td><td>Calibration, Brier</td><td>0.103</td><td>Section 2.6 / Figure 4B</td></tr>
+        <tr><td>NHANES+MIMIC hợp nhất</td><td>ANN ensemble (best)</td><td>Precision / Recall / F1 / PR-AUC</td><td><strong>UNKNOWN</strong></td><td>Không báo cáo trong paper</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Vì dataset cân bằng 50/50, paper chọn <strong>accuracy</strong> làm metric chính (Abstract). Paper
+      <strong>KHÔNG</strong> báo cáo Precision / Recall / F1 / PR-AUC → để <code>UNKNOWN</code>, không suy diễn.
+      Phân tích theo từng sắc tộc cho kết quả "rất tương tự" nhưng chỉ ở Supplementary Material (Section 3) — không có số trong bài chính.
+      Bảng Table 3 (số node ↔ accuracy) bị xáo trộn bố cục khi trích, nhưng các cặp giá trị đọc được nhất quán:
+      12→0.838, 13→0.838, 14→0.837, 15→0.837, 11→0.837, 10→0.836, 7→0.835, 5→0.835, 9→0.835, 6→0.834.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro về phương pháp (khi tái lập / đọc số)</strong>
+      <ul>
+        <li><strong>Rò rỉ qua glucose</strong>: Glucose máu nằm trong feature và cũng gần tiêu chí chẩn đoán T2D → AUC 0.934 có thể lạc quan, gần như "đọc lại nhãn".</li>
+        <li><strong>Distribution shift do trộn nguồn</strong>: Gộp ICU (MIMIC) với khảo sát cộng đồng (NHANES) → model có thể tách lớp nhờ "nguồn dữ liệu" thay vì sinh lý bệnh thật (artefact).</li>
+        <li><strong>Under-sampling ép 50/50</strong>: Accuracy ~86% KHÔNG phản ánh prevalence thật ~13% (Table 1) → đọc kèm thận trọng.</li>
+        <li><strong>Thứ tự fit scaler / cân bằng / chia tập không nêu rõ</strong> → rủi ro data leakage (z-score và under-sampling có thể "nhìn" test set).</li>
+        <li><strong>Mâu thuẫn nhỏ</strong>: ADAM tốt nhất ở CV (Table 4) nhưng SGD cao hơn ở ensemble (Table 5); Conclusions chốt ADAM.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li><strong>Horizon thật là cross_sectional</strong>, dù abstract quảng cáo "long-term": nhãn trích cùng thời điểm feature, không follow-up; LSTM chỉ là future work (Section 5).</li>
+        <li>Thiếu <strong>Precision / Recall / F1 / PR-AUC</strong> — chỉ accuracy + AUC + Brier.</li>
+        <li>Không <strong>external validation</strong> trên nguồn độc lập (mọi đánh giá ở test set nội bộ).</li>
+        <li>Không có <strong>code public</strong> (metadata <code>code_url=null</code>); chưa SHAP/LIME.</li>
+        <li>9 feature rất gọn (ưu điểm dễ đo) nhưng đánh đổi: bỏ HbA1c/insulin/lịch sử bệnh có thể hữu ích.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Kỹ thuật merge EHR đa nguồn</strong> (NHANES + MIMIC qua khoá định danh) là điểm độc đáo, không bài nào khác trong Layer 3 làm → giá trị tham chiếu để xây dataset hợp nhất.</li>
+        <li><strong>Calibration + Brier score</strong> là thứ baseline dinh2019 &amp; deberneh2021 đều THIẾU → mượn ý tưởng bổ sung độ tin cậy xác suất cho đề tài.</li>
+        <li>Verdict <strong>maybe</strong>: AUC 0.934 KHÔNG vượt boosting baseline cùng layer (dinh2019 0.957 có-lab), horizon cross_sectional đã đông; giữ làm tham chiếu kỹ thuật, không ưu tiên promote.</li>
+        <li>Cơ hội cải tiến: thêm precision/recall/F1 + PR-AUC, đánh giá trên prevalence thật, kiểm soát leakage/distribution-shift, thêm SHAP, external validation, và đúng nghĩa longitudinal (LSTM theo thời gian).</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

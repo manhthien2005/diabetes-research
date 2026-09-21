@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phân tích Code — Hasan 2020 Diabetes Ensemble</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:'dark', securityLevel:'loose'});</script>
+<style>
+  :root {
+    --bg: #0f172a; --surface: #1e293b; --border: #334155;
+    --text: #e2e8f0; --muted: #94a3b8;
+    --primary: #38bdf8; --primary-soft: #0c2d48;
+    --success: #34d399; --success-soft: #064e3b;
+    --danger: #f87171; --danger-soft: #450a0a;
+    --warning: #fbbf24; --warning-soft: #451a03;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65; font-size: 14px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 20px 20px 64px; }
+
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #0ea5e9 100%);
+    border-radius: 16px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  .header h1 { font-size: 22px; margin-bottom: 4px; }
+  .header .sub { opacity: 0.85; font-size: 13px; }
+  .badges { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .badge { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.15); }
+
+  section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 26px; margin-bottom: 16px;
+  }
+  section h2 {
+    color: var(--primary); font-size: 17px; margin-bottom: 12px;
+    border-bottom: 2px solid var(--primary-soft); padding-bottom: 6px;
+  }
+  section h3 { color: #c084fc; font-size: 14px; margin: 16px 0 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #1a2740; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; color: var(--primary); }
+  td code, p code { background: #1a2740; padding: 1px 5px; border-radius: 4px; font-size: 12px; color: #fbbf24; }
+
+  /* Used / Not-used badges */
+  .used { color: var(--success); font-weight: 700; }
+  .not-used { color: var(--danger); text-decoration: line-through; opacity: 0.6; }
+
+  /* Code blocks */
+  .code-block {
+    background: #0f172a; border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; margin: 8px 0; overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 12px; line-height: 1.7; color: #e2e8f0;
+  }
+  .code-block .kw { color: #c084fc; }
+  .code-block .fn { color: #38bdf8; }
+  .code-block .cm { color: #64748b; font-style: italic; }
+  .code-block .num { color: #fbbf24; }
+  .code-block .str { color: #34d399; }
+  .code-block .lbl { display: block; color: #64748b; font-size: 10px; margin-bottom: 4px; text-transform: uppercase; }
+
+  /* Mermaid container */
+  .mermaid-wrap {
+    background: #111827; border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; margin: 12px 0; overflow-x: auto;
+  }
+
+  .callout {
+    border-left: 4px solid var(--warning); background: var(--warning-soft);
+    padding: 10px 14px; border-radius: 6px; margin: 10px 0; font-size: 13px;
+  }
+  .callout.info { border-left-color: var(--primary); background: var(--primary-soft); }
+  .callout.success { border-left-color: var(--success); background: var(--success-soft); }
+  .callout.danger { border-left-color: var(--danger); background: var(--danger-soft); }
+  .callout strong { color: var(--warning); }
+  .callout.info strong { color: var(--primary); }
+  .callout.success strong { color: var(--success); }
+
+  /* Legend */
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+  .legend .dot.green { background: var(--success); }
+  .legend .dot.red { background: var(--danger); }
+
+  /* Result grid */
+  .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  .result-item { background: var(--primary-soft); border-left: 3px solid var(--primary); padding: 10px 12px; border-radius: 6px; }
+  .result-item .val { font-size: 22px; font-weight: 700; color: var(--primary); }
+  .result-item .lbl { font-size: 11px; color: var(--muted); }
+
+  .nb-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+  .nb1 { background: #1e40af; color: #93c5fd; }
+  .nb2 { background: #7c2d12; color: #fdba74; }
+  .nb3 { background: #166534; color: #86efac; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<header class="header">
+  <h1>Phân tích Code — Hasan 2020 Diabetes Ensemble</h1>
+  <div class="sub">3 Jupyter Notebooks · 7 model + MLP + Ensemble · PIMA Indians Diabetes (768 mẫu, 8 feature)</div>
+  <div class="badges">
+    <span class="badge">📦 3 Notebooks</span>
+    <span class="badge">🐍 Python + Keras + XGBoost</span>
+    <span class="badge">🏆 AUC 0.950</span>
+    <span class="badge">🔗 <a href="https://github.com/kamruleee51/Diabetes-Prediction-Using-ML-Classifiers" target="_blank" style="color:#fff">GitHub</a></span>
+  </div>
+</header>
+
+<!-- ============ LEGEND ============ -->
+<div class="legend">
+  <span><span class="dot green"></span> = Code paper THỰC SỰ dùng (kết quả cuối cùng)</span>
+  <span><span class="dot red"></span> = Code có trong notebook nhưng paper KHÔNG chọn (thử nghiệm thất bại / phương án dự phòng)</span>
+</div>
+
+<!-- ============ 1. SƠ ĐỒ TỔNG QUAN ============ -->
+<section>
+  <h2>1. Sơ đồ khối — Cách 3 notebook vận hành</h2>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    CSV["diabetes.csv\n768 dòng × 9 cột"] --> RENAME["Đổi tên feature\nF1~F8 + Outcome"]
+
+    RENAME --> PREPROC{"PREPROCESSING\n(dùng chung 3 NB)"}
+
+    PREPROC -->|"IQR Outlier (P)"| P["Xóa dòng ngoài [Q1−1.5IQR, Q3+1.5IQR]\n768 → 636 dòng"]
+    P -->|"Mean Imputation (Q)"| Q["Điền giá trị 0 = mean THEO CLASS\n(riêng diabetic & non-diabetic)"]
+    Q -->|"Correlation-based FS"| FS["Giữ 6 feature (bỏ BloodPressure, Pedigree)"]
+
+    FS --> NB1
+    FS --> NB2
+    FS --> NB3
+
+    subgraph NB1["NB1: ML_Models.ipynb"]
+        direction TB
+        CV1["Stratified 5-fold CV\n(random_state=100)"] --> GS1["GridSearchCV\nscoring='roc_auc'"]
+        GS1 --> MODELS["6 classifier riêng lẻ:\nk-NN · DT · RF · AdaBoost · NB · XGBoost"]
+    end
+
+    subgraph NB2["NB2: MLP_Model.ipynb"]
+        direction TB
+        CV2["Stratified 5-fold CV\n(random_state=20)"] --> GS2["GridSearchCV\nKerasClassifier wrapper"]
+        GS2 --> MLP["MLP: 4 hidden\n64→16→64→64 + Dropout 0.6"]
+    end
+
+    subgraph NB3["NB3: Ensembler.ipynb"]
+        direction TB
+        CV3["Stratified 5-fold CV\n(random_state=20)"] --> PER_FOLD["Mỗi fold: train 6 model\nrồi ensemble bằng VotingClassifier"]
+        PER_FOLD --> ENS["So sánh 2→6 model\n× 3 kiểu weight"]
+    end
+
+    NB1 --> RESULT1["XGBoost single\nAUC 0.946 ± 0.020"]
+    NB2 --> RESULT2["MLP\nAUC 0.902 ± 0.020"]
+    NB3 --> RESULT3["AB+XB ensemble\n⭐ AUC 0.950"]
+
+    style NB1 fill:#1e40af,stroke:#3b82f6,color:#e2e8f0
+    style NB2 fill:#7c2d12,stroke:#ea580c,color:#e2e8f0
+    style NB3 fill:#166534,stroke:#22c55e,color:#e2e8f0
+    style RESULT3 fill:#064e3b,stroke:#34d399,color:#e2e8f0
+    </div>
+  </div>
+
+  <div class="callout info">
+    <strong>Điểm quan trọng:</strong> Cả 3 notebook chạy ĐỘC LẬP, không notebook nào gọi notebook kia. Chúng dùng chung phần preprocessing (P+Q+correlation FS) và cùng ý tưởng 5-fold CV. Khác biệt: NB1/NB2 chạy CV bên NGOÀI model → mỗi model 1 vòng CV riêng. NB3 chạy CV bên NGOÀI ensemble → mỗi fold train 6 model rồi vote.
+  </div>
+</section>
+
+<!-- ============ 2. PREPROCESSING ============ -->
+<section>
+  <h2>2. Khối Preprocessing — Code nào thực sự được paper chọn?</h2>
+
+  <h3>2.1 Outlier Rejection — 4 cách code, chỉ 1 cách được dùng</h3>
+  <table>
+    <thead><tr><th>Hàm</th><th>Cách hoạt động</th><th>Kết quả paper?</th><th>Giải thích</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>IQR()</code></td>
+        <td>XÓA dòng nếu giá trị ∉ [Q1−1.5×IQR, Q3+1.5×IQR]</td>
+        <td><span class="used">✅ CHỌN</span></td>
+        <td>Giảm skewness & kurtosis tốt nhất. Kết quả: 768 → <strong>636 dòng</strong></td>
+      </tr>
+      <tr>
+        <td><code>IQR_Mean()</code></td>
+        <td>THAY outlier = MEAN (giữ lại dòng)</td>
+        <td><span class="not-used">❌ Không chọn</span></td>
+        <td>Paper thử nhưng kém hơn — thay bằng mean làm sai lệch phân phối</td>
+      </tr>
+      <tr>
+        <td><code>IQR_Median()</code></td>
+        <td>THAY outlier = MEDIAN (giữ lại dòng)</td>
+        <td><span class="not-used">❌ Không chọn</span></td>
+        <td>Tương tự mean, median cũng không tốt bằng xóa hẳn</td>
+      </tr>
+      <tr>
+        <td><code>Manual()</code></td>
+        <td>Xóa theo ngưỡng CỨNG từng feature (code riêng cho PIMA)</td>
+        <td><span class="not-used">❌ Không chọn</span></td>
+        <td>Không tổng quát hóa được — chỉ để tham khảo</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block">
+    <span class="lbl">Cách gọi thực tế trong cả 3 notebook</span>
+    data = <span class="fn">outlier_Rejection</span>(data,
+                  iqr_Mean=<span class="kw">False</span>,    <span class="cm">// ❌ không dùng</span>
+                  iqr_Medain=<span class="kw">False</span>,   <span class="cm">// ❌ không dùng</span>
+                  iqr=<span class="kw">True</span>,          <span class="cm">// ✅ DÙNG — IQR()</span>
+                  manual=<span class="kw">False</span>)      <span class="cm">// ❌ không dùng</span>
+    <span class="cm">// → 768 dòng → 636 dòng sau bước này</span>
+  </div>
+
+  <h3>2.2 Missing Value Imputation (Q) — 1 cách duy nhất</h3>
+  <p>5 cột (Glucose, BloodPressure, SkinThickness, Insulin, BMI) có giá trị <strong>0 bất thường</strong> — thực chất là missing data. Code dùng hàm <code>replace_zero()</code> để điền lại bằng <strong>mean theo từng class Outcome</strong>.</p>
+
+  <div class="code-block">
+    <span class="lbl">Ý tưởng cốt lõi của replace_zero()</span>
+    <span class="cm">// KHÔNG điền mean toàn bộ cột — mà điền mean RIÊNG cho diabetic (Outcome=1) và non-diabetic (Outcome=0)</span>
+    mean_by_target = data.groupby(<span class="str">'Outcome'</span>)[field].mean()   <span class="cm">// bỏ qua giá trị 0 khi tính mean</span>
+    data.loc[(data[field] == <span class="num">0</span>) & (data[<span class="str">'Outcome'</span>] == <span class="num">0</span>), field] = mean_by_target[<span class="num">0</span>]  <span class="cm">// non-diabetic</span>
+    data.loc[(data[field] == <span class="num">0</span>) & (data[<span class="str">'Outcome'</span>] == <span class="num">1</span>), field] = mean_by_target[<span class="num">1</span>]  <span class="cm">// diabetic</span>
+  </div>
+
+  <h3>2.3 Feature Selection — 3 cách code, 1 cách thắng</h3>
+  <table>
+    <thead><tr><th>Algo</th><th>Cơ chế</th><th>Kết quả paper?</th></tr></thead>
+    <tbody>
+      <tr><td><code>'corr'</code></td><td>Chọn top feature theo Pearson correlation với Outcome</td><td><span class="used">✅ CHỌN</span> — NB1/NB3 dùng 6 feature, NB2 dùng 4 feature</td></tr>
+      <tr><td><code>'PCA'</code></td><td>Giảm chiều unsupervised — giữ components có variance cao nhất</td><td><span class="not-used">❌ Thử nhưng kém hơn correlation</span></td></tr>
+      <tr><td><code>'ICA'</code></td><td>Tách components độc lập thống kê</td><td><span class="not-used">❌ Thử nhưng kém hơn correlation</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Vì sao correlation thắng?</strong> PCA/ICA là unsupervised — chúng không biết label nào quan trọng. Correlation dùng trực tiếp tương quan với Outcome → giữ được feature có ý nghĩa phân loại cao nhất. Paper chứng minh: qua thực nghiệm, correlation FS cho AUC cao hơn PCA/ICA trên mọi classifier.
+  </div>
+</section>
+
+<!-- ============ 3. NB1 ============ -->
+<section>
+  <h2>3. NB1 — ML_Models.ipynb: Huấn luyện 6 classifier riêng lẻ</h2>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart LR
+    A["Dữ liệu đã preprocess\n636 dòng × 6 feature"] --> B["StratifiedKFold\nn_splits=5"]
+    B --> C["FOR MỖI MODEL:"]
+
+    C --> M1["k-NN"]
+    C --> M2["Decision Tree"]
+    C --> M3["Random Forest"]
+    C --> M4["AdaBoost"]
+    C --> M5["Naive Bayes"]
+    C --> M6["XGBoost"]
+
+    M1 & M2 & M3 & M4 & M5 & M6 --> D["Mỗi model: GridSearchCV\n(scoring='roc_auc', cv=5)\ntrong 5-fold outer loop"]
+
+    D --> E["AUC ± std từng model\n+ ROC curve"]
+    </div>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);margin-top:8px">Mỗi model có 1 cell riêng trong notebook với pattern code GIỐNG HỆT NHAU, chỉ khác classifier + param_grid.</p>
+
+  <table>
+    <thead><tr><th>Model</th><th>Grid search tối ưu gì?</th><th>Kết quả AUC</th></tr></thead>
+    <tbody>
+      <tr><td>k-NN</td><td>n_neighbors, algorithm, leaf_size, p (distance metric)</td><td>< 0.94</td></tr>
+      <tr><td>Decision Tree</td><td>criterion (gini/entropy), min_samples_split, min_samples_leaf</td><td>< 0.94</td></tr>
+      <tr><td>Random Forest</td><td>criterion (gini/entropy)</td><td>~0.939 (vượt SOTA cũ 0.9%)</td></tr>
+      <tr><td>AdaBoost</td><td>algorithm (SAMME/SAMME.R), learning_rate, n_estimators</td><td>< 0.94</td></tr>
+      <tr><td>Naive Bayes</td><td>var_smoothing (1e-1 → 1e-12)</td><td>Tốt khi đi với PCA/ICA</td></tr>
+      <tr style="background:#064e3b"><td><strong>XGBoost</strong></td><td>min_child_weight, gamma, subsample, colsample_bytree, max_depth</td><td><strong>0.946 ± 0.020</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-block">
+    <span class="lbl">Pattern code lặp lại cho mỗi model (rút gọn)</span>
+    <span class="kw">for</span> train_idx, test_idx <span class="kw">in</span> kf.split(X, Y):                    <span class="cm">// 5-fold outer loop</span>
+        clf = <span class="fn">GridSearchCV</span>(classifier, param_grid,
+                           scoring=<span class="str">'roc_auc'</span>, cv=<span class="num">5</span>)       <span class="cm">// inner loop tối ưu</span>
+        clf.fit(X_train, Y_train)
+        auc = roc_auc_score(Y_test, clf.predict_proba(X_test))  <span class="cm">// đánh giá fold này</span>
+    <span class="cm">// → In AUC trung bình ± std của 5 fold</span>
+  </div>
+</section>
+
+<!-- ============ 4. NB2 ============ -->
+<section>
+  <h2>4. NB2 — MLP_Model.ipynb: Deep learning baseline</h2>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["Dữ liệu đã preprocess\n636 dòng × 4 feature\n(F2,F4,F5,F6)"] --> B
+
+    B["GIAI ĐOẠN 1: Tìm kiến trúc tối ưu"] --> B1["Thử 1→8 hidden layers"]
+    B1 --> B2["Mỗi layer có [16,32,64] neuron"]
+    B2 --> B3["Chọn: 4 hidden layers\n(64→16→64→64) AUC cao nhất"]
+
+    B3 --> C["GIAI ĐOẠN 2: Tối ưu hyperparameter"]
+    C --> C1["GridSearchCV trên KerasClassifier"]
+    C1 --> C2["batch=[8,16,32], epochs=[100,150,200]\nlr=[0.001,0.05,0.1], dropout=[0,0.3,0.6]\nactivation=[relu,tanh], init=[uniform,normal]"]
+
+    C2 --> D["KẾT QUẢ CUỐI CÙNG"]
+    D --> D1["AUC 0.902 ± 0.020"]
+
+    style D1 fill:#7c2d12,stroke:#ea580c,color:#e2e8f0
+    </div>
+  </div>
+
+  <div class="result-grid">
+    <div class="result-item"><span class="val">0.902</span><span class="lbl">AUC MLP (kém XGBoost 0.946)</span></div>
+    <div class="result-item"><span class="val">4 lớp</span><span class="lbl">Hidden: 64→16→64→64</span></div>
+    <div class="result-item"><span class="val">0.6</span><span class="lbl">Dropout (chống overfit)</span></div>
+    <div class="result-item"><span class="val">ReLU</span><span class="lbl">Activation + Normal init</span></div>
+    <div class="result-item"><span class="val">0.001</span><span class="lbl">Learning rate (Adam)</span></div>
+    <div class="result-item"><span class="val">8</span><span class="lbl">Batch size / 200 epochs</span></div>
+  </div>
+
+  <div class="callout" style="margin-top:14px">
+    <strong>Bài học từ NB2:</strong> MLP (AUC 0.902) kém XGBoost (0.946) vì PIMA quá nhỏ (636 dòng sau preprocess). Deep learning cần nhiều data. Paper chứng minh: "không phải cứ deep learning là tốt hơn".
+  </div>
+</section>
+
+<!-- ============ 5. NB3 ============ -->
+<section>
+  <h2>5. NB3 — Ensembler.ipynb: Trái tim của paper</h2>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["Dữ liệu đã preprocess\n636 dòng × 6 feature"] --> B["StratifiedKFold n_splits=5"]
+
+    B --> C["TRONG MỖI FOLD:"]
+
+    C --> C1["Train đồng thời 6 model\n(k-NN, DT, RF, AB, NB, XGB)\nMỗi model qua GridSearchCV"]
+    C1 --> C2["Thử N = 2→6 model tổ hợp\n× 3 kiểu trọng số\n(None / accuracy / AUC)"]
+    C2 --> C3["VotingClassifier.voting='soft'"]
+
+    C3 --> D["SO SÁNH KẾT QUẢ"]
+
+    D --> D1["❌ weight=None\n(bình đẳng)"]
+    D --> D2["❌ weight='accuracy'\n(accuracy_score)"]
+    D --> D3["✅ weight='auc'\n(roc_auc_score) ⭐"]
+
+    D3 --> E["AB + XGBoost\nAUC 0.950"]
+
+    style E fill:#064e3b,stroke:#34d399,color:#e2e8f0
+    style D3 fill:#064e3b,stroke:#34d399,color:#e2e8f0
+    </div>
+  </div>
+
+  <h3>5.1 Hàm Ensembler() — code quan trọng nhất</h3>
+  <div class="code-block">
+    <span class="lbl">ensembler(n_model, X_train, Y_train, X_test, Y_test, weight)</span>
+    <span class="kw">def</span> <span class="fn">Ensembler</span>(n_model, X_Train, Y_Train, X_Test, Y_Test, weight):
+
+        <span class="cm">// BƯỚC 1: Train từng model bằng GridSearchCV</span>
+        clf_ab = <span class="fn">creat_Model</span>(AdaBoostClassifier(), X_Train, Y_Train, params_ab)
+        clf_xb = <span class="fn">creat_Model</span>(XGBClassifier(), X_Train, Y_Train, params_xb)
+        <span class="cm">// ... (tương tự cho knn, dt, rf, nb)</span>
+
+        <span class="cm">// BƯỚC 2: Tạo ensemble với trọng số</span>
+        <span class="kw">if</span> weight == <span class="str">'auc'</span>:   <span class="cm">// ⭐ PAPER CHỌN CÁCH NÀY</span>
+            model = <span class="fn">VotingClassifier</span>([(<span class="str">'ab'</span>, clf_ab), (<span class="str">'xb'</span>, clf_xb)],
+                                     voting=<span class="str">'soft'</span>,
+                                     weights=[roc_auc_score(Y_Test, clf_ab.predict(X_Test)),
+                                              roc_auc_score(Y_Test, clf_xb.predict(X_Test))])
+  </div>
+
+  <h3>5.2 Ba kiểu trọng số & kết quả</h3>
+  <table>
+    <thead><tr><th>weight=</th><th>Cách tính trọng số</th><th>Paper chọn?</th><th>Vì sao (không) chọn?</th></tr></thead>
+    <tbody>
+      <tr><td><code>'None'</code></td><td>Mọi model ngang hàng (1 vote / model)</td><td><span class="not-used">❌</span></td><td>Model yếu (k-NN, NB) kéo điểm xuống</td></tr>
+      <tr><td><code>'accuracy'</code></td><td>weight = accuracy_score của model đó</td><td><span class="not-used">❌</span></td><td>Accuracy không đáng tin cậy khi class imbalance (500 non-diabetic vs 268 diabetic)</td></tr>
+      <tr><td><code>'auc'</code></td><td>weight = roc_auc_score của model đó</td><td><span class="used">✅</span></td><td>AUC đo khả năng xếp hạng, không phụ thuộc threshold → công bằng cho imbalanced data</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.3 Tổ hợp model & kết quả</h3>
+  <table>
+    <thead><tr><th>n_model</th><th>Tổ hợp</th><th>AUC</th><th>Nhận xét</th></tr></thead>
+    <tbody>
+      <tr style="background:#064e3b"><td>2</td><td><strong>AB + XB</strong></td><td><strong>0.950 ⭐</strong></td><td>Sequential boosting + Gradient boosting = bổ sung hoàn hảo</td></tr>
+      <tr><td>3</td><td>k-NN + XB + DT</td><td>Thấp hơn</td><td>k-NN (distance-based) + XB (boosting) không bổ trợ</td></tr>
+      <tr><td>4</td><td>AB + XB + DT + RF</td><td>Thấp hơn</td><td>Thêm tree model thường → "loãng" tín hiệu boosting</td></tr>
+      <tr><td>5</td><td>k-NN + XB + DT + RF + NB</td><td>Thấp hơn</td><td>Càng nhiều model không boosting → càng tệ</td></tr>
+      <tr><td>6</td><td>Tất cả 6 model</td><td>Giảm ~1% AUC</td><td>Minh chứng: "nhiều model hơn ≠ tốt hơn"</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 6. PREPROCESSING THỰC TẾ TRONG TỪNG NB ============ -->
+<section>
+  <h2>6. Tổng kết: Code paper THỰC SỰ chạy là gì?</h2>
+
+  <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Tất cả code khác (IQR_Mean, IQR_Median, Manual, PCA, ICA, weight=None, weight='accuracy', Standardization...) đều là <strong>code thử nghiệm</strong> — paper chạy để so sánh và chứng minh phương án được chọn là tốt nhất, nhưng kết quả cuối cùng CHỈ dùng các thành phần bên dưới.</p>
+
+  <table>
+    <thead><tr><th>Thành phần</th><th>NB1 (ML_Models)</th><th>NB2 (MLP)</th><th>NB3 (Ensembler)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Outlier</strong></td><td><span class="used">IQR() — xóa dòng</span></td><td><span class="used">IQR() — xóa dòng</span></td><td><span class="used">IQR() — xóa dòng</span></td></tr>
+      <tr><td><strong>Imputation</strong></td><td><span class="used">Mean theo class</span></td><td><span class="used">Mean theo class</span></td><td><span class="used">Mean theo class</span></td></tr>
+      <tr><td><strong>Standardization</strong></td><td><span class="not-used">KHÔNG dùng</span></td><td><span class="not-used">KHÔNG dùng</span></td><td><span class="not-used">KHÔNG dùng</span></td></tr>
+      <tr><td><strong>Feature Selection</strong></td><td><span class="used">correlation, 6 feat</span></td><td><span class="used">correlation, 4 feat</span></td><td><span class="used">correlation, 6 feat</span></td></tr>
+      <tr><td><strong>CV</strong></td><td>Stratified 5-fold (rs=100)</td><td>Stratified 5-fold (rs=20)</td><td>Stratified 5-fold (rs=20)</td></tr>
+      <tr><td><strong>Grid search metric</strong></td><td>roc_auc</td><td>accuracy (mặc định)</td><td>roc_auc</td></tr>
+      <tr><td><strong>Kết quả cuối</strong></td><td>XGBoost AUC 0.946</td><td>MLP AUC 0.902</td><td><strong>AB+XB AUC 0.950</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout danger">
+    <strong>Cảnh báo quan trọng:</strong> Code gốc chạy preprocessing (P+Q+FS) TRƯỚC khi vào CV loop. Điều này có thể gây <strong>data leakage</strong> — thông tin từ test fold rò rỉ vào training qua bước imputation và feature selection. Khi tái lập, NÊN đưa toàn bộ preprocessing vào trong CV loop.
+  </div>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "paper_id": "kaliappan2024_featsel_diverse_datasets",
+  "layer": 4,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "So sánh có hệ thống chiến lược feature selection (filter: Chi-square/Fisher/Information-gain/Missing-value vs wrapper: RF/XGB/GB/SVM/LR) + 4 classifier + stacking ensemble trên 4 dataset ĐTĐ khác nhau (Kaggle-2019, diabetes-prediction, early-diabetes/Sylhet, PIMA), rồi giải thích quyết định bằng SHAP + LIME để tạo niềm tin lâm sàng. Phát hiện chính: feature selection KHÔNG cải thiện accuracy nhất quán (Dataset-1 còn giảm); RF mạnh nhất tổng thể; wrapper > filter; Fisher's Score là filter tốt nhất, Gradient Boosting là wrapper tốt nhất.",
+  "method": "Filter (Chi-square, Fisher's score, Information gain, Missing-value) + Wrapper (RF Gini, XGB/GB gain, SVM |w|, LR |β|) feature importance → chọn subset chung mỗi dataset (Table 7) → train RF/XGB/GB/SVM full features (Table 8) vs subset (Table 9) → stacking ensemble (base RF+GB+SVM+XGB, meta Logistic Regression) đối chứng (Table 10) → SHAP (global) + LIME (local). Chia train/test cố định ~80/20 (Table 2), KHÔNG K-fold CV, KHÔNG cân bằng lớp, KHÔNG nêu hyperparameter.",
+  "best_metric": "Random Forest Accuracy 0.990 / Precision 0.991 / Recall 0.990 / F1 0.993 trên Dataset-3 (Early Diabetes Classification), cả TRƯỚC feature selection (Table 8) và SAU (Table 9, đồng hạng với XGBoost). Dataset-4 (PIMA, nghi augment ~2768>768): RF/XGB Acc 0.982 (Table 8), RF 0.986 sau FS (Table 9). Stacking Acc 0.933–0.982 (Table 10). KHÔNG có AUC ở bảng chính → UNKNOWN. SHAP/LIME chỉ định tính, không công bố giá trị Shapley số.",
+  "datasets": [
+    "diabetes-dataset-2019-kaggle",
+    "diabetes-prediction-dataset-kaggle",
+    "early-diabetes-classification-sylhet",
+    "pima-indians-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "vs tasin2022 (baseline Layer 4, verdict strong): tasin làm 1 pipeline sâu (PIMA+RTML merged, XGBoost+ADASYN, GridSearchCV, SHAP+LIME, web+Android deploy, code public, Acc 81%/AUC 0.84). Kaliappan KHÔNG deploy, KHÔNG code, KHÔNG CV, nhưng RỘNG hơn: 4 dataset, so sánh filter vs wrapper vs stacking + bài học âm 'FS không luôn cải thiện acc'. Accuracy báo cáo cao hơn nhiều (0.99 vs 0.81) nhưng do thiếu CV + Dataset-4 augment 2768>768 PIMA gốc (nghi rò rỉ) nên KHÔNG so trực tiếp được. vs ahmed2024 (verdict maybe, chỉ LR 86% trên BRFSS, so sánh LIME vs SHAP có hệ thống): kaliappan modeling rộng hơn (4 dataset, 4 model, stacking) nhưng XAI nông hơn (ahmed có Table 3-5 so sánh LIME/SHAP theo 4 tiêu chí, kaliappan chỉ định tính). Tóm lại bài này yếu hơn cả hai baseline về tính chắc chắn/phương pháp dù bao trùm nhiều dataset hơn.",
+  "gap": "Không K-fold CV (chỉ 1 train/test split cố định ~80/20) → acc 0.99 lạc quan, phương sai không kiểm soát; Dataset-4 báo ~2768 mẫu trong khi PIMA gốc 768 → augment/oversample không mô tả, nếu trước split thì test leakage; feature importance chấm trên toàn dataset → rò rỉ nhẹ; KHÔNG cân bằng lớp (F1 Dataset-2 chỉ ~0.79 dù acc 0.94); SHAP/LIME chỉ định tính, không bảng giá trị Shapley, không đo fidelity/stability, LIME chỉ 1 record/dataset; KHÔNG AUC ở bảng chính; KHÔNG hyperparameter; KHÔNG code public; mâu thuẫn nội tại số attribute (D2 8 vs 9, D3 16 vs 17) giữa text §5.1 và Table 2.",
+  "verdict": "maybe",
+  "verdict_reason": "Làm giàu Layer 4 (XAI đa-dataset) với bài học âm hữu ích về feature selection và bộ đặc trưng lâm sàng nhất quán, nhưng accuracy 0.99 nghi do augment + thiếu CV, không code/deploy, SHAP/LIME chỉ định tính → giữ làm tham chiếu phương pháp feature selection, KHÔNG dùng làm baseline số liệu.",
+  "analyzed_at": "2026-06-22",
+  "role": "inflation",
+  "role_note": "Lấy đúng 1 con số: RF 0.990 trên 1 split cố định. Dẫn chứng thổi phồng.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

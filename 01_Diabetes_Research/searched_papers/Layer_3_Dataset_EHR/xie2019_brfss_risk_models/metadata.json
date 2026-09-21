@@ -1,0 +1,71 @@
+{
+  "paper_id": "xie2019_brfss_risk_models",
+  "title": "Building Risk Prediction Models for Type 2 Diabetes Using Machine Learning Techniques",
+  "authors": [
+    "Zidian Xie",
+    "Olga Nikolayeva",
+    "Jiebo Luo",
+    "Dongmei Li"
+  ],
+  "year": 2019,
+  "venue": "Preventing Chronic Disease",
+  "doi": "10.5888/pcd16.190109",
+  "arxiv": null,
+  "pubmed": "31538566",
+  "pmc": "6795062",
+  "citations": 130,
+  "citations_secondary": 122,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 3,
+  "layer_uncertain": false,
+  "prediction_horizon": "early_detection",
+  "horizon_uncertain": false,
+  "datasets_mentioned": [
+    "Behavioral Risk Factor Surveillance System (BRFSS) 2014"
+  ],
+  "dataset_slugs": [
+    "brfss"
+  ],
+  "method_slugs": [
+    "support-vector-machine",
+    "decision-tree",
+    "logistic-regression",
+    "random-forest",
+    "neural-network",
+    "gaussian-naive-bayes",
+    "weighted-logistic-regression"
+  ],
+  "code_url": null,
+  "reproducibility": 2,
+  "source_pdf": "source.pdf",
+  "page_count": 9,
+  "open_access_pdf": "https://www.cdc.gov/pcd/issues/2019/pdf/19_0109.pdf",
+  "license": "public-domain",
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "2026-07-01: Unpaywall xác nhận GOLD OA. Link CDC trực tiếp trả 404; fallback Europe PMC render PMC6795062 tải thành công. Verify: %PDF-, 284793 bytes, 9 trang, 4899 từ, không mã hóa.",
+  "download_link": null,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "status": "searched",
+  "analysis_status": "none",
+  "reject_reason": null,
+  "found_by": "paper-finder/codex-multi-agent",
+  "abstract": "Cross-sectional analysis of 138,146 participants from the 2014 BRFSS comparing eight machine-learning classifiers for type 2 diabetes screening and risk-factor identification.",
+  "url": "https://doi.org/10.5888/pcd16.190109",
+  "scope_note": "Đạt §7: 122 citations trên Semantic Scholar; BRFSS 2014 công khai; pipeline và biến đầu vào được mô tả đủ để tái lập. Thuộc Layer 3 vì đóng góp dựa trên dữ liệu dân số thực quy mô lớn và mục tiêu sàng lọc ban đầu; horizon early_detection theo framing early diagnosis/initial screening của paper.",
+  "corrections": null,
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Chưa phân tích — không cần cho đề tài đã chốt. Related work.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2019-09-19",
+    "age_years": 6.9,
+    "citations": 130,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

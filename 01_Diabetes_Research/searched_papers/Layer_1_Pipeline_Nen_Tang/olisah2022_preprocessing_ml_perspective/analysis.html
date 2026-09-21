@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diabetes mellitus prediction from a data preprocessing & ML perspective — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure (crop từ PDF, embed base64) ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Diabetes mellitus prediction and diagnosis from a data preprocessing and machine learning perspective</h1>
+    <div class="meta">
+      <span>📅 <strong>2022</strong></span>
+      <span>📰 Computer Methods and Programs in Biomedicine (CMPB, Elsevier)</span>
+      <span>📚 <strong>243</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.cmpb.2022.106773" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <a class="badge yes" href="https://github.com/chollette/2GDNN-for-Diabetes-Prediction-and-Diagnosis" target="_blank">💻 Code: GitHub ↗</a>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">PIMA Indian Diabetes</a> — 768 mẫu (268 diabetic / 500 non-diabetic), 8 feature; relabel 3 lớp theo glucose (§3.4.2)</li>
+      <li>🔹 <a href="https://doi.org/10.17632/wj9rwkp9c2.1" target="_blank">LMCH — Laboratory of Medical City Hospital (Iraq)</a> — 1000 bệnh nhân (103 normal / 53 prediabetes / 844 diabetes), Mendeley Data (§3.4.1, ref [34])</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Khung tiền xử lý <strong>phi tuyến</strong>: Spearman correlation cho feature selection + polynomial regression bậc 7 cho missing-value imputation, kết hợp model tự thiết kế <strong>2GDNN</strong> (twice-growth DNN) + RF/SVM tune bằng grid search.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>ORF (optimized RF) = 100%</strong> mọi metric trên PIMA (Table 7) — nghi leakage/circularity; số đáng tin hơn: <strong>O2GDNN test-acc 97.248%</strong> PIMA & <strong>97.333%</strong> LMCH (Table 9).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Relabel theo glucose → Spearman FS (T=0.01) → PR imputation (deg=7) → RF/SVM/2GDNN → grid search + repeated stratified k-fold CV.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Vượt baseline Layer 1 <strong>gr2024</strong> (RF+Boruta, 94% PIMA) về số tuyệt đối, nhưng nghi thổi phồng. Cùng horizon cross-sectional với <strong>abnoosian2023</strong> (98.87% multi-class), cùng rủi ro accuracy bão hoà.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 1
+    </h2>
+    <p class="lead">
+      Paper đề xuất một <strong>khung học máy (ML framework)</strong> hai giai đoạn — <strong>tiền xử lý</strong> rồi <strong>phân loại</strong> — cho bài toán dự đoán/chẩn đoán đái tháo đường trên dữ liệu tabular.
+      Trọng tâm là dùng <strong>phương pháp phi tuyến</strong> để xử lý dữ liệu vi phạm giả định chuẩn (normality): Spearman correlation (SC) chọn feature, polynomial regression (PR) bậc 7 điền missing value (thay cho mean/median/MICE).
+      Tác giả tự thiết kế model <strong>2GDNN</strong> (twice-growth deep neural network) và so sánh với RF, SVM; tối ưu siêu tham số bằng grid search dưới repeated stratified k-fold CV.
+      Một điểm riêng: PIMA được <strong>relabel lại theo ngưỡng glucose</strong> để thêm lớp prediabetes (§3.4.2). Code public trên GitHub.
+    </p>
+    <h3>Vì sao là Layer 1 (Pipeline nền tảng)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm tiền xử lý</td><td>Toàn bài xoay quanh FS (Spearman) + imputation (PR) — đúng "vật liệu nền" của Layer 1</td></tr>
+      <tr><td>✔ Pipeline rõ ràng, có code</td><td>Repo public (notebook relabel → FS → PR → RF/SVM/2GDNN), tái lập được từng bước</td></tr>
+      <tr><td>✔ Dataset benchmark</td><td>PIMA (kinh điển) + LMCH (bệnh viện Iraq) → đối chứng cho layer sau</td></tr>
+      <tr><td>✘ Chưa phải Layer 3</td><td>Không dùng EHR/biobank longitudinal, không follow-up theo thời gian</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI (SHAP/LIME) và không có deployment thực tế</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Spearman correlation (SC)</code></td><td>Feature selection (p-value scaled, T=0.01)</td><td>Phi tham số, robust với non-normal & outlier; chọn glucose, BP, insulin, age (Table 3)</td><td>Dựa p-value tương quan đơn biến → bỏ qua tương tác; còn multicollinearity (tác giả coi nhẹ)</td></tr>
+        <tr><td><code>Polynomial regression (PR)</code></td><td>Missing-value imputation (deg=7, dự đoán Insulin từ Glucose)</td><td>Bắt quan hệ phi tuyến; hơn mean/median 1.2% và hơn MICE 2.5% acc (Table 6)</td><td>Bậc 7 dễ overfit; chỉ áp cho Insulin (>5% zero), dùng 1 predictor</td></tr>
+        <tr><td><code>Grid search</code></td><td>Tối ưu siêu tham số RF & SVM</td><td>Tìm kiệt toàn bộ không gian (đã giảm chiều)</td><td>Đắt nếu không gian lớn; chỉ chỉnh vài tham số</td></tr>
+        <tr><td><code>Repeated stratified k-fold CV</code></td><td>Đánh giá ổn định (n-splits=10, n-repeats=3, Table 4)</td><td>Stratify giữ tỉ lệ lớp; lặp giảm phương sai</td><td>Không nêu rõ FS/PR có nằm TRONG fold không → rủi ro leakage</td></tr>
+        <tr><td><code>Whisker/box plot</code></td><td>Kiểm tra normality của PIMA (§3.4.2)</td><td>Trực quan phát hiện skew</td><td>Định tính, không kiểm định thống kê chính thức</td></tr>
+        <tr><td><code>scikit-learn / Keras (suy từ repo)</code></td><td>Hiện thực RF, SVM, DNN, CV</td><td>Chuẩn ngành, dễ tái lập</td><td>README repo thiếu liệt kê dependency/version</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:6px">Lưu ý: paper KHÔNG dùng genetic algorithm (metadata cũ ghi nhầm). Cũng KHÔNG dùng SMOTE/oversampling — cân bằng lớp không phải trọng tâm bài này.</p>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Test Accuracy (%) trên PIMA, Table 7</strong> (FS+MVI, "O"=optimized). ⭐ = model tốt nhất paper chọn. Lưu ý ORF=100% rất khả nghi (xem §7).</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Test Acc (%) — PIMA</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>ORF</code> (optimized Random Forest) ⭐</td><td>Classifier thắng theo accuracy</td><td><strong>100</strong></td><td>Gap train-test 0% (Table 7); ổn định với dữ liệu nhỏ</td><td>100% acc nghi leakage/circularity; RF kém ổn với dữ liệu lớn</td></tr>
+        <tr><td>2</td><td><code>RF</code> (Random Forest, chưa tối ưu)</td><td>Classifier CML</td><td><strong>97.931</strong></td><td>Gap train-test nhỏ (~0.68%); FS giúp RF tăng 4% (Table 5)</td><td>Cần feature đã chọn kỹ; không giải thích quyết định</td></tr>
+        <tr><td>3</td><td><code>O2GDNN</code> (optimized 2GDNN) ⭐</td><td>DNN tự thiết kế, model "đại diện" của bài</td><td><strong>97.248</strong></td><td>Generalize tốt (gap ~1.76%); chạy cả PIMA & LMCH (Table 9); đo severity (Table 8)</td><td>Thua ORF; thất bại 1 ca severity (Table 8)</td></tr>
+        <tr><td>4</td><td><code>SVM</code> (rbf, chưa tối ưu)</td><td>Classifier CML</td><td><strong>96.330</strong></td><td>Kernel rbf bắt phi tuyến</td><td>Gap train-test ~3% (99.407→96.330); thua RF</td></tr>
+        <tr><td>5</td><td><code>OSVM</code> (optimized SVM)</td><td>Classifier CML</td><td><strong>95.412</strong></td><td>—</td><td>Train-acc 100% nhưng test 95.412% → overfit; tối ưu lại KÉM hơn SVM thường</td></tr>
+        <tr><td>6</td><td><code>2GDNN</code> (chưa tối ưu)</td><td>DNN baseline</td><td><strong>94.495</strong></td><td>—</td><td>Thấp nhất; cần tối ưu mới đạt 97.248%</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:6px">Thứ tự best→least tác giả nêu trong §4.2: ORF, RF, O2GDNN, SVM, OSVM, 2GDNN (khớp Table 7).</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>PIMA Indian</strong></td>
+          <td>768 (268 DB / 500 non-DB);<br>728 sau MVI (train 582 / test 146, Table 4)</td>
+          <td>8 (chọn còn 4: glucose, BP, insulin, age)</td>
+          <td>Chỉ nữ PIMA Indian gần Phoenix, AZ (ref [33]). Nhiều missing: Insulin 374, Skin Thickness 227, Pregnancies 110 (Table 2). <strong>Relabel 3 lớp theo ngưỡng glucose</strong> để thêm prediabetes (§3.4.2)</td>
+          <td><a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">Kaggle</a></td>
+        </tr>
+        <tr>
+          <td><strong>LMCH (Iraq)</strong></td>
+          <td>1000 (103 normal / 53 pre / 844 DB);<br>train 700 / test 150 (Table 4)</td>
+          <td>UNKNOWN (≈13: sugar, age, gender, Cr, BMI, urea, Chol, lipid TG/LDL/VLDL/HDL, HBA1C — "no available descriptions")</td>
+          <td>Bệnh nhân Iraq từ Laboratory of Medical City Hospital (ref [34]). Sẵn 3 lớp & KHÔNG missing → dùng để đo riêng tác động feature selection (§4.1)</td>
+          <td><a href="https://doi.org/10.17632/wj9rwkp9c2.1" target="_blank">Mendeley Data</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:6px">Ghi chú: Table 4 ghi "PIMA (#728)" với train 582 + test 146 (=728); abstract & §4.3 vẫn nói 768 instances ban đầu. Lệch này do loại bỏ entry sau bước imputation.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Kiểm tra normality</td><td>Whisker/box plot trên PIMA (§3.4.2)</td><td>Xác nhận dữ liệu skew → chọn phương pháp phi tuyến</td></tr>
+        <tr><td>2</td><td>Relabel nhãn</td><td>Gán 3 lớp (normal/prediabetes/diabetes) theo ngưỡng <strong>glucose</strong> (chart NIDDK, §3.4.2)</td><td>PIMA có thêm lớp prediabetes</td></tr>
+        <tr><td>3</td><td>Feature selection</td><td>Spearman correlation → p-value scaled, so ngưỡng T=0.01 (Algorithm 1, Table 3)</td><td>Chọn glucose, BP, insulin, age</td></tr>
+        <tr><td>4</td><td>Missing-value imputation</td><td>Nếu zero-entry >5% (chỉ Insulin) → PR bậc 7 dự đoán Insulin từ Glucose; còn lại xoá entry (§3.4.4)</td><td>Subset đầy đủ giá trị</td></tr>
+        <tr><td>5</td><td>Train/test split</td><td>PIMA 582/146; LMCH 700/150 (Table 4)</td><td>Tập huấn luyện + kiểm thử</td></tr>
+        <tr><td>6</td><td>Train classifier</td><td>RF, SVM (rbf), 2GDNN (4 hidden layer, Fig. 2)</td><td>Các model đã huấn luyện</td></tr>
+        <tr><td>7</td><td>Tối ưu siêu tham số</td><td>Grid search (RF, SVM) + repeated stratified k-fold CV (10 splits × 3 repeats, Table 4)</td><td>ORF, OSVM, O2GDNN</td></tr>
+        <tr><td>8</td><td>Đánh giá</td><td>Precision, Recall(SN), Specificity, F1, train/test accuracy + severity test (Table 8)</td><td>Báo cáo Table 5–10</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Spearman correlation (Eq. 1)</span>
+      r = 1 − ( 6 · Σ dᵢ² ) / ( n · (n² − 1) )<br>
+      d = hiệu rank giữa 2 biến, n = số mẫu. (Hệ số đầy đủ không hiện trong extracted.md → dùng công thức chuẩn)
+    </div>
+
+    <div class="formula">
+      <span class="label">Polynomial regression bậc k (Eq. 2)</span>
+      y = β₀ + β₁·x + β₂·x² + … + βₖ·xᵏ + ε<br>
+      Bài chọn k = 7 (tốt nhất theo RMSE & R², Fig. 4) để dự đoán Insulin từ Glucose.
+    </div>
+
+    <div class="formula">
+      <span class="label">Neuron pass — 2GDNN (Eq. trong §3.3.3)</span>
+      output = φ( Σ wᵢ·xᵢ + b )<br>
+      x = input, w = weight, b = bias, φ = activation; cập nhật w,b bằng backpropagation.
+    </div>
+
+    <div class="formula">
+      <span class="label">Tối ưu siêu tham số (grid search, §3.4.5)</span>
+      λ* = argmax_{λ ∈ Λ} f(λ),  Λ = Λ₁ × Λ₂ × … × Λₙ (Cartesian product)<br>
+      f(λ) = accuracy CV; chọn combo có CV-accuracy cao nhất.
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 1 (sơ đồ khung ML) / Fig. 2 (kiến trúc 2GDNN) / Fig. 4 (fit PR bậc 2,7,12,17 — bậc 7 tốt nhất) / Fig. 5 (đường cong 2GDNN trên PIMA & LMCH).
+      <span class="caption">Chưa crop base64 (tuỳ chọn). Số liệu lấy trực tiếp từ Table 5–10 + formula block ở trên.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">100%</span><span class="label">PIMA — ORF mọi metric (Table 7) ⚠️</span></div>
+      <div class="metric"><span class="value">97.931%</span><span class="label">PIMA — RF test-acc (Table 7)</span></div>
+      <div class="metric"><span class="value">97.248%</span><span class="label">PIMA — O2GDNN test-acc (Table 9)</span></div>
+      <div class="metric"><span class="value">97.333%</span><span class="label">LMCH — O2GDNN test-acc (Table 9)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>PIMA</td><td>ORF</td><td>FS+MVI, optimized</td><td><strong>Acc 100 · Prec 100 · Recall 100 · F1 100 · TrainAcc 100</strong></td><td>Table 7</td></tr>
+        <tr><td>PIMA</td><td>RF</td><td>FS+MVI</td><td><strong>TestAcc 97.931</strong> · Prec 98.119 · Recall 97.931 · F1 97.954 · TrainAcc 98.620</td><td>Table 7 & Table 9</td></tr>
+        <tr><td>PIMA</td><td>O2GDNN</td><td>FS+MVI, optimized</td><td><strong>TestAcc 97.248</strong> · Prec 97.342 · Recall 97.245 · F1 97.255 · TrainAcc 99.012</td><td>Table 7 & Table 9</td></tr>
+        <tr><td>PIMA</td><td>2GDNN</td><td>FS+MVI</td><td>TestAcc 94.495 · Prec 95.156 · F1 94.504</td><td>Table 7 & Table 9</td></tr>
+        <tr><td>PIMA</td><td>SVM / OSVM</td><td>FS+MVI</td><td>TestAcc 96.330 / 95.412</td><td>Table 7</td></tr>
+        <tr><td>LMCH</td><td>O2GDNN</td><td>FS+optimized</td><td><strong>TestAcc 97.333</strong> · Prec 97.281 · Recall 97.333 · F1 97.265 · TrainAcc 99.571</td><td>Table 9</td></tr>
+        <tr><td>LMCH</td><td>2GDNN</td><td>FS</td><td>TestAcc 96.667 · Prec 97.348 · F1 96.965</td><td>Table 9</td></tr>
+        <tr><td>PIMA</td><td>RF (base)</td><td>So sánh imputation: FS+PR</td><td>TestAcc <strong>97.931</strong> (vs FS+Mean/Median 96.753, FS+MICE 95.455)</td><td>Table 6</td></tr>
+        <tr><td>LMCH</td><td>2GDNN/RF/SVM</td><td>With FS vs No FS</td><td>FS tăng acc: 2GDNN +0.68%, RF +4%, SVM +0.67%</td><td>Table 5 & §4.1</td></tr>
+        <tr><td>PIMA</td><td>2GDNN (abstract)</td><td>tổng hợp</td><td>Prec 97.34 · SN 97.24 · F1 97.26 · TrainAcc 99.01 · TestAcc 97.25</td><td>Abstract & Table 10</td></tr>
+        <tr><td>LMCH</td><td>2GDNN (abstract)</td><td>tổng hợp</td><td>Prec 97.28 · SN 97.33 · F1 97.27 · TrainAcc 99.57 · TestAcc 97.33</td><td>Abstract</td></tr>
+        <tr><td>—</td><td>SOTA compare</td><td>proposed 2GDNN vs [13] Reddy</td><td>Thua acc (98.48%) nhưng hơn F1 +0.224%</td><td>§4.4 & Table 10</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Specificity (SP): chỉ xuất hiện rải rác trong Table 10 (so sánh SOTA), ví dụ proposed RF SP 97.238% / 2GDNN SP 97.255%. SP riêng cho từng cell PIMA/LMCH trong Table 5–9 <strong>không được báo cáo đầy đủ</strong> → UNKNOWN, không bịa. So sánh LMCH với [42]: [42] đạt 98.95% trên 392 mẫu random, bài này 97.333% trên toàn 1000 mẫu (§4.3, chênh 1.617%).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Nghi vấn leakage / circularity — cảnh báo lớn nhất</strong>
+      <ul>
+        <li><strong>ORF = 100%</strong> mọi metric trên PIMA (Table 7), gap train-test 0% → gần như không thể thực với dữ liệu y khoa nhiễu; nhiều khả năng tối ưu/CV "nhìn thấy" test, hoặc relabel khiến lớp quá dễ tách.</li>
+        <li><strong>Circularity nhãn:</strong> PIMA relabel theo ngưỡng <em>glucose</em>, mà glucose lại nằm trong 4 feature được chọn (Table 3) → model học lại chính quy tắc gán nhãn ⇒ accuracy thổi phồng có hệ thống.</li>
+        <li>Không nêu rõ FS (Spearman) và PR imputation được fit <em>trong</em> mỗi CV-fold hay fit 1 lần trên toàn bộ dữ liệu → nếu fit toàn bộ thì leakage.</li>
+        <li>PR bậc 7 để impute Insulin: bậc cao dễ overfit; chỉ 1 predictor (Glucose) → nội suy có thể tạo giá trị giả khớp nhãn.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper (một phần tác giả tự nêu §5)</strong>
+      <ul>
+        <li>Chỉ PIMA (nữ, Phoenix AZ) + LMCH (người lớn Iraq) → chưa khái quát cho nam/trẻ em/người gốc Phi (tác giả thừa nhận).</li>
+        <li>Không external validation trên bệnh viện độc lập; LMCH lệch lớp nặng (844 DB / 53 pre / 103 normal).</li>
+        <li>Số feature & mô tả attribute của LMCH không công bố ("no available descriptions") → khó tái lập chính xác FS trên LMCH.</li>
+        <li>README repo thiếu dependency/version; một số ô Table 10 khuyết/garbled trong trích xuất.</li>
+        <li>Không có XAI; không có deployment.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Tham chiếu mạnh cho <strong>tiền xử lý phi tuyến</strong>: ý tưởng Spearman FS + PR imputation đáng thử lại (đúng split, fit trong fold) để xem có thật sự hơn mean/median/MICE.</li>
+        <li>Là <strong>case-study cảnh báo leakage</strong>: minh hoạ rõ vì sao relabel theo feature rồi đưa chính feature đó vào model là sai — bài học thiết kế label cho đề tài.</li>
+        <li>So với baseline Layer 1 <code>gr2024</code> (RF+Boruta 94% PIMA): bài này cao hơn nhưng kém tin cậy hơn → dùng làm đối chứng, KHÔNG làm nền tảng chính.</li>
+        <li>Con số ~97% nên xem là <strong>sàng lọc</strong>, không thay chẩn đoán; phải kiểm leakage trước khi tin.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

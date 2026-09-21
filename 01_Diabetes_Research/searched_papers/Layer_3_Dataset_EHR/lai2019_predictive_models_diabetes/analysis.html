@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predictive models for diabetes mellitus using machine learning techniques — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Predictive models for diabetes mellitus using machine learning techniques</h1>
+    <div class="meta">
+      <span>📅 <strong>2019</strong></span>
+      <span>📰 BMC Endocrine Disorders</span>
+      <span>📚 <strong>296</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1186/s12902-019-0436-6" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Early detection</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.cpcssn.ca" target="_blank">CPCSSN (Canadian Primary Care Sentinel Surveillance Network)</a> — EHR sơ cấp Canada, dữ liệu chính (13.309 BN, 8 predictor); cấp theo license, không public</li>
+      <li>🔹 <a href="https://archive.ics.uci.edu/dataset/34/diabetes" target="_blank">PIMA Indians Diabetes</a> — 768 mẫu (sau lọc còn 392), 8 feature; chỉ dùng để kiểm chứng chéo phương pháp</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Hai mô hình dự đoán nguy cơ ĐTĐ (<strong>GBM</strong> &amp; <strong>Logistic Regression</strong>) phát triển và validate riêng cho <strong>dân số Canada</strong> (CPCSSN), chỉ dùng 8 chỉ số demographic + lab thường quy; xử lý mất cân bằng lớp bằng <strong>điều chỉnh ngưỡng (adjusted threshold)</strong> và <strong>class weight</strong> để nâng sensitivity.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>GBM AROC = 84.7%</strong> (sensitivity 71.6%, specificity 83.7%, ngưỡng 0.24) trên test set CPCSSN — Section Results &amp; Table 3.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Curate EHR → last-visit per patient → 80/20 split → 10-fold CV tuning → <strong>GBM / Logistic Regression</strong> (so RF &amp; Rpart) → ma trận chi phí sai lệch FN:FP = 3:1 chọn ngưỡng tối ưu.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">AROC <strong>thấp hơn</strong> baseline cùng Layer 3 dùng AUC: dinh2019 NHANES (XGBoost 0.957 lab / 0.862 survey) và agliata2023 (ANN ensemble 0.934). Bù lại: dữ liệu EHR thực Canada + xử lý imbalance bằng cost-sensitive và sensitivity báo cáo minh bạch.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">
+      Paper xây <strong>hai mô hình dự đoán nguy cơ Đái tháo đường (Diabetes Mellitus, DM)</strong> cho bệnh nhân Canada,
+      dùng dữ liệu <strong>EHR sơ cấp CPCSSN</strong> (~880.000 → cuối còn 13.309 bệnh nhân) với 8 biến demographic + lab.
+      Hai mô hình chính là <strong>Gradient Boosting Machine (GBM)</strong> và <strong>Logistic Regression</strong>, đem so với
+      <strong>Random Forest</strong> và <strong>Rpart (Decision Tree)</strong>. Vì dữ liệu mất cân bằng (chỉ 20.9% có DM),
+      nhóm tác giả dùng <strong>điều chỉnh ngưỡng</strong> và <strong>class weight</strong> để tăng sensitivity.
+      GBM đạt <strong>AROC 84.7%</strong> (Table 3), được kiểm chứng chéo thêm trên PIMA.
+    </p>
+    <h3>Vì sao là Layer 3 (Dataset EHR)?</h3>
+    <table>
+      <tr><td>✔ Dữ liệu EHR thực</td><td>CPCSSN là mạng giám sát hồ sơ y tế điện tử sơ cấp Canada — không phải benchmark đồ chơi như PIMA (Methods, line 45)</td></tr>
+      <tr><td>✔ Quy mô lớn, curated</td><td>Từ >6 triệu lần đo huyết áp → ~880.000 records → lọc còn 13.309 bệnh nhân (1 last-visit/người) (Methods, lines 45-47)</td></tr>
+      <tr><td>✔ Đặc trưng lâm sàng</td><td>8 predictor: Sex, Age, BMI, TG, FBS, sBP, HDL, LDL — chỉ số lab thường quy (line 47)</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI (SHAP/LIME); chỉ dùng information gain xếp hạng biến (Fig. 1); đề xuất deploy PMML nhưng chưa có hệ thống thật</td></tr>
+      <tr><td>✘ Không longitudinal đầy đủ</td><td>Lấy 1 last-visit/bệnh nhân để dự đoán; không phải mô hình incidence theo dõi N năm như long_term_risk</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>MLR (mlr in R)</code></td><td>Framework huấn luyện &amp; tune toàn bộ model (line 41)</td><td>Pipeline ML thống nhất trong R</td><td>Phụ thuộc hệ sinh thái R; không nêu phiên bản</td></tr>
+        <tr><td><code>Adjusted threshold</code></td><td>Cân bằng lớp: chọn ngưỡng theo ma trận chi phí FN:FP = 3:1, ngưỡng tối ưu = 0.24 (lines 68, 74)</td><td>Tăng sensitivity mà không sinh mẫu giả; phù hợp y khoa (FN đắt hơn FP)</td><td>Phải tinh chỉnh thủ công; phụ thuộc tỉ lệ chi phí giả định</td></tr>
+        <tr><td><code>Class weight</code></td><td>Cân bằng lớp thay thế: trọng số DM = 3 (GBM), 3.5 (LR) (line 205)</td><td>Cho kết quả tương đương; làm Rpart tốt hơn (81.8% vs 78.2%)</td><td>Thêm 1 siêu tham số phải tune</td></tr>
+        <tr><td><code>10-fold cross-validation</code></td><td>Tune siêu tham số &amp; ước lượng độ ổn định AROC (lines 66, 123-131)</td><td>Giảm overfit; lặp 3 lần (30 giá trị AROC)</td><td>Chi phí tính toán cao hơn hold-out</td></tr>
+        <tr><td><code>Information gain</code></td><td>Xếp hạng tầm quan trọng biến (Fig. 1, line 100)</td><td>Trực quan, nhanh</td><td>Không phải XAI cục bộ; không giải thích từng ca</td></tr>
+        <tr><td><code>DeLong test (pROC)</code></td><td>So sánh thống kê AROC giữa các cặp mô hình (lines 139, 169-178)</td><td>Phi tham số, chuẩn cho so sánh ROC tương quan</td><td>—</td></tr>
+        <tr><td><code>r2pmml / PMML</code></td><td>Đề xuất xuất model GBM ra định dạng PMML để deploy (Scoruby/Goscore/Yellowfin) (line 121)</td><td>Hướng triển khai thực tế</td><td>Mới là đề xuất, chưa có hệ thống chạy thật</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AROC trên test set CPCSSN (Table 3)</strong>. ⭐ = model tốt nhất paper chọn.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AROC (test, Table 3)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>GBM</code> ⭐</td><td>Mô hình chính, hiệu năng cao nhất</td><td><strong>84.7%</strong></td><td>AROC cao nhất; n.trees=257, depth=2, n.minobsinnode=75, shrinkage=0.126 (line 74)</td><td>Khó diễn giải phương trình; cần PMML để deploy</td></tr>
+        <tr><td>2</td><td><code>Logistic Regression</code> ⭐</td><td>Mô hình chính, dễ diễn giải</td><td><strong>84.0%</strong></td><td>Sensitivity cao nhất (73.4%); có odds ratio rõ (Table 2); không khác biệt thống kê so GBM (DeLong p=0.081)</td><td>Thiếu parental history of DM làm AROC thấp hơn Wilson et al.</td></tr>
+        <tr><td>3</td><td><code>Random Forest</code></td><td>Baseline so sánh</td><td>83.4%</td><td>Gần GBM/LR</td><td>Thấp hơn GBM có ý nghĩa thống kê (DeLong p=5.13e-05, Table 6)</td></tr>
+        <tr><td>4</td><td><code>Rpart (Decision Tree)</code></td><td>Baseline so sánh</td><td>78.2%</td><td>Dễ giải thích nhất</td><td>AROC thấp nhất; class weight nâng lên 81.8% (line 205)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>CPCSSN</strong><br><span style="color:var(--muted);font-size:12px">(dữ liệu chính)</span></td>
+          <td>13.309 bệnh nhân<br><span style="color:var(--muted);font-size:12px">(train 10.647 / test 2.662)</span></td>
+          <td>8 predictor</td>
+          <td>EHR sơ cấp Canada, tuổi 18–90. Curate từ >6 triệu lần đo BP → ~880.000 records → 1 last-visit/người. 20.9% có DM (mất cân bằng). Predictor: Sex, Age, BMI, TG, FBS, sBP, HDL, LDL (lines 45-49)</td>
+          <td><a href="https://www.cpcssn.ca" target="_blank">cpcssn.ca</a></td>
+        </tr>
+        <tr>
+          <td><strong>PIMA Indians Diabetes</strong><br><span style="color:var(--muted);font-size:12px">(kiểm chứng chéo)</span></td>
+          <td>768 → 392<br><span style="color:var(--muted);font-size:12px">(loại hàng thiếu; 130 DM / 262 không)</span></td>
+          <td>8 feature + label</td>
+          <td>Benchmark công khai, nữ PIMA Indian ≥21 tuổi. ~48.7% Insulin bị thiếu (mã hoá 0); tác giả loại hàng thiếu thay vì impute. Dùng để kiểm tra phương pháp khái quát ra dữ liệu khác (lines 156-180)</td>
+          <td><a href="https://archive.ics.uci.edu/dataset/34/diabetes" target="_blank">UCI</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Pull dữ liệu thô</td><td>Mọi lần đo BP (>6 triệu) cho BN >17 tuổi + ID/age/sex (line 45)</td><td>Bảng BP nền</td></tr>
+        <tr><td>2</td><td>Join theo thời gian</td><td>Ghép record gần nhất: BMI ±1 năm, LDL/HDL/TG ±1 năm, FBS ±1 tháng, HbA1c ±3 tháng</td><td>~880.000 records (255k DM)</td></tr>
+        <tr><td>3</td><td>Lọc nhiễu lâm sàng</td><td>Bỏ BN dùng insulin (nghi T1D) &amp; corticosteroid</td><td>811.000 records (235k DM)</td></tr>
+        <tr><td>4</td><td>Curate trước onset</td><td>Giữ record <em>preceded the onset of DM</em>; BN ≥10 lần khám; với BN chưa-DM bỏ năm cuối trước khi kết thúc DB</td><td>Tập forward-prediction</td></tr>
+        <tr><td>5</td><td>Last-visit per patient</td><td>Lấy lần khám cuối mỗi BN → 13.317; loại extreme BMI/TG</td><td>13.309 BN</td></tr>
+        <tr><td>6</td><td>Train/test split</td><td>80/20 ngẫu nhiên theo bệnh nhân</td><td>10.647 train / 2.662 test</td></tr>
+        <tr><td>7</td><td>Tune siêu tham số</td><td>10-fold CV, tối ưu AROC</td><td>Bộ hyperparam tối ưu</td></tr>
+        <tr><td>8</td><td>Cân bằng lớp</td><td>Ma trận chi phí FN:FP = 3:1 → ngưỡng 0.24 (hoặc class weight 3 / 3.5)</td><td>Ngưỡng quyết định</td></tr>
+        <tr><td>9</td><td>Fit cuối &amp; đánh giá</td><td>Fit toàn train set, đánh giá trên test; DeLong test so cặp model</td><td>AROC, sens, spec, misclass</td></tr>
+        <tr><td>10</td><td>Kiểm chứng chéo</td><td>Lặp toàn bộ trên PIMA (80/20 + 10-fold ×3)</td><td>AROC trên PIMA (Table 7, S8)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Các chỉ số đánh giá (định nghĩa trong paper, line 70)</span>
+      Sensitivity = số DM model dự đúng / số DM quan sát<br>
+      Specificity = số No-DM model dự đúng / số No-DM quan sát<br>
+      Misclassification rate = số BN phân loại sai / tổng số BN
+    </div>
+
+    <div class="formula">
+      <span class="label">Quy tắc cân bằng lớp (cost-sensitive, lines 68 &amp; 74)</span>
+      Cost(False Negative) : Cost(False Positive) = 3 : 1<br>
+      Chọn ngưỡng (cut-off) làm tối thiểu kỳ vọng chi phí sai lệch<br>
+      → Ngưỡng tối ưu cho lớp DM = 0.24 (cả GBM &amp; LR)
+    </div>
+
+    <div class="formula">
+      <span class="label">Mô hình Logistic Regression (logit, hệ số từ Table 2)</span>
+      logit(P(DM)) = -11.816 + 1.963·FBS + 0.023·BMI - 0.894·HDL<br>
+      &nbsp;&nbsp;+ 0.158·TG - 0.250·Male + (hệ số nhóm tuổi) ...<br>
+      (sBP &amp; LDL không có ý nghĩa thống kê, bị loại khỏi model triển khai — line 110)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 1 (xếp hạng tầm quan trọng biến theo information gain), Fig. 2 (đường ROC 4 model), Fig. 3 &amp; 4 (box plot AROC trên CPCSSN &amp; PIMA).
+      <span class="caption">Chưa crop/embed base64 (tuỳ chọn) — số liệu chính đã lấy đủ từ Tables 2–7 &amp; formula block ở trên.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">84.7%</span><span class="label">GBM — AROC test (Table 3)</span></div>
+      <div class="metric"><span class="value">71.6%</span><span class="label">GBM — Sensitivity (Results)</span></div>
+      <div class="metric"><span class="value">84.0%</span><span class="label">LR — AROC test (Table 3)</span></div>
+      <div class="metric"><span class="value">73.4%</span><span class="label">LR — Sensitivity (Results)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig/Section)</th></tr></thead>
+      <tbody>
+        <tr><td>CPCSSN (test)</td><td>GBM ⭐</td><td>Ngưỡng 0.24</td><td><strong>AROC 84.7%</strong></td><td>Section Results (line 76) + Table 3</td></tr>
+        <tr><td>CPCSSN (test)</td><td>GBM</td><td>Ngưỡng 0.24</td><td>Sensitivity 71.6%; Specificity 83.7%; Misclass 18.9%</td><td>Section Results (line 76)</td></tr>
+        <tr><td>CPCSSN (test)</td><td>GBM</td><td>Ngưỡng mặc định 0.5</td><td>Sensitivity 48.3%; Specificity 95.2%; Misclass 15%; AROC 84.7%</td><td>Section Results (line 76)</td></tr>
+        <tr><td>CPCSSN (test)</td><td>Logistic Regression</td><td>Ngưỡng 0.24</td><td>AROC 84.0%; Sensitivity 73.4%; Specificity 82.3%; Misclass 19.6%</td><td>Section Results (line 78)</td></tr>
+        <tr><td>CPCSSN (test)</td><td>Random Forest</td><td>—</td><td>AROC 83.4%</td><td>Table 3</td></tr>
+        <tr><td>CPCSSN (test)</td><td>Rpart</td><td>—</td><td>AROC 78.2%</td><td>Table 3</td></tr>
+        <tr><td>CPCSSN</td><td>GBM</td><td>10-fold CV (range)</td><td>AROC 81.6–85.0%, TB 83.6%</td><td>Section Results (line 74)</td></tr>
+        <tr><td>CPCSSN</td><td>GBM / LR / RF / Rpart</td><td>10-fold CV ×3 (mean)</td><td>83.9% / 83.5% / 83.0% / 77.1%</td><td>Table 4</td></tr>
+        <tr><td>CPCSSN</td><td>GBM / LR / RF / Rpart</td><td>DeLong AROC</td><td>84.5% / 84.1% / 83.2% / 78.1%</td><td>Table 5</td></tr>
+        <tr><td>CPCSSN</td><td>GBM vs LR</td><td>DeLong test</td><td>z=1.392; p=0.081 (không khác biệt)</td><td>Table 6</td></tr>
+        <tr><td>CPCSSN</td><td>GBM vs RF</td><td>DeLong test</td><td>z=3.885; p=5.13e-05 (GBM cao hơn)</td><td>Table 6</td></tr>
+        <tr><td>PIMA (test)</td><td>GBM / LR / RF / Rpart</td><td>80/20 split</td><td>84.7% / 88.0% / 87.1% / 77.0%</td><td>Section Results (line 180) + Table S8</td></tr>
+        <tr><td>PIMA</td><td>GBM / LR / RF / Rpart</td><td>10-fold CV ×3 (mean)</td><td>85.1% / 84.6% / 85.5% / 80.5%</td><td>Table 7</td></tr>
+        <tr><td>CPCSSN</td><td>Rpart</td><td>Class weight (thay threshold)</td><td>AROC 81.8% (so 78.2%)</td><td>Section Discussion (line 205) + Table S6</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Predictor quan trọng nhất (information gain, Fig. 1): FBS &gt; HDL &gt; BMI &gt; TG &gt; tuổi &gt; giới &gt; BP &gt; LDL.
+      Confusion matrix chi tiết của 4 model nằm ở Additional file 1 (Tables S2–S5), không có trong text chính → con số tuyệt đối TP/TN/FP/FN ghi <strong>UNKNOWN</strong>.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro &amp; điểm cần kiểm khi tái lập</strong>
+      <ul>
+        <li><strong>Không có code public</strong> &amp; <strong>CPCSSN không tải tự do</strong> (cấp theo license, dùng theo permission, line 257) → không tái lập trực tiếp trên dữ liệu gốc; chỉ phần PIMA là khả thi lặp lại.</li>
+        <li>FBS là predictor mạnh nhất (odds ratio 7.122, Table 2) và bản thân FBS gần tiêu chí chẩn đoán ĐTĐ → rủi ro <strong>rò rỉ nhãn / lạc quan AROC</strong>; cần cân nhắc khi diễn giải.</li>
+        <li>Ngưỡng 0.24 và tỉ lệ chi phí 3:1 là <strong>giả định</strong> — kết quả sensitivity/specificity phụ thuộc lựa chọn này; ngưỡng mặc định 0.5 chỉ cho sensitivity 48.3%.</li>
+        <li>PIMA loại bỏ hàng thiếu (768 → 392, mất ~49% mẫu Insulin) thay vì impute → tập kiểm chứng nhỏ, có thể thiên lệch.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>AROC ~84.7% <strong>không vượt</strong> baseline cùng Layer 3 đo bằng AUC (dinh2019 NHANES XGBoost 0.957 lab / 0.862 survey; agliata2023 ANN ensemble 0.934).</li>
+        <li>Chỉ xếp hạng biến bằng information gain — <strong>không có XAI</strong> (SHAP/LIME), chưa giải thích từng ca.</li>
+        <li>Chưa external validation trên cohort Canada độc lập; tác giả tự nhận hiệu năng tương đối có thể bị giới hạn bởi dân số &amp; dữ liệu cụ thể (line 145).</li>
+        <li>Thiếu parental history of DM (CPCSSN không có) → LR thấp hơn mô hình Wilson et al.; PMML deploy mới là đề xuất, chưa có hệ thống thật.</li>
+        <li>Không cân bằng bằng oversampling (SMOTE); chỉ threshold &amp; class weight.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là <strong>ứng viên Layer 3 (EHR)</strong> minh hoạ pipeline EHR thực + xử lý imbalance bằng <strong>cost-sensitive threshold</strong> — bổ sung kỹ thuật cho nhánh dinh2019/agliata2023 (vốn dùng down/under-sampling).</li>
+        <li>Horizon = <strong>early_detection</strong>: nhãn lập từ record <em>trước onset</em> DM + bỏ năm cuối với BN chưa-DM (lines 45-47) và mục tiêu "future occurrence of diabetes" (Conclusion) → đúng tinh thần sàng lọc/phát hiện sớm, không phải cross-sectional thuần.</li>
+        <li>Bài chứng minh GBM ≈ Logistic Regression (DeLong p=0.081) trên EHR → gợi ý <strong>baseline đơn giản, dễ diễn giải</strong> vẫn cạnh tranh; là điểm so chiếu tốt cho mô hình phức tạp hơn.</li>
+        <li>Khoảng trống rõ (thiếu XAI, thiếu external validation, AROC chưa dẫn đầu) chính là cơ hội cải tiến: thêm SHAP, oversampling đúng cách, validate chéo dân số.</li>
+        <li>Kết quả ~84.7% chỉ nên xem như <strong>sàng lọc nguy cơ</strong>, KHÔNG thay chẩn đoán y khoa.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

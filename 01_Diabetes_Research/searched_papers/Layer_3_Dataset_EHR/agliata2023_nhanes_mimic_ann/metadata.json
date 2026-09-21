@@ -1,0 +1,72 @@
+{
+  "paper_id": "agliata2023_nhanes_mimic_ann",
+  "title": "Machine Learning as a Support for the Diagnosis of Type 2 Diabetes",
+  "authors": [
+    "Antonio Agliata",
+    "Deborah Giordano",
+    "Francesco Bardozzo",
+    "Salvatore Bottiglieri",
+    "Angelo Facchiano",
+    "Roberto Tagliaferri"
+  ],
+  "year": 2023,
+  "venue": "International Journal of Molecular Sciences",
+  "doi": "10.3390/ijms24076775",
+  "arxiv": null,
+  "pubmed": "37047748",
+  "pmc": "PMC10095542",
+  "citations": 61,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://europepmc.org/articles/PMC10095542?pdf=render",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "nhanes",
+    "mimic-iii",
+    "mimic-iv"
+  ],
+  "dataset_slugs": [
+    "nhanes",
+    "mimic-iii",
+    "mimic-iv"
+  ],
+  "method_slugs": [
+    "artificial-neural-network",
+    "deep-learning",
+    "binary-classification"
+  ],
+  "layer": 3,
+  "layer_uncertain": true,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 3,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 10,
+  "pdf_status": "ok",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "scope_note": "HAI DATASET TIÊN TIẾN (không PIMA): xây ANN chẩn đoán T2D trên NHANES (khảo sát sức khoẻ quốc gia Mỹ) — đưa NHANES + bối cảnh MIMIC vào kho, đa dạng nguồn EHR/khảo sát thật. IJMS 2023, 61 cite (§7 đạt: ≥30 cho 2023). Gold OA CC-BY, PDF 10 trang qua Europe PMC. Nhấn mạnh khả năng dự đoán dài hạn của ANN. Chạm Layer 2 (mô hình ANN) → layer_uncertain; horizon cross_sectional (chẩn đoán) nhưng có bàn dự đoán dài hạn → horizon_uncertain. Không thấy code public. GIÁ TRỊ: nguồn dữ liệu NHANES chuẩn dịch tễ để so sánh/benchmark, khác hẳn PIMA.",
+  "corrections": [
+    "dataset_slugs: metadata cũ ghi ['nhanes','mimic'] gộp chung MIMIC; đọc full (Section 4.2) xác nhận dùng 3 dataset RIÊNG BIỆT: NHANES 1999-2018 (48.067 trích, 4.415 T2D), MIMIC-III (2.997 trích), MIMIC-IV (1.576 trích) → tách thành ['nhanes','mimic-iii','mimic-iv'].",
+    "horizon: GIỮ cross_sectional (xác nhận từ cách lập nhãn — nhãn Diabetes trích cùng thời điểm feature, không follow-up). Abstract quảng cáo 'long-term prediction' nhưng đó chỉ là future work (LSTM, Section 5); horizon_uncertain có thể hạ về false.",
+    "page_count: metadata ghi 10 (số trang bản render Europe PMC); extraction_report ghi PDF gốc 14 trang. Không đổi page_count (giữ nguồn render).",
+    "code: xác nhận code_url=null, has_code=false — paper KHÔNG có repo public (Data Availability chỉ nói dữ liệu từ public datasets)."
+  ],
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2023-04-05",
+    "age_years": 3.3,
+    "citations": 61,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": false,
+    "note": "Cổng §7 là cổng NHẬN VÀO lúc tìm được, KHÔNG phải cổng duy trì — bài không bị loại chỉ vì già đi qua mốc 3 năm. Ghi lại để phiên sau khỏi tranh luận."
+  }
+}

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diabetes Prediction Using Ensembling of Different Machine Learning Classifiers — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────────────────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Diabetes Prediction Using Ensembling of Different Machine Learning Classifiers</h1>
+    <div class="meta">
+      <span>📅 <strong>2020</strong></span>
+      <span>📰 IEEE Access</span>
+      <span>📚 <strong>589</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1109/ACCESS.2020.2989857" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <a class="badge yes" href="https://github.com/kamruleee51/Diabetes-Prediction-Using-ML-Classifiers" target="_blank">💻 Code: GitHub ↗</a>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">PIMA Indians Diabetes (PID)</a> — 768 mẫu nữ (268 dương / 500 âm), 8 thuộc tính, benchmark NIDDK</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Ensemble <strong>soft-voting có trọng số = AUC</strong> của <strong>AdaBoost + XGBoost</strong>; trọng số lấy theo AUC (không thiên lệch khi class mất cân bằng) thay vì accuracy.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>AUC 0.950 ± 0.021</strong> · Sn 0.789 · Sp 0.934 (AB+XB, PID, 5-fold stratified CV — Bảng 7 &amp; 8). Vượt SOTA [7] (RF, AUC 0.930) <strong>2.00%</strong> AUC (Bảng 9).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">IQR outlier rejection (P) → Mean imputation (Q) → Standardization (R) → Correlation-based feature selection → Stratified 5-fold CV + Grid search → AUC-weighted soft voting (AB+XB).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Mạnh hơn <strong>khanam2021</strong> (NN 88.6% acc nhưng K-fold tụt ~76%, không AUC, không code) ở metric không thiên lệch + code public. Khác hệ với <strong>li2020 BEHRT</strong> (EHR long-term, multi-label 301 bệnh) — không so trực tiếp số.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">
+      Bài đề xuất một <strong>khung dự đoán đái tháo đường</strong> trên PIMA, trong đó <em>tiền xử lý là trái tim</em> của pipeline: loại outlier bằng IQR, điền missing bằng giá trị trung bình, chuẩn hoá Z-score, chọn feature theo tương quan. Sau đó so sánh 6 model ML (k-NN, DT, RF, AB, NB, XB) + MLP, rồi <strong>kết hợp (ensemble) bằng soft-voting với trọng số = AUC</strong> của từng model. Bộ kết hợp tốt nhất là <strong>AB+XB</strong>, đạt AUC 0.950 và vượt state-of-the-art trên cùng dataset 2.00% AUC.
+    </p>
+    <p>
+      Lý do chọn AUC làm trọng số: PID mất cân bằng (268 dương / 500 âm), AUC không thiên lệch theo phân phối lớp nên ưu tiên đúng model mạnh hơn so với dùng accuracy. Nhãn là tình trạng đái tháo đường tại thời điểm đo 8 chỉ số (glucose OGTT 2h, BMI, huyết áp…), không có khoảng cách thời gian giữa feature và nhãn → <strong>cross-sectional</strong>.
+    </p>
+    <h3>Vì sao là Layer 2 (Model &amp; hiệu quả)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm vào model</td><td>So sánh 6 ML + MLP và đề xuất chiến lược ensemble (AUC-weighted soft voting), không chỉ là pipeline cơ bản</td></tr>
+      <tr><td>✔ Nâng cấp từ Layer 1</td><td>Dùng lại pipeline nền (IQR, imputation, feature selection) nhưng đẩy hiệu năng bằng boosting + ensemble có chiến lược</td></tr>
+      <tr><td>✔ Đo bằng metric phù hợp imbalance</td><td>Sn, Sp, FOR, DOR, AUC + báo cáo mean ± std qua 5-fold CV</td></tr>
+      <tr><td>✘ Chưa phải Layer 3</td><td>Chỉ tabular PID 768 mẫu, không EHR/biobank longitudinal</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI (SHAP/LIME) và không deployment thực tế (chỉ nêu kế hoạch làm web app ở Future work)</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>IQR outlier rejection (P)</code></td><td>Loại điểm ngoại lai (Q1, Q3, IQR)</td><td>Giảm skewness/kurtosis, đưa phân phối về mesokurtic</td><td>Có thể loại bệnh nhân hợp lệ; làm theo từng feature</td></tr>
+        <tr><td><code>Mean imputation (Q)</code></td><td>Điền missing/null bằng trung bình thuộc tính</td><td>Không tạo outlier mới; tác giả lập luận mean gần central tendency hơn median</td><td>Làm hẹp phương sai, dễ leakage nếu fit trên toàn dataset</td></tr>
+        <tr><td><code>Z-score standardization (R)</code></td><td>Chuẩn hoá về mean 0, var 1</td><td>Giảm skewness</td><td>Không cải thiện model cây; tác giả ghi nhận R hầu như không nâng AUC</td></tr>
+        <tr><td><code>Correlation-based FS</code></td><td>Chọn feature theo tương quan với nhãn</td><td>Cho AUC tốt nhất trên PID; giữ feature liên quan target</td><td>Bỏ qua tương tác phi tuyến giữa feature</td></tr>
+        <tr><td><code>PCA / ICA</code></td><td>Giảm chiều (so sánh đối chứng)</td><td>Tạo feature không tương quan (NB hưởng lợi)</td><td>Unsupervised → không đảm bảo giữ tương quan với nhãn; thua Correlation-FS trên PID</td></tr>
+        <tr><td><code>Stratified 5-fold CV</code></td><td>Đánh giá + tuning (inner/outer loop)</td><td>Giữ tỉ lệ lớp như gốc; báo cáo mean ± std</td><td>768 mẫu nhỏ → std rộng (vd DOR ±33)</td></tr>
+        <tr><td><code>Grid search</code></td><td>Tuning hyperparameter (tối đa hoá AUC)</td><td>Tìm cấu hình tốt cho mỗi model</td><td>Tốn chi phí; phụ thuộc lưới đã định</td></tr>
+        <tr><td><code>AUC-weighted soft voting</code></td><td>Tổng hợp xác suất các model, trọng số = AUC</td><td>Trọng số không thiên lệch theo class; ưu tiên model mạnh</td><td>Phụ thuộc tương quan thấp giữa base model</td></tr>
+        <tr><td><code>Python + Keras</code></td><td>Hiện thực hoá (Windows 10, i7-7700HQ, GTX 1060 6GB)</td><td>Hệ sinh thái phổ biến, dễ tái lập</td><td>UNKNOWN phiên bản thư viện/seed</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC (mean ± std)</strong>. ⭐ = model tốt nhất paper chọn. AUC của 6 ML đơn lấy ở cấu hình tốt nhất mỗi model (Bảng 4); ensemble &amp; MLP từ Bảng 7/8.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC (mean ± std)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>AB + XB (ensemble)</code> ⭐</td><td>Mô hình đề xuất (soft voting, trọng số AUC)</td><td><strong>0.950 ± 0.021</strong></td><td>Kết hợp boosting tuần tự (AB) + song song (XB); thắng SOTA 2.00% AUC</td><td>Chỉ kiểm trên 1 dataset; không XAI</td></tr>
+        <tr><td>2</td><td><code>XGBoost (XB)</code></td><td>Model đơn mạnh nhất (baseline để đánh giá ensemble)</td><td><strong>0.946 ± 0.020</strong></td><td>Gradient boosting mạnh nhất nhóm đơn (P+Q+Corr, 6 feature)</td><td>Nhạy với outlier hơn AB; risk overfit</td></tr>
+        <tr><td>3</td><td><code>AdaBoost (AB)</code></td><td>Boosting tuần tự</td><td><strong>0.941 ± 0.014</strong></td><td>Gán trọng số nhiều hơn cho weak learner tốt</td><td>Vẫn cần ensemble với XB để vượt SOTA</td></tr>
+        <tr><td>4</td><td><code>Random Forest (RF)</code></td><td>Bagging cây</td><td><strong>0.939 ± 0.019</strong></td><td>Ổn định trên tabular</td><td>Thua boosting trên PID</td></tr>
+        <tr><td>5</td><td><code>k-NN</code></td><td>Mô hình khoảng cách</td><td><strong>0.926 ± 0.022</strong></td><td>Đơn giản (k=27, manhattan)</td><td>Nhạy với chuẩn hoá &amp; chiều</td></tr>
+        <tr><td>6</td><td><code>DT</code></td><td>Cây quyết định đơn</td><td><strong>0.912 ± 0.019</strong></td><td>Dễ giải thích</td><td>Dễ overfit, AUC thấp nhất nhóm cây</td></tr>
+        <tr><td>7</td><td><code>MLP</code></td><td>Mạng nơ-ron (3 hidden: 16-64-64)</td><td><strong>0.902 ± 0.020</strong></td><td>Học phi tuyến; dropout 60% chống overfit</td><td>Ít dữ liệu → vanishing gradient, thua ML đơn</td></tr>
+        <tr><td>8</td><td><code>Naive Bayes (NB)</code></td><td>Xác suất Bayes</td><td><strong>0.879 ± 0.025</strong></td><td>Tốt khi feature độc lập (PCA/ICA)</td><td>Yếu nhất với Correlation-FS (feature còn tương quan)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Ghi chú: AUC ML đơn ở Bảng 4 đều dùng tiền xử lý <code>P+Q + Correlation</code> tốt nhất cho từng model. Các bộ kết hợp khác (k-NN+DT+XB, DT+AB+RF+XB, 5 model, 6 model) đều thua AB+XB ở AUC (Bảng 7).</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>PIMA Indians Diabetes (PID)</strong></td>
+          <td>768<br><span style="color:var(--muted);font-size:12px">268 dương / 500 âm</span></td>
+          <td>8 + label</td>
+          <td>Bệnh nhân nữ PIMA gần Phoenix, AZ. 8 thuộc tính (Bảng 1): Pregnant, Glucose (OGTT 2h, mean 120.9), Pressure, Triceps, Insulin, BMI (32.0), Pedigree, Age. Sau Correlation-FS giữ 6 feature F1,F2,F4,F5,F6,F8 (bỏ huyết áp F3 &amp; pedigree F7).</td>
+          <td><a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">Kaggle</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Split: <strong>stratified 5-fold cross-validation</strong> (giữ tỉ lệ lớp gốc), inner loop tuning bằng grid search, outer loop đánh giá. Không có external/test set độc lập — toàn bộ đo qua CV trên PID.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Outlier rejection (P)</td><td>IQR theo từng feature (loại ngoài [Q1−, Q3+])</td><td>Dữ liệu giảm skew/kurtosis</td></tr>
+        <tr><td>2</td><td>Fill missing (Q)</td><td>Mean imputation (giá trị trung bình thuộc tính)</td><td>Dữ liệu đầy đủ, nhiều mẫu hơn so với chỉ P</td></tr>
+        <tr><td>3</td><td>Standardization (R)</td><td>Z-score (mean 0, var 1) — đối chứng, không bắt buộc</td><td>Dữ liệu chuẩn hoá (ít tác dụng với cây)</td></tr>
+        <tr><td>4</td><td>Feature selection</td><td>Correlation-based (so sánh với PCA/ICA) → giữ 6 feature</td><td>Tập feature gọn, tương quan với nhãn</td></tr>
+        <tr><td>5</td><td>CV + tuning</td><td>Stratified 5-fold; inner loop grid search tối đa hoá AUC</td><td>Hyperparameter tốt nhất (Bảng 2/4)</td></tr>
+        <tr><td>6</td><td>Train base models</td><td>k-NN, DT, RF, AB, NB, XB, MLP</td><td>AUC mỗi model (Bảng 3/4/6)</td></tr>
+        <tr><td>7</td><td>Ensemble</td><td>Soft voting, trọng số W<sub>j</sub> = AUC của model j → chọn AB+XB</td><td>Mô hình cuối (Bảng 7/8)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Outlier rejection (IQR) — eq. (2)</span>
+      Giữ x nếu  Q1 − 1.5·IQR  ≤  x  ≤  Q3 + 1.5·IQR<br>
+      với IQR = Q3 − Q1   (theo từng thuộc tính, x ∈ R<sup>n</sup>)
+    </div>
+    <div class="formula">
+      <span class="label">Z-score standardization — eq. (4)</span>
+      x' = (x − μ) / σ   (μ, σ = trung bình &amp; độ lệch chuẩn của thuộc tính)
+    </div>
+    <div class="formula">
+      <span class="label">AUC-weighted soft voting — eq. (6)</span>
+      Y(X) = Σ<sub>j=1..m</sub> W<sub>j</sub> · P<sub>j</sub>(X) ,  với W<sub>j</sub> = AUC của model j<br>
+      Nhãn cuối = C<sub>i</sub> nếu P<sub>en</sub> = max(Y(X))   (m = 6 base model, C = 2 lớp)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 2 (block diagram pipeline) &amp; Fig. 8 (confusion matrix + ROC của AB+XB) trong PDF gốc.
+      <span class="caption">Chưa crop/embed base64 — ưu tiên số đúng từ bảng. Xem trực tiếp source.pdf, Fig. 2 &amp; Fig. 8.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.950</span><span class="label">AUC — AB+XB ensemble (Bảng 7/8)</span></div>
+      <div class="metric"><span class="value">0.789</span><span class="label">Sensitivity — AB+XB (Bảng 7/8)</span></div>
+      <div class="metric"><span class="value">0.934</span><span class="label">Specificity — AB+XB (Bảng 7/8)</span></div>
+      <div class="metric"><span class="value">66.234</span><span class="label">DOR — AB+XB (Bảng 7/8)</span></div>
+      <div class="metric"><span class="value">+2.00%</span><span class="label">AUC vượt SOTA [7] (Bảng 9)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>PID</td><td>AB+XB ⭐</td><td>5-fold CV; P+Q+Corr</td><td><strong>AUC 0.950 ± 0.021</strong></td><td>Bảng 7 &amp; Bảng 8</td></tr>
+        <tr><td>PID</td><td>AB+XB</td><td>5-fold CV</td><td><strong>Sn 0.789 ± 0.077</strong></td><td>Bảng 7 &amp; Bảng 8</td></tr>
+        <tr><td>PID</td><td>AB+XB</td><td>5-fold CV</td><td><strong>Sp 0.934 ± 0.012</strong></td><td>Bảng 7 &amp; Bảng 8</td></tr>
+        <tr><td>PID</td><td>AB+XB</td><td>5-fold CV</td><td><strong>FOR 0.092 ± 0.032</strong></td><td>Bảng 7 &amp; Bảng 8</td></tr>
+        <tr><td>PID</td><td>AB+XB</td><td>5-fold CV</td><td><strong>DOR 66.234 ± 33.323</strong></td><td>Bảng 7 &amp; Bảng 8</td></tr>
+        <tr><td>PID</td><td>AB+XB</td><td>Precision (positive predictions)</td><td>84.2%</td><td>Section III-D (Fig. 8a)</td></tr>
+        <tr><td>PID</td><td>AB+XB</td><td>Điểm vận hành ROC: FPR 0.066</td><td>TPR 0.788</td><td>Fig. 8(b), Section III-D</td></tr>
+        <tr><td>PID</td><td>XGBoost (đơn tốt nhất)</td><td>5-fold CV; P+Q+Corr, 6 feature</td><td>AUC 0.946 ± 0.020</td><td>Bảng 4 &amp; Bảng 8</td></tr>
+        <tr><td>PID</td><td>XGBoost</td><td>5-fold CV</td><td>Sn 0.768 / Sp 0.943 / DOR 71.369</td><td>Bảng 8</td></tr>
+        <tr><td>PID</td><td>MLP (3 hidden 16-64-64)</td><td>5-fold CV; P+Q</td><td>AUC 0.902 ± 0.020</td><td>Bảng 6 &amp; Bảng 8</td></tr>
+        <tr><td>PID</td><td>AdaBoost (đơn)</td><td>5-fold CV; P+Q+Corr, 4 feature</td><td>AUC 0.941 ± 0.014</td><td>Bảng 4</td></tr>
+        <tr><td>PID</td><td>RF (đơn)</td><td>5-fold CV; P+Q+Corr, 6 feature</td><td>AUC 0.939 ± 0.019</td><td>Bảng 4</td></tr>
+        <tr><td>PID</td><td>SOTA [7] Maniruzzaman 2018 (RF)</td><td>So sánh cùng dataset</td><td>AUC 0.930 (Sn 0.960 / Sp 0.797)</td><td>Bảng 9</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      AB+XB vượt XB đơn: Sn +2.1%, FOR +0.8%, AUC +0.6% (Section III-E); vượt MLP: Sn +3.2%, Sp +3.4%, FOR +1.5%, AUC +4.8%. So với SOTA, AB+XB thắng AUC &amp; balanced accuracy nhưng Sn (0.789) thấp hơn [7] (0.960) và [20] GPA (0.880) — ưu thế Sp/AUC, kém ở recall ca dương. Tất cả số đã đối chiếu source.pdf (trùng khớp với OCR).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro khi tái lập</strong>
+      <ul>
+        <li>Bài không nói rõ outlier rejection + mean imputation + feature selection được fit <em>bên trong từng fold</em> hay trên toàn dataset → nếu fit toàn cục sẽ <strong>leakage</strong>, AUC thực thấp hơn. Khi tái lập PHẢI đặt 3 bước này trong CV fold.</li>
+        <li>Loại outlier theo IQR làm <strong>thay đổi số mẫu</strong> giữa các cấu hình (P ít mẫu hơn P+Q) → so AUC giữa các hàng Bảng 3 không hoàn toàn cùng cỡ mẫu.</li>
+        <li>UNKNOWN: seed ngẫu nhiên, phiên bản thư viện, độ rộng đầy đủ của lưới grid search — cần đọc code GitHub để khớp.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Chỉ 1 dataset PID (768 mẫu, chỉ nữ PIMA) → <strong>không external validation</strong>, khó khái quát.</li>
+        <li>Sensitivity 0.789 còn thấp cho sàng lọc lâm sàng (bỏ sót ~21% ca dương); ưu thế của bài là Sp/AUC.</li>
+        <li>Không có XAI — ensemble AB+XB là hộp đen, chưa giải thích feature nào dẫn dắt dự đoán.</li>
+        <li>Web app mới chỉ là kế hoạch tương lai, chưa triển khai/đánh giá thực tế.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Baseline Layer 2 mạnh</strong>: ensemble boosting + metric AUC cho imbalance + code public + CV chuẩn (mean ± std) — chuẩn so sánh tốt cho mọi model mới trên PID.</li>
+        <li>Bài học chuyển giao: dùng AUC (không phải accuracy) làm trọng số ensemble khi class lệch; kết hợp boosting tuần tự (AB) + song song (XB) có tương quan thấp.</li>
+        <li>Cơ hội cải tiến: thêm SHAP/LIME (Layer 4), external validation đa trung tâm, đẩy Sensitivity, và đặt toàn bộ preprocessing trong fold để khử leakage.</li>
+        <li>Kết quả 0.950 AUC chỉ nên xem là <strong>sàng lọc</strong>, không thay chẩn đoán y khoa.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

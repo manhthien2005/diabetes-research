@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yu et al. 2010 — SVM cho ĐTĐ & tiền ĐTĐ — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --surface: #ffffff; --border: #e2e8f0; --text: #0f172a; --muted: #64748b;
+    --primary: #2563eb; --primary-soft: #dbeafe; --success: #047857; --success-soft: #d1fae5;
+    --danger: #b91c1c; --danger-soft: #fee2e2; --warning: #b45309; --warning-soft: #fef3c7;
+    --accent: #7c3aed; --accent-soft: #ede9fe; --code-bg: #0f172a; --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+  .header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white; border-radius: 16px; padding: 28px 32px; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15); margin-bottom: 22px; }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; color: #fff; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .compare-card { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid var(--accent-soft); border-left: 5px solid var(--accent); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(124,58,237,0.06); }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ 1. HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Application of support vector machine modeling for prediction of common diseases: the case of diabetes and pre-diabetes</h1>
+    <div class="meta">
+      <span>📅 <strong>2010</strong></span>
+      <span>📰 BMC Medical Informatics and Decision Making</span>
+      <span>📚 <strong>524</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1186/1472-6947-10-16" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không (chỉ demo web 2010, URL đã chết)</span>
+      <span class="badge yes">📊 Dataset: Có (NHANES công khai)</span>
+      <span class="badge horizon">⏱️ Horizon: Early detection</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.cdc.gov/nchs/nhanes/" target="_blank">NHANES 1999–2004</a> — khảo sát cắt ngang, đại diện dân số Mỹ; nhãn ĐTĐ/tiền ĐTĐ lập theo đường huyết đói (FPG) + tự khai báo.</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ 2. COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Bài SVM-nền-tảng chứng minh có thể phát hiện người ĐTĐ / tiền ĐTĐ <strong>chưa được chẩn đoán</strong> chỉ bằng biến lâm sàng đơn giản <strong>không cần xét nghiệm</strong>, và SVM đạt hiệu năng <strong>ngang bằng hồi quy logistic</strong>; kèm công cụ web "Diabetes Classifier" cho phép chỉnh ngưỡng sàng lọc.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">AUC <strong>0.8347</strong> — Scheme I (SVM-RBF, test set — Table 3). Scheme II (undiagnosed/pre vs không): AUC 0.7318 (SVM-linear, test — Table 3).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">LibSVM (kernel RBF & linear) + chọn biến tự động (Chen) → 8/10 biến no-lab; train cân bằng (undersample non-cases); tuning C/gamma bằng grid.py 5-fold; đánh giá test 20% + 10-fold CV.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">SVM ≈ MLR (hồi quy logistic): DeLong p=0.3672 (I) & 0.6718 (II) — <strong>không khác biệt thống kê</strong>, không có "phép màu ML". So <code>hasan2020</code> (PIMA, AUC 0.950, có code): yu2010 AUC thấp hơn & không code, nhưng dùng NHANES đại diện + biến no-lab + nhắm <em>undiagnosed</em> (early detection).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 3. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">Yu và cộng sự (CDC, 2010) đặt câu hỏi: liệu <strong>support vector machine (SVM)</strong> — một phương pháp "model-free" — có phân loại được người mắc ĐTĐ / tiền ĐTĐ tốt hơn hồi quy logistic truyền thống không, khi chỉ dùng <strong>biến lâm sàng đơn giản không cần xét nghiệm</strong> (tuổi, BMI, vòng eo, tiền sử gia đình…). Họ dùng NHANES 1999–2004 với hai sơ đồ phân loại nhị phân: <strong>Scheme I</strong> (ĐTĐ đã/chưa chẩn đoán vs còn lại) và <strong>Scheme II</strong> (undiagnosed ĐTĐ hoặc tiền ĐTĐ vs không ĐTĐ). Kết luận trung thực: SVM <strong>ngang bằng, không vượt</strong> hồi quy logistic; giá trị thật nằm ở chứng minh khả thi sàng lọc no-lab + công cụ web chỉnh ngưỡng. Đây là một trong những bài SVM-screening được trích dẫn nhiều nhất (457 cite) và là <strong>tiền thân</strong> của hướng NHANES no-lab sau này (vd <code>dinh2019</code>).</p>
+    <h3>Vì sao là Layer 2 (Model Hiệu Quả)?</h3>
+    <table>
+      <tr><td>🎯 Đóng góp = MÔ HÌNH</td><td>Trọng tâm bài là <strong>so sánh thuật toán phân loại</strong> (SVM 4 kernel vs hồi quy logistic) + chọn biến cho model — đúng phạm vi Layer 2, không phải tiền xử lý (L1), cohort EHR (L3) hay giải thích (L4).</td></tr>
+      <tr><td>🔬 So sánh kernel</td><td>Đánh giá 4 kernel (linear/poly/RBF/sigmoid) và chọn kernel thắng theo AUC (Table 2) — bản chất là tối ưu & tuyển chọn mô hình.</td></tr>
+      <tr><td>⏱️ Horizon = early_detection</td><td>Scheme II nhắm thẳng nhóm <strong>chưa được chẩn đoán / tiền lâm sàng</strong> (undiagnosed + pre-diabetes) — tinh thần sàng lọc/phát hiện sớm. Dữ liệu cắt ngang nhưng khung bài toán là <em>screening</em> người chưa biết mình mắc, nên gán <code>early_detection</code> (cùng logic <code>dinh2019</code> Case II).</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>LibSVM</code></td><td>Thư viện train SVM (4 kernel) + Java prediction code nhúng vào web tool</td><td>Chuẩn công nghiệp, công khai, dễ tái lập</td><td>SVM chỉ xuất "decision value", <strong>không cho xác suất</strong> → khó calibration</td></tr>
+        <tr><td><code>grid.py</code> (LibSVM)</td><td>Dò siêu tham số C &amp; gamma bằng 5-fold CV</td><td>Tự động hoá tuning</td><td>Giá trị C/gamma tối ưu <strong>không được báo cáo</strong> (UNKNOWN)</td></tr>
+        <tr><td>Chọn biến tự động (Chen 2005)</td><td>Chọn tập biến tốt nhất từ 14 biến ứng viên</td><td>Giảm chiều, giữ biến dễ đo</td><td>Kết hợp "tinh chỉnh tay" → quy trình chọn biến <strong>khó lặp lại chính xác</strong></td></tr>
+        <tr><td><code>SUDAAN</code> (SAS)</td><td>Hồi quy logistic đa biến (MLR) làm mốc so sánh, có xử lý thiết kế khảo sát phức tạp</td><td>Chuẩn dịch tễ; so sánh công bằng cùng biến</td><td>Chỉ dùng làm baseline, không phải đóng góp</td></tr>
+        <tr><td>J2EE + Hibernate + Struts</td><td>Xây web tool "Diabetes Classifier" (nhập biến → xếp loại, chỉnh ngưỡng)</td><td>Minh hoạ triển khai, trade-off Sn/Sp theo ngưỡng</td><td>Chỉ là demo 2010; URL HugeNavigator <strong>gần như đã chết</strong></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 5. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC — Scheme I</strong> (Table 2). ⭐ = kernel thắng mỗi scheme paper chọn.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC Scheme I</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>SVM-RBF</code> ⭐<small> (thắng Scheme I)</small></td><td>Kernel phi tuyến</td><td><strong>0.8347</strong></td><td>Tốt nhất cho Scheme I; nắm phi tuyến</td><td>Nhỉnh không đáng kể so linear/sigmoid</td></tr>
+        <tr><td>2</td><td><code>SVM-Sigmoid</code></td><td>Kernel phi tuyến</td><td><strong>0.8341</strong></td><td>Gần bằng RBF</td><td>Không được chọn</td></tr>
+        <tr><td>3</td><td><code>SVM-Linear</code> ⭐<small> (thắng Scheme II: 0.7318)</small></td><td>Kernel tuyến tính</td><td><strong>0.8332</strong></td><td>Thắng ở Scheme II; đơn giản, ít overfit</td><td>Kém RBF chút ở Scheme I</td></tr>
+        <tr><td>4</td><td><code>MLR</code> (hồi quy logistic)</td><td>Baseline dịch tễ</td><td><strong>0.8319</strong></td><td>Cho xác suất; diễn giải dễ; <strong>ngang SVM</strong> (p=0.37)</td><td>Không phải "ML" — nhưng cũng không thua</td></tr>
+        <tr><td>5</td><td><code>SVM-Polynomial</code></td><td>Kernel đa thức</td><td><strong>0.7655</strong></td><td>—</td><td>Kém rõ rệt nhất</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Ghi chú: Scheme II AUC (Table 2): linear 0.7318 (thắng) &gt; sigmoid 0.7273 &gt; RBF 0.7259 &gt; poly 0.6673; MLR 0.7335. Kernel thắng khác nhau giữa 2 scheme → không có kernel "vô địch tuyệt đối".</p>
+  </section>
+
+  <!-- ═══════════════ 6. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>NHANES 1999–2004</strong></td>
+          <td>Scheme I: 1.461 case + 4.853 non-case (6.314). Scheme II: 1.709 case + 3.206 non-case (4.915). Train 80% / test 20% (Table 1)</td>
+          <td>14 biến ứng viên no-lab → chọn <strong>8</strong> (Scheme I) / <strong>10</strong> (Scheme II)</td>
+          <td>Khảo sát cắt ngang đại diện dân số Mỹ, tuổi ≥20, không mang thai. Nhãn theo FPG: ≥126=undiagnosed, 100–125=tiền ĐTĐ, &lt;100=không; đã chẩn đoán = tự khai báo.</td>
+          <td><a href="https://www.cdc.gov/nchs/nhanes/" target="_blank">NHANES (CDC)</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">8 biến Scheme I: tiền sử gia đình, tuổi, chủng tộc, cân nặng, chiều cao, vòng eo, BMI, tăng huyết áp. Scheme II thêm: giới tính, hoạt động thể chất. Đáng chú ý: <strong>không biến nào là glucose/HbA1c</strong> — dù nhãn định nghĩa bằng FPG, feature hoàn toàn no-lab → hạn chế rò rỉ nhãn.</p>
+  </section>
+
+  <!-- ═══════════════ 7. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Lập nhãn</td><td>Phân 4 nhóm theo FPG + tự khai báo → 2 sơ đồ nhị phân (Table 1)</td><td>Scheme I &amp; Scheme II</td></tr>
+        <tr><td>2</td><td>Chọn biến ứng viên</td><td>14 biến lâm sàng no-lab</td><td>Không gian đặc trưng</td></tr>
+        <tr><td>3</td><td>Chọn biến</td><td>Tự động (Chen 2005) + tinh chỉnh tay</td><td>8 biến (I) / 10 biến (II)</td></tr>
+        <tr><td>4</td><td>Chuẩn hoá</td><td>Đưa mọi giá trị về [−1, +1]; biến hạng mục gán số thủ công</td><td>Ma trận đầu vào LibSVM</td></tr>
+        <tr><td>5</td><td>Cân bằng lớp (train)</td><td><strong>Undersample</strong> non-cases để bằng số cases</td><td>Tập train cân bằng</td></tr>
+        <tr><td>6</td><td>Tuning</td><td>grid.py dò C, gamma bằng 5-fold CV</td><td>SVM tối ưu / kernel</td></tr>
+        <tr><td>7</td><td>Train &amp; so sánh</td><td>SVM 4 kernel + MLR (SUDAAN) trên cùng biến</td><td>Các mô hình</td></tr>
+        <tr><td>8</td><td>Đánh giá</td><td>Test 20% (giữ riêng) + 10-fold CV trên train; cutoff mặc định 0</td><td>AUC, Sn, Sp, PPV, NPV</td></tr>
+        <tr><td>9</td><td>So sánh AUC</td><td>DeLong test (SVM vs MLR)</td><td>p-value</td></tr>
+        <tr><td>10</td><td>Triển khai</td><td>Nhúng SVM vào web tool + bảng tra ngưỡng</td><td>Diabetes Classifier</td></tr>
+      </tbody>
+    </table>
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Chỉ số đánh giá tại một ngưỡng cutoff (paper, mục Statistics)</span>
+      Sensitivity = TP / (TP + FN) &nbsp;·&nbsp; Specificity = TN / (TN + FP)<br>
+      PPV = TP / (TP + FP) &nbsp;·&nbsp; NPV = TN / (TN + FN)
+    </div>
+    <div class="formula">
+      <span class="label">Ý tưởng SVM (mục Model generation)</span>
+      Tìm siêu phẳng lề cực đại tách 2 lớp; tham số C = đánh đổi giữa (ít phân loại sai) ↔ (lề rộng);<br>
+      kernel (linear/poly/RBF/sigmoid) đưa dữ liệu lên không gian nhiều chiều để tách được lớp phi tuyến.
+    </div>
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">🖼️ Fig 2 — Đường cong ROC cho Scheme I (a) &amp; II (b), SVM vs hồi quy logistic. <span class="caption">Chưa crop base64; số AUC tương ứng đã trích đầy đủ ở mục Kết quả (Table 2 &amp; 3).</span></div>
+  </section>
+
+  <!-- ═══════════════ 8. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.8347</span><span class="label">AUC — Scheme I (SVM-RBF, test · Table 3)</span></div>
+      <div class="metric"><span class="value">0.7318</span><span class="label">AUC — Scheme II (SVM-linear, test · Table 3)</span></div>
+      <div class="metric"><span class="value">0.77 / 0.75</span><span class="label">Sn / Sp — Scheme I test (Table 3)</span></div>
+      <div class="metric"><span class="value">p=0.37</span><span class="label">DeLong SVM vs MLR, Scheme I (Fig 2) — không khác</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Sơ đồ</th><th>Mô hình</th><th>Setting</th><th>Metric</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>Scheme I</td><td>SVM-RBF</td><td>Test 20%</td><td><strong>AUC 0.8347</strong> · Sn 0.7715 · Sp 0.7503 · PPV 0.4926 · NPV 0.9127</td><td>Table 3</td></tr>
+        <tr><td>Scheme I</td><td>SVM-RBF</td><td>Training</td><td>AUC 0.8383 · Sn 0.7938 · Sp 0.7169</td><td>Table 3</td></tr>
+        <tr><td>Scheme I</td><td>SVM-RBF</td><td>10-fold CV</td><td>AUC 0.8242 · Sn 0.7765 · Sp 0.7027</td><td>Table 3</td></tr>
+        <tr><td>Scheme I</td><td>MLR</td><td>Test</td><td>AUC 0.8319 (≈ SVM; p=0.3672)</td><td>Fig 2 / text</td></tr>
+        <tr><td>Scheme II</td><td>SVM-linear</td><td>Test 20%</td><td><strong>AUC 0.7318</strong> · Sn 0.7359 · Sp 0.6254 · PPV 0.5061 · NPV 0.8195</td><td>Table 3</td></tr>
+        <tr><td>Scheme II</td><td>SVM-linear</td><td>10-fold CV</td><td>AUC 0.7357 · Sn 0.7059 · Sp 0.6589</td><td>Table 3</td></tr>
+        <tr><td>Scheme II</td><td>MLR</td><td>Test</td><td>AUC 0.7335 (≈ SVM; p=0.6718)</td><td>Fig 2 / text</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Đọc nhanh: Scheme I (tách ĐTĐ rõ) dễ hơn Scheme II (tách cả tiền ĐTĐ/undiagnosed — chồng lấn nhiều hơn) → AUC 0.83 vs 0.73. PPV thấp (0.49–0.51) phản ánh sàng lọc khó, nhưng lưu ý train đã <em>cân bằng nhân tạo</em> nên PPV không suy ra trực tiếp cho prevalence thật. Thông điệp cốt lõi: <strong>SVM không vượt hồi quy logistic</strong> ở cả 2 scheme.</p>
+  </section>
+
+  <!-- ═══════════════ 9. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+    <div class="callout">
+      <strong>⚠️ Rủi ro / điểm cần soi</strong>
+      <ul>
+        <li><strong>Undersampling</strong> non-cases để cân bằng train → vứt mẫu + điểm vận hành (Sn/Sp/PPV) không phản ánh prevalence thật ~9–13% của NHANES.</li>
+        <li>Nhãn dựa trên <strong>một lần FPG</strong> (không OGTT/HbA1c, không đo lặp) — chuẩn ADA hiện đại đòi ≥2 lần → nhiễu nhãn, ranh giới tiền ĐTĐ/undiagnosed mờ.</li>
+        <li>SVM chỉ cho "decision value", <strong>không cho xác suất</strong> → không thể calibration trực tiếp; công cụ web phải dựng bảng tra ngưỡng thủ công.</li>
+        <li>Điểm cộng hiếm: feature <strong>không chứa glucose/HbA1c</strong> nên rò rỉ nhãn (label leakage) thấp — khác nhiều bài trong kho giữ FPG làm feature.</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>🎯 Giới hạn</strong>
+      <ul>
+        <li><strong>Không external validation</strong> — tác giả tự nêu "cannot be certain applicable to other populations"; chỉ 1 nguồn (NHANES Mỹ).</li>
+        <li><strong>Không code repo</strong>; web tool "Diabetes Classifier" là demo 2010 trên HugeNavigator, URL gần như đã chết → tái lập chỉ dựa mô tả (đủ ở mức <em>medium</em>).</li>
+        <li>Siêu tham số C/gamma tối ưu <strong>không báo cáo</strong>; quy trình chọn biến "tự động + tinh chỉnh tay" khó lặp chính xác.</li>
+        <li>Bài 2010, <strong>một SVM đơn</strong>, chưa boosting/deep/ensemble; AUC khiêm tốn so chuẩn hiện nay.</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Neo Layer 2 cho horizon <code>early_detection</code></strong> — cụ thể là nhánh <em>tầm soát undiagnosed / tiền ĐTĐ</em>, đúng đề tài "phát hiện sớm" đang xét.</li>
+        <li><strong>Bằng chứng citable (457 cite) rằng ML ≈ hồi quy logistic</strong> — củng cố trực tiếp mũi nhọn "đánh giá trung thực" (QA_LOG Q002/Q003): không phải cứ SVM/ML là hơn model đơn giản.</li>
+        <li>Mẫu hình <strong>no-lab screening + ngưỡng tùy chỉnh</strong> (đánh đổi Sn/Sp cho mục tiêu chương trình) — hữu ích cho phần triển khai/clinical của workflow.</li>
+        <li>Là <strong>tiền thân</strong> của <code>dinh2019</code> (NHANES no-lab, Case II undiagnosed/pre) — dùng làm mốc lịch sử/related-work, KHÔNG phải component để xây model chính (cũ + đơn SVM + không code).</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

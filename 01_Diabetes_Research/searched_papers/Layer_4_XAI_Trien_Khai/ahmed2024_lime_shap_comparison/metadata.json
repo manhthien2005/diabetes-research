@@ -1,0 +1,70 @@
+{
+  "paper_id": "ahmed2024_lime_shap_comparison",
+  "title": "A Comparative Analysis of LIME and SHAP Interpreters With Explainable ML-Based Diabetes Predictions",
+  "authors": [
+    "Shamim Ahmed",
+    "M. Shamim Kaiser",
+    "Mohammad Shahadat Hossain",
+    "Karl Andersson"
+  ],
+  "year": 2024,
+  "venue": "IEEE Access",
+  "doi": "10.1109/ACCESS.2024.3422319",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 122,
+  "citations_secondary": 110,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": null,
+  "license": "CC-BY-NC-ND",
+  "code_url": null,
+  "datasets_mentioned": [
+    "brfss-2015-diabetes-health-indicators"
+  ],
+  "dataset_slugs": [
+    "brfss"
+  ],
+  "method_slugs": [
+    "logistic-regression",
+    "random-forest",
+    "lime",
+    "shap",
+    "explainable-ai",
+    "standardization"
+  ],
+  "layer": 4,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 3,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 6,
+  "pdf_status": "downloaded",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "corrections": {
+    "model": "Toàn văn chỉ HUẤN LUYỆN DUY NHẤT Logistic Regression. Random Forest (trong method_slugs cũ) chỉ được nêu như ví dụ thuật toán ML chung và như mô hình mà SHAP TreeExplainer chạy nhanh — KHÔNG được train/báo cáo kết quả trong thực nghiệm. method_slugs nên bỏ 'random-forest'.",
+    "best_metric": "Đã đối chiếu source.pdf p.7: Table 2 = Acc 0.86 test; lớp 0: P/R/F1 0.87/0.98/0.92 (Support 65376); lớp 1 (ĐTĐ): 0.51/0.15/0.23 (Support 10728); macro 0.69/0.56/0.58; weighted 0.82/0.86/0.83; confusion matrix Fig.4 TN=63842/FP=1534. Recall lớp ĐTĐ chỉ 0.15 → 86% chỉ là majority baseline trên dữ liệu lệch ~84:16. KHÔNG có AUC số (Fig.5 không in giá trị).",
+    "dataset": "Lệch nội tại: Table 1 ghi 253.681 dòng/22 cột; phần III.A & Abstract ghi 253.680 mẫu/21 feature. Dùng 253.680/21 feature làm chuẩn.",
+    "code": "Xác nhận KHÔNG có code public (code_url=null). reproducible=low.",
+    "label_term": "Abstract gọi LR có 'spatial attention mechanism' — diễn đạt không chính xác (LR không có attention), không có chi tiết kỹ thuật chứng minh; bỏ qua, không phải đóng góp."
+  },
+  "scope_note": "[ĐÃ XÁC NHẬN SAU PHÂN TÍCH v2 — đối chiếu source.pdf] Layer 4 (XAI): so sánh trực tiếp LIME vs SHAP cho dự đoán ĐTĐ. Dataset = BRFSS2015 (diabetes_binary_health_indicators_BRFSS2015.csv, 253.680 mẫu khảo sát CDC, 21 feature, nhãn nhị phân 0=không/1=tiền-ĐTĐ hoặc ĐTĐ) — DATASET CƠ BẢN (anh đang hạ ưu tiên BRFSS/PIMA). Model = DUY NHẤT Logistic Regression (KHÔNG có RF trong thực nghiệm — xem corrections), split 80/20, KHÔNG K-fold CV, KHÔNG cân bằng lớp. Best metric Acc 86% test (LR) NHƯNG Recall lớp ĐTĐ chỉ 0.15, F1 0.23 (Table 2) → 86% ≈ majority baseline trên dữ liệu lệch 84:16; không AUC số. Đóng góp thật = đối chiếu phương pháp LIME vs SHAP (Bảng 3-5, định tính). KHÔNG có code public. Horizon = cross_sectional (BRFSS 1 lần khảo sát, nhãn cùng thời điểm). IEEE Access 2024, 115 cite. PDF lấy qua IEEE staging server (xplorestaging). Verdict = weak: chỉ giữ làm tài liệu tham chiếu XAI + bài học ngược về báo accuracy đơn lẻ trên dữ liệu lệch, KHÔNG dùng làm baseline mô hình/dataset.",
+  "label_type": "binary",
+  "role": "later",
+  "role_note": "Đối chiếu LIME vs SHAP — chỉ cần nếu bài có phần XAI.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2024-07-03",
+    "age_years": 2.1,
+    "citations": 122,
+    "threshold": ">=30 (bài 1-3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

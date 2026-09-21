@@ -1,0 +1,25 @@
+{
+  "paper": "lai2019_predictive_models_diabetes",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 38.2,
+  "pages": 9,
+  "failed_pages": [],
+  "source_text_chars": 37899,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 7,
+  "qa": {
+    "out_chars": 38851,
+    "n_markdown_tables": 7,
+    "source_table_captions": 7,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 1.025,
+    "score": 100,
+    "warnings": []
+  }
+}

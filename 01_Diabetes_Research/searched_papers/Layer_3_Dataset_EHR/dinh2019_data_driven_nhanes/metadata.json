@@ -1,0 +1,71 @@
+{
+  "paper_id": "dinh2019_data_driven_nhanes",
+  "title": "A data-driven approach to predicting diabetes and cardiovascular disease with machine learning",
+  "authors": [
+    "An Dinh",
+    "Stacey Miertschin",
+    "Amber Young",
+    "Somya D. Mohanty"
+  ],
+  "year": 2019,
+  "venue": "BMC Medical Informatics and Decision Making",
+  "doi": "10.1186/s12911-019-0918-5",
+  "arxiv": null,
+  "pubmed": "31694707",
+  "pmc": "6836338",
+  "citations": 447,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://bmcmedinformdecismak.biomedcentral.com/track/pdf/10.1186/s12911-019-0918-5",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "nhanes"
+  ],
+  "dataset_slugs": [
+    "nhanes-diabetes"
+  ],
+  "method_slugs": [
+    "xgboost",
+    "weighted-ensemble",
+    "random-forest",
+    "svm",
+    "logistic-regression",
+    "downsampling",
+    "information-gain"
+  ],
+  "layer": 3,
+  "layer_uncertain": false,
+  "prediction_horizon": "early_detection",
+  "horizon_uncertain": false,
+  "reproducibility": 2,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 15,
+  "status": "chosen",
+  "analysis_status": "analyzed",
+  "chosen_at": "2026-06-17",
+  "analyzed_at": "2026-06-22",
+  "corrections": {
+    "prediction_horizon": "Xác nhận early_detection (bỏ horizon_uncertain): nhãn đo cùng kỳ với feature nhưng Case II nhắm thẳng người tiền/chưa-chẩn-đoán -> sàng lọc/phát hiện sớm, không phải onset N năm.",
+    "best_metric_timeframe": "AUC cao nhất thực sự là 0.962 (XGBoost, Case I, có lab, 2003-2014, Table 5), cao hơn con số 0.957 (1999-2014) mà abstract nêu; cả hai đều ghi trong analysis.",
+    "abstract_table_mismatch": "Abstract ghi pre-diabetes lab-based XGBoost = 84.4% nhưng Table 5 không có cell 0.844; Case II có-lab cao nhất chỉ 0.834 (XGBoost, 2003-2014). Lấy Table 5 làm gốc.",
+    "datasets": "metadata datasets_mentioned=['nhanes'] đúng; full text dùng 5 dataset phái sinh từ NHANES (4 tiểu đường + 1 CVD), không có dataset ngoài.",
+    "code": "Xác nhận không có code public (code_url=null đúng) — bài chỉ nêu future work web-tool."
+  },
+  "label_type": "binary",
+  "pdf_status": "downloaded",
+  "role": "design",
+  "role_note": "Mốc 'bỏ lab thì tụt bao nhiêu' (AUC 0.957 có-lab → 0.737 no-lab) + bằng chứng P1 (không nhắc trọng số khảo sát lần nào).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2019-11-06",
+    "age_years": 6.7,
+    "citations": 447,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

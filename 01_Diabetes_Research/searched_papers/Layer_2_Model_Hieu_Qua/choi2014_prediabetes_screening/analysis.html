@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choi et al. 2014 — ML sàng lọc tiền ĐTĐ trên KNHANES — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --surface: #ffffff; --border: #e2e8f0; --text: #0f172a; --muted: #64748b;
+    --primary: #2563eb; --primary-soft: #dbeafe; --success: #047857; --success-soft: #d1fae5;
+    --danger: #b91c1c; --danger-soft: #fee2e2; --warning: #b45309; --warning-soft: #fef3c7;
+    --accent: #7c3aed; --accent-soft: #ede9fe; --code-bg: #0f172a; --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+  .header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white; border-radius: 16px; padding: 28px 32px; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15); margin-bottom: 22px; }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; color: #fff; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .compare-card { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid var(--accent-soft); border-left: 5px solid var(--accent); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(124,58,237,0.06); }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ 1. HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Screening for Prediabetes Using Machine Learning Models</h1>
+    <div class="meta">
+      <span>📅 <strong>2014</strong></span>
+      <span>📰 Computational and Mathematical Methods in Medicine</span>
+      <span>📚 <strong>111</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1155/2014/618976" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không (không repo; ANN dùng NeuroSolution 6.0, SVM dùng MATLAB)</span>
+      <span class="badge yes">📊 Dataset: Có (KNHANES công khai)</span>
+      <span class="badge horizon">⏱️ Horizon: Early detection</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://knhanes.kdca.go.kr/knhanes/eng/" target="_blank">KNHANES 2010 (KNHANES V-1)</a> — khảo sát quốc gia Hàn Quốc; dùng train + internal validation (n=4.685). Nhãn tiền ĐTĐ theo FPG (IFG 100–125 mg/dL).</li>
+      <li>🔹 <a href="https://knhanes.kdca.go.kr/knhanes/eng/" target="_blank">KNHANES 2011 (KNHANES V-2)</a> — <strong>EXTERNAL validation</strong> (n=4.566), cohort thời gian khác, không trùng người với 2010.</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ 2. COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Xây &amp; kiểm định mô hình ML (ANN + SVM) <strong>sàng lọc tiền ĐTĐ (IFG)</strong> trên khảo sát quốc gia KNHANES, có <strong>external validation</strong> (KNHANES 2011) — điểm hiếm; so trực tiếp với screening score dựa hồi quy logistic. Loại toàn bộ người ĐTĐ (chỉ tiền ĐTĐ vs bình thường). Đặc trưng <strong>không chứa glucose/HbA1c</strong> (leakage-safe). Kết luận trung thực: ML <strong>nhỉnh hơn score nhưng khiêm tốn</strong> (~0.02 AUC).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">SVM <strong>AUC 0.731</strong> — external (KNHANES 2011, Table 2), cao nhất external (&gt; ANN 0.729 &gt; score 0.712). ANN thắng internal: <strong>AUC 0.768</strong> (KNHANES 2010, Table 2).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">ANN = MLP-1-B-M (1 hidden layer, batch + momentum, NeuroSolution 6.0); SVM = Gaussian kernel, grid-search C=10 &amp; σ=10, 10-fold CV (MATLAB 2012a); baseline = screening score Lee et al. (hồi quy logistic, cutoff ≥5). 7 đặc trưng no-lab chọn bằng backward logistic từ 9 ứng viên.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value"><strong>Bài chị em của <code>yu2010</code></strong> (SVM prediabetes NHANES): cùng khung no-lab screening, AUC tương đương (~0.73), nhưng choi2014 <strong>THÊM external validation</strong> mà yu2010 thiếu, và tách sạch tiền ĐTĐ (loại mọi ĐTĐ). So <code>hasan2020</code> (PIMA, AUC 0.950, có code): choi2014 AUC thấp hơn nhiều nhưng task khó hơn thật (no-lab + external + prediabetes), còn PIMA giữ glucose làm feature (leakage-prone) &amp; không external.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 3. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">Choi và cộng sự (Yonsei University, 2014) đặt vấn đề: đa số công cụ sàng lọc lâm sàng nhắm <strong>ĐTĐ chưa chẩn đoán</strong>, còn <strong>tiền ĐTĐ</strong> — dù đã là gánh nặng y tế lớn (≈17,4% người trưởng thành Hàn Quốc 2005 theo IFG) — thì ít được nghiên cứu. Họ xây hai mô hình ML (<strong>ANN</strong> và <strong>SVM</strong>) để sàng lọc tiền ĐTĐ, định nghĩa bằng <strong>đường huyết đói (FPG) 100–125 mg/dL</strong> (IFG), rồi so với một <strong>screening score</strong> dựa hồi quy logistic (chỉnh từ Lee et al. cho tiền ĐTĐ). Điểm mạnh phương pháp: dùng KNHANES 2010 để train + internal validation và <strong>KNHANES 2011 làm external validation</strong> (cohort khác năm, không trùng người) — điều mà bài chị em <code>yu2010</code> không có. Kết luận trung thực của tác giả: ML <strong>vượt score nhưng biên độ khiêm tốn</strong> (SVM hơn score 0.019 AUC / 6,2% accuracy ở external), và <strong>tiền ĐTĐ khó dự đoán hơn ĐTĐ</strong> (score AUC 0.712 cho tiền ĐTĐ vs 0.751 cho undiagnosed ĐTĐ, Table 3).</p>
+    <h3>Vì sao là Layer 2 (Model Hiệu Quả)?</h3>
+    <table>
+      <tr><td>🎯 Đóng góp = MÔ HÌNH</td><td>Trọng tâm bài là <strong>so sánh &amp; tuyển chọn thuật toán phân loại</strong> (ANN vs SVM vs screening score logistic) cho cùng bài toán, cùng bộ 7 biến — đúng phạm vi Layer 2, không phải tiền xử lý (L1), cohort/EHR (L3) hay giải thích (L4).</td></tr>
+      <tr><td>🔬 Tuning &amp; chọn model</td><td>Tối ưu SVM bằng grid-search C/σ với 10-fold CV, chọn kiến trúc ANN tốt nhất (MLP-1-B-M) qua thử nhiều loại mạng — bản chất là kỹ thuật tối ưu hoá &amp; tuyển chọn mô hình.</td></tr>
+      <tr><td>⏱️ Horizon = early_detection</td><td>Bài nhắm thẳng <strong>sàng lọc tiền ĐTĐ</strong> — phát hiện người ở trạng thái tiền lâm sàng để can thiệp sớm. Dữ liệu cắt ngang nhưng khung bài toán là <em>screening</em> nhóm chưa biết mình có IFG, nên gán <code>early_detection</code> (cùng logic <code>yu2010</code>).</td></tr>
+      <tr><td>🛡️ Leakage-safe</td><td>Biomarker định nghĩa nhãn là <strong>FPG</strong> nhưng FPG <strong>KHÔNG</strong> nằm trong 7 đặc trưng; toàn bộ feature là nhân trắc/hỏi đáp (tuổi, giới, BMI, vòng eo, tăng huyết áp, rượu, tiền sử gia đình) → rò rỉ nhãn thấp — giống điểm mạnh của <code>yu2010</code>.</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>NeuroSolution 6.0</code></td><td>Phần mềm thương mại xây ANN; thử nhiều loại mạng (MLP, GRNN, PNN, RBF, feedforward…) rồi chọn MLP-1-B-M</td><td>Tự động dò cấu trúc &amp; tham số tối ưu; đơn giản hoá dựng ANN</td><td><strong>Phần mềm đóng, không mã nguồn</strong>; learning rate, momentum, số hidden node cuối cùng <strong>không báo cáo</strong> (UNKNOWN) → khó lặp chính xác</td></tr>
+        <tr><td><code>MATLAB 2012a</code></td><td>Xây &amp; huấn luyện SVM (Gaussian kernel)</td><td>Chuẩn phổ biến; C=10, σ=10 được nêu rõ → phần SVM tái lập được</td><td>Không mã nguồn kèm; phụ thuộc license MATLAB</td></tr>
+        <tr><td>Backward logistic regression</td><td>Chọn đặc trưng: từ 9 biến ứng viên → <strong>7 biến</strong> (3 bước loại biến không tương quan có ý nghĩa với nhãn)</td><td>Giảm chiều; Hosmer-Lemeshow p=0.132 (mô hình vừa khít); minh bạch quy trình</td><td>Chọn biến theo tương quan tuyến tính — có thể bỏ tương tác phi tuyến</td></tr>
+        <tr><td>Grid search + 10-fold CV</td><td>Dò siêu tham số SVM: C ∈ {0.01…100}, σ ∈ {0.001…100}</td><td>Tự động hoá tuning; tránh overfit qua CV</td><td>Lưới rời rạc; chỉ áp cho SVM, ANN dò bằng phần mềm riêng</td></tr>
+        <tr><td>Screening score (Lee et al. 2012)</td><td>Baseline hồi quy logistic: 6 biến, thang điểm 0–11, cutoff ≥5 (Youden index)</td><td>Đơn giản, tính tay được, làm mốc so sánh công bằng cho dân số Hàn</td><td>Vốn xây cho <strong>ĐTĐ</strong>, chỉ chỉnh cutoff cho tiền ĐTĐ → so sánh không hoàn hảo (tác giả tự nêu)</td></tr>
+        <tr><td><code>SPSS 20.0</code> + <code>MedCalc 12.4</code></td><td>Thống kê mô tả, hồi quy, phân tích ROC/AUC, chọn cutoff Youden</td><td>Chuẩn thống kê y sinh</td><td>Chỉ là công cụ phân tích, không phải đóng góp</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 5. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC — external validation</strong> (KNHANES 2011, Table 2) — thước đo nghiêm ngặt nhất. ⭐ = model paper nhấn mạnh là tốt nhất (external). Ghi chú: <em>internal</em> thì ANN thắng (0.768).</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC external</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>SVM</code> (Gaussian, C=10, σ=10) ⭐<small> (thắng external)</small></td><td>Phân loại phi tuyến</td><td><strong>0.731</strong></td><td>Cao nhất external; ổn định giữa internal↔external (0.761→0.731); accuracy external cao nhất 66,1%</td><td>Kém ANN ở internal (0.761 vs 0.768); không cho xác suất; nhiều lần thử để tối ưu</td></tr>
+        <tr><td>2</td><td><code>ANN</code> (MLP-1-B-M)</td><td>Phân loại phi tuyến (mạng nơ-ron)</td><td><strong>0.729</strong></td><td><strong>Thắng internal (0.768)</strong>; nắm quan hệ phi tuyến; sensitivity external cao 77,2%</td><td>Tụt mạnh internal→external (0.768→0.729) → dấu hiệu kém khái quát hơn; hyperparam không báo cáo; specificity external thấp 56,7%</td></tr>
+        <tr><td>3</td><td><code>Screening score</code> (hồi quy logistic, Lee et al.)</td><td>Baseline lâm sàng, tính tay</td><td><strong>0.712</strong></td><td>Đơn giản, khả dụng ngay, không cần máy tính</td><td>Thấp nhất cả internal (0.734) &amp; external (0.712); nhưng <strong>chênh với ML chỉ ~0.02 AUC</strong> → ML không "vượt trội"</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Ghi chú: trên <em>internal</em> (Table 2) thứ hạng đảo: ANN 0.768 &gt; SVM 0.761 &gt; score 0.734. Cross-validation trên train (không vào Table 2, mục Results): SVM AUC 0.742 / acc 69,9%; ANN AUC 0.706 / acc 65,6%. Thông điệp trung thực: <strong>ANN và SVM bám sát nhau</strong>, và cả hai chỉ nhỉnh hơn screening score một khoảng nhỏ — không có "phép màu ML".</p>
+  </section>
+
+  <!-- ═══════════════ 6. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>KNHANES 2010</strong> (train + internal)</td>
+          <td>4.685 sau loại trừ (từ 8.958). Chia ngẫu nhiên 2:1 → <strong>train 3.134</strong> / <strong>internal val 1.551</strong>. Cân bằng nhãn: Normal 3.681 vs Prediabetes 1.004 (Table 1)</td>
+          <td>7 biến no-lab (chọn từ 9)</td>
+          <td>Khảo sát cắt ngang quốc gia Hàn Quốc, tuổi ≥20. Loại: thiếu dữ liệu (vòng eo, hút thuốc, rượu, BMI, vận động, tiền sử…), ĐTĐ đã/chưa chẩn đoán. Nhãn: IFG (100 ≤ FPG &lt; 126 mg/dL) = tiền ĐTĐ.</td>
+          <td><a href="https://knhanes.kdca.go.kr/knhanes/eng/" target="_blank">KNHANES (KDCA)</a></td>
+        </tr>
+        <tr>
+          <td><strong>KNHANES 2011</strong> (external)</td>
+          <td><strong>4.566</strong> sau loại trừ (từ 8.518), cùng flow chart. <strong>Không trùng người</strong> với 2010</td>
+          <td>Cùng 7 biến</td>
+          <td>External validation set — cohort năm sau, kiểm khả năng khái quát ngoài dữ liệu train. Đây là điểm rigor hiếm so với các bài cùng hướng.</td>
+          <td><a href="https://knhanes.kdca.go.kr/knhanes/eng/" target="_blank">KNHANES (KDCA)</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">7 đặc trưng (backward logistic từ 9): <strong>tuổi, giới, BMI, vòng eo, tăng huyết áp, lượng rượu/ngày, tiền sử gia đình ĐTĐ</strong>. Hai biến bị loại: <em>hút thuốc</em> (không còn ý nghĩa ở KNHANES 2010 — tác giả suy do luật cấm thuốc lá làm giảm tỉ lệ hút) &amp; <em>vận động thể lực</em>. Screening score Lee et al. dùng bộ 6 biến hơi khác (có hút thuốc, không có BMI/giới). <strong>Không biến nào là glucose/HbA1c</strong> — dù nhãn định nghĩa bằng FPG → hạn chế rò rỉ nhãn. Chỉ dùng FPG (không OGTT/HbA1c) vì KNHANES 2010 chỉ đo FPG cho mọi người, HbA1c chỉ đo ở người ĐTĐ.</p>
+  </section>
+
+  <!-- ═══════════════ 7. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Lọc mẫu</td><td>Loại &lt;20 tuổi, thiếu dữ liệu, ĐTĐ đã/chưa chẩn đoán (FPG≥126) — theo flow chart (Fig 1)</td><td>KNHANES 2010 n=4.685; 2011 n=4.566</td></tr>
+        <tr><td>2</td><td>Lập nhãn nhị phân</td><td>IFG: 100 ≤ FPG &lt; 126 mg/dL = tiền ĐTĐ; FPG &lt; 100 = bình thường</td><td>Prediabetes vs Normal</td></tr>
+        <tr><td>3</td><td>Chia dữ liệu</td><td>KNHANES 2010 chia ngẫu nhiên 2:1; KNHANES 2011 để riêng làm external (Fig 2)</td><td>Train 3.134 / internal 1.551 / external 4.566</td></tr>
+        <tr><td>4</td><td>Chọn đặc trưng</td><td>Backward logistic regression (3 bước) từ 9 biến ứng viên</td><td>7 biến no-lab</td></tr>
+        <tr><td>5</td><td>Train ANN</td><td>NeuroSolution: thử nhiều loại mạng → MLP 1 hidden layer, batch + momentum, backprop; internal CV chống overfit</td><td>Mô hình ANN (MLP-1-B-M)</td></tr>
+        <tr><td>6</td><td>Train SVM</td><td>Gaussian kernel; grid-search C ∈ {0.01…100}, σ ∈ {0.001…100}; 10-fold CV → C=10, σ=10</td><td>Mô hình SVM tối ưu</td></tr>
+        <tr><td>7</td><td>Dựng baseline</td><td>Screening score Lee et al. (6 biến, 0–11 điểm); chỉnh cutoff cho tiền ĐTĐ bằng Youden → ≥5 điểm</td><td>Screening score model</td></tr>
+        <tr><td>8</td><td>Đánh giá</td><td>ROC trên internal (2010) + external (2011); chọn cutoff tối đa Youden; tính AUC/Acc/Sn/Sp</td><td>Bảng hiệu năng (Table 2, 3)</td></tr>
+      </tbody>
+    </table>
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Định nghĩa nhãn tiền ĐTĐ — IFG (mục Materials &amp; Table 1)</span>
+      Tiền ĐTĐ (IFG): 100 mg/dL ≤ FPG &lt; 126 mg/dL &nbsp;·&nbsp; Bình thường: FPG &lt; 100 mg/dL<br>
+      (Loại khỏi phân tích: FPG ≥ 126 = ĐTĐ undiagnosed; và ĐTĐ đã chẩn đoán)
+    </div>
+    <div class="formula">
+      <span class="label">Chỉ số đánh giá tại ngưỡng cutoff (mục 2.6 Statistical Analyses)</span>
+      Accuracy = (đúng) / (tổng ca) &nbsp;·&nbsp; Sensitivity = TP / (TP + FN) &nbsp;·&nbsp; Specificity = TN / (TN + FP)
+    </div>
+    <div class="formula">
+      <span class="label">Chọn ngưỡng tối ưu (Youden index — mục 2.6)</span>
+      J = Sensitivity + Specificity − 1 &nbsp;→&nbsp; chọn cutoff làm CỰC ĐẠI J trên đường ROC
+    </div>
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">🖼️ Fig 3 — Đường cong ROC của ANN, SVM &amp; screening score cho internal (a) &amp; external (b). <span class="caption">Chưa crop base64; toàn bộ số AUC/Acc/Sn/Sp đã trích đầy đủ từ Table 2 ở mục Kết quả.</span></div>
+    <div class="figure">🖼️ Fig 1 &amp; Fig 2 — Flow chart loại trừ mẫu &amp; sơ đồ luồng dữ liệu KNHANES 2010→2011. <span class="caption">Chưa crop base64; số mẫu tương ứng đã trích ở mục Dataset.</span></div>
+  </section>
+
+  <!-- ═══════════════ 8. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.731</span><span class="label">AUC — SVM external, cao nhất external (Table 2)</span></div>
+      <div class="metric"><span class="value">0.768</span><span class="label">AUC — ANN internal, cao nhất internal (Table 2)</span></div>
+      <div class="metric"><span class="value">+0.019</span><span class="label">AUC SVM − score (external); acc +6,2% (Table 2/text)</span></div>
+      <div class="metric"><span class="value">n=4.566</span><span class="label">External validation (KNHANES 2011)</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>KNHANES 2010</td><td>ANN (MLP-1-B-M)</td><td>Internal val (n=1.551)</td><td><strong>AUC 0.768</strong> · Acc 69,0% · Sn 74,1% · Sp 67,5%</td><td>Table 2</td></tr>
+        <tr><td>KNHANES 2010</td><td>SVM (Gaussian)</td><td>Internal val (n=1.551)</td><td>AUC 0.761 · Acc 64,9% · Sn 78,9% · Sp 61,2%</td><td>Table 2</td></tr>
+        <tr><td>KNHANES 2010</td><td>Screening score</td><td>Internal val (n=1.551)</td><td>AUC 0.734 · Acc 63,4% · Sn 76,1% · Sp 60,0%</td><td>Table 2 / Table 3</td></tr>
+        <tr><td>KNHANES 2011</td><td>SVM (Gaussian)</td><td><strong>External</strong> (n=4.566)</td><td><strong>AUC 0.731</strong> · Acc 66,1% · Sn 69,4% · Sp 65,3%</td><td>Table 2</td></tr>
+        <tr><td>KNHANES 2011</td><td>ANN (MLP-1-B-M)</td><td><strong>External</strong> (n=4.566)</td><td>AUC 0.729 · Acc 60,7% · Sn 77,2% · Sp 56,7%</td><td>Table 2</td></tr>
+        <tr><td>KNHANES 2011</td><td>Screening score</td><td><strong>External</strong> (n=4.566)</td><td>AUC 0.712 · Acc 59,9% · Sn 74,3% · Sp 56,4%</td><td>Table 2 / Table 3</td></tr>
+        <tr><td>Train (2010)</td><td>SVM</td><td>10-fold CV</td><td>AUC 0.742 · Acc 69,9% (không vào Table 2)</td><td>Section 3 (text)</td></tr>
+        <tr><td>Train (2010)</td><td>ANN</td><td>10-fold CV</td><td>AUC 0.706 · Acc 65,6% (không vào Table 2)</td><td>Section 3 (text)</td></tr>
+        <tr><td>KNHANES 2011</td><td>Score — undiagnosed ĐTĐ</td><td>External (đối chứng độ khó)</td><td>AUC 0.751 · Acc 64,6% · Sn 74,4% · Sp 64,3%</td><td>Table 3</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Đọc nhanh: (1) <strong>External là phép thử thật</strong> — ở đó SVM (0.731) ≳ ANN (0.729) &gt; score (0.712), nhưng khoảng cách ML–score chỉ ~0.02 AUC. (2) ANN thắng internal (0.768) nhưng <strong>tụt mạnh</strong> ra external (0.729) trong khi SVM ổn định hơn (0.761→0.731) → SVM khái quát tốt hơn. (3) So Table 3, screening score dự đoán tiền ĐTĐ (AUC 0.712) <strong>kém hơn</strong> dự đoán undiagnosed ĐTĐ (0.751) 0.039 AUC — bằng chứng định lượng "tiền ĐTĐ khó dự đoán hơn ĐTĐ". Số đã đối chiếu abstract (SVM external 0.731 &gt; ANN 0.729 &gt; score 0.712) để sửa nhãn dòng bị lệch trong bảng trích.</p>
+  </section>
+
+  <!-- ═══════════════ 9. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+    <div class="callout">
+      <strong>⚠️ Rủi ro / điểm cần soi</strong>
+      <ul>
+        <li><strong>Gain của ML rất khiêm tốn</strong>: external SVM hơn screening score chỉ 0.019 AUC (0.731 vs 0.712) — chớ mô tả là "ML vượt trội". Bản thân AUC ~0.73 là <strong>modest</strong>, phản ánh tiền ĐTĐ khó sàng lọc bằng biến no-lab.</li>
+        <li><strong>Nhãn dựa một lần FPG</strong> (không OGTT/HbA1c, không đo lặp) — chuẩn ADA hiện đại đòi ≥2 lần đo &amp; bỏ IGT → nhiễu nhãn, bỏ sót nhóm IGT-only.</li>
+        <li><strong>So sánh baseline không hoàn hảo</strong>: screening score Lee et al. vốn xây cho ĐTĐ, chỉ chỉnh cutoff sang tiền ĐTĐ (bộ 6 biến khác 7 biến của ML) — tác giả tự nêu; cần xây score hồi quy riêng cho tiền ĐTĐ mới so công bằng tuyệt đối.</li>
+        <li><strong>ANN kém khái quát</strong>: thắng internal (0.768) nhưng rơi về 0.729 external — cảnh báo tin số internal của ANN mà bỏ external sẽ thổi phồng.</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>🎯 Giới hạn</strong>
+      <ul>
+        <li><strong>Không code repo</strong>; ANN chạy trên phần mềm thương mại NeuroSolution, <strong>hyperparam cuối (learning rate/momentum/số hidden node) không báo cáo</strong> → phần ANN chỉ tái lập ở mức khái niệm. Phần SVM khá đầy đủ (C=10, σ=10, Gaussian) → tái lập tổng thể ở mức <em>medium</em>.</li>
+        <li>Một nguồn dữ liệu duy nhất (KNHANES Hàn Quốc) — external validation là cohort <em>cùng khảo sát</em> năm sau, chưa phải dân số/nước khác; tác giả khuyến nghị xây model riêng cho từng nước.</li>
+        <li>Chỉ FPG định nghĩa tiền ĐTĐ; thiếu OGTT/HbA1c làm hẹp định nghĩa (chỉ IFG, không IGT).</li>
+        <li>Bài 2014, <strong>một ANN đơn + một SVM đơn</strong>, chưa boosting/deep/ensemble; AUC khiêm tốn so chuẩn hiện nay.</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Bài chị em trực tiếp của <code>yu2010</code></strong> nhưng <strong>tốt hơn về rigor</strong>: có <em>external validation</em> (KNHANES 2011) mà yu2010 thiếu → dùng làm mốc chứng minh "external validation là làm được &amp; nên có" cho nhánh <code>early_detection</code>/tầm soát tiền ĐTĐ.</li>
+        <li><strong>Anchor leakage-safe</strong>: feature no-lab (không glucose/HbA1c) dù nhãn định nghĩa bằng FPG — mẫu hình đúng cho đề tài 2 (glycemic staging leakage-safe) &amp; đề tài 1 (phát hiện sớm không cần xét nghiệm máu).</li>
+        <li><strong>Bằng chứng citable (111 cite) rằng ML chỉ nhỉnh hơn hồi quy logistic một khoảng nhỏ</strong> — củng cố mũi nhọn "đánh giá trung thực" (QA_LOG): cùng thông điệp với yu2010 (ML ≈ logistic), nhưng đo bằng external.</li>
+        <li>Cung cấp <strong>số định lượng "tiền ĐTĐ khó hơn ĐTĐ"</strong> (AUC score 0.712 vs 0.751, Table 3) — hữu ích cho phần related-work/động lực. Dùng như <strong>anchor tường thuật</strong>, KHÔNG phải component xây model chính (2014, model đơn, không code, AUC modest).</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

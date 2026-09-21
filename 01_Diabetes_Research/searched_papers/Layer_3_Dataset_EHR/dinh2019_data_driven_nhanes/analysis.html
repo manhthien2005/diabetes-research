@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A data-driven approach to predicting diabetes and cardiovascular disease with ML — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>A data-driven approach to predicting diabetes and cardiovascular disease with machine learning</h1>
+    <div class="meta">
+      <span>📅 <strong>2019</strong></span>
+      <span>📰 BMC Medical Informatics and Decision Making</span>
+      <span>📚 <strong>447</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1186/s12911-019-0918-5" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (NHANES public)</span>
+      <span class="badge horizon">⏱️ Horizon: Early detection</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.cdc.gov/nchs/nhanes/about_nhanes.htm" target="_blank">NHANES (continuous 1999–2014)</a> — khảo sát + khám + xét nghiệm của NCHS/CDC, ~3.900 biến gốc, lọc còn 123–168 biến</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Tìm kiếm <strong>vét cạn (exhaustive)</strong> toàn bộ biến NHANES (không bó vào ~14 biến truyền thống) để phát hiện sớm tiểu đường, tiền tiểu đường &amp; CVD; xây <strong>Weighted Ensemble Model (WEM)</strong> + tách rõ kịch bản <em>có lab</em> vs <em>chỉ survey</em>; liệt kê top-24 feature theo information gain.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>AUC 0.962</strong> — XGBoost, tiểu đường Case I, có lab, 2003–2014 (Table 5). Survey-only Case I tốt nhất XGBoost <strong>0.862</strong> (Table 5).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Lọc biến liên tục theo cycle → drop &gt;50% missing → z-score → <strong>downsampling cân bằng 80/20</strong> → grid-search + 10-fold CV → LR/SVM/RF/XGBoost → <strong>WEM</strong> trọng số theo AUC.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Cùng Layer 3 NHANES. Hơn <strong>agliata2023</strong> (ANN, AUC 0.934) ở AUC lab-case &amp; quy mô mẫu (~21k vs 13.687); nhưng agliata có calibration/Brier mà bài này thiếu. Khác <strong>deberneh2021</strong> (onset Y+1 thật, acc 0.73): bài này nhãn đo cùng kỳ → early-detection kiểu sàng lọc, rủi ro rò rỉ qua glucose.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">
+      Bài báo khai thác bộ khảo sát dân số <strong>NHANES (CDC/NCHS)</strong> — kết hợp phỏng vấn khảo sát, khám lâm sàng và xét nghiệm máu/nước tiểu — để
+      <strong>phát hiện sớm</strong> bệnh nhân có nguy cơ tiểu đường, tiền/tiểu đường chưa chẩn đoán, và bệnh tim mạch (CVD). Thay vì dùng ~14 biến truyền thống như Yu et al. [13],
+      nhóm tác giả thực hiện <strong>tìm kiếm vét cạn</strong> trên ~3.900 biến gốc, lọc còn 123–168 biến, rồi so sánh 4 mô hình (LR, SVM, RF, XGBoost) cộng một
+      <strong>Weighted Ensemble Model</strong>. Mỗi bài toán được chạy hai biến thể: <em>có xét nghiệm</em> và <em>chỉ khảo sát</em> — nhằm kiểm tra khả năng sàng lọc khi không có lab.
+    </p>
+    <h3>Vì sao là Layer 3 (Dataset / EHR)?</h3>
+    <table>
+      <tr><td>✔ Dữ liệu khảo sát dân số quy mô lớn</td><td>NHANES ~21k quan sát, nhiều cycle 1999–2014, đa biến (demographic, dietary, lab) — đặc trưng Layer 3 (dataset/EHR-like) hơn benchmark tabular nhỏ</td></tr>
+      <tr><td>✔ Khai thác cấu trúc dữ liệu thực tế</td><td>Xử lý biến đứt quãng giữa các cycle, đổi tên biến, missing có điều kiện — bài toán đặc thù dữ liệu y tế quy mô lớn</td></tr>
+      <tr><td>✔ Tách kịch bản lab vs survey</td><td>Mô phỏng tình huống EHR thiếu xét nghiệm — giá trị triển khai dữ liệu thực</td></tr>
+      <tr><td>✘ Chưa phải Layer 1</td><td>Không phải pipeline benchmark tabular đơn giản (PIMA…)</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Chỉ dùng information gain để xếp hạng feature, KHÔNG có SHAP/LIME hay deployment thật (mới là future work web-tool)</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Null re-coding</code></td><td>Chuyển giá trị lỗi/không giải mã được thành null</td><td>Chuẩn hoá dữ liệu thô NHANES</td><td>Không nêu cách điền missing sau đó</td></tr>
+        <tr><td><code>Drop &gt;50% missing</code></td><td>Loại biến thiếu quá nửa</td><td>Giảm nhiễu, từ 189 → 123 biến</td><td>Ngưỡng 50% tuỳ chọn, có thể bỏ biến hữu ích</td></tr>
+        <tr><td><code>Z-score standardization</code></td><td>Chuẩn hoá feature (x′=(x−x̄)/σ)</td><td>Cần cho SVM/LR</td><td>Không nêu rõ fit trên train hay toàn bộ (rủi ro leakage)</td></tr>
+        <tr><td><code>Downsampling</code></td><td>Cân bằng lớp, tạo split 80/20</td><td>Đơn giản, tránh bias đa số</td><td>Vứt mẫu lớp đa số → giảm dữ liệu &amp; lệch prevalence thật</td></tr>
+        <tr><td><code>Grid-search (parallel)</code></td><td>Tinh chỉnh siêu tham số</td><td>Tìm tham số tốt</td><td>Không công bố lưới tham số cụ thể</td></tr>
+        <tr><td><code>10-fold cross-validation</code></td><td>Ước lượng hiệu năng ổn định</td><td>Giảm phương sai đánh giá</td><td>UNKNOWN: không nêu CV bao quanh hay nằm trong các bước tiền xử lý</td></tr>
+        <tr><td><code>Information gain (XGBoost importance)</code></td><td>Xếp hạng feature theo error-rate</td><td>Chọn top-24, cắt khi tụt &gt;2% AUC</td><td>Chỉ feature importance, không phải giải thích cục bộ (không SHAP)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC tiểu đường Case I, có lab, 2003–2014 (Table 5)</strong> — kịch bản tốt nhất của bài. ⭐ = model thắng tổng thể.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC (Case I lab, 2003–14)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>XGBoost</code> ⭐</td><td>Model thắng phần lớn kịch bản; nền cho feature importance</td><td><strong>0.962</strong></td><td>Mạnh nhất với tabular, bắt phi tuyến, cho importance</td><td>Cần tuning, hộp đen hơn LR</td></tr>
+        <tr><td>2</td><td><code>Weighted Ensemble (WEM)</code></td><td>Trọng số theo AUC của 4 model; thắng ở CVD &amp; pre-diabetes survey</td><td>0.948</td><td>Tận dụng điểm mạnh nhiều model; ổn định</td><td>Phức tạp, cải thiện biên nhỏ so XGBoost</td></tr>
+        <tr><td>3</td><td><code>Random Forest (RFC)</code></td><td>Ensemble bagging</td><td>0.939</td><td>Ổn định, ít overfit</td><td>Kém XGBoost ở hầu hết case</td></tr>
+        <tr><td>4</td><td><code>SVM</code></td><td>Baseline phi tuyến mạnh</td><td>0.882</td><td>Biên phân tách rộng</td><td>Huấn luyện chậm, kém ensemble</td></tr>
+        <tr><td>5</td><td><code>Logistic Regression</code></td><td>Baseline tuyến tính</td><td>0.877</td><td>Đơn giản, dễ giải thích, đủ tốt cho Case II/CVD</td><td>Kém nhất ở Case I; không bắt phi tuyến</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Lưu ý: thứ hạng đổi theo kịch bản. Ở <em>pre-diabetes Case II survey</em> và <em>CVD survey</em>, <strong>WEM</strong> mới là model thắng (xem Section 6). Bài chủ động loại neural network vì tính "hộp đen".</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <p style="margin-bottom:10px">Từ ~3.900 biến NHANES gốc → 189 biến liên tục mọi cycle 1999–2014 → drop &gt;50% missing → 123 biến. <strong>5 dataset</strong> được tạo (Table 4): 4 cho tiểu đường, 1 cho CVD. Đối tượng: người &ge;20 tuổi, không mang thai (loại tiểu đường thai kỳ &amp; type I) → tập trung Type II.</p>
+    <table>
+      <thead><tr><th>Tên (Year · Case)</th><th>Quan sát</th><th>Biến</th><th>Lớp 0 / Lớp 1</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Diab. 1999–2014 · Case I</strong></td><td>21,131</td><td>123</td><td>15,599 / 5,532</td><td>Table 4</td></tr>
+        <tr><td><strong>Diab. 1999–2014 · Case II</strong></td><td>16,426</td><td>123</td><td>9,944 / 6,482</td><td>Table 4</td></tr>
+        <tr><td><strong>Diab. 2003–2014 · Case I</strong></td><td>16,443</td><td>168</td><td>11,977 / 4,466</td><td>Table 4</td></tr>
+        <tr><td><strong>Diab. 2003–2014 · Case II</strong></td><td>12,636</td><td>168</td><td>7,503 / 5,133</td><td>Table 4</td></tr>
+        <tr><td><strong>Cardio (CVD) 2007–2014</strong></td><td>8,459</td><td>131</td><td>7,012 / 1,447</td><td>Table 4</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      <strong>Case I</strong> = tiểu đường (đã chẩn đoán + chưa chẩn đoán) vs không. <strong>Case II</strong> = tiền/chưa chẩn đoán vs bình thường (loại người đã chẩn đoán). Mỗi dataset còn chia tiếp <em>lab</em> vs <em>no-lab</em>. CVD mất cân bằng nặng (~17% dương).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline 3 giai đoạn (Fig. 1)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Trích &amp; tiền xử lý</td><td>Rút biến từ NHANES, re-code giá trị lỗi → null</td><td>Bản ghi bệnh nhân</td></tr>
+        <tr><td>2</td><td>Lọc biến theo cycle</td><td>Giữ biến liên tục mọi cycle (189), drop &gt;50% missing (→123); riêng diab 2003–14 giữ 168, CVD 2007–14 giữ 131</td><td>Tập biến ổn định</td></tr>
+        <tr><td>3</td><td>Lập nhãn (label)</td><td>Case I/II theo glucose &amp; câu hỏi chẩn đoán (Table 1–2); CVD theo 4 bệnh tim (Table 3)</td><td>Nhãn nhị phân 0/1</td></tr>
+        <tr><td>4</td><td>Tách lab vs no-lab</td><td>Biến lab = lấy từ xét nghiệm máu/nước tiểu</td><td>2 phân nhánh dataset</td></tr>
+        <tr><td>5</td><td>Chuẩn hoá</td><td>Z-score x′=(x−x̄)/σ; encode categorical thành số</td><td>Feature chuẩn hoá</td></tr>
+        <tr><td>6</td><td>Cân bằng + split</td><td>Downsampling → split 80/20 train/test cân bằng</td><td>Train/Test</td></tr>
+        <tr><td>7</td><td>Train + tuning</td><td>LR/SVM/RF/XGBoost; grid-search song song; 10-fold CV</td><td>Mô hình đã tuning</td></tr>
+        <tr><td>8</td><td>Weighted Ensemble</td><td>Lấy xác suất 10-fold mỗi model → trung bình có trọng số theo AUC</td><td>WEM</td></tr>
+        <tr><td>9</td><td>Feature selection</td><td>Information gain (error-rate) của XGBoost → top-24 (cắt khi tụt &gt;2% AUC)</td><td>Top-24 feature/disease</td></tr>
+        <tr><td>10</td><td>Đánh giá</td><td>AUC-ROC, Precision, Recall, F1, sensitivity/specificity</td><td>Bảng kết quả (Table 5–6)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Z-score standardization (Section: Dataset Preprocessing)</span>
+      x′ = (x − x̄) / σ<br>
+      với x̄ = trung bình vector feature, σ = độ lệch chuẩn
+    </div>
+
+    <div class="formula">
+      <span class="label">Trọng số WEM (Section: The Weighted Ensemble Model — công thức gốc không decode được trong extract)</span>
+      wᵢ = AUCᵢ / Σⱼ AUCⱼ   (trọng số model i tỉ lệ điểm AUC)<br>
+      p_new = Σᵢ wᵢ · pᵢ      (xác suất mới = trung bình có trọng số)<br>
+      <span style="color:#fbbf24">⚠ UNKNOWN dạng chính xác: 2 formula trong PDF bị "formula-not-decoded"; đây là diễn giải từ văn bản mô tả, chưa phải LaTeX gốc.</span>
+    </div>
+
+    <div class="formula">
+      <span class="label">Metrics (Section: Performance Metrics)</span>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F1        = 2 · Precision · Recall / (Precision + Recall)<br>
+      <span style="color:#94a3b8">[Bài in "sensitivity (TP/TP+FP)", "specificity (TN/TN+FN)" — công thức trong bài bị hoán nhãn; dùng định nghĩa chuẩn TP/FP/TN/FN ở trên]</span>
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 1 (pipeline 3 giai đoạn), Fig. 2–3 (ROC Case I/II), Fig. 4–8 (ROC CVD &amp; feature importance) — chưa crop base64.
+      <span class="caption">Crop PDF là tuỳ chọn; số liệu đã lấy trực tiếp từ Table 4–6, không phụ thuộc hình.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.962</span><span class="label">Diab Case I · lab · 2003–14 · XGBoost (Table 5)</span></div>
+      <div class="metric"><span class="value">0.957</span><span class="label">Diab Case I · lab · 1999–14 · XGBoost (Table 5)</span></div>
+      <div class="metric"><span class="value">0.862</span><span class="label">Diab Case I · survey · 1999–14 · XGBoost (Table 5)</span></div>
+      <div class="metric"><span class="value">0.839</span><span class="label">CVD · lab · WEM (Table 6)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric (AUC)</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>Diab Case I (2003–14)</td><td>XGBoost</td><td>Có lab</td><td><strong>0.962</strong> (P/R/F1 = 0.89)</td><td>Table 5</td></tr>
+        <tr><td>Diab Case I (1999–14)</td><td>XGBoost</td><td>Có lab</td><td><strong>0.957</strong> (P/R/F1 = 0.89)</td><td>Table 5 + Results §</td></tr>
+        <tr><td>Diab Case I (1999–14)</td><td>XGBoost</td><td>Survey only</td><td>0.862 (P/R/F1 = 0.78)</td><td>Table 5</td></tr>
+        <tr><td>Diab Case I (1999–14)</td><td>WEM / RFC / SVM / LR</td><td>Survey only</td><td>0.859 / 0.855 / 0.849 / 0.827</td><td>Table 5</td></tr>
+        <tr><td>Diab Case II (1999–14)</td><td>WEM</td><td>Survey only</td><td>0.737 (P/R/F1 = 0.68) — top</td><td>Table 5</td></tr>
+        <tr><td>Diab Case II (1999–14)</td><td>XGBoost</td><td>Có lab</td><td>0.802 (top với lab)</td><td>Table 5</td></tr>
+        <tr><td>Diab Case II (2003–14)</td><td>XGBoost</td><td>Có lab</td><td>0.834 (top với lab)</td><td>Table 5</td></tr>
+        <tr><td>CVD (2007–14)</td><td>WEM</td><td>Survey only</td><td>0.831 (P/R/F1 = 0.75) — top</td><td>Table 6</td></tr>
+        <tr><td>CVD (2007–14)</td><td>WEM</td><td>Có lab</td><td><strong>0.839</strong> (P/R/F1 = 0.76) — top</td><td>Table 6</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      <strong>Top-5 feature tiểu đường (no-lab):</strong> waist size, age, self-reported weight, leg length, sodium intake (Abstract + Fig. 5).
+      <strong>Top-5 CVD (no-lab):</strong> age, systolic BP, self-reported weight, chest pain, diastolic BP (Abstract + Fig. 7).
+    </p>
+    <div class="callout" style="margin-top:12px">
+      <strong>⚠️ Lệch số giữa Abstract và Table 5 — đã đối chiếu, lấy bảng làm gốc:</strong>
+      <ul>
+        <li>Abstract ghi pre-diabetes lab-based XGBoost = <strong>84.4%</strong>, nhưng Table 5 không có cell nào 0.844; Case II có-lab cao nhất chỉ <strong>0.834</strong> (XGBoost, 2003–14). → dùng 0.834.</li>
+        <li>Abstract/Results ghi Case I lab = <strong>95.7%</strong> (1999–14); Discussion &amp; Table 5 cho 2003–14 đạt <strong>96.2%</strong> (cao hơn). Cả hai đều đúng, khác timeframe — ghi rõ cả hai.</li>
+        <li>Abstract ghi CVD "83.9% accuracy with lab" — thực chất 0.839 là AUC của WEM (Table 6), không phải accuracy.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro rò rỉ (data leakage) &amp; horizon</strong>
+      <ul>
+        <li>Nhãn Case I dùng <em>plasma glucose &ge; 126 mg/dl</em> — vừa là tiêu chí gán nhãn vừa nằm trong nhóm biến lab → kịch bản <strong>có-lab</strong> dễ bị leakage, giải thích cú nhảy AUC 0.86 → 0.96. Tác giả nói "không dùng plasma glucose/serum insulin làm feature" khi so với Pima, nhưng cần kiểm chứng kỹ trong nhánh lab.</li>
+        <li>Z-score &amp; downsampling: bài KHÔNG nêu rõ fit scaler/cân bằng <em>trước hay sau</em> split, và 10-fold CV bao quanh hay nằm trong tiền xử lý → rủi ro leakage chưa loại trừ.</li>
+        <li><strong>Horizon = early_detection</strong>: nhãn đo cùng kỳ với feature (không follow-up N năm), nhưng mục tiêu là <em>sàng lọc người chưa được chẩn đoán / tiền tiểu đường</em> bằng khảo sát → đúng tinh thần phát hiện sớm (Case II nhắm thẳng undiagnosed/pre-diabetic), không phải dự đoán onset tương lai như deberneh2021.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Downsampling cân bằng 50/50 + test cân bằng → accuracy/F1 không phản ánh prevalence thật (tiểu đường ~12%, CVD ~17%).</li>
+        <li>Không công bố <strong>code</strong>, không nêu lưới hyperparameter cụ thể → tái lập trung bình-thấp.</li>
+        <li>Không có calibration / Brier score (agliata2023 cùng layer có) và không AUC-PR cho dữ liệu mất cân bằng.</li>
+        <li>Feature importance chỉ là information gain toàn cục, KHÔNG SHAP/LIME → giải thích cục bộ yếu (Layer 4 sẽ bù).</li>
+        <li>2 công thức (WEM) bị "formula-not-decoded" trong extract; lệch số abstract↔table như nêu ở Section 6.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là <strong>baseline NHANES neo</strong> của Layer 3 (cùng agliata2023, deberneh2021): chứng minh survey-only đã đạt AUC ~0.86 (tiểu đường) và ~0.83 (CVD) — nền cho ý tưởng web-tool sàng lọc.</li>
+        <li>Điểm tham chiếu mạnh cho <strong>exhaustive feature search</strong> vs feature set truyền thống — đề tài có thể tái dùng &amp; bổ sung SHAP để giải thích top-24.</li>
+        <li>Khoảng trống rõ để cải tiến: thêm calibration + AUC-PR, đánh giá trên phân bố thật, kiểm soát leakage glucose, external validation, và horizon onset thật (kết hợp ý tưởng deberneh2021).</li>
+        <li>Số 0.962 (lab) chỉ nên xem là <strong>trần lý thuyết</strong> dễ leakage; con số đáng tin để so chiếu là <strong>survey-only 0.862</strong>.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

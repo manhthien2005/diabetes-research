@@ -1,0 +1,71 @@
+{
+  "paper_id": "yu2010_svm_prediabetes_detection",
+  "title": "Application of support vector machine modeling for prediction of common diseases: the case of diabetes and pre-diabetes",
+  "authors": [
+    "Wei Yu",
+    "Tiebin Liu",
+    "Rodolfo Valdez",
+    "Marta Gwinn",
+    "Muin J. Khoury"
+  ],
+  "year": 2010,
+  "venue": "BMC Medical Informatics and Decision Making",
+  "doi": "10.1186/1472-6947-10-16",
+  "arxiv": null,
+  "pubmed": "20307319",
+  "pmc": "2850872",
+  "citations": 524,
+  "citations_secondary": 457,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 2,
+  "layer_uncertain": false,
+  "prediction_horizon": "early_detection",
+  "horizon_uncertain": false,
+  "datasets_mentioned": [
+    "NHANES 1999-2004"
+  ],
+  "dataset_slugs": [
+    "nhanes-diabetes"
+  ],
+  "method_slugs": [
+    "support-vector-machine",
+    "libsvm",
+    "feature-selection",
+    "holdout-validation",
+    "roc-analysis"
+  ],
+  "code_url": null,
+  "reproducibility": 2,
+  "source_pdf": "source.pdf",
+  "page_count": 7,
+  "open_access_pdf": "https://bmcmedinformdecismak.biomedcentral.com/counter/pdf/10.1186/1472-6947-10-16",
+  "license": "CC-BY-2.0",
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "2026-07-01: Unpaywall xác nhận GOLD OA; tải publisher PDF BMC thành công. Verify: %PDF-, 596423 bytes, 7 trang, 4646 từ, không mã hóa.",
+  "download_link": null,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-07-06T00:00:00+07:00",
+  "reject_reason": null,
+  "found_by": "paper-finder/codex-multi-agent",
+  "abstract": "SVM models on NHANES 1999-2004 for two binary schemes, including detection of undiagnosed diabetes or pre-diabetes versus no diabetes, with variable selection and held-out validation.",
+  "url": "https://doi.org/10.1186/1472-6947-10-16",
+  "scope_note": "Đạt §7: 457 citations trên Semantic Scholar; NHANES công khai; LIBSVM, hai scheme phân loại, biến đầu vào và holdout 80/20 được mô tả đủ. Layer 2 vì đóng góp chính là mô hình SVM/variable selection; horizon early_detection vì Scheme II nhắm undiagnosed diabetes hoặc pre-diabetes. GIÁ TRỊ CHIẾN LƯỢC: bằng chứng citable ML ≈ hồi quy logistic (DeLong p=0.37/0.67) — củng cố mũi nhọn đánh giá trung thực (QA_LOG Q002/Q003); feature no-lab (không glucose) → label leakage thấp. Hạn chế: anchor lịch sử, không phải component (2010, single SVM, không code, AUC modest, không external validation). verdict=maybe.",
+  "corrections": "Xác nhận sau khi đọc full text: (1) prediction_horizon = early_detection ĐÚNG (Scheme II = undiagnosed ĐTĐ hoặc tiền ĐTĐ vs không). (2) Cả 2 scheme đều BINARY, KHÔNG phải multi-class staging dù có nhóm pre-diabetes. (3) code_url = null chính xác: chỉ có web demo (HugeNavigator) đã chết, không repo. (4) Best AUC 0.8347 Scheme I / 0.7318 Scheme II (Table 3), reproducible=medium (method rõ nhưng thiếu C/gamma + quy trình chọn biến bán tự động).",
+  "label_type": "binary",
+  "role": "design",
+  "role_note": "Scheme I/II (2 cách định nghĩa ca bệnh) trên NHANES no-lab + nền bằng chứng P1 (SUDAAN chỉ cho LR, không cho SVM — CẦN XÁC MINH số trang).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2010-01-01",
+    "age_years": 16.6,
+    "citations": 524,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

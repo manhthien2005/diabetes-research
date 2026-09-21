@@ -1,0 +1,23 @@
+{
+  "paper_id": "lu2021_patient_network_t2dm",
+  "layer": 2,
+  "prediction_horizon": "early_detection",
+  "contribution": "Dựng 'patient network' (đồ thị bệnh nhân) từ dữ liệu claim bằng bipartite projection, rút 5 centrality làm feature ẩn ghép với feature bệnh nhân để dự đoán nguy cơ T2DM — bài đầu tiên khai thác quan hệ patient-patient (không phải disease-comorbidity) trên administrative claim.",
+  "method": "Lọc cohort T2DM (ICD E11 / 250.*, >=2 admission, Elixhauser comorbidity) -> cân bằng 1:1 (1.028+1.028) -> bipartite patient-disease -> one-mode projection thành patient network -> 5 network features (degree/eigenvector/closeness/betweenness centrality, clustering coef) + 3 patient features (age/gender/smoking) -> 8 ML model (LR/KNN/SVM/NB/DT/RF/XGBoost/ANN), 80/20 split + 10-fold CV + grid/hyperparam tuning. RF thắng.",
+  "best_metric": "RF: AUC 0.91, Accuracy 84.95% (CBHS claim, 80/20 + 10-fold CV — Table 2 + Discussion §4); XGBoost AUC 0.8950 (§3.2); dải AUC 8 model 0.79–0.91 (Abstract/§4)",
+  "datasets": [
+    "cbhs-administrative-claim-australia"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "Khác hẳn baseline cùng Layer 2 hasan2020 (ensemble AB+XB, AUC 0.950 trên PIMA 768) và khanam2021 (so sánh 7 ML, NN 88.6% trên PIMA): hai bài đó là tabular PIMA thuần, còn lu2021 thêm nguồn tín hiệu MỚI (network centrality) trên claim real-world cân bằng 2.056 mẫu. AUC 0.91 thấp hơn 0.950 của hasan2020 nhưng khác bản chất dữ liệu. Ablation (Table 3) chứng minh network features là signal chính: RF chỉ-network 83.98% vs chỉ-patient 71.36%.",
+  "gap": "Dataset claim riêng tư (CBHS, gated) + không code -> không tái lập được con số 0.91. Nguy cơ leakage: patient network dựng trên TOÀN cohort trước split nên centrality một node test phụ thuộc cả train; paper không nói dựng mạng riêng mỗi fold. Không báo std/CI của CV; không Sn/Sp riêng; LR/SVM/DT/NB để default (không tuning); không SHAP/LIME, không external validation, không deployment. Mâu thuẫn nhỏ: số community 37 (Table 1) vs 38 (text §3.1).",
+  "verdict": "maybe",
+  "verdict_reason": "Đúng scope (dự đoán T2DM binary trên claim/EHR) + góc network mới lạ + cite 137 (§7 đạt), NHƯNG dataset riêng tư + không code + nguy cơ leakage graph => giá trị tham chiếu phương pháp, không phải benchmark tái lập.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

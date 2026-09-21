@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "rejected": [
+    {
+      "dedup_key": "doi:10.1007/s40200-020-00520-5",
+      "paper_id": "naz2020_deep_learning_pima",
+      "title": "Deep learning approach for diabetes prediction using PIMA Indian dataset",
+      "title_norm": "deep learning approach for diabetes prediction using pima indian dataset",
+      "doi": "10.1007/s40200-020-00520-5",
+      "arxiv": null,
+      "reason": "Bỏ",
+      "by": "user",
+      "layer": 2,
+      "rejected_at": "2026-06-11T04:53:25.729Z",
+      "rechecked_at": "2026-07-26T00:00:00+07:00",
+      "recheck_note": "Kiểm lại 26/07/2026: 340 citations (OpenAlex, tăng từ 272). Vẫn GIỮ loại — lý do là chất lượng chứ không phải citation (confusion matrix Tables 4–7 tổng 207 mẫu không khớp split 80/20; DT 96.62% bất thường; không AUC/CV). Bài vẫn ở trong kho với role=inflation: dùng đúng 1 con số (DL 98.07% PIMA) làm dẫn chứng thổi phồng cho Introduction (TO_DO §6 🅓)."
+    },
+    {
+      "dedup_key": "doi:10.1038/s41598-025-25759-x",
+      "paper_id": "jin2025_opportunistic_screening_type",
+      "title": "Opportunistic screening of type 2 diabetes with deep metric learning using electronic health records",
+      "title_norm": "opportunistic screening of type 2 diabetes with deep metric learning using electronic health records",
+      "doi": "10.1038/s41598-025-25759-x",
+      "arxiv": null,
+      "reason": "Không đạt §7: 0 citations (xuất bản 2025-11-25, <1 năm, không phải rising star); code_url null (không repo public); dataset EHR bệnh viện (MGB) private, không link/DUA rõ. Là seed paper chưa qua deep-analyze. User quyết loại khỏi chosen, ưu tiên tìm dataset nâng cao hơn.",
+      "by": "user",
+      "layer": 3,
+      "rejected_at": "2026-06-17T00:00:00.000Z",
+      "rechecked_at": "2026-07-26T00:00:00+07:00",
+      "recheck_note": "Kiểm lại OpenAlex 26/07/2026: VẪN 0 citations. Giữ nguyên quyết định loại. metadata.layer null đã sửa thành 3 (theo thư mục)."
+    },
+    {
+      "dedup_key": "doi:10.1038/s41598-021-90406-0",
+      "paper_id": "nhanes_youth_diabetes_2021",
+      "title": "Predicting youth diabetes risk using NHANES data and machine learning",
+      "title_norm": "predicting youth diabetes risk using nhanes data and machine learning",
+      "doi": "10.1038/s41598-021-90406-0",
+      "arxiv": null,
+      "reason": "Không đạt §7: xuất bản 2021 (>3 năm) cần ≥100 citations; chỉ 40 (OpenAlex 06/2026). Dataset NHANES (youth preDM/DM) đúng scope nhưng trích dẫn không đạt ngưỡng.",
+      "by": "claude",
+      "layer": 3,
+      "rejected_at": "2026-06-18T00:00:00.000Z"
+    },
+    {
+      "dedup_key": "doi:10.3390/jpm12060905",
+      "paper_id": "jpm2022_chinese_elderly_t2dm",
+      "title": "Predicting the Risk of Incident Type 2 Diabetes Mellitus in Chinese Elderly Using Machine Learning Techniques",
+      "title_norm": "predicting the risk of incident type 2 diabetes mellitus in chinese elderly using machine learning techniques",
+      "doi": "10.3390/jpm12060905",
+      "arxiv": null,
+      "reason": "Không đạt §7: xuất bản 2022 (>3 năm) cần ≥100 citations; chỉ 32 (Semantic Scholar; bản ghi OpenAlex bị lỗi metadata). Cohort khám sức khỏe Vũ Hán (127k, theo dõi 2 năm) hấp dẫn nhưng citation chưa đạt.",
+      "by": "claude",
+      "layer": 3,
+      "rejected_at": "2026-06-18T00:00:00.000Z"
+    },
+    {
+      "dedup_key": "doi:10.2196/73190",
+      "paper_id": "jmir2025_prediabetes_transition_5yr",
+      "title": "Development of a 5-Year Risk Prediction Model for Transition From Prediabetes to Diabetes Using Machine Learning: Retrospective Cohort Study",
+      "title_norm": "development of a 5 year risk prediction model for transition from prediabetes to diabetes using machine learning retrospective cohort study",
+      "doi": "10.2196/73190",
+      "arxiv": null,
+      "reason": "Không đạt §7: xuất bản 2025 (<1 năm) cần rising-star >5 citations/tháng; chỉ ~7–10 cite (~1/tháng). Chủ đề long_term_risk (5 năm) + có web platform nhưng quá mới, chưa đủ trích dẫn. Có thể xét lại sau.",
+      "by": "claude",
+      "layer": 3,
+      "rejected_at": "2026-06-18T00:00:00.000Z"
+    },
+    {
+      "dedup_key": "doi:10.3390/diabetology5010001",
+      "paper_id": "diabetology2024_undiagnosed_nhanes",
+      "title": "A Comparative Analysis of Machine Learning Models for the Detection of Undiagnosed Diabetes Patients",
+      "title_norm": "a comparative analysis of machine learning models for the detection of undiagnosed diabetes patients",
+      "doi": "10.3390/diabetology5010001",
+      "arxiv": null,
+      "reason": "Không đạt §7: xuất bản 2024 (1–3 năm) cần ≥30 citations; chỉ 6–7. Dataset NHANES 2005–2018 (45.431 mẫu) đúng scope nhưng citation quá thấp.",
+      "by": "claude",
+      "layer": 3,
+      "rejected_at": "2026-06-18T00:00:00.000Z"
+    },
+    {
+      "dedup_key": "doi:10.1016/j.eclinm.2023.101934",
+      "paper_id": "eclinmed2023_insulin_resistance",
+      "title": "Development and validation of an insulin resistance model for a population without diabetes mellitus and its clinical implication: a prospective cohort study",
+      "title_norm": "development and validation of an insulin resistance model for a population without diabetes mellitus and its clinical implication a prospective cohort study",
+      "doi": "10.1016/j.eclinm.2023.101934",
+      "arxiv": null,
+      "reason": "Sai scope §1: dự đoán KHÁNG INSULIN (insulin resistance) ở người chưa mắc ĐTĐ, không phải dự đoán mắc/khởi phát tiểu đường. (§7 citation đạt: 70 cite/2023, nhưng ngoài phạm vi đề tài.)",
+      "by": "claude",
+      "layer": 3,
+      "rejected_at": "2026-06-18T00:00:00.000Z"
+    },
+    {
+      "dedup_key": "doi:10.1371/journal.pgph.0001556",
+      "paper_id": "pgph2023_racial_bias_t2d",
+      "title": "Assessing racial bias in type 2 diabetes risk prediction algorithms",
+      "title_norm": "assessing racial bias in type 2 diabetes risk prediction algorithms",
+      "doi": "10.1371/journal.pgph.0001556",
+      "arxiv": null,
+      "reason": "Sai scope §1: bài AUDIT thiên lệch chủng tộc của các thuật toán có sẵn (PRT, Framingham, ARIC), không đóng góp mô hình dự đoán mới. Thêm nữa §7 sát mép (28<30 cho khung 2023, 1–3 năm).",
+      "by": "claude",
+      "layer": 4,
+      "rejected_at": "2026-06-18T00:00:00.000Z"
+    },
+    {
+      "dedup_key": "doi:10.1186/s12889-025-24953-w",
+      "paper_id": "bmcpubh2025_xgboost_xai_iran",
+      "title": "Leveraging XGBoost and explainable AI for accurate prediction of type 2 diabetes",
+      "title_norm": "leveraging xgboost and explainable ai for accurate prediction of type 2 diabetes",
+      "doi": "10.1186/s12889-025-24953-w",
+      "arxiv": null,
+      "reason": "Không đạt §7: xuất bản 2025-10 (<1 năm) cần rising-star >5 citations/tháng; chỉ ~27 cite/~8 tháng ≈ 3.4/tháng. Dataset Dena Cohort (Iran) nhỏ (3.203). Có XGBoost+SMOTE+SHAP nhưng quá mới — có thể xét lại sau khi tích lũy citation.",
+      "by": "claude",
+      "layer": 1,
+      "rejected_at": "2026-06-18T00:00:00.000Z"
+    },
+    {
+      "dedup_key": "doi:10.1016/j.inffus.2025.102928",
+      "paper_id": "xu2025_label_noise_local_explanation",
+      "title": "Improving the local diagnostic explanations of diabetes mellitus with the ensemble of label noise filters",
+      "title_norm": "improving the local diagnostic explanations of diabetes mellitus with the ensemble of label noise filters",
+      "doi": "10.1016/j.inffus.2025.102928",
+      "arxiv": null,
+      "reason": "Không đạt §7: xuất bản 2025-01-02 (~17 tháng → khung 1–3 năm cần ≥30 citations); chỉ 27 cite (OpenAlex + Semantic Scholar, 06/2026), thiếu 3 — đã quá 1 năm nên hết xét rising-star. Chất lượng tốt (Information Fusion, hướng label-noise × độ ổn định local-explanation mới, 5×5 CV + t-test, đồng tác giả Fortino) NHƯNG không code public, không báo acc/AUC (chỉ explanation-difference d), dataset D3/D4 ẩn danh. BORDERLINE — có thể xét lại khi đạt ≥30 cite (ước ~2 tháng nữa).",
+      "by": "claude",
+      "layer": 4,
+      "rejected_at": "2026-06-21T00:00:00.000Z",
+      "rechecked_at": "2026-07-26T00:00:00+07:00",
+      "recheck_note": "Kiểm lại OpenAlex 26/07/2026: VẪN 27 citations (không đổi so với 06/2026) → kỳ vọng \"đạt ≥30 sau ~2 tháng\" KHÔNG thành, §7 vẫn trượt. Giữ nguyên quyết định loại. metadata.status đã sửa \"kept\" (giá trị không hợp lệ) → \"rejected\". Bài vẫn ở trong searched_papers/ với role=related (chỉ trích dẫn Related Work)."
+    },
+    {
+      "dedup_key": "doi:10.1186/s13755-016-0015-4",
+      "paper_id": "luo2016_explaining_t2d_predictions",
+      "title": "Automatically explaining machine learning prediction results: a demonstration on type 2 diabetes risk prediction",
+      "title_norm": "automatically explaining machine learning prediction results a demonstration on type 2 diabetes risk prediction",
+      "doi": "10.1186/s13755-016-0015-4",
+      "arxiv": "1812.02852",
+      "reason": "Không đạt §7: xuất bản 2016 (>3 năm) cần ≥100 citations theo Semantic Scholar; kiểm tra 2026-07-05 chỉ có 92 citations. Đúng scope (XAI cho dự đoán T2D trong năm kế tiếp trên Practice Fusion EHR, OA PDF có sẵn) nhưng trượt gate citation nên không tạo folder.",
+      "by": "claude",
+      "layer": 4,
+      "rejected_at": "2026-07-05T00:00:00+07:00"
+    }
+  ]
+}

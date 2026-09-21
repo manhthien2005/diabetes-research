@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ExploreX — Vòng lặp Research</title>
+<style>
+  :root{
+    --bg:#0f1216; --surface:#161a20; --surface2:#1c212a; --border:#262d38;
+    --text:#cdd3dc; --dim:#8b94a3; --faint:#5c6571;
+    --web:#5e9cea; --claude:#a385e0; --user:#5bbd7e; --amber:#d6a85f;
+    --webS:rgba(94,156,234,.13); --claudeS:rgba(163,133,224,.14); --userS:rgba(91,189,126,.13);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.55;
+    padding:34px 20px 70px}
+  .wrap{max-width:920px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 2px;letter-spacing:-.02em}
+  h1 b{color:var(--web)}
+  .sub{color:var(--dim);font-size:14px;margin:0 0 22px}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+  .lg{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;
+    padding:5px 12px;border-radius:999px;border:1px solid var(--border)}
+  .lg .d{width:10px;height:10px;border-radius:50%}
+  .lg.web{color:var(--web);background:var(--webS)} .lg.web .d{background:var(--web)}
+  .lg.claude{color:var(--claude);background:var(--claudeS)} .lg.claude .d{background:var(--claude)}
+  .lg.user{color:var(--user);background:var(--userS)} .lg.user .d{background:var(--user)}
+
+  .steps{position:relative}
+  .step{position:relative;display:grid;grid-template-columns:46px 1fr;gap:16px;
+    padding-bottom:14px}
+  .rail{display:flex;flex-direction:column;align-items:center}
+  .num{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+    font-weight:800;font-size:15px;flex-shrink:0;border:2px solid var(--border);
+    background:var(--surface);z-index:2}
+  .line{flex:1;width:2px;background:var(--border);margin:4px 0}
+  .step:last-child .line{display:none}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:14px 16px;margin-bottom:2px}
+  .card .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:7px}
+  .card h3{margin:0;font-size:15.5px;font-weight:680}
+  .who{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.4px}
+  .who.web{color:var(--web);background:var(--webS)}
+  .who.claude{color:var(--claude);background:var(--claudeS)}
+  .who.user{color:var(--user);background:var(--userS)}
+  .what{font-size:13px;color:var(--dim);margin:0 0 8px}
+  .what code{background:var(--surface2);color:var(--text);padding:1px 6px;border-radius:5px;font-size:12px}
+  .brain{display:flex;gap:8px;align-items:flex-start;font-size:13px;
+    background:var(--claudeS);border:1px solid rgba(163,133,224,.25);border-radius:8px;padding:9px 12px}
+  .brain b{color:var(--claude)}
+  .brain .ico{font-size:15px;flex-shrink:0}
+
+  .num.web{border-color:var(--web);color:var(--web)}
+  .num.claude{border-color:var(--claude);color:var(--claude)}
+  .num.user{border-color:var(--user);color:var(--user)}
+
+  .loopback{display:flex;align-items:center;gap:10px;margin:6px 0 0 6px;
+    color:var(--amber);font-size:13px;font-weight:600}
+  .loopback .arc{font-size:18px}
+
+  .foot{margin-top:30px;background:var(--surface);border:1px solid var(--border);
+    border-radius:12px;padding:16px 18px;font-size:13px;color:var(--dim)}
+  .foot b{color:var(--text)}
+  .foot .rule{display:flex;gap:9px;margin-top:8px}
+  .foot .rule .k{color:var(--web);font-weight:700;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔬 Explore<b>X</b> — Vòng lặp Research</h1>
+  <p class="sub">Khép kín: khám phá → sàng lọc → phân tích sâu → quyết → định hướng → lặp lại.
+     Mỗi bước ghi rõ <b>ai làm</b> và <b>em (Claude) làm gì</b>.</p>
+
+  <div class="legend">
+    <span class="lg web"><span class="d"></span>Webapp / máy (deterministic)</span>
+    <span class="lg claude"><span class="d"></span>Em — Claude (suy nghĩ, phán xét)</span>
+    <span class="lg user"><span class="d"></span>Anh — quyết định cuối</span>
+  </div>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="rail"><div class="num web">1</div><div class="line"></div></div>
+      <div>
+        <div class="card">
+          <div class="top"><h3>Khám phá (Discover)</h3><span class="who web">Webapp</span></div>
+          <p class="what">Anh nhập từ khoá / chọn bài tương đồng / bật <code>Snowball</code>.
+            Webapp fan-out nhiều nguồn (arXiv, OpenAlex, Crossref, CORE) + OpenAlex related_works
+            + <b>snowball</b> (references ⬅ &amp; citations ➡ của bài đã chọn), gộp trùng, làm giàu
+            (đào github/dataset từ abstract), <b>bỏ bài đã loại &amp; đã có trong thư viện</b>.</p>
+          <div class="brain"><span class="ico">🧠</span><div><b>Em làm:</b> chưa — đây là việc cơ học, để máy chạy cho khỏi phí "đầu" của em.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="rail"><div class="num claude">2</div><div class="line"></div></div>
+      <div>
+        <div class="card">
+          <div class="top"><h3>Sàng lọc nhanh (Triage)</h3><span class="who claude">Em — Claude</span></div>
+          <p class="what">Pool ứng viên (vài chục bài) cần lọc thô theo độ liên quan.</p>
+          <div class="brain"><span class="ico">🧠</span><div><b>Em làm:</b> đọc nhanh title + abstract từng bài,
+            phán <b>giữ / loại</b>. Bài rõ ràng lạc đề hoặc kém → đẩy thẳng vào
+            <code>rejected.json</code> kèm lý do (anh đã uỷ quyền). Bài tiềm năng → đề xuất anh lưu.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="rail"><div class="num user">3</div><div class="line"></div></div>
+      <div>
+        <div class="card">
+          <div class="top"><h3>Lưu vào kho (Stage &amp; Save)</h3><span class="who user">Anh</span> <span class="who web">Webapp</span></div>
+          <p class="what">Bài giữ lại → bấm <b>Lưu</b> vào Layer. Webapp tạo
+            <code>searched_papers/Layer_X/&lt;id&gt;/</code> + <code>metadata.json</code> đúng schema,
+            tải PDF Open Access nếu có.</p>
+          <div class="brain"><span class="ico">🧠</span><div><b>Em làm:</b> gợi ý Layer phù hợp + <code>paper_id</code> nếu anh cần, còn quyết là ở anh.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="rail"><div class="num web">4</div><div class="line"></div></div>
+      <div>
+        <div class="card">
+          <div class="top"><h3>Hàng đợi + Tự trích text</h3><span class="who web">Webapp</span></div>
+          <p class="what">Anh bấm <b>"Chờ phân tích"</b>. Webapp tự trích <code>extracted.md</code>
+            (full text) từ PDF ngay lúc đó — để khi em phân tích là <b>có sẵn full text</b>, không chỉ abstract.</p>
+          <div class="brain"><span class="ico">🧠</span><div><b>Em làm:</b> chưa — nhưng đây là bước dọn bàn để em "đi sâu" được ở bước 5.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="rail"><div class="num claude">5</div><div class="line"></div></div>
+      <div>
+        <div class="card">
+          <div class="top"><h3>Phân tích sâu (Deep analyze)</h3><span class="who claude">Em — Claude</span></div>
+          <p class="what">Anh nói <code>"phân tích hàng đợi"</code>. Em xử lý cả mẻ.</p>
+          <div class="brain"><span class="ico">🧠</span><div><b>Em làm:</b> đọc <b>full text</b> + các bài
+            <code>chosed_papers/</code> cùng layer làm baseline → moi <b>pipeline chính xác, split dataset,
+            metric kèm số bảng, khả năng tái lập, so với baseline, gap</b>. Viết
+            <code>analysis.html</code> (8 khối) + <code>summary.json</code> (máy đọc).</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="rail"><div class="num claude">6</div><div class="line"></div></div>
+      <div>
+        <div class="card">
+          <div class="top"><h3>Quyết (Decide)</h3><span class="who claude">Em — Claude</span> <span class="who user">Anh</span></div>
+          <p class="what">Mỗi bài ra một <b>verdict</b>.</p>
+          <div class="brain"><span class="ico">🧠</span><div><b>Em làm:</b> bài <b>strong</b> → tóm tắt &amp; đề xuất anh
+            promote lên <code>chosed_papers/</code>. Bài <b>weak</b> → tự đẩy vào <code>rejected.json</code> kèm lý do cụ thể.
+            Quyền promote cuối vẫn là của anh.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="rail"><div class="num web">7</div><div class="line"></div></div>
+      <div>
+        <div class="card">
+          <div class="top"><h3>Định hướng (Brief)</h3><span class="who web">Webapp</span></div>
+          <p class="what">Bấm <b>"Sinh Research Brief"</b> → gộp mọi <code>summary.json</code> + đã chọn + đã loại
+            thành <code>RESEARCH_BRIEF.md</code>.</p>
+          <div class="brain"><span class="ico">🧠</span><div><b>Em làm:</b> đầu <b>mỗi phiên mới</b>, đọc
+            <code>RESEARCH_BRIEF.md</code> trước → định hướng tức thì (đang có gì, còn thiếu gì, đã loại gì) mà
+            không phí context đọc lại tất cả.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="rail"><div class="num claude">8</div></div>
+      <div>
+        <div class="card">
+          <div class="top"><h3>Lặp lại — đào sâu hơn</h3><span class="who claude">Em — Claude</span></div>
+          <p class="what">Từ <b>gap</b> trong brief và bài vừa promote → vòng tìm kiếm mới.</p>
+          <div class="brain"><span class="ico">🧠</span><div><b>Em làm:</b> đề xuất hướng tìm tiếp —
+            snowball từ bài mới chọn, lấp gap của layer còn yếu — rồi quay lại Bước 1.</div></div>
+        </div>
+        <div class="loopback"><span class="arc">↻</span> quay lại Bước 1 với hướng đã sắc hơn</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <b>Nguyên tắc chia việc:</b> webapp lo phần <b>cơ học</b> (tìm, gom, lọc thô, trích text, lưu, sinh brief)
+    để không phí "đầu" của em; em lo phần <b>chỉ em làm được</b> (đọc sâu, phán xét, so sánh, đề xuat).
+    <div class="rule"><span class="k">Vì sao không RAG/vector:</span><span>discovery semantic đã do OpenAlex/S2 lo ở quy mô 250M paper; "đi sâu" = em đọc full text trực tiếp, không phải truy hồi mảnh vụn.</span></div>
+    <div class="rule"><span class="k">Khép kín:</span><span>bài đã loại không bao giờ tìm lại; bài đã phân tích thành brief để định hướng vòng sau.</span></div>
+  </div>
+</div>
+</body>
+</html>

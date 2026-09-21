@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicting the onset of type 2 diabetes using wide and deep learning with EHRs — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: #f0fdf4; }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure svg { max-width: 100%; height: auto; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Predicting the onset of type 2 diabetes using wide and deep learning with electronic health records</h1>
+    <div class="meta">
+      <span>📅 <strong>2019</strong></span>
+      <span>📰 Computer Methods and Programs in Biomedicine (Elsevier)</span>
+      <span>📚 <strong>161</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.cmpb.2019.105055" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (Practice Fusion EHR — cuộc thi 2012)</span>
+      <span class="badge horizon">⏱️ Horizon: Long-term risk (onset/incidence)</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.kaggle.com/c/pf2012-diabetes" target="_blank">Practice Fusion EHR (PF2012 competition)</a> — 9948 bệnh nhân, 1904 (≈19%) chẩn đoán T2DM giai đoạn 2009–2012; bộ de-identified của cuộc thi data-science đã đóng, KHÔNG có link tải mở trong paper.</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Lần đầu áp dụng kiến trúc <strong>Wide &amp; Deep</strong> (memorisation + generalisation) để dự đoán <strong>onset/incidence T2DM</strong> từ EHR thật (Practice Fusion): feature các năm 2009–2011 → nhãn năm 2012; so trực tiếp với baseline Random Forest của Pimentel [17] trên cùng dataset &amp; split.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>AUC 84.13%</strong> &middot; Accuracy 84.28% &middot; Sensitivity 31.17% &middot; Specificity 96.85% (ensemble, KHÔNG SMOTE, Table 3).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Wide &amp; Deep NN: wide = GLM trên <strong>crossed features</strong>; deep = 3 embedding (diagnoses/medication/lab → 16-d) + 2 hidden layer (256, 128). Feature selection bằng <strong>cosine distance</strong>; SGD + binary cross-entropy; 10-fold CV + ensemble; SMOTE 150/300%.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Vượt nhẹ <strong>Pimentel [17]</strong> (RF, cùng dataset, no-SMOTE): AUC 84.01% vs 83.19%, Sensitivity 29.12% vs 16.07% (Table 4). So baseline cùng Layer 3: AUC thấp hơn <strong>dinh2019</strong> (0.957 NHANES có lab) &amp; <strong>agliata2023</strong> (0.934 NHANES+MIMIC); điểm riêng = EHR longitudinal thật + horizon onset.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">
+      Paper dùng <strong>Electronic Health Records (EHR)</strong> thật từ bộ <strong>Practice Fusion</strong> (cuộc thi data-science Mỹ 2012) để dự đoán <strong>onset/incidence của T2DM</strong>. Điểm cốt lõi xác nhận horizon: dữ liệu đầu vào lấy từ các năm <strong>2009–2011</strong> còn nhãn là chẩn đoán T2DM <strong>năm 2012</strong> — có khoảng cách thời gian feature → label, đây là <strong>dự báo tương lai (forward prediction)</strong> chứ không phải chẩn đoán đồng thời ⇒ <strong>long_term_risk</strong> (Abstract + Section 2.1).
+    </p>
+    <p>
+      Kiến trúc <strong>Wide &amp; Deep</strong> (Cheng et al., Google [22]) kết hợp một <em>generalised linear model</em> trên các đặc trưng giao nhau (crossed features — memorisation) với một <em>feed-forward neural network</em> trên embedding (generalisation). Bộ feature engineering rất nặng: <strong>1312 feature</strong> gộp từ ICD-9 diagnoses, medication, lab test, BMI/huyết áp, 17 special disease (Table 1), 19 nhóm ICD-9 (Table 2), và crossed features. Mất cân bằng lớp (chỉ ~19% dương) được xử lý bằng <strong>SMOTE 150% và 300%</strong> trong mỗi fold CV.
+    </p>
+    <h3>Vì sao là Layer 3 (Dataset / EHR nâng cao)?</h3>
+    <table>
+      <tr><td>✔ EHR thật, đa nguồn</td><td>Practice Fusion: diagnoses (ICD-9), medication, lab test, BMI, huyết áp — không phải bảng tabular gọn như PIMA (Section 2.1)</td></tr>
+      <tr><td>✔ Quy mô lớn hơn benchmark</td><td>9948 bệnh nhân, 1312 feature engineered từ 3903 mã ICD-9 + 2553 loại thuốc + 334 lab test (Section 2.2)</td></tr>
+      <tr><td>✔ Có cấu trúc thời gian (longitudinal)</td><td>Feature 2009–2011 → nhãn onset 2012; đúng tính chất EHR theo dõi nhiều năm (Section 2.1)</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI (SHAP/LIME), không deployment thật; chỉ nhắc tới tool QDiabetes của paper khác</td></tr>
+      <tr><td>✘ Không công bố code</td><td>metadata.json: code_url = null; trong paper chỉ có supplementary qua DOI, không repo</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Cosine-distance feature selection</code></td><td>Chấm điểm tầm quan trọng mỗi cột ICD-9 / thuốc / lab so với cột nhãn, chọn theo ngưỡng từ histogram (Fig. 1, Section 2.2)</td><td>Rẻ tính toán; cắt giảm chiều mạnh (3903→151 diagnoses, 2553→134 med, 334→80 lab)</td><td>Đơn biến, bỏ qua tương tác; ngưỡng chọn bằng histogram thủ công → khó tái lập</td></tr>
+        <tr><td><code>Crossed-product features</code></td><td>Giao 27 diagnosis × 33 medication tạo feature giao cho phần wide (Fig. 2, Section 2.2 mục 9)</td><td>Bắt tương quan đồng xuất hiện (memorisation)</td><td>Số quan sát mỗi nhóm mất cân bằng, nhiều giá trị thiếu/sai (Section 3)</td></tr>
+        <tr><td><code>Embedding layers</code></td><td>3 embedding (diagnoses/medication/lab) ánh xạ sparse binary → vector dày 16-d (Section 2.3)</td><td>Giảm chiều categorical, biểu diễn ngữ nghĩa</td><td>Phương pháp embedding "đơn giản" — chính paper đề xuất nâng cấp ở phần kết luận</td></tr>
+        <tr><td><code>SMOTE 150% / 300%</code></td><td>Sinh mẫu thiểu số trong từng fold CV; 150%→tỉ lệ 1:2, 300%→1:1 (Section 2.4)</td><td>Tăng sensitivity rõ rệt (31→49→72%)</td><td>KHÔNG cải thiện AUC; 300% kéo specificity xuống 76.59% (Table 4)</td></tr>
+        <tr><td><code>SGD + Binary Cross-Entropy</code></td><td>Optimizer + hàm loss huấn luyện (Section 2.4)</td><td>Chuẩn, ổn định</td><td>5 mức learning rate (1e-3…1e-5) + patience thủ công (40/40/30/20/20) → cấu hình phức tạp</td></tr>
+        <tr><td><code>10-fold stratified CV + ensemble</code></td><td>10 model → trung bình xác suất, ngưỡng 0.5 (Section 2.4)</td><td>Ensemble robust hơn từng model đơn (Section 3)</td><td>Tốn chi phí huấn luyện; vẫn không nâng AUC qua ~84%</td></tr>
+        <tr><td><code>ReLU + Sigmoid</code></td><td>Activation hidden / output (Section 2.3)</td><td>Chuẩn cho NN sâu</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp theo AUC (no-SMOTE, từ Table 3 &amp; Table 4). ⭐ = mô hình paper chọn làm final predictive model. Pimentel [17] là baseline ngoài để đối chiếu.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC (no-SMOTE)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>Wide &amp; Deep ensemble</code> ⭐</td><td>Mô hình đề xuất chính (final)</td><td><strong>84.13% (Table 3) / 84.01% (Table 4)</strong></td><td>Kết hợp memorisation + generalisation; ensemble 10 model robust hơn từng model</td><td>Sensitivity chỉ 31.17%; AUC chỉ nhỉnh hơn baseline ~0.8%</td></tr>
+        <tr><td>2</td><td><code>Wide &amp; Deep — 10 single model</code></td><td>Thành phần của ensemble</td><td>82.43–83.95 (Table 3, model 1–10)</td><td>Mỗi model là 1 fold riêng</td><td>Đơn lẻ kém ensemble; sensitivity dao động 25.56–37.30%</td></tr>
+        <tr><td>3</td><td><code>Random Forest (Pimentel [17])</code></td><td>Baseline ngoài, cùng dataset &amp; split</td><td>83.19% (Table 4, no-SMOTE)</td><td>Specificity rất cao 99.28%</td><td>Sensitivity rất thấp 16.07%; thua W&amp;D về AUC + sensitivity khi no-SMOTE</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Lưu ý: với SMOTE 150%/300%, baseline RF của Pimentel [17] lại đạt AUC cao hơn W&amp;D (84.22%/84.11% vs 83.33%/82.12%, Table 4) — SMOTE không cứu được AUC của W&amp;D.</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Practice Fusion EHR</strong><br>(PF2012 competition)</td>
+          <td>9948 bệnh nhân<br>(1904 ≈19% T2DM; 43% nam / 57% nữ; tuổi 21–93)</td>
+          <td>1312 feature engineered<br>(từ 3903 ICD-9, 2553 thuốc, 334 lab test)</td>
+          <td>EHR de-identified Mỹ, 2009–2012. Đã bị Practice Fusion gỡ thông tin trực tiếp về diabetes (ICD-9 250.*, thuốc tiểu đường, lab glucose/insulin) để tăng độ khó cuộc thi (Section 2.1). Split: development 70% (chia 10 fold: 9 train / 1 val) / test 30%.</td>
+          <td><a href="https://www.kaggle.com/c/pf2012-diabetes" target="_blank">cuộc thi (đã đóng)</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Cảnh báo tái lập: bộ dữ liệu là của cuộc thi đã đóng, KHÔNG có link tải công khai trong paper. Số nhãn có chút mâu thuẫn nội bộ: abstract/Section 2.1 ghi 1904 ca T2DM (≈19%), còn Section 2.2 cuối ghi "1890 patients (19%)" — chênh nhỏ do bước làm sạch.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Làm sạch &amp; trích feature cơ bản</td><td>Loại outlier BMI/cân nặng/chiều cao; sinh 6 feature BMI + feature huyết áp/HBP; tuổi, giới (Section 2.2 mục 1–3, 10)</td><td>Feature cố định</td></tr>
+        <tr><td>2</td><td>Mã hoá diagnoses / med / lab</td><td>ICD-9, thuốc, lab → sparse binary vector mỗi bệnh nhân (Section 2.2 mục 4–6)</td><td>3903 + 2553 + 334 cột thô</td></tr>
+        <tr><td>3</td><td>Feature selection</td><td>Cosine distance giữa cột feature và cột nhãn; chọn ngưỡng từ histogram (Fig. 1)</td><td>151 diagnoses, 134 med, 80 lab</td></tr>
+        <tr><td>4</td><td>Special &amp; group features</td><td>17 special disease (Table 1) + 19 nhóm ICD-9 (Table 2)</td><td>Feature đặc biệt</td></tr>
+        <tr><td>5</td><td>Crossed features</td><td>27 diagnosis × 33 medication → binary crossed vector (Fig. 2)</td><td>Đặc trưng giao cho wide</td></tr>
+        <tr><td>6</td><td>Gộp feature</td><td>Tổng hợp tất cả</td><td>1312 feature / bệnh nhân</td></tr>
+        <tr><td>7</td><td>Split &amp; CV</td><td>Development 70% (10 fold: 9 train / 1 val) + test 30% (theo Pimentel [17]) (Section 2.3)</td><td>Tập train/val/test</td></tr>
+        <tr><td>8</td><td>Cân bằng lớp</td><td>SMOTE 150% / 300% áp dụng <em>trong từng fold train</em> (Section 2.4)</td><td>Train cân bằng (1:2 / 1:1)</td></tr>
+        <tr><td>9</td><td>Train Wide &amp; Deep</td><td>Wide GLM (crossed) + deep 3 embedding(16-d)+2 hidden(256,128); nối thành vector 1439-d → linear 128→1 + sigmoid; SGD + BCE; 5 mức LR + patience (Section 2.3–2.4)</td><td>10 model tối ưu</td></tr>
+        <tr><td>10</td><td>Ensemble &amp; đánh giá</td><td>Trung bình xác suất 10 model, ngưỡng 0.5; AUC/Sens/Spec/Acc trên test (Section 2.4)</td><td>Final model + metric</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Cosine feature importance (Fig. 1)</span>
+      cos_i = (x_i · y) / (‖x_i‖ · ‖y‖)<br>
+      x_i = cột feature ICD-9/thuốc/lab ; y = cột nhãn (1/0 = có/không diabetes)<br>
+      → cos_i tiến tới 1 ⇒ feature càng liên quan ⇒ chọn nếu &gt; ngưỡng (histogram)
+    </div>
+    <div class="formula">
+      <span class="label">Các chỉ số đánh giá (Section 2.4)</span>
+      Sensitivity = TP / (TP + FN)   &nbsp;(% ca có diabetes phân đúng)<br>
+      Specificity = TN / (TN + FP)   &nbsp;(% ca không diabetes phân đúng)<br>
+      Accuracy    = (TP + TN) / (TP + TN + FP + FN)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      <svg width="560" height="150" viewBox="0 0 560 150" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
+        <rect x="6" y="50" width="110" height="48" rx="6" fill="#dbeafe" stroke="#2563eb"/>
+        <text x="61" y="71" font-size="12" text-anchor="middle" fill="#1e3a8a">1312 feature</text>
+        <text x="61" y="87" font-size="10" text-anchor="middle" fill="#64748b">(diag/med/lab+cross)</text>
+        <rect x="170" y="14" width="120" height="40" rx="6" fill="#ede9fe" stroke="#7c3aed"/>
+        <text x="230" y="33" font-size="12" text-anchor="middle" fill="#5b21b6">WIDE</text>
+        <text x="230" y="47" font-size="9" text-anchor="middle" fill="#64748b">GLM · crossed</text>
+        <rect x="170" y="92" width="120" height="44" rx="6" fill="#d1fae5" stroke="#047857"/>
+        <text x="230" y="110" font-size="12" text-anchor="middle" fill="#065f46">DEEP</text>
+        <text x="230" y="124" font-size="9" text-anchor="middle" fill="#64748b">emb16 · 256 · 128</text>
+        <rect x="340" y="50" width="96" height="48" rx="6" fill="#fef3c7" stroke="#b45309"/>
+        <text x="388" y="71" font-size="11" text-anchor="middle" fill="#92400e">concat 1439-d</text>
+        <text x="388" y="87" font-size="9" text-anchor="middle" fill="#64748b">128→1 sigmoid</text>
+        <rect x="470" y="50" width="84" height="48" rx="6" fill="#fee2e2" stroke="#b91c1c"/>
+        <text x="512" y="71" font-size="11" text-anchor="middle" fill="#991b1b">P(T2DM)</text>
+        <text x="512" y="87" font-size="9" text-anchor="middle" fill="#64748b">onset 2012</text>
+        <line x1="116" y1="74" x2="170" y2="34" stroke="#94a3b8" stroke-width="1.5"/>
+        <line x1="116" y1="74" x2="170" y2="114" stroke="#94a3b8" stroke-width="1.5"/>
+        <line x1="290" y1="34" x2="340" y2="68" stroke="#94a3b8" stroke-width="1.5"/>
+        <line x1="290" y1="114" x2="340" y2="80" stroke="#94a3b8" stroke-width="1.5"/>
+        <line x1="436" y1="74" x2="470" y2="74" stroke="#94a3b8" stroke-width="1.5"/>
+      </svg>
+      <span class="caption">Sơ đồ tái dựng kiến trúc Wide &amp; Deep (theo mô tả Fig. 3–4 &amp; Section 2.3). Hình minh hoạ vẽ lại bằng SVG, KHÔNG crop từ PDF.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">84.13%</span><span class="label">AUC — ensemble no-SMOTE (Table 3)</span></div>
+      <div class="metric"><span class="value">84.28%</span><span class="label">Accuracy — ensemble (Table 3)</span></div>
+      <div class="metric"><span class="value">31.17%</span><span class="label">Sensitivity — ensemble (Table 3)</span></div>
+      <div class="metric"><span class="value">96.85%</span><span class="label">Specificity — ensemble (Table 3)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>Practice Fusion</td><td>W&amp;D ensemble</td><td>No SMOTE (test set 1 split)</td><td><strong>AUC 84.13% · Acc 84.28% · Sens 31.17% · Spec 96.85%</strong></td><td>Table 3 (dòng Ensemble) + Abstract</td></tr>
+        <tr><td>Practice Fusion</td><td>W&amp;D single (1–10)</td><td>No SMOTE, 10-fold</td><td>AUC 82.43–83.95 · Sens 25.56–37.30 · Spec 94.53–97.22</td><td>Table 3 (model 1–10)</td></tr>
+        <tr><td>Practice Fusion</td><td>W&amp;D ensemble</td><td>No SMOTE (avg 10 partitions)</td><td>AUC 84.01% · Sens 29.12% · Spec 96.18%</td><td>Table 4 (SMOTE 0%) + Section 3</td></tr>
+        <tr><td>Practice Fusion</td><td>RF — Pimentel [17]</td><td>No SMOTE (avg 10 partitions)</td><td>AUC 83.19% · Sens 16.07% · Spec 99.28%</td><td>Table 4 (SMOTE 0%, "Best model in [17]")</td></tr>
+        <tr><td>Practice Fusion</td><td>W&amp;D ensemble</td><td>SMOTE 150%</td><td>AUC 83.33% · Sens 49.40% · Spec 90.16%</td><td>Table 4 (150%)</td></tr>
+        <tr><td>Practice Fusion</td><td>RF — Pimentel [17]</td><td>SMOTE 150%</td><td>AUC 84.22% · Sens 29.19% · Spec 96.42%</td><td>Table 4 (150%)</td></tr>
+        <tr><td>Practice Fusion</td><td>W&amp;D ensemble</td><td>SMOTE 300%</td><td>AUC 82.12% · Sens 71.57% · Spec 76.59%</td><td>Table 4 (300%)</td></tr>
+        <tr><td>Practice Fusion</td><td>RF — Pimentel [17]</td><td>SMOTE 300%</td><td>AUC 84.11% · Sens 36.23% · Spec 93.77%</td><td>Table 4 (300%)</td></tr>
+        <tr><td>Practice Fusion</td><td>W&amp;D ensemble</td><td>ROC curve</td><td>Hình minh hoạ AUC ensemble (giá trị 84.13% theo Table 3)</td><td>Fig. 6</td></tr>
+        <tr><td>Practice Fusion</td><td>W&amp;D Model 1</td><td>Train/val loss</td><td>UNKNOWN (chỉ là đường loss minh hoạ, không số)</td><td>Fig. 5</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Hai con số AUC ensemble no-SMOTE khác nhau là HỢP LÝ: 84.13% là 1 lần chia test (Table 3), còn 84.01% là trung bình 10 lần chia khác nhau (Table 4). Paper KHÔNG báo cáo Precision/Recall/F1, không PR-AUC, không CI → để UNKNOWN, không suy diễn.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro &amp; cảnh báo tái lập</strong>
+      <ul>
+        <li><strong>Sensitivity rất thấp (31.17%)</strong> ở cấu hình tốt nhất: bỏ sót ~69% bệnh nhân sẽ mắc T2DM — yếu cho mục tiêu sàng lọc onset.</li>
+        <li><strong>SMOTE không cứu AUC</strong>: 150%/300% chỉ tăng sensitivity nhưng AUC tụt (84→83→82%) và specificity tụt mạnh (96→90→76%). Ngược kết quả của Pimentel [17] và Alghamdi [4].</li>
+        <li><strong>Không có code public</strong> (code_url = null) + bộ feature engineering 1312 đặc trưng rất nặng, chọn feature bằng ngưỡng histogram thủ công ⇒ tái lập <em>thấp</em>.</li>
+        <li><strong>Dataset cuộc thi đã đóng</strong>: không có link tải mở trong paper; muốn lặp lại phải xin lại dữ liệu Practice Fusion.</li>
+        <li>Mâu thuẫn nhỏ trong paper: 1904 vs 1890 ca T2DM — cần kiểm khi trích nhãn.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>AUC ~84% khiêm tốn so với baseline cùng Layer 3: dinh2019 (0.957 NHANES có lab), agliata2023 (0.934 NHANES+MIMIC) — dù 2 bài đó là cross_sectional/early_detection nên không hoàn toàn cùng bài toán.</li>
+        <li>Chính paper thừa nhận bị ảnh hưởng bởi dữ liệu chiều cao &amp; thưa, mất cân bằng, nhiều giá trị thiếu/sai (Section 3).</li>
+        <li>Không có XAI; embedding "đơn giản", auto feature selection để dành tương lai (Section 4).</li>
+        <li>Wide &amp; Deep không tự nêu được risk factor quan trọng (Section 3, cuối).</li>
+        <li>Cửa sổ onset không định lượng N năm cụ thể (chỉ "feature 2009–2011 → nhãn 2012", ~1 năm) — horizon long_term_risk nhưng còn uncertain.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là <strong>ứng viên Layer 3 hiếm có horizon long_term_risk</strong> trên EHR thật longitudinal (feature năm trước → onset năm sau) — bổ sung cho dinh2019/agliata2023 vốn cross_sectional/early_detection.</li>
+        <li>Minh chứng <strong>deep tabular (Wide &amp; Deep)</strong> trên EHR + so sánh công bằng với RF cùng dataset/split — mẫu thiết kế thí nghiệm tốt để học theo.</li>
+        <li><strong>Gap để cải tiến</strong>: nâng sensitivity (focal loss / cost-sensitive thay SMOTE), thêm XAI (SHAP) để lấy risk factor, embedding mạnh hơn (auto feature crossing), external validation, bổ sung PR-AUC/calibration.</li>
+        <li>Kết quả chỉ nên xem là <strong>dự báo nguy cơ hỗ trợ</strong>, KHÔNG thay chẩn đoán y khoa.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

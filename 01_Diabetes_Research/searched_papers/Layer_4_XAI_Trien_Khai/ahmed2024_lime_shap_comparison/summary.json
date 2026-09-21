@@ -1,0 +1,23 @@
+{
+  "paper_id": "ahmed2024_lime_shap_comparison",
+  "layer": 4,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Phân tích so sánh hai trình giải thích XAI LIME vs SHAP trên cùng một mô hình Logistic Regression dự đoán ĐTĐ (BRFSS2015): đối chiếu phạm vi local/global, độ ổn định (stability), nhất quán (consistency), missingness, chi phí tính toán và khả năng diễn giải (Bảng 3-5, phần IV-V) — như tài liệu tham chiếu chọn công cụ XAI, không phải đóng góp mô hình.",
+  "method": "Tiền xử lý BRFSS2015 (clean, impute, loại outlier) → split 80/20 (KHÔNG K-fold CV) → standardization/min-max → train DUY NHẤT Logistic Regression (sklearn, binary cross-entropy + gradient descent) → đánh giá (classification report Table 2, confusion matrix Fig.4, PR/ROC Fig.5) → giải thích LOCAL bằng LIME (Algorithm 1, num_features 10/12, predict_proba; Fig.6-7) + LOCAL+GLOBAL bằng SHAP (Algorithm 2, mean|SHAP| importance, summary, force plot; Fig.8-11) → đối chiếu định tính LIME vs SHAP theo fidelity/stability/consistency/comprehensibility (Bảng 3-5). KHÔNG cân bằng lớp, KHÔNG tuning.",
+  "best_metric": "Logistic Regression trên BRFSS2015: Accuracy 86% test set (Table 2 + Abstract + Conclusion, đối chiếu source.pdf p.7). CẢNH BÁO: trên dữ liệu lệch ~84:16, Recall lớp ĐTĐ (1) chỉ 0.15, Precision 0.51, F1 0.23 (Support 10728); lớp 0: 0.87/0.98/0.92 (Support 65376); confusion matrix TN=63842/FP=1534 (Fig.4). 86% ≈ baseline đoán lớp đa số; KHÔNG có AUC số (Fig.5 chỉ vẽ, không in giá trị).",
+  "datasets": [
+    "brfss-2015-diabetes-health-indicators"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "Kém hơn baseline Layer 4 tasin2022 (Acc 81% nhưng AUC 0.84 + dataset RTML mới + cân bằng SMOTE/ADASYN + deploy web/Android + code public): ahmed2024 không cân bằng lớp, Recall lớp ĐTĐ chỉ 0.15, không AUC số, không deploy, không code. Kém hơn dharmarathne2024 về tính sản phẩm (dharmarathne có interface SHAP local tới end-user). Tuy nhiên ahmed2024 SÂU hơn cả hai ở phần đối chiếu PHƯƠNG PHÁP LIME↔SHAP (Bảng 3-5, 16 dòng ưu/nhược) — bù chéo: tasin/dharmarathne lo 'đưa XAI vào sản phẩm', ahmed lo 'so sánh phương pháp XAI trên giấy'.",
+  "gap": "Không K-fold CV (chỉ split 80/20); KHÔNG cân bằng lớp dù lệch 84:16 → Recall lớp ĐTĐ 0.15, mô hình gần vô dụng để phát hiện ĐTĐ; 86% accuracy gây hiểu lầm (≈ majority baseline); không AUC số, không tuning; XAI chỉ định tính (không bảng Shapley đầy đủ, không đo fidelity/stability định lượng); các so sánh stability LIME/SHAP dẫn từ tài liệu khác chứ không tự đo; không code public, không hyperparam/seed; vài số lệch nội tại (Table 1: 253.681/22 cột vs text 253.680/21 feature; Abstract gọi LR có 'spatial attention' vô lý).",
+  "verdict": "weak",
+  "verdict_reason": "Modeling quá yếu (LR đơn, 86% acc nhưng Recall lớp ĐTĐ 0.15, không CV, không cân bằng, không AUC, không code) → KHÔNG dùng làm baseline mô hình/dataset; chỉ giữ làm tài liệu tham chiếu đối chiếu phương pháp LIME vs SHAP (Bảng 3-5) và bài học ngược về báo accuracy đơn lẻ trên dữ liệu lệch.",
+  "analyzed_at": "2026-06-22",
+  "role": "later",
+  "role_note": "Đối chiếu LIME vs SHAP — chỉ cần nếu bài có phần XAI.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

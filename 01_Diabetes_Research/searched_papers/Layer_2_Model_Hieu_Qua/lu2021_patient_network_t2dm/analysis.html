@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A patient network-based ML model for T2DM prediction — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>A patient network-based machine learning model for disease prediction: The case of type 2 diabetes mellitus</h1>
+    <div class="meta">
+      <span>📅 <strong>2021</strong></span>
+      <span>📰 Applied Intelligence (Springer)</span>
+      <span>📚 <strong>137</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1007/s10489-021-02533-w" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge no">📊 Dataset: Riêng tư (CBHS, không public)</span>
+      <span class="badge horizon">⏱️ Horizon: Early detection</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.cbhs.com.au/" target="_blank">CBHS Health Funds — administrative claim (Australia)</a> — ~18,7 triệu hồ sơ nhập viện / ~124.000 bệnh nhân de-identified (1995–2018); cohort dùng để train: 1.028 T2DM + 1.028 non-T2DM. <strong>Riêng tư, không public.</strong></li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Bài <strong>ĐẦU TIÊN</strong> xây "<strong>patient network</strong>" (mạng bệnh nhân) từ dữ liệu claim, lấy <strong>centrality</strong> làm feature ẩn rồi ghép với đặc trưng bệnh nhân để dự đoán nguy cơ T2DM bằng 8 model ML.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>Random Forest: AUC 0.91 · Accuracy 84.95%</strong> (Table 2 + Discussion §4); dải AUC cả 8 model 0.79–0.91.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Bipartite patient–disease graph → <strong>one-mode projection</strong> → patient network → 5 đặc trưng centrality + 3 đặc trưng bệnh nhân → 8 model ML (RF thắng), 10-fold CV.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Khác hẳn <code>hasan2020</code> / <code>khanam2021</code> (tabular PIMA thuần): bài này thêm <strong>nguồn tín hiệu mới</strong> (đặc trưng đồ thị). AUC 0.91 thấp hơn AUC 0.950 của <code>hasan2020</code>, nhưng dữ liệu real-world claim khác bản chất PIMA.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">
+      Paper đề xuất một hướng <strong>feature engineering bằng đồ thị</strong> cho dự đoán đái tháo đường type 2 (T2DM).
+      Thay vì chỉ dùng đặc trưng tabular của từng bệnh nhân, nhóm tác giả dựng một <strong>"patient network"</strong>:
+      hai bệnh nhân được nối nếu họ cùng được chẩn đoán một bệnh — xây từ <strong>bipartite graph patient–disease</strong> rồi
+      <strong>projection</strong> thành đồ thị một-chế-độ (one-mode). Từ mạng này, họ rút 5 độ đo <strong>centrality</strong>
+      (degree, eigenvector, closeness, betweenness, clustering coefficient) làm <strong>feature ẩn</strong>, ghép thêm 3 đặc trưng
+      bệnh nhân (tuổi, giới, hút thuốc), rồi train 8 model ML. <strong>Random Forest</strong> đạt cao nhất:
+      <strong>AUC 0.91, Accuracy 84.95%</strong>. Bài chứng minh (qua ablation Table 3) rằng <strong>feature mạng đóng góp
+      quyết định</strong> cho hiệu năng — đây là trọng tâm của paper.
+    </p>
+    <h3>Vì sao là Layer 2 (Model hiệu quả)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm là cải tiến model/feature</td><td>Đóng góp chính là <em>cách biểu diễn đặc trưng mới</em> (centrality của patient network) để nâng độ chính xác, đúng tinh thần Layer 2</td></tr>
+      <tr><td>✔ So sánh nhiều model</td><td>Benchmark 8 classifier (LR, KNN, SVM, NB, DT, RF, XGBoost, ANN) trên cùng feature set</td></tr>
+      <tr><td>✔ Có ablation đo đóng góp feature</td><td>Table 3 tách "patient-only" vs "network-only" để chứng minh giá trị feature mạng</td></tr>
+      <tr><td>~ Chạm Layer 1 (biểu diễn đặc trưng)</td><td>Bước projection + centrality là một pipeline tiền xử lý/biểu diễn → <code>layer_uncertain=true</code> trong metadata</td></tr>
+      <tr><td>✘ Chưa phải Layer 3</td><td>Dù dữ liệu là claim real-world theo thời gian, nhãn là trạng thái T2DM rút từ ICD — không có cửa sổ follow-up N năm</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Chỉ dùng Gini/permutation importance ở mức mô tả, không có XAI sâu (SHAP/LIME) hay deployment thật</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Bipartite graph + projection</code></td><td>Dựng patient network từ quan hệ bệnh nhân–bệnh (one-mode projection)</td><td>Phát hiện quan hệ ẩn giữa bệnh nhân cùng bệnh; biểu diễn đặc trưng mới</td><td>Projection làm mất thông tin; mạng đặc → sinh feature tương quan cao</td></tr>
+        <tr><td><code>Centrality measures</code> (degree, eigenvector, closeness, betweenness, clustering coef.)</td><td>5 đặc trưng mạng cho mỗi node-bệnh nhân</td><td>Là nguồn tín hiệu mạnh nhất (Table 3); eigenvector &amp; closeness quan trọng nhất (Fig 7)</td><td>Tính trên mạng dựng từ TOÀN bộ cohort → rủi ro leakage (xem §7)</td></tr>
+        <tr><td><code>Elixhauser comorbidity index</code></td><td>Lọc ICD code chỉ giữ bệnh đồng mắc, tránh data sparsity</td><td>Chuẩn dựa trên dữ liệu administrative; giảm nhiễu ICD</td><td>Bỏ qua bệnh ngoài index → có thể mất tín hiệu</td></tr>
+        <tr><td><code>ICD-9-AM / ICD-10-AM</code></td><td>Mã hoá bệnh &amp; hành vi hút thuốc (smoking codes)</td><td>Chuẩn quốc tế, nhất quán</td><td>Real-world: code thiếu, không đồng nhất giữa bác sĩ</td></tr>
+        <tr><td><code>scikit-learn</code></td><td>Train 7 model ML cổ điển</td><td>Phổ biến, dễ tái lập về API</td><td>Phần lớn model dùng default hyperparam → chưa tối ưu</td></tr>
+        <tr><td><code>Keras</code></td><td>Train ANN (3 lớp, Adam, 4000 epoch, lr 0.001)</td><td>Linh hoạt cho NN</td><td>4000 epoch dễ overfit nếu không early-stopping</td></tr>
+        <tr><td><code>Gephi (Force Atlas)</code></td><td>Trực quan hoá mạng (Fig 4)</td><td>Hiển thị cộng đồng/cluster rõ</td><td>Chỉ để minh hoạ, không phải bước model</td></tr>
+        <tr><td><code>10-fold cross-validation</code></td><td>Đánh giá độ ổn định</td><td>Giảm phương sai ước lượng</td><td>CV chạy trên mạng đã dựng sẵn → không cô lập hoàn toàn fold</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Accuracy (%)</strong> (Table 2, có đủ feature mạng + bệnh nhân). ⭐ = model tốt nhất paper chọn.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Accuracy (%)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>Random Forest</code> ⭐</td><td>Model thắng (max_depth=10, entropy, 200 cây, bagging)</td><td><strong>84.95</strong> · AUC 0.91</td><td>Cao nhất mọi metric; ít FP (13); tự chọn feature mạnh</td><td>Cần XAI bổ sung; AUC 0.91 dưới ensemble boosting hasan2020 (0.950)</td></tr>
+        <tr><td>2</td><td><code>XGBoost</code></td><td>Tree boosting (hyperparam tuning)</td><td><strong>82.52</strong> · AUC 0.8950</td><td>AUC sát RF; mạnh với tabular</td><td>Không vượt RF dù boosting; cần tuning</td></tr>
+        <tr><td>2</td><td><code>ANN</code></td><td>NN 3 lớp fully-connected (Keras, Adam, 4000 epoch)</td><td><strong>82.52</strong></td><td>Đồng hạng accuracy với XGBoost</td><td>4000 epoch dễ overfit; khó giải thích</td></tr>
+        <tr><td>4</td><td><code>KNN</code></td><td>Lân cận gần nhất (grid search, k=12)</td><td><strong>81.31</strong></td><td>Đơn giản, accuracy khá</td><td>Nhạy với scale &amp; chiều cao</td></tr>
+        <tr><td>5</td><td><code>Decision Tree</code></td><td>Cây đơn (default sklearn)</td><td><strong>80.83</strong></td><td>Dễ giải thích</td><td>Dễ overfit; FP &gt; FN</td></tr>
+        <tr><td>6</td><td><code>SVM</code></td><td>Siêu phẳng phân tách (default)</td><td><strong>78.64</strong></td><td>Ổn định</td><td>Default kernel, chưa tuning</td></tr>
+        <tr><td>7</td><td><code>Logistic Regression</code></td><td>Baseline tuyến tính (default)</td><td><strong>74.27</strong></td><td>Nhanh, dễ diễn giải</td><td>FP &gt; FN; thấp do quan hệ phi tuyến</td></tr>
+        <tr><td>8</td><td><code>Naïve Bayes</code></td><td>Bayes giả định độc lập (default)</td><td><strong>65.29</strong></td><td>Rất nhanh</td><td>Thấp nhất; giả định độc lập sai với feature mạng tương quan; FN rất cao (122)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>CBHS Health Funds — administrative claim (Australia)</strong></td>
+          <td>Nguồn: ~18,7M nhập viện / ~124k bệnh nhân (1995–2018).<br>Cohort train: <strong>1.028 T2DM + 1.028 non-T2DM = 2.056</strong> (cân bằng 1:1)</td>
+          <td>5 feature mạng (degree/eigenvector/closeness/betweenness centrality, clustering coef.) + 3 feature bệnh nhân (tuổi, giới, hút thuốc) = <strong>8 feature</strong></td>
+          <td>Dữ liệu yêu cầu bảo hiểm (claim) de-identified từ công ty CBHS. T2DM = ICD-10-AM 'E11' hoặc ICD-9-AM '250.*'. Lọc theo Elixhauser comorbidity. <strong>Riêng tư, không công bố.</strong></td>
+          <td><a href="https://www.cbhs.com.au/" target="_blank">CBHS (gated)</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Split: 80% train / 20% test (Section 3.2). 10-fold CV trên tập train. Cân bằng lớp đạt bằng cách <em>chọn cohort 1:1</em> (không SMOTE/oversampling). Test set ≈ 411–412 mẫu (suy từ TP+TN+FP+FN trong Table 2).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Lọc &amp; chọn cohort</td><td>4 tiêu chí (≥2 lần nhập viện; loại trùng/ICD sốt-chấn thương; max 50 lần; logic đặc trưng-kết quả). Chọn 1.028 T2DM + 1.028 non-T2DM</td><td>Cohort cân bằng 1:1 (Fig 1)</td></tr>
+        <tr><td>2</td><td>Tiền xử lý ICD</td><td>Chuyển ICD về chữ hoa, outlier detection; lọc theo Elixhauser comorbidity index; map smoking codes</td><td>Tập ICD sạch theo comorbidity</td></tr>
+        <tr><td>3</td><td>Dựng bipartite graph</td><td>Đồ thị 2 phía patient–disease; cạnh = bệnh nhân được chẩn đoán bệnh</td><td>Bipartite G (patient × disease)</td></tr>
+        <tr><td>4</td><td>Projection → patient network</td><td>One-mode projection: nối 2 bệnh nhân nếu cùng ≥1 bệnh</td><td>Patient network PN (Fig 3, Fig 4)</td></tr>
+        <tr><td>5</td><td>Rút network features</td><td>5 centrality: degree, eigenvector, closeness, betweenness, clustering coefficient</td><td>Vector đặc trưng mạng</td></tr>
+        <tr><td>6</td><td>Rút patient features</td><td>Tuổi (rescale [0,1]), giới (0/1), hút thuốc (0/1 từ ICD)</td><td>Vector đặc trưng bệnh nhân</td></tr>
+        <tr><td>7</td><td>Ghép feature</td><td>Concatenate network + patient features</td><td>8 feature/bệnh nhân</td></tr>
+        <tr><td>8</td><td>Train 8 model</td><td>LR/KNN(k=12)/SVM/NB/DT/RF(200 cây,depth10,entropy)/XGBoost(tuned)/ANN(3 lớp,Adam,4000 epoch,lr0.001). Split 80/20, 10-fold CV</td><td>8 classifier đã train</td></tr>
+        <tr><td>9</td><td>Đánh giá &amp; importance</td><td>Accuracy/Precision/Recall/F1/AUC + confusion; permutation importance (Fig 6) + Gini RF (Fig 7)</td><td>RF thắng; xếp hạng feature</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Degree centrality (chuẩn hoá) — Section 2.4.1</span>
+      C_D(u) = d_u                (degree thô)<br>
+      C_D'(u) = d_u / (n − 1)      (chuẩn hoá theo size mạng n)
+    </div>
+
+    <div class="formula">
+      <span class="label">Eigenvector centrality — Section 2.4.1</span>
+      x_u = (1/λ) · Σ_v  A_uv · x_v<br>
+      (A_uv = 1 nếu node u nối node v; λ = hệ số dương / trị riêng)
+    </div>
+
+    <div class="formula">
+      <span class="label">Closeness centrality — Section 2.4.1</span>
+      C_c(u) = (N − 1) / Σ_v  d(u, v)<br>
+      (d(u,v) = độ dài đường đi ngắn nhất giữa u và v; N = tập node)
+    </div>
+
+    <div class="formula">
+      <span class="label">Betweenness centrality — Section 2.4.1</span>
+      C_b(u) = Σ_{s≠u≠t}  σ_st(u) / σ_st<br>
+      (σ_st = số đường ngắn nhất s→t; σ_st(u) = số đường đó đi qua u)
+    </div>
+
+    <div class="formula">
+      <span class="label">Clustering coefficient — Section 2.4.1</span>
+      C(u) = 2 · T(u) / [ deg(u) · (deg(u) − 1) ]<br>
+      (T(u) = số tam giác qua u; deg(u) = bậc của u)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Hình từ PDF chưa được crop (tuỳ chọn — bỏ qua theo yêu cầu). Các hình chính: <strong>Fig 1</strong> (quy trình chọn dữ liệu), <strong>Fig 3</strong> (minh hoạ projection patient network), <strong>Fig 4</strong> (trực quan mạng bằng Gephi), <strong>Fig 5</strong> (ROC 8 model), <strong>Fig 6</strong> (permutation importance), <strong>Fig 7</strong> (Gini importance của RF).
+      <span class="caption">Ưu tiên số liệu từ bảng (Table 1–3) + formula block ở trên thay vì ảnh crop.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.91</span><span class="label">AUC — RF (Discussion §4 / Fig 5)</span></div>
+      <div class="metric"><span class="value">84.95%</span><span class="label">Accuracy — RF (Table 2)</span></div>
+      <div class="metric"><span class="value">0.8950</span><span class="label">AUC — XGBoost (Section 3.2)</span></div>
+      <div class="metric"><span class="value">0.79–0.91</span><span class="label">Dải AUC cả 8 model (Abstract / §4)</span></div>
+    </div>
+
+    <h3>Bảng chính: hiệu năng có ĐỦ feature mạng + bệnh nhân (Table 2)</h3>
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>CBHS</td><td>Random Forest ⭐</td><td>Full features, test set</td><td><strong>Acc 84.95% · Prec 85.97% · Rec 84.95% · F1 84.79% · AUC 0.91</strong></td><td>Table 2 (Acc/Prec/Rec/F1); AUC: Discussion §4 + Fig 5</td></tr>
+        <tr><td>CBHS</td><td>XGBoost</td><td>Full features, test set</td><td>Acc 82.52% · Prec 82.98% · Rec 81.52% · F1 82.42% · <strong>AUC 0.8950</strong></td><td>Table 2; AUC: Section 3.2</td></tr>
+        <tr><td>CBHS</td><td>ANN</td><td>Full features, test set</td><td>Acc 82.52% · Prec 82.52% · Rec 82.52% · F1 82.52%</td><td>Table 2 (AUC riêng: UNKNOWN — chỉ nằm trong dải 0.79–0.91)</td></tr>
+        <tr><td>CBHS</td><td>KNN (k=12)</td><td>Full features, test set</td><td>Acc 81.31% · Prec 82.25% · Rec 81.31% · F1 81.10%</td><td>Table 2</td></tr>
+        <tr><td>CBHS</td><td>Decision Tree</td><td>Full features, test set</td><td>Acc 80.83% · Prec 80.84% · Rec 80.83% · F1 80.83%</td><td>Table 2</td></tr>
+        <tr><td>CBHS</td><td>SVM</td><td>Full features, test set</td><td>Acc 78.64% · Prec 78.64% · Rec 78.64% · F1 78.64%</td><td>Table 2</td></tr>
+        <tr><td>CBHS</td><td>Logistic Regression</td><td>Full features, test set</td><td>Acc 74.27% · Prec 74.53% · Rec 74.27% · F1 74.26%</td><td>Table 2</td></tr>
+        <tr><td>CBHS</td><td>Naïve Bayes</td><td>Full features, test set</td><td>Acc 65.29% · Prec 69.56% · Rec 65.29% · F1 62.72%</td><td>Table 2</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Ablation: đóng góp của feature mạng (Table 3)</h3>
+    <table>
+      <thead><tr><th>Model</th><th>Setting</th><th>Accuracy</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>RF</td><td>Chỉ patient features (tuổi/giới/hút thuốc)</td><td>71.36%</td><td>Table 3</td></tr>
+        <tr><td>RF</td><td>Chỉ network features (5 centrality)</td><td><strong>83.98%</strong></td><td>Table 3</td></tr>
+        <tr><td>Cả 8 model</td><td>Chỉ patient features</td><td>dải 59.71%–75.00%</td><td>Table 3 + §3.3</td></tr>
+        <tr><td>Cả 8 model</td><td>Chỉ network features</td><td>dải 63.83%–83.98%</td><td>Table 3 + §3.3</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Kết luận ablation (§3.3): chỉ dùng feature mạng đã gần bằng dùng cả hai loại → <strong>feature mạng là tín hiệu chủ đạo</strong>. Feature quan trọng nhất của RF: <strong>eigenvector centrality, closeness centrality, tuổi</strong> (Gini &gt; 0.15, Fig 7); permutation importance (Fig 6): LR/KNN/SVM ưu tiên clustering coefficient, còn DT/RF/XGBoost/ANN ưu tiên eigenvector centrality.
+      Network properties (Table 1): 1.981 node, 85.412 cạnh, average degree 86.231, modularity 0.57, graph density 0.044, average clustering coefficient 0.808.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro tái lập &amp; data leakage</strong>
+      <ul>
+        <li><strong>Không có code public</strong> + dataset CBHS <strong>riêng tư (gated)</strong> → không thể tái lập đúng số. Reproducible = <strong>low</strong>.</li>
+        <li><strong>Leakage đồ thị:</strong> patient network dựng từ TOÀN bộ cohort (cả train lẫn test) TRƯỚC khi split → centrality của một node test "nhìn thấy" cả node train. Đây là rủi ro phương pháp luận lớn nhất; paper không nêu cách cô lập fold khi tính centrality.</li>
+        <li>Phần lớn model dùng <em>default hyperparam</em> (LR/SVM/DT/NB) → so sánh chưa hoàn toàn công bằng giữa các model.</li>
+        <li>Mâu thuẫn nhỏ trong bài: số community = <strong>37 (Table 1)</strong> vs <strong>38 (text §3.1)</strong> — không ảnh hưởng kết luận nhưng cần lưu.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Chỉ 1 nguồn dữ liệu (1 công ty bảo hiểm) → thiếu lượt khám ngoài viện, bệnh nhân đa bảo hiểm; tác giả tự nhận chất lượng record không kiểm soát được.</li>
+        <li><strong>Horizon = early_detection nhưng "uncertain":</strong> paper tự gọi là "early detection of at-risk patients / predict risk", nhưng nhãn thực chất là <em>trạng thái chẩn đoán T2DM hiện tại</em> rút từ ICD claim — KHÔNG có cửa sổ thời gian feature→label rõ ràng (không phải long-term risk có follow-up N năm).</li>
+        <li>AUC 0.91 / Acc 85% là <strong>screening</strong>, không thay chẩn đoán y khoa.</li>
+        <li>Không external validation trên nguồn dữ liệu độc lập; cohort cân bằng nhân tạo 1:1 không phản ánh tỷ lệ T2DM thực tế trong dân số.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Ý tưởng kiến trúc để tham khảo, KHÔNG dùng làm benchmark tái lập.</strong> Giá trị nằm ở hướng feature engineering bằng đồ thị (centrality làm feature ẩn) — có thể thử trên dữ liệu EHR/claim public.</li>
+        <li>Khác hẳn baseline cùng Layer 2 (<code>hasan2020</code>, <code>khanam2021</code> đều tabular PIMA): bài này đa dạng hoá kho bằng <strong>nguồn tín hiệu mạng</strong>. Có thể ghép ý tưởng centrality vào pipeline tabular + ensemble của hasan2020.</li>
+        <li>Cảnh báo leakage đồ thị là <strong>bài học phương pháp luận</strong>: nếu áp dụng, phải tính centrality CHỈ trên train graph rồi induct lên test node.</li>
+        <li>Verdict: <strong>maybe</strong> — ý tưởng mới giá trị tham khảo + citation cao (137), nhưng không code + dataset gated + nguy cơ leakage → không nên promote làm benchmark.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,479 @@
+/* ============================================================
+   ExploreX — Thư viện: toolbar lọc, layer accordion,
+   bảng paper + lưới thẻ
+   ============================================================ */
+
+/* ---------- Toolbar ---------- */
+.lib-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.lib-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.lib-search {
+  position: relative;
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+.lib-search-ico {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 17px;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.lib-search input {
+  padding-left: 34px;
+}
+.lib-sort {
+  flex: 0 0 auto;
+  width: auto;
+  padding-right: 30px;
+}
+.lib-viewseg {
+  display: flex;
+  gap: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+.lib-viewseg button {
+  display: grid;
+  place-items: center;
+  padding: 5px 10px;
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-faint);
+}
+.lib-viewseg button:hover {
+  color: var(--text);
+  background: var(--surface-3);
+  box-shadow: none;
+}
+.lib-viewseg button.active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Chips lọc ---------- */
+.lib-chips {
+  gap: 6px;
+}
+.lib-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 550;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+}
+.lib-chip svg {
+  font-size: 14px;
+}
+.lib-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+  box-shadow: none;
+}
+.lib-chip.on {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.lib-chip.green.on {
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green);
+}
+.lib-chip.amber.on {
+  border-color: var(--amber);
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+.lib-chip.red.on {
+  border-color: var(--red);
+  background: var(--red-soft);
+  color: var(--red);
+}
+.lib-chip-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 4px;
+}
+.lib-count {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.lib-count b {
+  color: var(--text);
+}
+.lib-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11.5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-dim);
+}
+.lib-clear:hover {
+  color: var(--red);
+  border-color: var(--red);
+  box-shadow: none;
+}
+
+/* ---------- Layer accordion ---------- */
+.layer-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.layer-acc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.layer-acc-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s var(--ease);
+}
+.layer-acc-head:hover {
+  background: var(--surface-2);
+}
+.layer-acc-head.open {
+  border-bottom: 1px solid var(--border);
+}
+.acc-chevron {
+  font-size: 20px;
+  color: var(--text-faint);
+  transition: transform 0.2s var(--ease);
+}
+.acc-chevron.open {
+  transform: rotate(0deg);
+}
+.acc-chevron:not(.open) {
+  transform: rotate(-90deg);
+}
+.layer-tag {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.layer-acc-name {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+.layer-acc-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 1px 10px;
+}
+.layer-acc-body {
+  animation: fadeInUp 0.18s var(--ease);
+}
+.layer-empty {
+  color: var(--text-faint);
+  font-size: 12.5px;
+  padding: 18px;
+  text-align: center;
+}
+
+/* ---------- Bảng paper ---------- */
+.paper-table {
+  font-size: 13.5px;
+}
+.paper-table th {
+  padding: 9px 16px;
+  background: var(--surface);
+}
+.paper-table td {
+  padding: 12px 16px;
+}
+.paper-row {
+  cursor: pointer;
+}
+.pt-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.45;
+}
+.pt-star {
+  color: var(--amber);
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.pt-venue {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.num {
+  font-family: var(--font-mono);
+  font-size: 0.93em;
+  font-variant-numeric: tabular-nums;
+}
+.pt-res {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.res-ico {
+  font-size: 16px;
+  color: var(--text-faint);
+  opacity: 0.4;
+  display: grid;
+  place-items: center;
+}
+.res-ico.on {
+  color: var(--accent);
+  opacity: 1;
+}
+
+/* ---------- Lưới thẻ ---------- */
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+.paper-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 15px 17px;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+}
+.paper-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-hover);
+  background: var(--surface);
+}
+.pc-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pc-top .pt-star {
+  font-size: 17px;
+}
+.pc-title {
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pc-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text-dim);
+  min-width: 0;
+}
+.pc-venue {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.pc-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  flex-shrink: 0;
+}
+.pc-res {
+  margin-top: auto;
+  padding-top: 2px;
+}
+
+@media (max-width: 720px) {
+  .lib-count {
+    margin-left: 0;
+    width: 100%;
+  }
+  .paper-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* mobile: bảng cuộn ngang trong khung, không đẩy cả trang */
+@media (max-width: 768px) {
+  .layer-acc-body {
+    overflow-x: auto;
+  }
+  .paper-table {
+    min-width: 640px;
+  }
+}
+
+/* ============================================================
+   Vai trò trong đề tài đã chốt (TO_DO §6 🅐–🅕)
+   Trục riêng, KHÁC verdict: verdict = chất lượng bài,
+   role = bài này dùng vào việc gì.
+   ============================================================ */
+.role-badge {
+  --role: var(--text-faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 9px 2px 3px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--role) 34%, transparent);
+  background: color-mix(in srgb, var(--role) 11%, transparent);
+  color: var(--role);
+  white-space: nowrap;
+  max-width: 100%;
+}
+.role-letter {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--role) 22%, transparent);
+  color: var(--role);
+}
+.role-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.role-badge.design {
+  --role: var(--accent);
+}
+.role-badge.method {
+  --role: var(--ch-blue);
+}
+.role-badge.positioning {
+  --role: var(--purple);
+}
+.role-badge.inflation {
+  --role: var(--red);
+}
+.role-badge.later {
+  --role: var(--amber);
+}
+.role-badge.related {
+  --role: var(--text-faint);
+}
+
+/* chip lọc theo vai trò dùng chung màu với badge */
+.lib-chip-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  margin-right: 2px;
+}
+.lib-chip.role {
+  --role: var(--text-faint);
+  padding-left: 3px;
+  gap: 6px;
+}
+.lib-chip.role .role-letter {
+  width: 16px;
+  height: 16px;
+  font-size: 9.5px;
+}
+.lib-chip.role.design {
+  --role: var(--accent);
+}
+.lib-chip.role.method {
+  --role: var(--ch-blue);
+}
+.lib-chip.role.positioning {
+  --role: var(--purple);
+}
+.lib-chip.role.inflation {
+  --role: var(--red);
+}
+.lib-chip.role.later {
+  --role: var(--amber);
+}
+.lib-chip.role.on {
+  border-color: color-mix(in srgb, var(--role) 46%, transparent);
+  background: color-mix(in srgb, var(--role) 13%, transparent);
+  color: var(--role);
+}
+
+/* ---------- Bài đã loại (§7) — vẫn hiện nhưng phải nhìn ra ngay ---------- */
+.pt-block {
+  color: var(--red);
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.paper-row.rejected .pt-title > span,
+.paper-card.rejected .pc-title {
+  color: var(--text-faint);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--red) 55%, transparent);
+  text-decoration-thickness: 1px;
+}
+.paper-card.rejected {
+  border-style: dashed;
+}

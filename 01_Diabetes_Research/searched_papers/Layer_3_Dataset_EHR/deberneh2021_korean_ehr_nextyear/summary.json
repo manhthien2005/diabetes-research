@@ -1,0 +1,25 @@
+{
+  "paper_id": "deberneh2021_korean_ehr_nextyear",
+  "layer": 3,
+  "prediction_horizon": "long_term_risk",
+  "contribution": "Dùng feature năm hiện tại (Y) trên EHR riêng tư Hàn Quốc 6 năm (2013-2018, Hanaro Medical Foundation) để dự đoán T2D xảy ra NĂM KẾ TIẾP (Y+1) thành 3 lớp normal/prediabetes/diabetes — early_detection thực thụ. Pipeline data-driven: ANOVA (biến số) + chi-squared (biến phân loại) + RFE → 12 feature → LR/RF/SVM/XGBoost + 3 ensemble (CIM, stacking, soft-voting).",
+  "method": "Data-driven feature selection (ANOVA + chi-squared + tree-based RFE) → 12 feature; lập nhãn 3 lớp theo ADA FPG (<100 normal, 100-125 prediabetes, >125 diabetes); listwise deletion cho missing; cân bằng lớp bằng majority under-sampling + SMOTE; tuning 10-fold grid-search CV (general → finer); so sánh 7 model gồm RF/SVM/XGBoost/LR + ensemble CIM/stacking/soft-voting; train 17.131 + test 200 mỗi lớp.",
+  "best_metric": "Test set (Table 2): Accuracy 0.73 / Precision 0.74 / Recall 0.74 / F1 0.74 / MCC 0.60 / KC 0.60 (SVM & RF, cao nhất). Precision theo lớp (RF, Table 3): diabetes 90%, normal 70%, prediabetes 61%. CV (Section 5): max 81% accuracy khi train 4 năm lịch sử + 12 feature vs 77% với 5 feature truyền thống; 78% khi chỉ dùng năm Y; ensemble (CIM/ST/SV) > single model (Figure 4). Paper KHÔNG báo AUC/ROC cho mô hình của họ.",
+  "datasets": [
+    "korean-private-ehr"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "Cùng Layer 3: vs dinh2019 (NHANES ~21k, AUC 0.957 có-lab nhưng cross-sectional, label gần trùng feature) — bài này con số thấp hơn (acc 0.73, không AUC) nhưng đúng onset Y+1 (early_detection thật, tránh leakage cross-sectional). vs agliata2023 (NHANES+MIMIC-III/IV hợp nhất 13.687 mẫu, AUC 0.934 + calibration nhưng cross-sectional): bài này không AUC/calibration, EHR private, song lại đúng horizon early_detection. Cả 3 đều không public code.",
+  "gap": "Nhãn định nghĩa CHỈ bằng FPG (không HbA1c/OGTT) mà FPG cũng là feature quan trọng nhất → rủi ro leakage một phần; test set nhỏ & cân bằng nhân tạo (200/lớp) không phản ánh imbalance thật (diabetes 4.3%); SMOTE↔split không nêu rõ thứ tự (nguy cơ leakage); listwise deletion gây selection bias; chỉ 1 nguồn dữ liệu, không external validation; không báo AUC/PR-AUC/calibration; không SHAP/LIME; trần accuracy 73% do prediabetes chồng lấn. Cải tiến: thêm AUC+calibration, đánh giá trên phân bố thật, nhãn HbA1c/OGTT, SHAP, validate đa nguồn.",
+  "verdict": "maybe",
+  "verdict_reason": "CHẠY LẠI 26/07/2026: verdict 'strong' cũ dựa trên lập luận 'bài neo hiếm cho early_detection thực thụ' — lập luận đó không còn đúng vì horizon đã sửa thành long_term_risk (dự đoán onset năm Y+1 từ feature năm Y, có follow-up — AGENTS.md §3b) mà nhánh này đã có rasmy2021/li2020/lugner2024/fazakis2021/alghamdi2017. Cộng thêm: nhãn 3 lớp định nghĩa bằng FPG trong khi FPG là feature quan trọng nhất (rò rỉ), dataset+code private, không báo AUC → tham chiếu related work, không phải nền tảng.",
+  "analyzed_at": "2026-06-22",
+  "verdict_prev": "strong",
+  "verdict_reason_prev": "Đạt §7 (241 cite, method+pipeline mô tả đủ chi tiết để tái lập ý tưởng) và là bài neo hiếm cho horizon early_detection thực thụ (dự đoán onset Y+1) trên EHR clinic thật, nhiều gap rõ làm điểm cải tiến cho đề tài; trừ điểm vì dataset+code không public và chỉ báo accuracy (không AUC).",
+  "role": "related",
+  "role_note": "Nạn nhân rò rỉ (nhãn định nghĩa bằng FPG, FPG lại là feature #1) + data/code private. Related work.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

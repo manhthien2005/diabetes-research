@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A novel machine learning approach for diagnosing diabetes with a self-explainable interface — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: rgba(255,255,255,0.22); color:#fff; border-color: rgba(255,255,255,0.35); }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: #f0fdf4; }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure svg { max-width: 100%; height: auto; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>A novel machine learning approach for diagnosing diabetes with a self-explainable interface</h1>
+    <div class="meta">
+      <span>📅 <strong>2024</strong></span>
+      <span>📰 Healthcare Analytics (Elsevier)</span>
+      <span>📚 <strong>91</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.health.2024.100301" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: cross_sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.kaggle.com/datasets/mathchi/diabetes-data-set" target="_blank">PIMA Indians Diabetes Database</a> — 768 phụ nữ gốc Pima, 8 chỉ số lâm sàng + nhãn Outcome (chẩn đoán tại-thời-điểm).</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Giao diện desktop "tự-giải-thích" (self-explainable interface) ĐẦU TIÊN cho chẩn đoán ĐTĐ: nhúng mô hình XGB + SHAP local explainer vào app Tkinter để người dùng nhập chỉ số và nhận chẩn đoán KÈM lý do (thanh đỏ/xanh).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">XGB — Accuracy 77% (test) / 80% (train), AUC 0.82 (test) / 0.856 (train) trên PIMA (Table 2 + Section 4.1).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">4 classifier (DT, KNN, SVC, XGB) + random search tuning → chọn XGB → SHAP global + local → đóng gói vào giao diện Tkinter.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Thấp hơn baseline Layer 4 tasin2022 (XGBoost+ADASYN 81% acc, AUC 0.84, có web/Android + code public) cả về số liệu lẫn tính sản phẩm; nhưng bù bằng giao diện local explanation tới end-user — điểm mạnh chung của cả hai. Hơn ahmed2024 về mô hình (XGB tuned vs LR thuần 86% acc, không CV).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 4
+    </h2>
+    <p class="lead">Bài báo xây dựng <strong>giao diện tự-giải-thích đầu tiên (first-ever self-explanatory interface)</strong> cho chẩn đoán đái tháo đường (ĐTĐ). Nhóm tác giả huấn luyện 4 mô hình phân loại (DT, KNN, SVC, XGB) trên PIMA Indians Diabetes Database, dùng SHAP để diễn giải, rồi nhúng mô hình tốt nhất (XGB) cùng SHAP local explainer vào một ứng dụng desktop viết bằng <strong>Tkinter</strong>. Người dùng cuối nhập 8 chỉ số (glucose, BMI, tuổi…) và nhận: (1) kết luận có/không ĐTĐ, (2) các thanh đỏ/xanh cho biết yếu tố nào đẩy nguy cơ lên hay xuống. Trọng tâm của bài KHÔNG nằm ở việc đẩy accuracy lên cao mà ở việc <strong>đưa lời giải thích tới tận tay người dùng/bác sĩ</strong> — đúng tinh thần Layer 4 (XAI &amp; Triển khai).</p>
+    <h3>Vì sao là Layer 4 (XAI &amp; Triển khai)?</h3>
+    <table>
+      <tr><td>✅ XAI là trục chính</td><td>SHAP được dùng cả global (Fig. 4–7) lẫn local (Fig. 8, 4 ca mẫu), không phải công cụ phụ — toàn bộ Section 5 dành cho diễn giải mô hình.</td></tr>
+      <tr><td>✅ Có sản phẩm triển khai</td><td>Một giao diện desktop Tkinter thực sự (Section 5.3, Fig. 9): lưu model đã train, kiểm soát biên giá trị nhập, gọi SHAP local explainer trực tiếp trong app.</td></tr>
+      <tr><td>✅ Hướng tới end-user</td><td>Mục tiêu để cá nhân tự "self-diagnose" và hiểu lý do, giảm rào cản kiến thức y khoa — đúng đối tượng triển khai của Layer 4.</td></tr>
+      <tr><td>⚠️ Không phải Layer 1/2</td><td>Không đóng góp pipeline tiền xử lý/cân bằng mới hay so sánh mô hình diện rộng; modeling chỉ ở mức baseline để phục vụ XAI.</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:10px"><strong>Prediction horizon = cross_sectional.</strong> PIMA gán nhãn <code>Outcome</code> chẩn đoán ĐTĐ tại cùng thời điểm đo 8 feature, không có khoảng cách thời gian / không follow-up N năm / không phải sàng lọc sớm. Bài tự mô tả là "diagnosing" (chẩn đoán hiện trạng), nên thuộc cắt-ngang (cross-sectional).</p>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>SHAP</code></td><td>Diễn giải mô hình (Shapley values từ game theory): global summary, average impact, dependence plot, local force plot (Section 3.3 + 5).</td><td>Trục cốt lõi của bài; cho cả giải thích toàn cục lẫn từng ca; có cơ sở lý thuyết vững (ref [63,64]).</td><td>Chỉ trình bày định tính qua hình; KHÔNG có bảng giá trị Shapley dạng số, không đo fidelity/stability của giải thích.</td></tr>
+        <tr><td><code>Tkinter</code></td><td>Khung GUI desktop để đóng gói model + SHAP explainer thành app người dùng cuối (Section 5.3, ref [77]).</td><td>Hiện thực hóa "self-explainable interface"; có kiểm soát biên giá trị nhập, báo lỗi input sai.</td><td>App desktop cục bộ (không web/cloud), khó phân phối rộng; chưa có demo/số liệu hiệu năng triển khai.</td></tr>
+        <tr><td><code>scikit-learn</code></td><td>Thư viện train DT/KNN/SVC và đánh giá (Section 3.2, ref [62]).</td><td>Chuẩn mực, dễ tái lập phần modeling.</td><td>Không nêu cụ thể siêu tham số đã chọn.</td></tr>
+        <tr><td><code>Random search</code></td><td>Tối ưu siêu tham số cho từng classifier (Section 4.1).</td><td>Rẻ hơn grid search, phủ không gian rộng.</td><td>Không công bố không gian tìm kiếm / giá trị tối ưu → khó tái lập đúng.</td></tr>
+        <tr><td><code>Pearson correlation</code></td><td>Phân tích tương quan feature (ma trận Fig. 1) trước khi train.</td><td>Chỉ ra glucose–outcome (0.47), age–pregnancies (0.54) là tương quan mạnh nhất.</td><td>Chỉ mô tả, không dùng để chọn/lọc feature (mọi feature đều giữ).</td></tr>
+        <tr><td><code>Python</code></td><td>Ngôn ngữ nền cho cả modeling lẫn giao diện (ref [61]).</td><td>Đồng nhất môi trường model ↔ app.</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Accuracy (test / validation)</strong>. ⭐ = model paper chọn để nhúng vào giao diện. Số từ Table 2 (phase V = testing).</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Acc (test)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>XGB</code> ⭐</td><td>Model chính, nhúng vào giao diện + SHAP.</td><td><strong>0.77</strong></td><td>AUC cao nhất (0.82 test / 0.856 train); recall 0.73 cao; FN ít nhất (13 test, 41 train).</td><td>Precision chỉ 0.60 (test); accuracy hơn các model khác rất sít sao.</td></tr>
+        <tr><td>2</td><td><code>SVC</code></td><td>Baseline so sánh.</td><td><strong>0.77</strong></td><td>Precision train cao nhất (0.78); FPR thấp.</td><td>Recall train rất thấp (0.50) → bỏ sót nhiều ca bệnh ở train.</td></tr>
+        <tr><td>3</td><td><code>KNN</code></td><td>Baseline so sánh.</td><td><strong>0.77</strong></td><td>TP cao; acc train 0.79 (cao nhất train).</td><td>Precision thấp (0.60); AUC thuộc nhóm thấp nhất.</td></tr>
+        <tr><td>4</td><td><code>DT</code></td><td>Baseline so sánh; có tính diễn giải nội tại.</td><td><strong>0.76</strong></td><td>TP detection tốt nhất (Section 4.1).</td><td>Accuracy test thấp nhất; AUC thuộc nhóm thấp nhất.</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Khoảng cách giữa 4 model rất nhỏ (acc test 0.76–0.77). Bài chọn XGB chủ yếu vì AUC cao nhất và số FN thấp nhất (quan trọng trong y khoa), không phải vì chênh lệch accuracy lớn.</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PIMA Indians Diabetes Database</strong></td><td>768</td><td>8 (+1 nhãn)</td><td>Phụ nữ gốc Pima, tuổi 21–81 (Section 3.1, Table 1). 8 chỉ số: pregnancies, glucose, blood pressure, skin thickness, insulin, BMI, diabetes pedigree function, age; nhãn <code>Outcome</code> (1=ĐTĐ, 0=không). Nguồn: National Institute of Diabetes and Digestive and Kidney Diseases.</td><td><a href="https://www.kaggle.com/datasets/mathchi/diabetes-data-set" target="_blank">Kaggle (mathchi)</a></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Split: 70% train / 30% test (Section 4.1). KHÔNG K-fold cross-validation. KHÔNG cân bằng lớp (không SMOTE/ADASYN). Tiền xử lý chỉ nêu mơ hồ "address incorrect inputs" — không mô tả cách xử lý giá trị 0 phi lý (glucose/blood pressure/BMI = 0) vốn là vấn đề kinh điển của PIMA. Bảng feature gốc ở Table 1.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Phân tích EHR &amp; tương quan</td><td>Pearson correlation matrix (Fig. 1)</td><td>Glucose–Outcome 0.47, Age–Pregnancies 0.54; giữ toàn bộ 8 feature.</td></tr>
+        <tr><td>2</td><td>Tiền xử lý</td><td>"Address incorrect inputs" (mô tả mơ hồ, Section 3.1)</td><td>Dataset đã làm sạch (không nêu chi tiết cách xử lý 0 phi lý).</td></tr>
+        <tr><td>3</td><td>Chia dữ liệu</td><td>Holdout 70% train / 30% test (Section 4.1)</td><td>Tập train + tập validation; KHÔNG K-fold.</td></tr>
+        <tr><td>4</td><td>Huấn luyện 4 model</td><td>DT, KNN, SVC, XGB (scikit-learn)</td><td>4 classifier đã train.</td></tr>
+        <tr><td>5</td><td>Tinh chỉnh siêu tham số</td><td>Random search (Section 4.1)</td><td>Model tối ưu (không công bố hyperparam).</td></tr>
+        <tr><td>6</td><td>Đánh giá</td><td>Sensitivity, Precision, Accuracy, F1, FPR (eq. 1–5) + confusion matrix (Fig. 2) + ROC/AUC (Fig. 3)</td><td>Table 2 + Table 3 (so với related work).</td></tr>
+        <tr><td>7</td><td>Diễn giải XAI</td><td>SHAP global (Fig. 4–7) + local cho 4 ca (Fig. 8, Table 4)</td><td>Glucose, BMI, Age là 3 yếu tố chi phối.</td></tr>
+        <tr><td>8</td><td>Đóng gói giao diện</td><td>Tkinter: lưu XGB, ràng buộc biên input, gọi SHAP local explainer (Section 5.3)</td><td>App desktop "self-explainable" (Fig. 9): kết luận + thanh đỏ/xanh giải thích.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Sensitivity / Recall / TPR — eq. (1)</span>
+      Sensitivity = TP / (TP + FN)
+    </div>
+    <div class="formula">
+      <span class="label">Precision — eq. (2)</span>
+      Precision = TP / (TP + FP)
+    </div>
+    <div class="formula">
+      <span class="label">Accuracy — eq. (3)</span>
+      Accuracy = (TP + TN) / (TP + TN + FP + FN)
+    </div>
+    <div class="formula">
+      <span class="label">F1 score — eq. (4)</span>
+      F1 = 2 · (Precision · Recall) / (Precision + Recall)
+    </div>
+    <div class="formula">
+      <span class="label">False Positive Rate — eq. (5)</span>
+      FPR = FP / (FP + TN)
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:6px">Lưu ý: bài chỉ tham chiếu "equation (1)…(5)" trong Section 4.1; công thức trên là dạng chuẩn của từng metric (không có biến thể riêng trong bài). SHAP dựa trên Shapley value (game theory, ref [64]) — bài không in công thức tường minh.</p>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      <svg width="420" height="155" viewBox="0 0 420 155" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="420" height="155" fill="#fafbfd"/>
+        <line x1="210" y1="22" x2="210" y2="128" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="210" y="14" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">SHAP value (tác động lên dự đoán ĐTĐ)</text>
+        <rect x="210" y="28" width="150" height="12" fill="#dc2626" opacity="0.85"/>
+        <rect x="180" y="28" width="30" height="12" fill="#2563eb" opacity="0.7"/>
+        <text x="2" y="38" font-family="sans-serif" font-size="11" fill="#0f172a">Glucose</text>
+        <rect x="210" y="48" width="95" height="12" fill="#dc2626" opacity="0.8"/>
+        <rect x="170" y="48" width="40" height="12" fill="#2563eb" opacity="0.6"/>
+        <text x="2" y="58" font-family="sans-serif" font-size="11" fill="#0f172a">BMI</text>
+        <rect x="210" y="68" width="85" height="12" fill="#dc2626" opacity="0.75"/>
+        <rect x="175" y="68" width="35" height="12" fill="#2563eb" opacity="0.6"/>
+        <text x="2" y="78" font-family="sans-serif" font-size="11" fill="#0f172a">Age</text>
+        <rect x="210" y="88" width="48" height="12" fill="#dc2626" opacity="0.6"/>
+        <rect x="190" y="88" width="20" height="12" fill="#2563eb" opacity="0.5"/>
+        <text x="2" y="98" font-family="sans-serif" font-size="11" fill="#0f172a">DiabetesPedigree</text>
+        <rect x="188" y="108" width="22" height="12" fill="#2563eb" opacity="0.6"/>
+        <rect x="210" y="108" width="14" height="12" fill="#dc2626" opacity="0.4"/>
+        <text x="2" y="118" font-family="sans-serif" font-size="11" fill="#0f172a">Insulin / SkinThk</text>
+        <text x="300" y="148" font-family="sans-serif" font-size="9" fill="#dc2626">đỏ = tăng nguy cơ</text>
+        <text x="120" y="148" font-family="sans-serif" font-size="9" fill="#2563eb">xanh = giảm nguy cơ</text>
+      </svg>
+      <span class="caption">Tái dựng minh hoạ thứ hạng tác động SHAP của XGB (Glucose &gt; BMI ≈ Age &gt; … ; insulin/skin thickness tác động âm nhỏ). Nguồn gốc: Fig. 4–5 trong bài. Đây là sơ đồ minh hoạ ĐỊNH TÍNH, KHÔNG phải số liệu Shapley thực.</span>
+    </div>
+    <div class="figure">🖼️ Giao diện desktop Tkinter thực tế (Fig. 9 — ô nhập 8 chỉ số + thanh đỏ/xanh giải thích) chưa crop từ PDF. <span class="caption">Tuỳ chọn embed base64 bỏ qua; xem Section 5.3 + Fig. 9 trong source.pdf.</span></div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">77%</span><span class="label">XGB Accuracy (test) — Table 2</span></div>
+      <div class="metric"><span class="value">80%</span><span class="label">XGB Accuracy (train) — Table 2</span></div>
+      <div class="metric"><span class="value">0.82</span><span class="label">XGB AUC (test) — Section 4.1</span></div>
+      <div class="metric"><span class="value">0.856</span><span class="label">XGB AUC (train) — Section 4.1</span></div>
+      <div class="metric"><span class="value">0.73</span><span class="label">XGB Recall/Sens (test) — Table 2</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>PIMA</td><td>XGB ⭐</td><td>Test (V)</td><td><strong>Acc 0.77 · Prec 0.60 · Recall 0.73 · F1 0.65 · FPR 0.2</strong></td><td>Table 2 (đã đối chiếu source.pdf)</td></tr>
+        <tr><td>PIMA</td><td>XGB ⭐</td><td>Train (T)</td><td><strong>Acc 0.80 · Prec 0.62 · Recall 0.76 · F1 0.68 · FPR 0.20</strong></td><td>Table 2 (đã đối chiếu source.pdf)</td></tr>
+        <tr><td>PIMA</td><td>XGB ⭐</td><td>ROC</td><td><strong>AUC 0.856 (train) / 0.82 (test)</strong></td><td>Section 4.1 (xác nhận từ source.pdf)</td></tr>
+        <tr><td>PIMA</td><td>SVC</td><td>Test / Train</td><td>Acc 0.77 / 0.78 · Recall 0.72 / 0.50 · Prec 0.60 / 0.78</td><td>Table 2</td></tr>
+        <tr><td>PIMA</td><td>KNN</td><td>Test / Train</td><td>Acc 0.77 / 0.79 · Recall 0.69 / 0.73 · F1 0.64 / 0.66</td><td>Table 2</td></tr>
+        <tr><td>PIMA</td><td>DT</td><td>Test / Train</td><td>Acc 0.76 / 0.78 · Recall 0.68 / 0.70 · F1 0.65 / 0.66</td><td>Table 2</td></tr>
+        <tr><td>PIMA</td><td>XGB ⭐</td><td>Confusion</td><td>FN thấp nhất: 13 (test) / 41 (train)</td><td>Section 4.1 + Fig. 2</td></tr>
+        <tr><td>PIMA</td><td>XGB</td><td>SHAP global</td><td>3 yếu tố chi phối: Glucose &gt; BMI ≈ Age; blood pressure gần như vô nghĩa</td><td>Section 5.1, Fig. 4–5</td></tr>
+        <tr><td>—</td><td>Present study (tổng hợp)</td><td>Bảng so related work</td><td>Prec 60–78% · Acc 76–80% · Recall 50–76% · F1 61–68% · FPR 10–22%</td><td>Table 3</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Mọi số trên lấy trực tiếp từ Table 2 / Table 3 / Section 4.1. Đã ĐỐI CHIẾU source.pdf cho headline (XGB acc 80/77%, AUC 0.856/0.82, dòng XGB của Table 2) — khớp với extracted.md, không lệch OCR. Bài KHÔNG báo giá trị SHAP theo feature dạng số → giữ định tính, không bịa.</p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro về độ tin cậy số liệu</strong>
+      <ul>
+        <li>Chỉ holdout 70/30, <strong>KHÔNG K-fold CV</strong> → accuracy/AUC có phương sai cao, dễ lạc quan trên PIMA nhỏ (768 mẫu).</li>
+        <li>KHÔNG cân bằng lớp (PIMA ~35% dương) → precision XGB chỉ 0.60, accuracy bị lớp đa số kéo lên.</li>
+        <li>Tiền xử lý mô tả mơ hồ ("address incorrect inputs"), không nói cách xử lý giá trị 0 phi lý (glucose/BP/insulin = 0) — vấn đề kinh điển của PIMA; ca local Instance 1 có blood pressure = insulin = skin thickness = 0 vẫn được đưa vào (Table 4).</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>🎯 Giới hạn</strong>
+      <ul>
+        <li>Accuracy không vượt trội (77%) — thấp hơn nhiều bài cùng PIMA và thấp hơn baseline Layer 4 tasin2022 (81%, AUC 0.84).</li>
+        <li>XAI chỉ <strong>định tính qua hình</strong> (Fig. 4–8): không bảng giá trị Shapley số, không đo fidelity / stability / consistency của giải thích.</li>
+        <li>Giao diện là app <strong>desktop Tkinter cục bộ</strong>, không web/cloud, chưa có user study / đánh giá khả dụng; <strong>KHÔNG có code public</strong> ("Data will be made available on request").</li>
+        <li>Random search nhưng không công bố không gian tìm kiếm / siêu tham số tối ưu → tái lập đúng rất khó (reproducible = low).</li>
+        <li>Confusion matrix OCR (Fig. 2) có vài nhãn nhiễu ("diabetes 2", "diabetes ON") nhưng các con số TP/FN khớp với phần text Section 4.1.</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là 1 trong 2 bài Layer 4 THỰC SỰ đưa giải thích tới end-user (cùng tasin2022) — minh chứng pattern "XGB + SHAP local → giao diện cho người dùng cuối", rất hợp phần Triển khai của đề tài.</li>
+        <li>89 cite cho một bài 2024 là RẤT CAO (rising-star) — đáng trích dẫn như tiền lệ về "self-explainable interface".</li>
+        <li>Khoảng trống của bài chính là cơ hội cải tiến: thêm K-fold CV + cân bằng lớp, đo fidelity/stability của SHAP, chuyển sang web (Streamlit/FastAPI), public code và user study — đề tài có thể vượt qua ở đúng các điểm này.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

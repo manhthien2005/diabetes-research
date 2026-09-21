@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine learning for characterizing risk of T2DM — Henan Rural Cohort — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: var(--success-soft); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Machine learning for characterizing risk of type 2 diabetes mellitus in a rural Chinese population: the Henan Rural Cohort Study</h1>
+    <div class="meta">
+      <span>📅 <strong>2020</strong></span>
+      <span>📰 Scientific Reports</span>
+      <span>📚 <strong>156</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1038/s41598-020-61123-x" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.chictr.org.cn/showproj.html?proj=11375" target="_blank">Henan Rural Cohort Study (ChiCTR-OOC-15006699)</a> — 36.652 mẫu phân tích, cohort nông thôn 5 vùng tỉnh Hà Nam (Trung Quốc), 18–79 tuổi; dữ liệu xin theo yêu cầu.</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">So sánh 6 thuật toán ML đặc trưng nguy cơ T2DM trên cohort nông thôn TQ <strong>quy mô lớn (36.652)</strong>; phát hiện yếu tố nguy cơ MỚI (chỉ số nước tiểu, vị ngọt — sweet flavor) bằng SHAP; phân tích hiệu năng theo số biến tăng dần (plateau ~30 biến).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>AUC = 0.872</strong> (GBM, có lab, 95% CI 0.858–0.886, Table 4); không lab AUC = 0.817 (GBM, Table 4).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">SMOTE cân bằng lớp → 6 model (LR/CART/ANN/SVM/RF/<strong>GBM</strong>) → 10-fold CV ×100 lần + grid search; SHAP xếp hạng biến; chạy 2 kịch bản có-lab / không-lab.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">AUC 0.872 <strong>thấp hơn</strong> dinh2019 NHANES (XGBoost 0.957 có lab) và agliata2023 (ANN ensemble 0.934), nhưng là cohort cộng đồng nông thôn thật, có SHAP và phân tích số-biến mà cả 2 baseline đều thiếu.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">
+      Nghiên cứu dùng <strong>6 thuật toán machine learning</strong> để đặc trưng nguy cơ đái tháo đường type 2 (T2DM) trên
+      <strong>36.652 người trưởng thành nông thôn tỉnh Hà Nam, Trung Quốc</strong> (Henan Rural Cohort).
+      Đây là một <strong>dataset dịch tễ cộng đồng thật</strong> (không phải PIMA/benchmark), thu thập socio-demographic + khám lâm sàng + xét nghiệm.
+      Mục tiêu 3 phần: (1) đánh giá dãy thuật toán ML dự đoán nguy cơ T2DM, (2) xác định biến quan trọng,
+      (3) khảo sát hiệu năng theo số biến thay đổi. <strong>GBM</strong> cho AUC cao nhất 0.872 (có lab) / 0.817 (không lab).
+      Điểm mới: phát hiện các yếu tố nguy cơ <strong>chưa từng thấy trong các risk score truyền thống</strong> (chỉ số nước tiểu, "sweet flavor") nhờ SHAP.
+    </p>
+    <h3>Vì sao là Layer 3 (Dataset / EHR)?</h3>
+    <table>
+      <tr><td>✔ Dataset dịch tễ thật quy mô lớn</td><td>36.652 mẫu cohort cộng đồng (Section "Study participants", Table 1) — khác hẳn benchmark PIMA của Layer 1</td></tr>
+      <tr><td>✔ Dữ liệu đa nguồn lâm sàng</td><td>Socio-demographic + đo nhân trắc + xét nghiệm máu/nước tiểu (Table 1) → đặc trưng của dữ liệu khám sức khoẻ thực địa</td></tr>
+      <tr><td>✔ Trọng tâm là dữ liệu, không phải pipeline mới</td><td>Đóng góp chính là quy mô + nguồn dữ liệu cộng đồng nông thôn TQ + tìm biến nguy cơ mới, không phải kiến trúc model mới</td></tr>
+      <tr><td>✘ Không phải Layer 1</td><td>Không phải benchmark tabular kinh điển; pipeline ML là chuẩn (SMOTE + 6 model)</td></tr>
+      <tr><td>✘ Không phải Layer 4</td><td>Có dùng SHAP nhưng XAI chỉ là phụ trợ cho importance; KHÔNG có deployment / web app / công cụ lâm sàng triển khai</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Python 3.7</code></td><td>Ngôn ngữ chạy toàn bộ phân tích</td><td>Hệ sinh thái ML phong phú</td><td>—</td></tr>
+        <tr><td><code>scikit-learn 0.21.3</code></td><td>Thư viện xây toàn bộ 6 model (Section "Machine learning methods")</td><td>API thống nhất, dễ tái lập</td><td>Phiên bản cũ; hyperparam chỉ ở Supplementary Table 2 (không trong bản chính)</td></tr>
+        <tr><td><code>SMOTE</code></td><td>Cân bằng lớp (T2DM 3.356 vs Non-T2DM 33.296, ~9% dương) trước khi train</td><td>Sinh mẫu thiểu số tổng hợp, giảm bias về lớp đa số</td><td>Không nêu rõ SMOTE làm trước hay sau split → rủi ro data leakage</td></tr>
+        <tr><td><code>SHAP (shapley additive explanations)</code></td><td>Hợp nhất xếp hạng biến quan trọng trên cả 6 model (Table 3)</td><td>Giải thích thống nhất, không phụ thuộc 1 model</td><td>Chỉ dùng cho variable importance, không giải thích từng ca</td></tr>
+        <tr><td><code>10-fold CV ×100 + grid search</code></td><td>Huấn luyện/đánh giá + chỉnh tham số trên train (Section methodology, Figure 1)</td><td>Ước lượng ổn định, chống may rủi</td><td>Tốn tính toán; chi tiết grid ở Supplementary</td></tr>
+        <tr><td><code>SPSS v21</code></td><td>Thống kê mô tả + chi-square/t-test so sánh nhóm (Section "Statistical analysis")</td><td>Chuẩn dịch tễ</td><td>Tách rời pipeline ML</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC (có lab, Table 4)</strong>. ⭐ = model tốt nhất paper chọn.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC (có lab)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>GBM</code> ⭐</td><td>Gradient boosting machine — model thắng cuộc</td><td><strong>0.872</strong></td><td>AUC cao nhất; ít overfit; specificity 81.71% + PPV 28.83% + AUPR 0.546 đều cao nhất</td><td>Hộp đen; cần tuning</td></tr>
+        <tr><td>2</td><td><code>RF</code></td><td>Random forest (ensemble bagging)</td><td>0.868</td><td>Accuracy 85.90% & NPV 97.52% cao nhất; ngang GBM</td><td>Hộp đen</td></tr>
+        <tr><td>3</td><td><code>ANN</code></td><td>Mạng nơ-ron 3 lớp (1 hidden)</td><td>0.858</td><td>Sensitivity 80.95% cao nhất trong các model</td><td>Kém GBM/RF có ý nghĩa (p&lt;0.05); khó giải thích</td></tr>
+        <tr><td>4</td><td><code>LR</code></td><td>Logistic regression (tuyến tính)</td><td>0.841</td><td>Dễ giải thích, baseline thống kê</td><td>Giả định tuyến tính; kém ensemble</td></tr>
+        <tr><td>5</td><td><code>SVM</code></td><td>Support vector machine (60 feature)</td><td>0.835</td><td>Biên tối đa, mạnh ở chiều cao</td><td>AUC thấp nhì; khó giải thích</td></tr>
+        <tr><td>6</td><td><code>CART</code></td><td>Cây phân loại/hồi quy đơn</td><td>0.811</td><td>Trực quan, dễ đọc luật</td><td>Thấp nhất; không cải thiện khi tăng số biến (đường AUC phẳng, Figure 4)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Lưu ý: phần mô tả Figure 2 trong text ghi "CART (AUC = 0.11)" — đây là <strong>lỗi đánh máy/OCR của bản gốc</strong>; giá trị đúng theo Table 4 là <strong>0.811</strong> (khớp khoảng AUC 0.811–0.872 mà Abstract & Discussion nêu).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Henan Rural Cohort</strong></td>
+          <td>36.652 (sau loại trừ; từ 39.259 tuyển ban đầu)</td>
+          <td>60 feature (Section SVM: "each data sample is made of 60 features")</td>
+          <td>Cohort nông thôn 5 vùng tỉnh Hà Nam, TQ, 18–79 tuổi, thu thập 07/2015–09/2017. Loại trừ: suy thận (N=18), ung thư (332), T1DM (4), ĐTĐ thai kỳ (634), thiếu chẩn đoán T2DM (63), thiếu covariate (2.127). Nhãn T2DM: tự khai có chẩn đoán bởi bác sĩ HOẶC FPG ≥ 7.0 mmol/L (tiêu chí ADA).</td>
+          <td><a href="https://www.chictr.org.cn/showproj.html?proj=11375" target="_blank">ChiCTR-OOC-15006699</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>Phân bố lớp & vài đặc trưng (Table 1)</h3>
+    <table>
+      <thead><tr><th>Nhóm</th><th>n</th><th>Tuổi (năm)</th><th>BMI (kg/m²)</th><th>Urine glucose dương (%)</th><th>Hypertension (%)</th></tr></thead>
+      <tbody>
+        <tr><td>Tổng</td><td>36.652</td><td>55.60 ± 12.17</td><td>24.85 ± 3.53</td><td>2.50</td><td>32.58</td></tr>
+        <tr><td>Non-T2DM</td><td>33.296</td><td>55.11 ± 12.32</td><td>24.72 ± 3.49</td><td>0.38</td><td>30.71</td></tr>
+        <tr><td>T2DM</td><td>3.356</td><td>60.51 ± 9.20</td><td>26.20 ± 3.62</td><td>23.54</td><td>51.19</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Tỉ lệ dương ~9,2% (3.356/36.652) → dữ liệu mất cân bằng, đó là lý do dùng SMOTE. Nguồn: Table 1.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Tuyển & lọc đối tượng</td><td>Loại 6 nhóm (suy thận/ung thư/T1DM/ĐTĐ thai kỳ/thiếu thông tin)</td><td>36.652 từ 39.259</td></tr>
+        <tr><td>2</td><td>Định nghĩa nhãn T2DM</td><td>Tự khai chẩn đoán HOẶC FPG ≥ 7.0 mmol/L (ADA)</td><td>Nhãn nhị phân (1 = T2DM)</td></tr>
+        <tr><td>3</td><td>Cân bằng lớp</td><td>SMOTE</td><td>Tập huấn luyện cân bằng</td></tr>
+        <tr><td>4</td><td>Xây model (2 kịch bản: có lab / không lab)</td><td>LR, CART, ANN, SVM, RF, GBM (sklearn 0.21.3)</td><td>6 classifier × 2 kịch bản</td></tr>
+        <tr><td>5</td><td>Tuning + đánh giá</td><td>10-fold CV lặp 100 lần + grid search trên train (Supplementary Table 2)</td><td>Metric trên test</td></tr>
+        <tr><td>6</td><td>Xếp hạng biến quan trọng</td><td>Coefficient (LR/SVM), MSE-split (CART), permutation OOB (RF), tổng weak-learner (GBM), connection weights (ANN) + hợp nhất bằng SHAP</td><td>Top-10 mỗi model (Table 2) + mean rank (Table 3)</td></tr>
+        <tr><td>7</td><td>Hiệu năng theo số biến</td><td>Nạp dần 5/10/15/… biến xếp hạng cao nhất vào từng model</td><td>Đường AUC theo số biến (Figure 4), plateau ~30 biến</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Logistic regression — xác suất phát triển T2DM (Section "Logistic regression")</span>
+      logit: log( p(X) / (1 − p(X)) ) = β0 + β1·X1 + β2·X2 + … + βk·Xk<br>
+      xác suất: p(Y=1 | X) = 1 / ( 1 + exp( −(β0 + β1·X1 + … + βk·Xk) ) )<br>
+      <span style="color:#94a3b8">X = (X1,…,Xk) là các yếu tố nguy cơ; β ước lượng bằng maximum likelihood.</span>
+    </div>
+    <div class="formula">
+      <span class="label">Các metric đánh giá (Section "Statistical analysis")</span>
+      Sensitivity (= Recall) = TP / (TP + FN)<br>
+      Specificity = TN / (TN + FP)<br>
+      PPV = TP / (TP + FP)   ·   NPV = TN / (TN + FN)<br>
+      AUC = diện tích dưới ROC   ·   AUPR = diện tích dưới Precision-Recall curve
+    </div>
+    <p style="font-size:13px;color:var(--muted)">Bản trích ghi công thức LR ở dạng <code>formula-not-decoded</code>; nội dung trên tái dựng từ mô tả văn bản chuẩn của LR (Section "Logistic regression"), KHÔNG phải số liệu bịa.</p>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">🖼️ Figure 1 (Methodology), Figure 2 (ROC), Figure 3 (Precision-Recall), Figure 4 (AUC theo số biến) chưa crop. <span class="caption">Embed base64 là tuỳ chọn — ưu tiên số liệu đúng từ Table 4. Xem trực tiếp source.pdf nếu cần hình.</span></div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.872</span><span class="label">GBM AUC — có lab (Table 4)</span></div>
+      <div class="metric"><span class="value">0.817</span><span class="label">GBM AUC — không lab (Table 4)</span></div>
+      <div class="metric"><span class="value">85.90%</span><span class="label">RF Accuracy cao nhất (Table 4)</span></div>
+      <div class="metric"><span class="value">0.728</span><span class="label">New Chinese DRS no-lab — thua model ML (Text Results)</span></div>
+    </div>
+
+    <h3>Bảng hiệu năng đầy đủ (Table 4)</h3>
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>AUC / metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>Henan Rural Cohort</td><td>GBM ⭐</td><td>Có lab</td><td><strong>AUC 0.872</strong> (0.858–0.886) · Acc 81.20% · Sens 76.04% · Spec 81.71% · PPV 28.83% · NPV 97.22% · AUPR 0.546</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>RF</td><td>Có lab</td><td>AUC 0.868 (0.854–0.883) · Acc 85.90% · Sens 79.57% · Spec 78.14% · PPV 26.19% · NPV 97.52% · AUPR 0.538</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>ANN</td><td>Có lab</td><td>AUC 0.858 (0.842–0.873) · Acc 74.01% · Sens 80.95% · Spec 73.34% · PPV 22.83% · NPV 97.53% · AUPR 0.520</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>LR</td><td>Có lab</td><td>AUC 0.841 (0.825–0.858) · Acc 75.23% · Sens 78.49% · Spec 74.91% · PPV 23.37% · NPV 97.28% · AUPR 0.493</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>SVM</td><td>Có lab</td><td>AUC 0.835 (0.818–0.851) · Acc 76.42% · Sens 74.65% · Spec 76.59% · PPV 23.71% · NPV 96.88% · AUPR 0.490</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>CART</td><td>Có lab</td><td>AUC 0.811 (0.793–0.829) · Acc 80.06% · Sens 66.97% · Spec 81.33% · PPV 25.91% · NPV 96.19% · AUPR 0.433</td><td>Table 4</td></tr>
+        <tr class="win"><td>Henan Rural Cohort</td><td>GBM ⭐</td><td>Không lab</td><td><strong>AUC 0.817</strong> (0.801–0.833) · Acc 70.28% · Sens 78.96% · Spec 69.43% · PPV 20.11% · NPV 97.13% · AUPR 0.345</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>ANN</td><td>Không lab</td><td>AUC 0.808 (0.791–0.825) · Acc 70.52% · Sens 78.03% · Spec 69.79% · PPV 20.11% · NPV 97.02% · AUPR 0.328</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>LR</td><td>Không lab</td><td>AUC 0.804 (0.787–0.821) · Acc 75.06% · Sens 72.35% · Spec 75.33% · PPV 22.23% · NPV 96.55% · AUPR 0.313</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>RF</td><td>Không lab</td><td>AUC 0.803 (0.786–0.820) · Acc 70.77% · Sens 75.58% · Spec 70.30% · PPV 19.87% · NPV 96.73% · AUPR 0.327</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>SVM</td><td>Không lab</td><td>AUC 0.800 (0.783–0.818) · Acc 76.46% · Sens 70.51% · Spec 77.04% · PPV 23.03% · NPV 96.40% · AUPR 0.316</td><td>Table 4</td></tr>
+        <tr><td>Henan Rural Cohort</td><td>CART</td><td>Không lab</td><td>AUC 0.767 (0.749–0.784) · Acc 62.79% · Sens 79.26% · Spec 61.18% · PPV 16.60% · NPV 96.80% · AUPR 0.235</td><td>Table 4</td></tr>
+        <tr><td>—</td><td>New Chinese DRS</td><td>Không lab (so sánh)</td><td>AUC 0.728 (p&lt;0.05; mọi model ML no-lab đều vượt)</td><td>Text Results + Supplementary Figure 1</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Top-10 biến quan trọng hợp nhất qua SHAP (Table 3 — mean rank)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Biến</th><th>Mean rank</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Sweet flavor (vị ngọt)</td><td>2.33</td></tr>
+        <tr><td>2</td><td>Urine glucose (đường niệu)</td><td>3.00</td></tr>
+        <tr><td>3</td><td>Age (tuổi)</td><td>3.17</td></tr>
+        <tr><td>4</td><td>Heart rate (nhịp tim)</td><td>7.67</td></tr>
+        <tr><td>5</td><td>Creatinine</td><td>8.33</td></tr>
+        <tr><td>6</td><td>Waist circumference (vòng eo)</td><td>9.50</td></tr>
+        <tr><td>7</td><td>Uric acid (axit uric)</td><td>11.50</td></tr>
+        <tr><td>8</td><td>Pulse pressure (áp lực mạch)</td><td>12.33</td></tr>
+        <tr><td>9</td><td>Insulin</td><td>13.33</td></tr>
+        <tr><td>10</td><td>Hypertension (tăng huyết áp)</td><td>15.00</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Urine glucose là biến số 1 ở CẢ 6 model riêng lẻ (Table 2). Hiệu năng tất cả model (trừ CART) plateau khi đạt ~30 biến (Figure 4 / Discussion). Table 4 chỉ báo cáo Sensitivity/Specificity/PPV/NPV/AUPR — KHÔNG có F1-score → giá trị F1 = UNKNOWN (không bịa).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro & cảnh báo khi tái lập</strong>
+      <ul>
+        <li><strong>Horizon = cross-sectional</strong>: paper TỰ THỪA NHẬN "research findings were derived from a cross-sectional study without follow-up data; therefore, we may not be able to determine the causal and temporal associations" (Discussion/limitations). Nhãn T2DM đo cùng thời điểm với feature → KHÔNG phải dự đoán onset tương lai.</li>
+        <li><strong>Rò rỉ nhãn (label leakage) qua urine glucose</strong>: đường niệu dương 23,54% ở nhóm T2DM vs 0,38% ở Non-T2DM (Table 1) — gần như dấu hiệu trực tiếp của tăng đường huyết; biến này đứng #1 importance ở cả 6 model (Table 2). AUC cao một phần có thể do biến gần-trùng tiêu chí chẩn đoán (FPG).</li>
+        <li><strong>SMOTE không nêu rõ làm trước/sau split</strong> → nếu oversample trước khi chia CV có thể thổi phồng metric. Paper chỉ ghi dùng SMOTE để cân bằng, không nêu thứ tự.</li>
+        <li>Mâu thuẫn số liệu trong bản gốc: text mô tả Figure 2 ghi "CART AUC = 0.11" (sai), Table 4 ghi 0.811 (đúng). Luôn lấy theo Table 4.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Không có follow-up → không suy luận nhân quả/thời gian (paper tự nêu).</li>
+        <li>Không external validation trên cohort/bệnh viện độc lập (paper nêu là future work).</li>
+        <li>Không công bố code; hyperparam chỉ ở Supplementary Table 2 → reproducibility trung bình.</li>
+        <li>Dữ liệu cohort xin theo yêu cầu (liên hệ Dr. Chongjian Wang), không tải tự do.</li>
+        <li>PPV thấp (GBM 28,83%) do prevalence thật ~9% → nhiều dương tính giả nếu dùng sàng lọc đại trà.</li>
+        <li>Bản chất "hộp đen" của ML khiến khó giải thích tương tác biến (paper tự nêu).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Bổ trợ <strong>Layer 3</strong> bằng nguồn dữ liệu cộng đồng nông thôn TQ quy mô lớn (36.652) — khác hẳn EHR bệnh viện (MIMIC) và NHANES survey.</li>
+        <li>Cùng kết luận với baseline cùng layer: <strong>boosting (GBM/XGBoost) thắng</strong> trên dữ liệu tabular y khoa (so dinh2019 XGBoost, agliata2023 ANN ensemble).</li>
+        <li>Cung cấp <strong>tập biến nguy cơ mới</strong> đáng chú ý (urine glucose, sweet flavor, urinary parameters) để cân nhắc khi chọn feature.</li>
+        <li>Là ví dụ tốt về <strong>2 kịch bản có-lab / không-lab</strong> và <strong>phân tích plateau số biến (~30)</strong> — gợi ý cho phần feature selection của đề tài.</li>
+        <li>Kết quả là <strong>đặc trưng nguy cơ / sàng lọc</strong>, KHÔNG thay chẩn đoán y khoa và KHÔNG phải dự báo dài hạn.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

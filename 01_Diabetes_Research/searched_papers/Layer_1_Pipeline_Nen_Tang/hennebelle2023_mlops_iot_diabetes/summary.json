@@ -1,0 +1,25 @@
+{
+  "paper_id": "hennebelle2023_mlops_iot_diabetes",
+  "layer": 1,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Thiết kế hệ thống end-to-end IoT-edge-AI-blockchain + MLOps (AutoML) bảo mật/riêng tư cho dự đoán ĐTĐ: thu risk factor từ cảm biến, tiền xử lý ở edge, train/deploy mô hình trên cloud, lưu hash dữ liệu + tham số model + kết quả dự đoán vào ledger permissioned blockchain để bảo mật/riêng tư/audit trail xuyên bệnh viện. Kèm khảo sát thiết bị đo từng risk factor (Bảng 2-7) và benchmark RF/LR/SVM thống nhất trên 3 dataset.",
+  "method": "Tiền xử lý (loại missing/outlier giá trị 0 ở PIMA, chuẩn hoá, trích nhãn MIMIC từ ICD9) → RFECV feature selection (RF làm evaluator) → SMOTE CHỈ trên 70% train (test 30% giữ nguyên) → RF/LR/SVM(poly) + GridSearchCV + stratified 10-fold CV, mỗi model chạy 10 lần lấy trung bình. Hạ tầng: edge computing + integrated blockchain-cloud không bao gói (multi-ledger).",
+  "best_metric": "Accuracy 0.9723 — RF + Feature Selection trên Sylhet (Section 6.4); PIMA RF+FS 0.7827 (Section 6.4); MIMIC III tốt nhất là LR 0.7734, RF 0.7703 (Section 6.4). RF +4.57% accuracy trung bình so với LR/SVM nhưng ×2.87 thời gian chạy (Abstract / Section 6.3). Precision/recall/AUC chỉ ở Fig. 12-14 dạng cột, không in số → UNKNOWN.",
+  "datasets": [
+    "pima",
+    "sylhet",
+    "mimic-iii"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "So với gr2024_random_oversampling (baseline Layer 1 thuần ML: RF+Boruta+RandomOverSampling, 94% PIDD): accuracy PIMA thấp hơn rõ (0.7827 vs 0.94) vì tối ưu VẬN HÀNH chứ không tối ưu accuracy. Điểm vượt: thêm MIMIC III (39.289 mẫu EHR ICU thật) + kiến trúc triển khai end-to-end + áp SMOTE ĐÚNG chỗ (chỉ trên train, tránh leakage — đây cũng là rủi ro gr2024 chưa loại trừ). So với abnoosian2023 (acc 98.87% nhưng đơn-dataset IPDD, 3 lớp): bài này nhị phân, đa-dataset, cùng horizon cross_sectional, accuracy thấp hơn nhưng là tham chiếu ops/deployment mà cả hai baseline tabular thuần đều thiếu.",
+  "gap": "Blockchain/IoT/edge chỉ là THIẾT KẾ, không triển khai/đo throughput-latency thật. Không code public. Báo cáo metric mỏng (precision/recall/AUC chỉ ở biểu đồ Fig. 12-14, nhiều ô UNKNOWN). MIMIC nhãn ICD9 dễ nhiễu + chỉ 4 feature (2 được chọn) → accuracy MIMIC thấp & SMOTE phản tác dụng (acc 0.77→0.66). Chỉ baseline ML (RF/LR/SVM), không ensemble/boosting/deep. 3 dataset chạy rời, chưa chứng minh tính liên-bệnh-viện. Không XAI.",
+  "verdict": "maybe",
+  "verdict_reason": "Giá trị cao như bản thiết kế MLOps/triển khai + xử lý chống leakage đúng + chạm MIMIC III, nhưng đóng góp đo được mỏng (accuracy không SOTA, blockchain chỉ định tính, không code, nhiều metric UNKNOWN) → nên dùng làm tài liệu tham chiếu ops/deployment chứ không phải baseline mô hình chính.",
+  "analyzed_at": "2026-06-22T00:00:00+07:00",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

@@ -1,0 +1,387 @@
+{
+ "_meta": {
+  "purpose": "Nhật ký Hỏi-Đáp định hướng/chiến lược của user, để agent các phiên sau học cách user nghĩ & các nguyên tắc đã chốt. Bản máy đọc, mirror của QA_LOG.md. Có thể export làm dữ liệu fine-tune.",
+  "format_version": 1,
+  "language": "vi",
+  "convention": "AGENTS.md §12. Append-only. Mỗi entry BẮT BUỘC có 'principle'. Không sửa entry cũ; quyết định bị đảo -> entry mới ghi supersedes.",
+  "entry_schema": {
+   "id": "Q### (tăng dần)",
+   "date": "YYYY-MM-DD",
+   "tags": [
+    "kebab-case"
+   ],
+   "question": "câu hỏi của user (verbatim hoặc cô đọng, giữ nguyên ý)",
+   "answer_summary": [
+    "gạch đầu dòng các ý chính của câu trả lời đã chốt"
+   ],
+   "principle": "1-3 câu nguyên tắc tái dùng được — phần giá trị nhất để huấn luyện agent",
+   "links": [
+    "file/section liên quan"
+   ],
+   "supersedes": null,
+   "method": "cách trả lời được tạo ra (vd: workflow đa lăng kính), để truy vết"
+  },
+  "updated_at": "2026-07-26"
+ },
+ "entries": [
+  {
+   "id": "Q010",
+   "date": "2026-07-26",
+   "tags": [
+    "chot-pham-vi",
+    "chong-scope-creep",
+    "vong-tuan-hoan-khong-khep",
+    "nhan-can-xet-nghiem",
+    "app-da-bao-hoa",
+    "benh-vien-la-nguon-du-lieu",
+    "irb-thoi-gian-cho",
+    "xai-phuc-vu-c5",
+    "repo-tai-lap"
+   ],
+   "question": "Để bài NCKH trở nên hoàn chỉnh, không những xây model mà còn xây cả một hệ thống (web, app mobile, server, data) tạo nên một vòng tuần hoàn — như vậy có đúng không, và với một sinh viên chuyên ngành phần mềm thì có đáp ứng yêu cầu không? (kèm 3 câu nối: nhưng cần có XAI mà; đó giờ không có app nào sao; trường hợp app nối vào data bệnh viện, dự đoán cho bệnh nhân qua chỉ số khám định kỳ thì sao?)",
+   "answer_summary": [
+    "BÁC hệ thống web+app+server — nhưng lý do KHÔNG phải thiếu thời gian, mà là vòng tuần hoàn KHÔNG KHÉP ĐƯỢC về cấu trúc: nhãn định nghĩa bằng xét nghiệm máu (HbA1c/FPG/OGTT, TO_DO §4.2) còn feature là no-lab ⇒ app no-lab không bao giờ quan sát được nhãn ⇒ không retrain, không đo đúng/sai.",
+    "App không phải gap — đã bão hoà. Ngoài đời: ADA 60-Second Risk Test (chính là baseline C5), FINDRISC calculator QxMD/Medscape + eHealth quy mô dân số Mỹ Latinh-Caribe, JMIR mHealth 2018 (app cho ĐÚNG undiagnosed diabetes, tiến cứu 2 năm, đăng 8 năm trước). Trong kho: tasin2022 (320 cite) có web + Android + SHAP + LIME + code public mà verdict vẫn là 'không K-fold CV, XAI định tính'; phan2025 có web deploy nhưng không code; hennebelle2023 có MLOps+IoT+blockchain nhưng đóng góp mỏng ⇒ app KHÔNG cứu được bài yếu phương pháp. Ô trống thật: 0/35 net benefit, 31/35 không code.",
+    "Ý 'app nối data bệnh viện' của user ĐÚNG HƯỚNG hơn hẳn (bệnh viện có xét nghiệm ⇒ có nhãn), nhưng phải tách: BỆNH VIỆN LÀ NGUỒN DỮ LIỆU, KHÔNG PHẢI NƠI TRIỂN KHAI. Bệnh nhân khám định kỳ đã có HbA1c ⇒ ít cần mô hình no-lab nhất; mô hình no-lab sinh ra cho người KHÔNG đến bệnh viện (trạm y tế xã, sàng lọc cộng đồng). Giá trị thật = CSV hồi cứu ẩn danh (external validation quần thể VN). App nối HIS thêm 0 giá trị khoa học nhưng thêm phòng CNTT + nhà cung cấp HIS (VNPT-HIS/FPT.eHospital, hệ đóng) + nghĩa vụ PHI + Nghị định 13/2023. Phải khai báo spectrum bias trong Limitations.",
+    "ĐẢO LỊCH — sửa TO_DO §4.4: giữ phần LÀM (Tầng 3 không làm trong 3-6 tháng) nhưng phần HỎI xếp sai. IRB 1-3 tháng là THỜI GIAN CHỜ, không tốn giờ đường găng ⇒ gặp bác sĩ + nộp IRB ở tuần 2-3, không phải tuần 20. Quyền chọn miễn phí: kịp tuần 12 → cohort VN vào Table 4 (mạnh hơn KNHANES với hội đồng VN); không kịp → KNHANES fallback, không mất gì.",
+    "XAI: GIỮ nhưng là bằng chứng cho C5, không phải mục riêng. ~10 biến no-lab ⇒ SHAP hiển nhiên, và đó chính là giá trị: nếu SHAP cho thấy mô hình học đúng 8 mục FINDRISC theo đúng thứ tự → bằng chứng cơ chế 'ML hoà FINDRISC không vì tuning kém mà vì đang tái phát hiện lại FINDRISC', chặn reviewer câu 7. ~1 ngày, Tầng 1. KHÔNG làm SHAP vs LIME (ahmed2024 đã làm), không XAI local, không 'module giải thích'.",
+    "Phần mềm ĐƯỢC GIỮ ~2 tuần, nằm ở CUỐI: repo 1 lệnh + seed + environment.yml (BẮT BUỘC, ~1 tuần, 31/35 bài không có = P3) · SHAP global (~1 ngày) · model card (~1 ngày, P4) · demo 1 trang KHÔNG lưu dữ liệu (tuỳ chọn ~3 ngày; không lưu = không IRB). LOẠI: web+mobile+server+vòng dữ liệu (200-400h) → bài 2, sau khi có Table 2-4.",
+    "Sửa cách phát biểu mục tiêu: KHÔNG phải 'xây được model' mà là 'ĐO ĐƯỢC'. Vì claim C5 nói ML ≈ FINDRISC nên đặt mục tiêu 'model tốt' là tối ưu ngược lại chính luận điểm. Model = cái máy đo để ra 5 con số §12.2. Sản phẩm đầu cuối chốt: 1 phép đo sạch → 5 con số → 1 bài báo + 1 repo tái lập.",
+    "Trả lời thật câu 'có chắc chắn tốt nhất không': chắc TRONG RÀNG BUỘC (bài đầu, một mình, 20 tuần, không kinh phí), không phải trần cao nhất tuyệt đối. Hai chỗ hở: (a) rủi ro thật là nhóm medRxiv 2025.09.05.25335151 công bố phần phân rã trước ⇒ chống bằng ĐI NHANH, không phải làm rộng; (b) chỉ tốt nhất NẾU LÀM XONG — kế hoạch hoàn hảo bỏ dở tuần 14 thua bài Tầng 0 nộp đúng hạn."
+   ],
+   "principle": "Khi user (dân phần mềm) đề xuất mở rộng sang HỆ THỐNG, đừng bác bằng lý do lịch trình — hãy kiểm tra vòng phản hồi có KHÉP ĐƯỢC không: app chỉ retrain được nếu quan sát được NHÃN, mà đề tài no-lab có nhãn nằm ở xét nghiệm máu ⇒ bất khả thi về CẤU TRÚC chứ không phải về nguồn lực; lập luận cấu trúc không bị phản bác bằng 'cố gắng hơn thì được', lập luận lịch trình thì có. Luôn tách NGUỒN DỮ LIỆU khỏi NƠI TRIỂN KHAI: người đã xét nghiệm máu là người ÍT cần mô hình no-lab nhất nhưng lại là dữ liệu validation tốt nhất. Khi bác một đề xuất phải trả lại phiên bản hẹp có giá trị (bỏ hệ thống, giữ repo tái lập — thứ 31/35 bài không có, tức lợi thế phần mềm tiêu đúng chỗ mua được uy tín khoa học). Việc chỉ tốn THỜI GIAN CHỜ mà không tốn giờ đường găng (IRB, đăng ký cohort) phải khởi động sớm nhất có thể, kể cả khi sản phẩm thuộc về bài sau. Và khi claim của bài là 'A ≈ B', đừng để user đặt mục tiêu 'xây model tốt' — mục tiêu đúng là PHÉP ĐO SẠCH, nếu không user sẽ tối ưu ngược lại chính luận điểm của mình.",
+   "links": [
+    "QA_LOG.md Q010",
+    "TO_DO.md §2.2-1 (nhãn/feature tách bạch by design)",
+    "TO_DO.md §3.1 (P3 repo, P4 model card)",
+    "TO_DO.md §4.2 (định nghĩa nhãn bằng xét nghiệm)",
+    "TO_DO.md §4.4 (Tầng 3 — phần HỎI được đảo lên tuần 2-3)",
+    "TO_DO.md §5.1 (đường găng)",
+    "TO_DO.md §12.2 (5 câu hỏi = tiêu chí DỪNG)",
+    "START_HERE.md §2 (3 việc Tầng 0) + Tầng 2 (web demo tuỳ chọn)",
+    "searched_papers/Layer_4_XAI_Trien_Khai/tasin2022_diabetes_prediction_explainable",
+    "searched_papers/Layer_2_Model_Hieu_Qua/phan2025_remed_t2d_ensemble",
+    "searched_papers/Layer_1_Pipeline_Nen_Tang/hennebelle2023_mlops_iot_diabetes",
+    "ADA 60-Second Type 2 Diabetes Risk Test (diabetes.org/diabetes-risk-test)",
+    "JMIR mHealth 2018;6(5):e10662 — mobile app for identifying undiagnosed diabetes/prediabetes",
+    "PMC10332265 — FINDRISC quy mô lớn Mỹ Latinh & Caribe",
+    "medRxiv 2025.09.05.25335151 (đối thủ gần nhất)"
+   ],
+   "supersedes": null,
+   "method": "Claude đọc TO_DO.md (full) + START_HERE.md + QA_LOG.md Q001-Q009 + 2 memory file; grep 40 summary.json tìm bài đã có deploy/app/web; 2 lượt kiểm chứng web ngày 2026-07-26 (ADA/CDC risk test; FINDRISC app + triển khai eHealth; JMIR mHealth 2018). KHÔNG dùng sub-agent, KHÔNG dùng workflow (theo global CLAUDE.md + yêu cầu phiên)."
+  },
+  {
+   "id": "Q009",
+   "date": "2026-07-26",
+   "tags": [
+    "dong-gop-tiep-theo",
+    "bao-hoa-tim-kiem",
+    "phan-loai-vi-pham",
+    "ablation-table3",
+    "pima-circularity",
+    "winners-curse-tan-suat",
+    "minh-bach-bao-cao"
+   ],
+   "question": "Bây giờ em còn có thể làm gì để cống hiến cho đề tài này? Em có thể research thêm bài báo để làm giàu trường hợp không? Hay là phân lớp và phân loại các bài toán, và làm giàu theo từng loại để từ đó làm nền tảng cho việc xây dựng model?",
+   "answer_summary": [
+    "Cả hai đề xuất đúng hướng nhưng sai phiên bản — chúng làm giàu KHO, trong khi thứ đang thiếu là làm giàu BÀI BÁO. Kho đã bão hoà (Q005 gate §7 + Q007 cắt còn 12 bài + START_HERE cắt tiếp còn 2 bài phải mở PDF). Trục 'phân loại bài toán' đã tồn tại hai lần: prediction_horizon (§3b) và role 🅐–🅕 (Q008); Q007 đã cố ý thu về đúng một ô.",
+    "Phiên bản đáng làm của 'research thêm' = tìm HẸP 2 câu hỏi: (a) có ai đã công bố DCA/net-benefit cho sàng lọc no-lab chưa (nếu có thì C3 phải đổi cách phát biểu — biết SỚM); (b) đối thủ medRxiv 2025.09.05.25335151 thiếu gì (V4).",
+    "Phiên bản đáng làm của 'phân loại' = phân loại theo VI PHẠM, không theo chủ đề. Sản phẩm: LEAKAGE_MAP.md + leakage_map.json — 35 bài × 6 cấu hình ablation B–G của TO_DO §7.2. Biến Table 3 từ 7 dòng phỏng đoán thành 7 dòng có tần suất đo được từ chính kho.",
+    "Thiết kế then chốt: 4 trạng thái chứ không 2 — ✗vi phạm / ✓làm đúng / ?không nêu / –N/A, kèm 3 mức bằng chứng (quote 17 ô có số dòng / analysis / structural). Mọi ô không phải quote PHẢI mở source.pdf trước khi viết vào bài.",
+    "KẾT QUẢ (a) — Dòng D gần như dòng chết: chỉ 10/35 bài dùng oversampling sinh mẫu tổng hợp, trong đó 5 bài NÊU RÕ đã làm đúng, 4 không nêu, 1 nghi sai. TO_DO §12.1 viết 'giữ bằng mọi giá D, E, F' là SAI; ưu tiên đúng là E → F → C. Phân biệt then chốt: under-sampling KHÔNG rò rỉ (chỉ làm sai prevalence ⇒ dòng G), over-sampling tổng hợp mới rò rỉ.",
+    "KẾT QUẢ (b) — Winner's curse (E) là vi phạm phổ biến nhất: 25/34. Nặng nhất nipa2023 quét 35 classifier trên 1 split cố định và tự thừa nhận 'no validation methods being used'. Cho T0.13 mốc thật để neo: N = 2, 5, 10, 35.",
+    "KẾT QUẢ (c) — PIMA rò rỉ theo CẤU TRÚC: cột Glucose = đường huyết 2h OGTT, mà nhãn PIMA định nghĩa bằng chính ngưỡng OGTT 2h ≥ 200 mg/dL ⇒ 10 bài trong kho dính mà tác giả không cố ý. Tách bạch với 10 bài rò rỉ do lỗi của chính tác giả (olisah2022 relabel theo glucose, zou2018 glucose là root node, zhang2020 urine glucose, deberneh2021 nhãn chỉ bằng FPG…).",
+    "KẾT QUẢ (d) — 26/35 bài KHÔNG NÊU thứ tự tiền xử lý so với split (dòng B chỉ có 4✗ và 3✓). Phát biểu an toàn: 'chỉ 3/35 nghiên cứu mô tả đủ rõ để người đọc kiểm chứng được rằng không xảy ra rò rỉ' — nói về mức độ BÁO CÁO, không nói về ý định tác giả ⇒ không thể bị cãi. Dẫn thẳng vào đóng góp P2.",
+    "Hai ô quote đắt nhất: hasan2020 (L21, L39) và abnoosian2023 (L19, L37) tự liệt kê pipeline dạng '… feature selection, K-fold cross-validation, và các classifier' — tức CV nằm SAU tiền xử lý và chọn biến, trong chính abstract của họ."
+   ],
+   "principle": "Khi user hỏi 'còn làm gì được nữa' ở giai đoạn THI CÔNG, mặc định đúng là từ chối mọi việc làm giàu KHO và chuyển sang làm giàu BÀI BÁO — làm giàu kho luôn CẢM THẤY năng suất và không có điểm dừng, đó chính là cái bẫy đã sinh ra START_HERE.md. Nhưng đừng bác bỏ trắng: mỗi đề xuất của user thường có một PHIÊN BẢN HẸP đi thẳng vào đường găng — tìm phiên bản đó và trả lại (ở đây: 'phân loại bài toán' → phân loại theo VI PHẠM, biến ablation từ phỏng đoán thành tần suất đo được). Khi lập bản đồ vi phạm của người khác, BẮT BUỘC 4 trạng thái chứ không 2: '?không nêu' phải là trạng thái hạng nhất, vì phần lớn paper im lặng, và 'chỉ N/35 bài mô tả đủ rõ để kiểm chứng' là claim KHÔNG THỂ BỊ CÃI trong khi 'N bài vi phạm' thì cãi được. Luôn tách rò rỉ do CẤU TRÚC DATASET (PIMA) khỏi rò rỉ do LỖI TÁC GIẢ — gộp chung là vu oan hàng loạt. Và phải phân biệt under-sampling (sai prevalence, không rò rỉ) với over-sampling tổng hợp (rò rỉ thật) — gộp hai thứ này chính là lý do TO_DO §12.1 đặt sai ưu tiên.",
+   "links": [
+    "Q003",
+    "Q005",
+    "Q007",
+    "Q008",
+    "LEAKAGE_MAP.md",
+    "leakage_map.json",
+    "TO_DO.md §7.2",
+    "TO_DO.md §12.1",
+    "PROGRESS.json T0.11-T0.15",
+    "PROGRESS.json V3"
+   ],
+   "supersedes": null,
+   "method": "Claude đọc QA_LOG Q001–Q008 + TO_DO.md + START_HERE.md + PROGRESS.json + AGENTS.md; quét regex 2 vòng trên 35 extracted.md (vòng 1 theo từ khoá, vòng 2 chỉ lấy câu/đoạn NÊU THỨ TỰ) + đối chiếu 35 summary.json. KHÔNG dùng sub-agent (theo global CLAUDE.md)."
+  },
+  {
+   "id": "Q008",
+   "date": "2026-07-26",
+   "tags": [
+    "duyet-lai-kho",
+    "chay-lai-verdict",
+    "vai-tro-paper",
+    "schema-metadata",
+    "citation-refresh",
+    "openalex-duplicate",
+    "prediction-horizon",
+    "tu-dien-thuat-ngu"
+   ],
+   "question": "Chạy duyệt qua lại các bài báo, fix nếu thấy có vấn đề. Chạy lại verdict các bài đã chọn lọc — xác định xem có vấn đề gì cần giải quyết không, fix luôn. Thêm phần thuật ngữ cần biết trong thư viện (mục kế bên Code/Dataset).",
+   "answer_summary": [
+    "Vấn đề GỐC tìm ra: verdict cũ (viết 06–07/2026) trả lời câu 'bài này có tốt không', trong khi từ Q007 câu hỏi đúng đã đổi thành 'bài này dùng vào việc gì trong đề tài đã chốt'. Hệ quả cụ thể: rasmy2021/li2020 mang badge 'Strong' trong khi TO_DO §6 🅕 chốt là KHÔNG tái lập được (Cerner/CPRD gated, compute ngoài tầm) — badge đang mời user đi sai hướng.",
+    "CÁCH SỬA: KHÔNG ép verdict gánh hai nghĩa. Thêm trục thứ hai `role` (design/method/positioning/inflation/later/related = 🅐–🅕 của TO_DO §6) vào metadata.json + summary.json, hiện thành cột 'Vai trò' + chip lọc + sort 'Thứ tự đọc' trong Thư viện. Verdict giữ nguyên nghĩa chất lượng; chỉ đổi 4 bài mà lập luận cũ đã hỏng.",
+    "4 verdict đổi: deberneh2021 strong→maybe (lý do cũ 'neo hiếm cho early_detection' sụp khi horizon được sửa đúng thành long_term_risk); olisah2022 strong→maybe (là ĐỐI TƯỢNG bị đề tài phê phán, không phải baseline để chạy lại); xu2025 maybe→weak và jin2025 maybe→weak (đã nằm trong rejected.json, kiểm lại vẫn trượt §7). Verdict cũ giữ ở `verdict_prev`/`verdict_reason_prev`, không xoá.",
+    "Lỗi dữ liệu đã vá (0 vi phạm còn lại/40 bài): xu2025 status='kept' (ngoài enum §5) → 'rejected' + reject_reason; jin2025 layer=null → 3; 8 bài pdf_status=null dù có source.pdf → 'downloaded'; 36 bài thiếu label_type → backfill (abnoosian2023 & deberneh2021 = multiclass_staging vì nhãn 3 lớp thật); 3 bài horizon_uncertain=null → false; deberneh2021 horizon early_detection → long_term_risk (đồng bộ cả analysis.html).",
+    "BẪY KỸ THUẬT MỚI: OpenAlex endpoint /works/doi:<doi> trả nhầm bản ghi TRÙNG. yu2010 bị trả 0 citations (bản ghi 2008) trong khi bản đúng có 524. PHẢI dùng /works?filter=doi:<doi> và kiểm meta.count==1. Nếu tin số trực tiếp thì yu2010 — bài neo 🅐 của đề tài — đã bị kết luận sai là trượt §7.",
+    "Citation làm mới toàn kho: 31/40 bài đổi số, biến động lớn (hasan2020 433→589, khanam2021 378→483, naz2020 272→340, tasin2022 266→320). Đồng bộ luôn số trong header analysis.html + trong văn xuôi summary.json (17 chỗ). phan2025 giữ số Scopus 7 trong analysis.html và ghi thêm số OpenAlex 4 — KHÔNG ghi đè số có nguồn khác.",
+    "§7 là cổng NHẬN VÀO, không phải cổng duy trì: 4 bài hôm nay không đạt ngưỡng (gr2024 11c, phan2025 4c — cả hai user tự promote; agliata2023 61c và nipa2023 32c vừa vượt mốc 3 năm) nhưng KHÔNG bị loại. Ghi `s7_recheck` vào cả 40 metadata để phiên sau khỏi tranh luận lại.",
+    "Từ điển thuật ngữ: 87 mục / 8 nhóm ở tab 'Thuật ngữ' cạnh 'Code / Dataset'. Mỗi mục có nghĩa tiếng Việt · giải thích · 'vì sao quan trọng với đề tài anh' · bẫy hay gặp · công thức. API dò `extracted.md` để đánh dấu thuật ngữ THẬT SỰ có trong bài kèm trích đoạn ngữ cảnh (yu2010: 28 mục, nnamoko2020: 32 mục)."
+   ],
+   "principle": "Khi đề tài được CHỐT, mọi verdict viết trước đó đều lỗi thời về NGHĨA chứ không chỉ về số: chúng trả lời 'bài này tốt không' trong khi câu hỏi đúng đã thành 'bài này dùng vào việc gì'. Đừng ép một trường gánh hai nghĩa — thêm trục `role` mới và chỉ sửa verdict ở những bài mà LẬP LUẬN cũ đã hỏng (không phải ở mọi bài), giữ verdict cũ trong `verdict_prev`. Khi làm mới số liệu từ API, luôn kiểm chứng qua HAI endpoint và đối chiếu ngày xuất bản — OpenAlex có bản ghi trùng theo DOI và một lần tra sai đủ để kết luận sai về một bài neo. Cổng chất lượng kiểu §7 là cổng NHẬN VÀO tại thời điểm tìm được, không phải cổng duy trì: đừng loại một bài chỉ vì nó già đi qua mốc, nhưng phải GHI LẠI kết quả kiểm để phiên sau không tranh luận lại.",
+   "links": [
+    "AGENTS.md#3b",
+    "AGENTS.md#5",
+    "AGENTS.md#7",
+    "AGENTS.md#11",
+    "TO_DO.md#6",
+    "CHEATSHEET.md#7",
+    "rejected.json",
+    "webapp/src/lib/glossary.ts",
+    "webapp/src/lib/roles-public.ts"
+   ],
+   "supersedes": null,
+   "method": "Duyệt tay 40 metadata.json + 35 summary.json + 35 analysis.html; kiểm chứng citation live OpenAlex 2 endpoint (26/07/2026); đọc extracted.md của deberneh2021 để xác minh horizon; script vá read-modify-write có backup. KHÔNG dùng sub-agent (theo global CLAUDE.md)."
+  },
+  {
+   "id": "Q001",
+   "date": "2026-06-22",
+   "tags": [
+    "chien-luoc-dong-gop",
+    "novelty",
+    "phuong-phap-luan",
+    "synthesis",
+    "leakage"
+   ],
+   "question": "Làm NCKH không chỉ tái lập paper mà tạo ra bài báo/mô hình đóng góp ý nghĩa. Ý định: tổng hợp nhiều paper, mỗi bài đóng góp một phần vào workflow tự xây (dataset, mô hình tối ưu, cách lọc dữ liệu chuẩn...) -> đúc kết thành 1 bài thật sự ý nghĩa. Khả năng đóng góp rất cao - em có thấy vậy không?",
+   "answer_summary": [
+    "Đồng ý CÓ ĐIỀU KIỆN: hướng đúng nhưng 'tổng hợp' tự nó chưa phải đóng góp; reviewer phân biệt ghép-thành-phần-đã-biết (incremental/bag-of-tricks) với tổng hợp tạo ra cái mới. Giá trị nằm ở 'mô liên kết', không ở hành động ghép. Cấu trúc 4-Layer là khung tốt.",
+    "Cạm bẫy: chạy theo accuracy cao trên dataset bão hoà (PIMA) = red flag leakage, không phải mạnh (olisah2022 ORF 100%, abnoosian2023 0.9887, kaliappan2024 0.990).",
+    "Điều kiện để đóng góp cao (cần >=1): (1) yếu tố mới thật (vd hình thức hoá protocol lọc/chống leakage); (2) ablation định lượng vai trò từng Layer; (3) external/cross-cohort validation (PIMA->BRFSS->NHANES->EHR) - cả kho đang thiếu; (4) lấp horizon mỏng early_detection + long_term_risk; (5) đánh giá kiểu lâm sàng (PR-AUC + calibration + PPV theo prevalence thật) + XAI local định lượng.",
+    "Xương sống đề xuất chính: pipeline dự đoán sớm/dài hạn ĐTĐ trên EHR longitudinal thật, chống leakage nghiêm ngặt, external validation đa cohort, XAI local. Neo kho: lugner2024/deberneh2021 (horizon), nnamoko2020 (protocol chống leakage), rasmy2021/li2020 (model EHR), tasin2022 (XAI/deploy)."
+   ],
+   "principle": "Tổng hợp nhiều paper thành một workflow là hợp lệ nhưng KHÔNG tự động là đóng góp - giá trị nằm ở 'mô liên kết': yếu tố mới + ablation định lượng + external/cross-cohort validation + đánh giá trung thực kiểu lâm sàng + XAI local + chống leakage. Khi tư vấn novelty: trung thực, không nịnh; đẩy về gap thật (early_detection/long_term_risk, EHR thật, chống leakage) thay vì 'accuracy cao hơn trên PIMA'. Cấu trúc 4-Layer = khung tích hợp, không phải đích đến.",
+   "links": [
+    "AGENTS.md#1",
+    "AGENTS.md#3b",
+    "DECISION_BOARD.md",
+    "RESEARCH_BRIEF.md",
+    "memory:research-goal-synthesis-paper"
+   ],
+   "supersedes": null,
+   "method": "workflow grounded-read (28 paper) + DECISION_BOARD + đánh giá agent; phần phản biện đa-góc bị lỗi 503 gateway nên không dùng."
+  },
+  {
+   "id": "Q002",
+   "date": "2026-06-23",
+   "tags": [
+    "phan-quyet",
+    "mui-nhon",
+    "novelty",
+    "external-validation",
+    "leakage",
+    "gap-that-hay-bay"
+   ],
+   "question": "Xây ưu/nhược điểm của việc làm này. Hướng đi này có nên là mũi nhọn của chúng ta không? Đáng làm không? Tại sao người khác không làm?",
+   "answer_summary": [
+    "NÊN, CÓ ĐIỀU KIỆN; phải mài về 1 mũi nhọn thay vì trải đều 4 Layer.",
+    "Gap là THẬT (bằng chứng web citable): chỉ 8-31% nghiên cứu dự đoán ĐTĐ làm external validation; 91.8% model HIGH risk of bias (PROBAST, Endocrine Connections 2025); external 8% + calibration 13% (Ghafoor 2025); scoping review npj 2023: 5/40 external, 5/40 calibration, 4/40 code, 4/40 SHAP. Lĩnh vực tự kêu thiếu đúng thứ đang nhắm.",
+    "Novelty khuếch tán: mỗi mảnh của spine đã có tiền lệ (multi-cohort external: eClinicalMedicine 2025; benchmark+SHAP+external: medRxiv Sept 2025 ML-vs-FINDRISC; chống leakage: Sci Reports Nov 2025). Novelty phải nằm ở 'mô liên kết' = làm đồng thời tất cả trong 1 khung 4 Layer × 3 horizon + ablation + đánh giá theo prevalence thật + code công khai.",
+    "Điều kiện #1 bắt buộc: đọc kỹ medRxiv Sept 2025 (ML vs FINDRISC) - đối thủ gần nhất - xác minh nó thiếu gì (PR-AUC/PPV theo prevalence thật? leakage protocol? ablation theo Layer?). Khe hở của nó = chỗ cắm cờ.",
+    "Tại sao người khác không làm (gap thật, không bẫy): (1) lệch incentive accuracy-chasing dễ publish; (2) reward asymmetry - làm đúng thì số tệ hơn nên ít ai nhận thiệt; (3) rào cản dữ liệu EHR/multi-cohort (DUA/IRB/harmonize); (4) kỹ thuật nặng không hào nhoáng; (5) đòi liên ngành (calibration/prevalence/PPV).",
+    "Mũi nhọn đề xuất: đo hiệu năng bị thổi phồng bao nhiêu bởi leakage + thiếu external, và giao benchmark leakage-safe + đánh giá theo prevalence thật + external đa cohort + tái lập. 4 Layer = thân giáo; leakage+external+đánh-giá-thật = mũi nhọn; protocol+benchmark+code = hook kiến tạo (để không bị coi chỉ phê phán).",
+    "Điều kiện khác: scope-down (2-3 dataset harmonize + 1-2 horizon ưu tiên early/long-term mỏng, không ôm 3×4); ablation định lượng; đóng khung 'số tụt' thành phát hiện kèm sản phẩm tái dùng."
+   ],
+   "principle": "Một hướng là MŨI NHỌN đáng làm khi: gap chứng minh được bằng số citable + lĩnh vực tự kêu thiếu + lý do người khác né mang tính CẤU TRÚC (incentive lệch, reward asymmetry 'làm đúng số tệ hơn', rào cản dữ liệu) chứ không phải 'đã giải quyết rồi' = dấu hiệu gap thật không phải bẫy. Khi mỗi thành phần đều có tiền lệ, novelty nằm ở 'mô liên kết' (tích hợp đồng thời + ablation + đánh giá thống nhất + công khai), và BẮT BUỘC đọc đối thủ gần nhất trước khi cắm cờ. Bài thuần phê phán khó publish - luôn kèm sản phẩm kiến tạo. Mài 1 lưỡi, đừng trải đều.",
+   "links": [
+    "QA_LOG.md#q001",
+    "DECISION_BOARD.md",
+    "AGENTS.md#3b",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10600138/",
+    "https://ec.bioscientifica.com/view/journals/ec/14/11/EC-25-0353.xml",
+    "https://onlinelibrary.wiley.com/doi/10.1111/dme.70398",
+    "https://www.medrxiv.org/content/10.1101/2025.09.05.25335151.full.pdf",
+    "https://www.nature.com/articles/s41598-025-25759-x"
+   ],
+   "supersedes": null,
+   "method": "workflow phan-quyet-mui-nhon: web literature (11 nguồn) hoàn thành; lăng kính ưu/nhược + phán quyết tổng hợp trượt vì hết hạn mức usage 402, Claude tự tổng hợp."
+  },
+  {
+   "id": "Q003",
+   "date": "2026-06-23",
+   "tags": [
+    "model-selection",
+    "winners-curse",
+    "data-leakage",
+    "phuong-phap-luan",
+    "validation",
+    "trien-khai-lam-sang"
+   ],
+   "question": "Bài kiểu: khởi tạo nhiều mô hình chạy, mô hình nào cho kết quả chính xác nhất trên tập dữ liệu đó thì lấy mô hình đó. VD thiết kế app liên kết bệnh viện, lấy dataset bệnh nhân, chạy hết 4 mô hình, mô hình nào ra kết quả cao nhất & chính xác nhất thì lấy kết quả mô hình đó. Như vậy có chuẩn thực tế không?",
+   "answer_summary": [
+    "Ý tưởng 'chạy nhiều mô hình chọn best' là chuẩn & phổ biến, nhưng cách mô tả có 1 lỗi khái niệm + 1 lỗ hổng chí mạng.",
+    "Lỗi khái niệm - trộn 2 thời điểm: 'chọn mô hình chính xác nhất' chỉ làm được lúc PHÁT TRIỂN (có nhãn); lúc dự đoán bệnh nhân MỚI (chưa nhãn) là bất khả thi vì muốn biết 'chính xác' phải có đáp án thật. Phải chọn best một lần rồi KHOÁ mô hình; mọi ca mới đi qua đúng 1 mô hình đã khoá.",
+    "Lỗ hổng chí mạng - winner's curse / rò rỉ test set qua model selection: chọn mô hình thắng trên chính tập đó rồi lấy luôn con số = thổi phồng hệ thống (càng thử nhiều mô hình kẻ thắng càng do may rủi). Đây chính là lỗi đề tài muốn vạch (olisah2022 100%, 91.8% PROBAST high-RoB).",
+    "Cách làm chuẩn: train/validation/test hoặc nested CV; CHỌN trên validation, BÁO CÁO trên test chưa-đụng-khi-chọn; chọn bằng AUROC/AUPRC/sensitivity@ngưỡng + calibration, KHÔNG bằng accuracy (lệch lớp 3-13% -> 'đoán không-bệnh hết' vẫn ~90% acc); external/temporal validation (viện B/thời điểm sau); khoá mô hình + theo dõi drift.",
+    "Chuẩn thực tế triển khai: thêm IRB/đạo đức/đồng thuận/ẩn danh trước khi lấy dữ liệu bệnh nhân; báo cáo theo TRIPOD-AI, rủi ro theo PROBAST.",
+    "Cơ hội: 'chạy N mô hình chọn best' là điều cả lĩnh vực làm (kể cả baseline hasan2020) và là nơi sinh optimism/leakage. Làm đúng quy trình + định lượng số tụt so với cách ngây thơ = phát hiện công bố được. Trùng đúng mũi nhọn Q002."
+   ],
+   "principle": "'Chọn mô hình tốt nhất' là hợp lệ NHƯNG phải chọn trên validation và báo cáo trên test chưa-đụng - nếu chọn-và-chấm trên cùng tập = winner's curse / rò rỉ test set, số thổi phồng. Phân biệt 2 thời điểm: chọn-best chỉ làm lúc PHÁT TRIỂN (có nhãn); lúc dự đoán ca mới (chưa nhãn) KHÔNG thể 'chọn cái chính xác nhất' -> phải KHOÁ 1 mô hình. Chọn bằng AUROC/AUPRC + lâm sàng, không bằng accuracy. Bắt buộc external validation + (triển khai thật) IRB/TRIPOD-AI/PROBAST. Làm đúng + định lượng độ thổi phồng = đóng góp, không phải lỗi.",
+   "links": [
+    "QA_LOG.md#q002",
+    "QA_LOG.md#q001",
+    "DECISION_BOARD.md",
+    "AGENTS.md#11"
+   ],
+   "supersedes": null,
+   "method": "Claude phân tích trực tiếp (vấn đề phương pháp luận kinh điển), grounded vào đề tài; không chạy workflow để tránh chạm hạn mức 402."
+  },
+  {
+   "id": "Q004",
+   "date": "2026-06-23",
+   "tags": [
+    "model-population-matching",
+    "no-free-lunch",
+    "dataset-shift",
+    "cherry-picking",
+    "fairness-lam-sang",
+    "external-validation"
+   ],
+   "question": "Không phải winner's curse - mà là: mô hình A tốt trên dataset X nhưng yếu trên Y, mô hình B lại tốt trên Y, nên lấy B để diễn tả (cho Y). Vậy có đúng ý nghĩa ngành y không?",
+   "answer_summary": [
+    "CÓ ý nghĩa y khoa - đây là No Free Lunch + dataset shift, KHÁC winner's curse Q003. Quần thể bệnh nhân khác nhau thật (tuổi/BMI/chủng tộc/prevalence/yếu-tố-nguy-cơ/biomarker) -> quan hệ feature->bệnh khác -> mô hình khác thắng là chuyện thật. Chọn B cho quần thể Y đại diện = locally adapted model.",
+    "(a) Phải hiểu VÌ SAO B thắng trên Y: lý do quần thể (khác biệt sinh học/dịch tễ) = có nghĩa; artifact (Y nhỏ/may rủi, preprocessing khác, định nghĩa nhãn khác, leakage chỉ trên Y) = vô nghĩa & nguy hiểm.",
+    "(b) KHÔNG cherry-pick: báo cáo B trên CẢ X lẫn Y, không chỉ Y nơi thắng; chọn Y sau khi thấy B thắng = thiên lệch. Y khoa: giấu dataset mô hình yếu = che chênh lệch hiệu năng giữa nhóm = vấn đề đạo đức.",
+    "(c) Giới hạn phạm vi tuyên bố: 'B cho quần thể giống Y', KHÔNG phải 'B tốt nhất'. Áp B (yếu trên X) lên quần thể X có thể gây hại -> công bằng & an toàn lâm sàng.",
+    "Phiên bản có nghĩa cao nhất: đặc tả model-population matching - đặc điểm quần thể nào quyết định mô hình nào thắng & tại sao, kiểm chứng xuyên cohort; biến 'B thắng trên Y' thành insight lâm sàng. = heterogeneity analysis + external validation, trùng mũi nhọn Q002.",
+    "Triển khai thực tế: mỗi site phải tự validate (+ đôi khi chọn/hiệu chỉnh lại) vì mô hình tốt viện này thường tụt viện khác (dataset shift)."
+   ],
+   "principle": "Mô hình khác thắng trên quần thể khác là THẬT và có nghĩa y khoa (No Free Lunch + dị biệt quần thể + dataset shift) - KHÁC winner's curse (Q003). Nhưng chỉ 'đúng' khi: (a) biết VÌ SAO thắng (lý do quần thể = ok; artifact/leakage = không), (b) KHÔNG cherry-pick (báo cáo trên mọi dataset, không chỉ cái thắng - giấu = che chênh lệch nhóm = đạo đức/công bằng), (c) giới hạn tuyên bố theo quần thể ('B cho nhóm giống Y', không phải 'B tốt nhất'; áp lên nhóm khác có thể gây hại). Đóng góp thật = đặc tả 'đặc điểm quần thể <-> mô hình thắng' + calibration theo quần thể + external validation, không phải chỉ chọn winner per dataset.",
+   "links": [
+    "QA_LOG.md#q003",
+    "QA_LOG.md#q002",
+    "DECISION_BOARD.md",
+    "AGENTS.md#3b"
+   ],
+   "supersedes": null,
+   "method": "Claude phân tích trực tiếp; làm rõ khác biệt với Q003 (winner's curse) — câu này là model-population matching."
+  },
+  {
+   "id": "Q005",
+   "date": "2026-07-01",
+   "tags": [
+    "paper-discovery",
+    "sub-agent",
+    "search-saturation",
+    "quality-gates",
+    "horizon-balance"
+   ],
+   "question": "Kho searched_papers đã có nhiều bài; có thể phân sub-agent và làm việc liên tục đến khi tìm gần như hầu hết các bài liên quan, cần thiết và đạt đầy đủ yêu cầu không?",
+   "answer_summary": [
+    "Có, nhưng điểm dừng phải là search saturation có thể kiểm chứng, không hứa bao phủ tuyệt đối Internet.",
+    "Chia nhánh độc lập theo horizon/khoảng trống kỹ thuật; dùng nhiều query và snowballing rồi khử trùng searched_papers/rejected.json.",
+    "Chỉ nhận paper vượt đồng thời ba gate §7: citation Semantic Scholar, dataset public/procedure access rõ, code hoặc method đủ tái lập; không nới gate để tăng số.",
+    "Mỗi đợt đề xuất tối đa 5 paper_id và chỉ tạo folder/tải PDF sau khi user duyệt.",
+    "Vòng đầu cho thấy long_term_risk bão hòa cục bộ mà không có paper mới vượt đủ ba gate; citation và data access là nút thắt chính."
+   ],
+   "principle": "Làm giàu kho theo search đa nhánh -> khử trùng -> kiểm chứng ba gate -> lặp đến bão hòa, không theo quota số lượng. 'Gần như đủ' phải được chứng minh bằng nhiều lượt không còn paper hợp lệ mới; bài hay nhưng trượt citation, data access hoặc reproducibility vẫn phải loại. Ưu tiên early_detection/long_term_risk nhưng không nới §7 vì kho mỏng.",
+   "links": [
+    "AGENTS.md#1",
+    "AGENTS.md#3b",
+    "AGENTS.md#7",
+    ".agents/skills/paper-finder/SKILL.md",
+    "RESEARCH_BRIEF.md",
+    "rejected.json"
+   ],
+   "supersedes": null,
+   "method": "Paper-finder + 3 nhánh agent độc lập (early_detection, long_term_risk, technical gaps), đối chiếu kho/rejected và kiểm chứng §7."
+  },
+  {
+   "id": "Q006",
+   "date": "2026-07-06",
+   "tags": [
+    "de-tai-moi",
+    "phan-loai-giai-doan",
+    "multi-class-staging",
+    "scope-decision",
+    "leakage-safe",
+    "coverage-check",
+    "niche-thin"
+   ],
+   "question": "Kiểm tra kho đã đủ bài cho 2 đề tài chưa: (1) phát hiện sớm ĐTĐ; (2) phân loại chính xác GIAI ĐOẠN bệnh ĐTĐ — đặc biệt đề tài 2 anh mới nghĩ đến. 'Giai đoạn' = xác định lúc nào ở giai đoạn 1, lúc nào giai đoạn 2... Em cho gợi ý tốt nhất về chủ đề này.",
+   "answer_summary": [
+    "Đề tài 1 (phát hiện sớm) = GẦN ĐỦ: kho đã làm giàu mạnh (13 bài early_detection, RESEARCH_BRIEF cũ nói 'mỏng' là lỗi thời). 'Đủ' phụ thuộc nghĩa: nếu TẦM SOÁT undiagnosed thì gần đủ; nếu DỰ BÁO onset tương lai có external validation thì còn thiếu (chỉ ~2/13 bài đúng nghĩa temporal). 5/13 mới ở searched chưa analyze; đã deep-analyze yu2010 (457 cite) trong phiên này.",
+    "Đề tài 2 (phân loại giai đoạn) = GẦN NHƯ TRỐNG trong kho (chỉ 2 bài tình cờ chạm multi-class: abnoosian2023, deberneh2021; islam2019 xác minh là BINARY) VÀ vượt scope §1 (chủ đề khai báo DUY NHẤT là binary; trục kho là prediction_horizon, không có trục staging).",
+    "PHÁT HIỆN QUAN TRỌNG (verify OpenAlex 06/07/2026): niche '3-lớp glycemic staging THUẦN đạt §7' gần như RỖNG — bài 3-lớp glycemic thuần đủ citation DUY NHẤT là abnoosian2023 (đã trong kho). Mọi bài 3/4-lớp khác trượt citation (iraqi2024 5c, normoglycemia2024 8c, diabetology2025 4-lớp marker phân tử n=260 9c).",
+    "GỢI Ý TỐT NHẤT (đã chốt về mặt phân tích): 'giai đoạn' nghĩa lâm sàng khả thi nhất trên tabular/EHR = thang tiến triển đường huyết Bình thường→Tiền ĐTĐ→ĐTĐ. Nhưng chỉ 'chạy multi-class lấy accuracy' = rơi vào bẫy Q003 + rò rỉ nhãn KÉP (nhãn định nghĩa bằng HbA1c/FPG, giữ chúng làm feature = đọc lại định nghĩa → 0.99 giả, đúng như abnoosian2023 0.9887 & IPDD ~100%). Reframe đề tài 2 thành 'LEAKAGE-SAFE glycemic staging + PROGRESSION': (1) phân giai đoạn KHÔNG dùng biomarker định nghĩa nhãn (lõi), (2) dự đoán chuyển giai đoạn theo thời gian (nâng cao). Tránh: T1D immune staging (Type 1), phân độ biến chứng bằng ảnh võng mạc — ngoài scope §1.",
+    "Anchor §7 cho đề tài 2 (thay vì 3-lớp thuần không có): choi2014 (111c PASS, KNHANES public + external, leakage-safe screening), sgchoi2023 (40c PASS, KNHANES n=32.827, feature phi-glycemic + external temporal), cahn2020 (106c BORDERLINE — progression tiền ĐTĐ→ĐTĐ nhưng data Maccabi/THIN private + no code).",
+    "Dataset đề tài 2: NHANES (mở, 3-lớp cross-sectional, có HbA1c/FPG/OGTT → áp ADA cut-point + chứng minh leakage-safe) + cohort longitudinal cho progression (CHARLS ít ma sát, hoặc CARDIA/ARIC qua DUA) + KNHANES external validation. TRÁNH IPDD làm benchmark chính (leaky-by-construction, chỉ dùng làm ca cảnh báo tái hiện ~100% giả).",
+    "Landmark đề tài 1 còn thiếu (verify OpenAlex): zou2018 (914c PASS, PIMA public — bài ML-ĐTĐ cite cao nhất kho chưa có), choi2014 (111c PASS); borderline vì data private/no-code: kopitar2020 (362c, 'ML không hơn hồi quy cho phát hiện sớm' — neo phản biện), razavian2015 (216c, claims population-level).",
+    "User chọn: LÀM SONG SONG cả hai (vá đề tài 1 + khởi động tìm anchor đề tài 2). Chưa chốt: sửa §1 (scope) + duyệt bài nào để lưu."
+   ],
+   "principle": "Trước khi cam kết một ĐỀ TÀI/sub-topic MỚI, phải kiểm chứng có TỒN TẠI đủ literature đạt §7 để xây trên đó — không giả định 'nghe hợp lý là có bài'. Với 'phân loại giai đoạn ĐTĐ': niche 3-lớp glycemic THUẦN gần như rỗng ở ngưỡng citation (chỉ abnoosian2023), nên reframe thành 'LEAKAGE-SAFE glycemic staging + progression' — vì staging định nghĩa nhãn bằng HbA1c/FPG nên giữ chúng làm feature = rò rỉ nhãn kép (biến thành bẫy Q003, accuracy ~100% giả). Đề tài mới phải khớp xương sống leakage-safe/đánh-giá-trung-thực (Q002/Q003), không phải một bài multi-class accuracy nữa. Mở rộng scope §1 (binary→multi-class) là quyết định của USER, agent chỉ nêu nó vượt scope + soạn đề xuất, không tự nới.",
+   "links": [
+    "AGENTS.md#1",
+    "AGENTS.md#3b",
+    "QA_LOG.md#q002",
+    "QA_LOG.md#q003",
+    "searched_papers/Layer_2_Model_Hieu_Qua/yu2010_svm_prediabetes_detection",
+    "rejected.json"
+   ],
+   "supersedes": null,
+   "method": "2 workflow: (a) audit độ phủ 2 đề tài (4 nhánh: repo early / repo staging / lit staging / lit early) + synth phản biện; (b) tìm+kiểm chứng §7 anchor cho 2 đề tài (3 nhánh: landmark topic1 / anchor topic2 / dataset topic2) + synth. Citation verify OpenAlex live 2026-07-06. Đã deep-analyze yu2010 song song."
+  },
+  {
+   "id": "Q007",
+   "date": "2026-07-26",
+   "tags": [
+    "chot-de-tai",
+    "lo-trinh",
+    "to-do",
+    "undiagnosed-diabetes",
+    "no-lab",
+    "cross-population-external",
+    "decision-curve",
+    "survey-weights",
+    "chon-venue",
+    "scope-sinh-vien"
+   ],
+   "question": "Biến em thành một người thầy: đọc toàn bộ paper + research các nền tảng. Để anh xây được model thật sự có ý nghĩa và bài báo mang tính khoa học, PHẢN BIỆN ĐƯỢC — anh cần làm gì? Viết TO_DO.md liệt kê phải đọc bài nào, đóng góp gì, tự thiết kế & xây bài xịn cần làm gì, CHỨNG MINH ĐƯỢC GÌ. Anh là sinh viên, chỉ có Kaggle hoặc cao lắm thuê 1 GPU giá phải chăng. Anh đang không rõ định hướng, chỉ đọc paper một cách vô nghĩa. RÀNG BUỘC anh chốt khi được hỏi: deadline 3–6 tháng; đầu ra nhờ em tư vấn chọn; dữ liệu — cần chạy tốt trên một bộ CHUẨN trước rồi lấy đó làm chuẩn để xin data bệnh viện (anh có quan hệ với một bác sĩ); chưa từng viết bài báo khoa học.",
+   "answer_summary": [
+    "Chẩn đoán gốc rễ: anh không đọc sai bài — anh đọc mà CHƯA CÓ MỘT CÂU CLAIM để cất bài vào. Chữa: chốt claim TRƯỚC, rồi mỗi paper rơi vào đúng 1 trong 4 ô Nền / Đối thủ / Bằng-chứng-gap / Related-work. Kết quả: chỉ còn 12 bài đọc kỹ + 4 bài lướt, không phải 40.",
+    "ĐỀ TÀI CHỐT: sàng lọc ĐTĐ CHƯA ĐƯỢC CHẨN ĐOÁN bằng biến KHÔNG-XÉT-NGHIỆM (no-lab); định lượng khoảng cách ML vs thang điểm lâm sàng còn lại bao nhiêu sau khi (a) chặn rò rỉ, (b) đánh giá ở prevalence thật bằng AUPRC + calibration + NET BENEFIT, (c) external CROSS-POPULATION. Chọn vì nhãn (HbA1c/FPG/OGTT) và feature (no-lab) tách bạch BY DESIGN nên leakage-safe theo CẤU TRÚC, miễn nhiễm bẫy đã giết zhang2020/deberneh2021/lai2019/fazakis2021/olisah2022; có 6 bài neo sẵn (yu2010, dinh2019, choi2014, sgchoi2023, zhang2020, lugner2024); và KHÔNG THỂ thất bại về mặt khoa học vì kết quả âm CHÍNH LÀ claim.",
+    "LOẠI có lý do: (1) staging 3 lớp (Q006) — niche gần rỗng + rò rỉ nhãn kép phải biện hộ suốt bài, quá nhiều mặt trận cho bài đầu trong 6 tháng, cất làm bài 2; (2) foundation model EHR (rasmy2021/li2020) — Cerner/CPRD không tiếp cận được, compute ngoài tầm, CHỈ trích dẫn Related Work KHÔNG tái lập. Hệ quả: READING_LIST.md xếp rasmy2021 Tier-1 KHÔNG còn đúng với ràng buộc mới; §6 của TO_DO.md thay thế nó.",
+    "Khe hở kỹ thuật MỚI #1 — DCA = 0/35: grep toàn kho cho thấy KHÔNG MỘT BÀI NÀO dùng decision curve analysis / net benefit; calibration khoảng 2/35; PR-AUC khoảng 3/35; external thật khoảng 3/35; code public 4/35. Bằng chứng gap lấy từ CHÍNH KHO của user, không đi mượn review người khác.",
+    "Khe hở kỹ thuật MỚI #2 — survey-design-aware evaluation: NHANES là complex survey (WTMEC2YR/SDMVSTRA/SDMVPSU). dinh2019 (434 cite) 0 lần nhắc trọng số; yu2010 (457 cite) dùng SUDAAN CHỈ cho baseline hồi quy logistic, KHÔNG cho SVM, tức so sánh bất đối xứng. Rẻ, mới, khó cãi. Nhưng user PHẢI mở source.pdf xác minh tay trước khi viết vì đây là claim về người khác.",
+    "Khe hở của đối thủ gần nhất (medRxiv 2025.09.05.25335151, đã cảnh báo từ Q002): nó ĐÃ kết luận rằng khi không có dữ liệu xét nghiệm thì FINDRISC vẫn ngang hoặc hơn ML — nhưng chỉ như một nhận xét phụ; không phân rã leakage, không net benefit, không cross-population. User biến nhận xét phụ của họ thành kết quả chính có định lượng.",
+    "Dữ liệu 3 tầng (khớp đúng chiến lược user): Tầng 1 NHANES (tải ngay, không đăng ký) rồi Tầng 2 KNHANES (ưu tiên 1, harmonize dễ nhất vì cùng thiết kế, có 2 bài neo choi2014 + sgchoi2023) và CHARLS (đăng ký free khoảng 1 tuần, nộp ngay làm dự phòng) rồi Tầng 3 bệnh viện VN SAU. Quy tắc cứng: cohort external KHÔNG được đụng tới trước Phase 3.",
+    "5 claim C1-C5 kèm bằng chứng bắt buộc + câu phản biện + câu trả lời chuẩn bị sẵn. Table 3 = ablation rò rỉ 7 cấu hình là trái tim bài; dòng F (thêm biến định nghĩa nhãn vào feature) tái tạo được khoảng 0.99 bằng cách cố ý vi phạm 1 quy tắc, qua đó giải thích luôn con số của olisah2022/naz2020/kaliappan2024/abnoosian2023.",
+    "Compute: KHÔNG cần thuê GPU. Tabular khoảng 70k dòng nên laptop CPU đủ; Kaggle 30h GPU/tuần chỉ cần nếu thử TabPFN v2 (Nature 2025 — điểm hợp thời đại AI 2026, thêm vào Table 5, làm SAU Table 3/4). Nếu thấy cần thuê GPU thì đó là tín hiệu đi lạc scope.",
+    "Venue (user nhờ tư vấn) — chiến lược 2 tầng dùng chung một codebase: hội nghị trong nước (FAIR/NICS/KSE/RIVF) khoảng tuần 16 để lấy vòng phản biện RẺ và NHANH trước vì user chưa viết bài bao giờ; sau đó tạp chí Q2-Q3 tháng 2-4/2027 (BMC MIDM, Diagnostics, Sci Reports, JMIR MI, IEEE Access, PLOS ONE — PLOS ONE hợp nhất vì nhận kết quả âm). KHÔNG nhắm Q1 ngay: không phải vì đề tài yếu mà vì bài đầu + làm một mình + 6 tháng dẫn tới desk-reject tốn 3-4 tháng. Bản tạp chí cần ít nhất 30% nội dung mới + khai báo bản hội nghị.",
+    "Kỹ thuật chống trễ quan trọng nhất — VIẾT BÀI BÁO NGƯỢC: Phase 0 (tuần 1) vẽ 6 bảng + 4 hình RỖNG trước khi chạy thí nghiệm nào, nhờ đó biết chính xác phải chạy bao nhiêu thí nghiệm, không thừa không thiếu. Đường găng chỉ 4 việc: nhãn NHANES (t6), Table 3 ablation (t11), external (t13), BẮT ĐẦU VIẾT đúng tuần 15. Mọi thứ khác cắt được.",
+    "Tiêu chí DỪNG: trả lời được 5 câu bằng số cụ thể (làm đúng chuẩn thì bao nhiêu; mỗi kiểu rò rỉ phồng bao nhiêu; sang quần thể khác tụt bao nhiêu và recalibration cứu lại bao nhiêu; ML hơn score bao nhiêu và p bao nhiêu; ngưỡng nào net benefit còn dương) là đã có một bài báo. Thêm thí nghiệm không làm bài mạnh hơn, chỉ làm trễ."
+   ],
+   "principle": "Khi user \"đọc paper mà thấy vô nghĩa\", bệnh KHÔNG phải đọc thiếu hay đọc sai bài mà là CHƯA CÓ MỘT CÂU CLAIM để cất bài vào; chữa bằng cách chốt claim TRƯỚC rồi phân mỗi paper vào 4 ô Nền/Đối thủ/Bằng-chứng-gap/Related-work. Chọn đề tài mà tính leakage-safe đến từ CẤU TRÚC bài toán chứ không từ nỗ lực của tác giả (nhãn định nghĩa bằng xét nghiệm nhân với feature no-lab thì không thể rò rỉ) — đó là cách rẻ nhất để một sinh viên có bài phản biện được. Ưu tiên claim mà KẾT QUẢ ÂM VẪN LÀ KẾT QUẢ (\"khoảng cách được công bố phần lớn là ảo giác đo lường, và đây là số đo\") thay vì claim \"mô hình tôi tốt hơn\" — nó loại bỏ rủi ro khoa học, chỉ còn rủi ro thi công. Trước khi tư vấn scope PHẢI hỏi 4 ràng buộc: deadline, đầu ra nhắm tới, ma sát dữ liệu chịu được, nền tảng hiện có — thiếu chúng thì kế hoạch hoặc quá sức hoặc quá nhẹ. Gap mạnh nhất là gap ĐO ĐƯỢC TỪ CHÍNH KHO CỦA USER (DCA 0/35) chứ không phải gap trích từ review của người khác. Với bài báo ĐẦU TIÊN, đi hội nghị trong nước trước rồi nâng cấp lên Q2-Q3 là đường NHANH HƠN tới bài quốc tế chứ không phải đường vòng — và luôn nói rõ \"không cần thuê GPU\" khi bài toán là tabular.",
+   "links": [
+    "TO_DO.md (sản phẩm chính của phiên này)",
+    "QA_LOG.md Q001/Q002/Q003/Q004/Q006",
+    "READING_LIST.md (bị §6 của TO_DO.md thay thế)",
+    "AGENTS.md §1/§3b/§7/§12",
+    "searched_papers/*/summary.json (35 bài đã phân tích)",
+    "Endocrine Connections 2025 — Li et al. (65 study / 97 model, 21 external, >80% high RoB)",
+    "TRIPOD+AI (BMJ 2024)",
+    "PROBAST+AI (BMJ 2025)",
+    "TabPFN v2 (Nature 2025)",
+    "medRxiv 2025.09.05.25335151 (đối thủ gần nhất)"
+   ],
+   "supersedes": null,
+   "method": "Claude đọc trực tiếp toàn kho (40 metadata.json + 35 summary.json), grep định lượng toàn bộ extracted.md về calibration/PR-AUC/DCA/external/survey-weight, 12 lượt kiểm chứng web ngày 2026-07-26, cộng AskUserQuestion 4 ràng buộc. KHÔNG dùng sub-agent (theo global CLAUDE.md của user)."
+  }
+ ]
+}

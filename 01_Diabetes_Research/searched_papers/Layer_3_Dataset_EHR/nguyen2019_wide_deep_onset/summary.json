@@ -1,0 +1,23 @@
+{
+  "paper_id": "nguyen2019_wide_deep_onset",
+  "layer": 3,
+  "prediction_horizon": "long_term_risk",
+  "contribution": "Lần đầu áp kiến trúc Wide & Deep (Google) cho dự đoán onset/incidence T2DM trên EHR thật (Practice Fusion): feature các năm 2009-2011 dự đoán nhãn chẩn đoán năm 2012 (forward prediction); so trực tiếp với baseline Random Forest của Pimentel [17] trên cùng dataset & split, kèm khảo sát SMOTE 150/300%.",
+  "method": "Wide & Deep neural network: wide = generalised linear model trên crossed features (27 diagnosis x 33 medication); deep = 3 embedding ICD-9/thuốc/lab -> vector 16-d + 2 hidden layer 256/128 (ReLU), nối thành vector 1439-d -> linear 128->1 + sigmoid. Feature selection bằng cosine-distance giữa cột feature và cột nhãn (1312 feature). SGD + binary cross-entropy, 5 mức learning rate + patience; split 70/30, 10-fold stratified CV, ensemble trung bình xác suất (ngưỡng 0.5); SMOTE 150/300% trong từng fold.",
+  "best_metric": "Ensemble no-SMOTE trên Practice Fusion: AUC 84.13% · Accuracy 84.28% · Sensitivity 31.17% · Specificity 96.85% (Table 3, dòng Ensemble + Abstract; ROC Fig. 6). Trung bình 10 partition: AUC 84.01% (Table 4).",
+  "datasets": [
+    "practice-fusion"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "Vượt nhẹ baseline cùng dataset Pimentel et al. [17] (RF + temporal features) khi no-SMOTE: AUC 84.01% vs 83.19% & sensitivity 29.12% vs 16.07% (Table 4); nhưng với SMOTE 150/300% thì RF của [17] lại có AUC cao hơn (84.22/84.11% vs 83.33/82.12%). Cùng Layer 3: AUC ~84% THẤP HƠN dinh2019 (NHANES XGBoost 0.957 có lab, cross/early) & agliata2023 (NHANES+MIMIC ANN 0.934, cross_sectional); điểm riêng = EHR longitudinal thật + đúng horizon forward-prediction onset.",
+  "gap": "Sensitivity rất thấp ở cấu hình tốt nhất (31.17%) -> bỏ sót ~69% ca onset; SMOTE chỉ tăng sensitivity, không cải thiện AUC và làm tụt specificity; không external validation; thiếu Precision/Recall/F1, PR-AUC, calibration; cửa sổ onset không định lượng N năm rõ; dataset competition đã đóng + code null + feature-engineering 1312 đặc trưng (ngưỡng histogram thủ công) -> tái lập chính xác khó.",
+  "verdict": "maybe",
+  "verdict_reason": "Đúng scope (binary onset T2DM trên EHR thật) + highly-cited (161) + hiếm có horizon long_term_risk + so sánh baseline công bằng cùng dataset; nhưng AUC khiêm tốn (84%), sensitivity thấp (31%), không code, dataset cuộc thi đã đóng nên tái lập thấp.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

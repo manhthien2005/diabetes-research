@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Med-BERT: pretrained contextualized embeddings on structured EHR — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: var(--success-soft); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Med-BERT: pretrained contextualized embeddings on large-scale structured electronic health records for disease prediction</h1>
+    <div class="meta">
+      <span>📅 <strong>2021</strong></span>
+      <span>📰 npj Digital Medicine 4:86</span>
+      <span>📚 <strong>845</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1038/s41746-021-00455-y" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <a class="badge yes" href="https://github.com/ZhiGroup/Med-BERT" target="_blank">💻 Code: GitHub ↗</a>
+      <span class="badge yes">📊 Dataset: Có (gated)</span>
+      <span class="badge horizon">⏱️ Horizon: Long-term risk</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 Cerner Health Facts® (v2017) — EHR đa-viện Mỹ, &gt;68 triệu BN; cohort pretraining 28.490.650 BN + DHF-Cerner + PaCa-Cerner. <em>(gated, không public)</em></li>
+      <li>🔹 Truven Health MarketScan® (v2015) — claims dataset &gt;170 triệu BN; cohort PaCa-Truven (đánh giá generalizability cross-database). <em>(gated, không public)</em></li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Đầu tiên đưa <strong>BERT cho EHR có cấu trúc</strong> (diagnosis ICD-9/10), pretrain trên 28,5 triệu BN; pretrained embedding boost AUC mọi base model và đặc biệt hiệu quả khi training set nhỏ (extreme transfer learning).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">AUC <strong>85.39</strong> (Bi-GRU+Med-BERT, DHF-Cerner) · <strong>82.23</strong> (PaCa-Cerner) · <strong>80.57</strong> (PaCa-Truven) — Table 4 (số in đậm). Boost tổng 1.21–6.14% (Abstract); set nhỏ boost &gt;20% (Abstract, Fig. 4).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Transformer 2 chiều (L=6, H=192, A=6, ~17M tham số) + code/serialization/visit embeddings; pretrain <strong>Masked LM + Prolonged LOS</strong>; fine-tune với prediction head (GRU/Bi-GRU/RETAIN/FFL).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">PEER trực tiếp của <strong>BEHRT</strong> & G-BERT (Table 1): vocab 82K vs 301, pretrain 28M vs 1.6M, có cross-test ngoài nguồn (Truven). Khác hệ với baseline tabular cùng layer (hasan2020/khanam2021 chạy PIMA 768 mẫu, cross-sectional) → không so trực tiếp con số.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">
+      Med-BERT chuyển khung <strong>BERT</strong> từ NLP sang dữ liệu <strong>EHR có cấu trúc</strong> (chuỗi visit → danh sách mã ICD-9/ICD-10).
+      Mô hình được <strong>pretrain self-supervised</strong> trên 28.490.650 bệnh nhân từ Cerner (Fig. 1) với hai tác vụ: Masked LM
+      và một tác vụ chuyên ngành mới — <strong>dự đoán nằm viện kéo dài (Prolonged LOS &gt; 7 ngày)</strong>. Embedding pretrained sau đó
+      được fine-tune cho 2 bài toán dự đoán bệnh: <strong>suy tim ở bệnh nhân ĐTĐ (DHF)</strong> và <strong>khởi phát ung thư tụy (PaCa)</strong>
+      trên 3 cohort từ 2 cơ sở dữ liệu. Kết quả: thêm Med-BERT giúp boost AUC 1.21–6.14% (Abstract) và đặc biệt mạnh khi training set nhỏ
+      (boost &gt;20%, hoặc đạt AUC tương đương model train trên tập lớn gấp 10 lần — Abstract, Fig. 4).
+    </p>
+    <h3>Vì sao là Layer 2 (Model / Hiệu quả)?</h3>
+    <table>
+      <tr><td>✔ Đóng góp chính = kiến trúc model</td><td>Một kiến trúc Transformer mới cho EHR + tác vụ pretraining mới (Prolonged LOS) — trọng tâm là hiệu quả mô hình</td></tr>
+      <tr><td>✔ So sánh nhiều model</td><td>GRU, Bi-GRU, RETAIN, Med-BERT_only, untrained Med-BERT, L2LR, RF, t-W2V (Table 4) — đúng tinh thần benchmark hiệu quả model</td></tr>
+      <tr><td>✔ Transfer learning / pretraining</td><td>Trọng tâm là sức mạnh của pretrained embedding khi data nhỏ — câu chuyện về hiệu quả model</td></tr>
+      <tr><td>~ Giao thoa Layer 3 (EHR)</td><td>Metadata ghi <code>layer_uncertain: true</code> — dữ liệu là EHR longitudinal nên cũng gần Layer 3; chốt Layer 2 vì đóng góp lớn nhất là kiến trúc, không phải pipeline EHR</td></tr>
+      <tr><td>✘ ĐTĐ chỉ là điều kiện đầu vào</td><td>ĐTĐ là tiêu chí lọc cohort DHF (suy tim ở BN ĐTĐ type II), KHÔNG phải tác vụ chẩn đoán ĐTĐ độc lập — giá trị cho đề tài là kỹ thuật</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>BERT framework</code></td><td>Khung kiến trúc gốc (TensorFlow, bản googleresearch/bert 02/2019)</td><td>Đã kiểm chứng rộng, transfer mạnh</td><td>Vốn cho text, phải chỉnh để hợp EHR</td></tr>
+        <tr><td><code>Masked LM</code></td><td>Tác vụ pretrain mã hoá ngữ cảnh (80% [MASK] / 10% random / 10% giữ)</td><td>Học biểu diễn 2 chiều, không cần nhãn người</td><td>Chỉ học cấp độ mã</td></tr>
+        <tr><td><code>Prolonged LOS</code></td><td>Tác vụ pretrain chuyên ngành mới (LOS&gt;7 ngày, cấp bệnh nhân)</td><td>Tận dụng cấu trúc 2 chiều; phổ biến, không cần nhãn người</td><td>Đơn giản hoá ở cấp BN; mortality/readmission bị loại vì quá dễ (&gt;99% acc)</td></tr>
+        <tr><td><code>Code/Serialization/Visit embeddings</code></td><td>3 lớp embedding đầu vào (Fig. 3)</td><td>Mã hoá thứ tự mã trong visit + thứ tự visit</td><td>Serialization chỉ dựa code priority, gain rất nhỏ (≈ngẫu nhiên)</td></tr>
+        <tr><td><code>t-W2V</code></td><td>Baseline static embedding để so (Ex-2)</td><td>Tốt nhất trong nhóm static embedding (ref. 45)</td><td>Nông, cửa sổ ngữ cảnh hẹp → kém Med-BERT ở chuỗi dài</td></tr>
+        <tr><td><code>bertviz (cải tiến)</code></td><td>Trực quan hoá attention (Fig. 5–7)</td><td>Hỗ trợ giải thích model</td><td>Lớp cuối attention bị "nhoè", khó diễn giải</td></tr>
+        <tr><td><code>HuggingFace Transformers (v2.3)</code></td><td>Chuyển model TF → PyTorch để fine-tune</td><td>Hệ sinh thái chuẩn</td><td>—</td></tr>
+        <tr><td><code>pytorch_ehr / scikit-learn 0.24</code></td><td>Codebase fine-tune (GRU/Bi-GRU/RETAIN/FFL) + L2LR/RF</td><td>Code public, tái lập được phần code</td><td>L2LR/RF dùng hyperparam mặc định</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC trên DHF-Cerner</strong> (Table 4). ⭐ = model đạt AUC cao nhất (in đậm Table 4) — trên DHF-Cerner và 2/3 cohort.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC DHF-Cerner</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>Bi-GRU + Med-BERT</code> ⭐</td><td>AUC cao nhất cả 3 cohort (số in đậm Table 4)</td><td><strong>85.39</strong> (0.05)</td><td>Best trên cả 3 task</td><td>Cần pretrained Med-BERT + GPU</td></tr>
+        <tr><td>2</td><td><code>RETAIN + Med-BERT</code></td><td>RNN attention + pretrain</td><td><strong>85.33</strong> (0.09)</td><td>Có khả năng giải thích (attention)</td><td>Phức tạp hơn GRU</td></tr>
+        <tr><td>3</td><td><code>Med-BERT_only (FFL)</code></td><td>Chỉ FFL trên Med-BERT</td><td><strong>85.18</strong> (0.12)</td><td>Bỏ RNN mà vẫn cạnh tranh</td><td>Vẫn cần pretrain lớn</td></tr>
+        <tr><td>4</td><td><code>GRU + Med-BERT</code></td><td>RNN + pretrain</td><td><strong>85.14</strong> (0.06)</td><td>Đơn giản + boost lớn ở set nhỏ</td><td>—</td></tr>
+        <tr><td>5</td><td><code>RETAIN + t-W2V</code></td><td>RNN + static embedding</td><td><strong>84.98</strong> (0.02)</td><td>t-W2V cũng booster tốt</td><td>Kém Med-BERT đa số trường hợp</td></tr>
+        <tr><td>6</td><td><code>Bi-GRU + t-W2V</code></td><td>RNN + static embedding</td><td><strong>84.23</strong> (0.06)</td><td>Hơn Bi-GRU thuần</td><td>Kém Med-BERT</td></tr>
+        <tr><td>7</td><td><code>GRU + t-W2V</code></td><td>RNN + static embedding</td><td><strong>83.95</strong> (0.24)</td><td>—</td><td>Trên PaCa-Truven còn kém GRU thuần</td></tr>
+        <tr><td>8</td><td><code>GRU</code></td><td>Base RNN</td><td><strong>83.93</strong> (0.13)</td><td>Baseline mạnh</td><td>Không có pretrain</td></tr>
+        <tr><td>9</td><td><code>RETAIN</code></td><td>Base RNN attention</td><td><strong>83.28</strong> (0.16)</td><td>Giải thích được</td><td>Không có pretrain</td></tr>
+        <tr><td>10</td><td><code>Bi-GRU</code></td><td>Base RNN 2 chiều</td><td><strong>82.82</strong> (0.17)</td><td>—</td><td>Không có pretrain</td></tr>
+        <tr><td>11</td><td><code>untrained Med-BERT only</code></td><td>Ablation (không pretrain)</td><td><strong>82.76</strong> (0.13)</td><td>Cho thấy vai trò của pretrain</td><td>Thua cả LR ở PaCa (overfit ~17M tham số)</td></tr>
+        <tr><td>12</td><td><code>Random Forest (RF)</code></td><td>Baseline non-DL</td><td><strong>81.88</strong> (0.08)</td><td>Đơn giản</td><td>Hyperparam mặc định</td></tr>
+        <tr><td>13</td><td><code>Logistic Regression (L2LR)</code></td><td>Baseline non-DL</td><td><strong>81.01</strong> (0)</td><td>Mạnh khi n&lt;500</td><td>Thua Med-BERT khi n&gt;1000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Cohort</th><th>Mẫu (n)</th><th>% event</th><th>Mô tả ngắn</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pretraining (Cerner)</strong></td><td>28.490.650</td><td>15%<br><span style="color:var(--muted);font-size:12px">(Prolonged LOS&gt;7 ngày)</span></td><td>Lọc từ 68.696.329 BN Cerner → 39.398.846 có chẩn đoán → loại sai ngày &amp; &lt;3 mã → cohort pretrain. Vocab 82.603 mã ICD-9/10</td><td>Fig. 1 + Table 2</td></tr>
+        <tr><td><strong>DHF-Cerner</strong></td><td>672.647<br><span style="color:var(--muted);font-size:12px">(39.727 ca / 632.920 chứng)</span></td><td>14%</td><td>Suy tim ở BN ĐTĐ type II; HF xảy ra ≥30 ngày sau lần khám DM đầu. Avg 17 visits, 33 mã/BN</td><td>Table 2 + Suppl. Fig. 1 (Methods)</td></tr>
+        <tr><td><strong>PaCa-Cerner</strong></td><td>29.405</td><td>0.07%</td><td>Khởi phát ung thư tụy (ICD-9 157 / ICD-10 C25), ≥45 tuổi, không ung thư khác trước đó. Avg 7 visits, 14 mã/BN</td><td>Table 2 + Methods</td></tr>
+        <tr><td><strong>PaCa-Truven</strong></td><td>42.721</td><td>0.06%</td><td>Ung thư tụy trên claims dataset Truven — cohort kiểm tra generalizability (cross-database). 0% ICD-10. Avg 19 visits, 18 mã/BN</td><td>Table 2 + Methods</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Cả 2 cơ sở dữ liệu (Cerner Health Facts®, IBM/Truven MarketScan®) đều <strong>gated</strong> — chỉ truy cập theo license nhà cung cấp + IRB (protocol HSC-SBMI-13-0549). Không public (Data Availability). Số feature = vocab mã ICD (không phải feature tabular cố định).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Tiền xử lý EHR</td><td>Sắp visit theo thời gian; xếp mã trong visit theo 3 tiêu chí (present-on-admission → captured vs billing → code priority)</td><td>Chuỗi visit có thứ tự</td></tr>
+        <tr><td>2</td><td>Lọc cohort pretrain</td><td>Loại BN &lt;3 mã chẩn đoán + sai ngày (Fig. 1)</td><td>28.490.650 BN</td></tr>
+        <tr><td>3</td><td>Embedding đầu vào</td><td>Code + serialization + visit embeddings; KHÔNG dùng [CLS]/[SEP] (thay bằng FFL trên tổng output các mã)</td><td>Vector đầu vào Transformer</td></tr>
+        <tr><td>4</td><td>Pretrain self-supervised</td><td>Masked LM + Prolonged LOS; AdamW, lr=5e-5, dropout=0.1, maxlen=512, batch=32, ~45 triệu steps, 1× V100 32GB, ~1 tuần</td><td>Med-BERT pretrained</td></tr>
+        <tr><td>5</td><td>Chuyển khung</td><td>TF → PyTorch qua HuggingFace v2.3</td><td>Model PyTorch</td></tr>
+        <tr><td>6</td><td>Fine-tune downstream</td><td>Gắn prediction head (GRU/Bi-GRU/RETAIN/FFL) lên Med-BERT; Adam, lr=1e-5 (riêng GRU+t-W2V dùng 0.001); split 7:1:2; test loại BN đã có trong pretrain</td><td>Model dự đoán DHF/PaCa</td></tr>
+        <tr><td>7</td><td>3 thí nghiệm</td><td>Ex-1 (boost trên SOTA) · Ex-2 (vs t-W2V) · Ex-3 (đổi training size, bootstrap ×10)</td><td>AUC ± std (10 runs)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cấu hình kiến trúc (Section Implementation details)</h3>
+    <div class="formula">
+      <span class="label">Med-BERT transformer</span>
+      L = 6 layers &nbsp;|&nbsp; H = 192 hidden &nbsp;|&nbsp; A = 6 attention heads<br>
+      feed-forward / filter size = 64 &nbsp;|&nbsp; ~17 triệu tham số (Results, ablation)<br>
+      max sequence length = 512 tokens &nbsp;|&nbsp; mask 1 mã / bệnh nhân
+    </div>
+
+    <h3>Tác vụ pretraining (định nghĩa)</h3>
+    <div class="formula">
+      <span class="label">Masked LM (Section Pretraining Med-BERT)</span>
+      P(code | context) — với mỗi mã được chọn:<br>
+      80% → [MASK] &nbsp;·&nbsp; 10% → mã ngẫu nhiên &nbsp;·&nbsp; 10% → giữ nguyên
+    </div>
+    <div class="formula">
+      <span class="label">Prolonged LOS (Section Pretraining Med-BERT)</span>
+      label = 1 nếu BN từng có ≥1 lần nằm viện LOS &gt; 7 ngày (cấp bệnh nhân)<br>
+      → tận dụng cấu trúc 2 chiều (quá khứ ↔ tương lai của visit)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 3 (kiến trúc Med-BERT + 3 lớp embedding) và Fig. 4 (đường cong AUC theo training size, 9 sub-chart) là hình chốt.
+      <span class="caption">Chưa crop base64 (tuỳ chọn) — số liệu chính đã lấy đủ từ Table 4 + các formula block ở trên. Xem Fig. 3–4 trong source.pdf.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">85.39</span><span class="label">AUC best DHF-Cerner (Bi-GRU+Med-BERT, Table 4)</span></div>
+      <div class="metric"><span class="value">82.23</span><span class="label">AUC best PaCa-Cerner (Bi-GRU+Med-BERT, Table 4)</span></div>
+      <div class="metric"><span class="value">80.57</span><span class="label">AUC best PaCa-Truven (Bi-GRU+Med-BERT, Table 4)</span></div>
+      <div class="metric"><span class="value">1.21–6.14%</span><span class="label">Boost AUC tổng 2 tác vụ (Abstract)</span></div>
+      <div class="metric"><span class="value">&gt;20%</span><span class="label">Boost AUC khi training set nhỏ (Abstract, Fig. 4)</span></div>
+      <div class="metric"><span class="value">~10×</span><span class="label">Giảm dữ liệu cần (AUC bằng tập lớn gấp 10 lần — Discussion, Suppl. Table 2A)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>AUC (std)</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>DHF-Cerner</td><td>Bi-GRU + Med-BERT</td><td>full set, 10 runs</td><td><strong>85.39 (0.05)</strong> — best (in đậm)</td><td>Table 4</td></tr>
+        <tr><td>DHF-Cerner</td><td>GRU (base)</td><td>full set</td><td>83.93 (0.13)</td><td>Table 4</td></tr>
+        <tr><td>DHF-Cerner</td><td>L2LR (baseline)</td><td>full set</td><td>81.01 (0)</td><td>Table 4</td></tr>
+        <tr class="win"><td>PaCa-Cerner</td><td>Bi-GRU + Med-BERT</td><td>full set, 10 runs</td><td><strong>82.23 (0.29)</strong> — best (in đậm)</td><td>Table 4</td></tr>
+        <tr><td>PaCa-Cerner</td><td>Bi-GRU (base)</td><td>full set</td><td>76.09 (0.61)</td><td>Table 4</td></tr>
+        <tr><td>PaCa-Cerner</td><td>boost khi thêm Med-BERT</td><td>—</td><td>+1.62–6.14%</td><td>Section "Performance boost…"</td></tr>
+        <tr class="win"><td>PaCa-Truven</td><td>Bi-GRU + Med-BERT</td><td>full set, 10 runs</td><td><strong>80.57 (0.21)</strong> — best (in đậm)</td><td>Table 4</td></tr>
+        <tr><td>PaCa-Truven</td><td>GRU + Med-BERT</td><td>full set</td><td>80.37 (0.12)</td><td>Table 4</td></tr>
+        <tr><td>PaCa-Truven</td><td>GRU (base)</td><td>full set</td><td>78.17 (0.21)</td><td>Table 4</td></tr>
+        <tr><td>PaCa-Truven</td><td>boost khi thêm Med-BERT</td><td>—</td><td>+1.96–3.78%</td><td>Section "Performance boost…"</td></tr>
+        <tr><td>DHF-Cerner</td><td>GRU + Med-BERT vs GRU only</td><td>n=500 (set nhỏ)</td><td>~0.75 vs &lt;0.65 (≈+20%)</td><td>Fig. 4 (mô tả Section, Fig. 4a)</td></tr>
+        <tr><td>PaCa-Cerner</td><td>Bi-GRU + Med-BERT</td><td>n=300 (set nhỏ)</td><td>đạt AUC ~0.75</td><td>Fig. 4 (Section, Fig. 4e)</td></tr>
+        <tr><td>3 cohort</td><td>Precision/Recall/F1/AUPRC…</td><td>full set</td><td>UNKNOWN (chỉ ở Suppl. Tables 1–2)</td><td>Suppl. Tables 1–2 (không có trong extracted.md)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Metric chính = <strong>AUC (AUROC)</strong>, trung bình ± std trên 10 run. Số trong bảng là giá trị ×100 đúng như Table 4 (vd 85.39 = 0.8539).
+      <strong>Lưu ý mâu thuẫn nội tại</strong>: phần văn bản (Section "Performance boost…") viết "best AUC trên PaCa-Truven là GRU + Med-BERT", nhưng số <em>in đậm</em> trong Table 4 lại là Bi-GRU + Med-BERT (80.57 &gt; 80.37). Ở đây ưu tiên số in đậm của bảng.
+      Các metric phụ (Precision/Recall/F1/AUPRC) chỉ nằm ở Supplementary Tables 1–2 → <strong>không có trong extracted.md, ghi UNKNOWN, không bịa</strong>.
+      Số ~0.75 / ~20% / ~10× đọc từ đường cong Fig. 4 / mô tả Discussion (định tính, không phải số bảng).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Scope vs đề tài ĐTĐ</strong>
+      <ul>
+        <li>Đây <strong>KHÔNG</strong> phải bài chẩn đoán ĐTĐ. ĐTĐ chỉ là tiêu chí lọc cohort DHF (suy tim ở BN ĐTĐ type II) và là ví dụ visualization (Fig. 5: type 2 DM).</li>
+        <li>2 tác vụ đánh giá thật là <strong>suy tim (DHF)</strong> và <strong>ung thư tụy (PaCa)</strong> — không phải binary diabetes classification.</li>
+        <li>Giá trị cho đề tài = <strong>kỹ thuật</strong> (pretraining EHR, transfer learning data nhỏ), KHÔNG phải con số ĐTĐ.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Chỉ dùng <strong>diagnosis ICD</strong>; chưa có thuốc / xét nghiệm / procedures / khoảng thời gian giữa visit (paper tự nêu — Discussion limitations).</li>
+        <li>Serialization embedding gần như vô dụng: gain ≈ ngẫu nhiên (Methods: "only very limited performance gains").</li>
+        <li>Khi <strong>n &lt; 500</strong>, Med-BERT vẫn <strong>thua L2LR</strong> — không nên dùng cho tập rất nhỏ (Discussion).</li>
+        <li>Dữ liệu Cerner + Truven <strong>gated</strong>, không tái lập được full pipeline; pretrained model "available upon request".</li>
+        <li>untrained Med-BERT overfit (thua cả LR trên PaCa) → toàn bộ giá trị nằm ở pha pretrain quy mô lớn (khó lặp lại nếu không có data triệu BN).</li>
+        <li>Mâu thuẫn văn bản vs Table 4 ở best model PaCa-Truven (xem chú thích Section 6).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Reproducible: medium (lệch về low)</strong> — code public thật (<a href="https://github.com/ZhiGroup/Med-BERT" target="_blank">ZhiGroup/Med-BERT</a> + pytorch_ehr), hyperparam đầy đủ, NHƯNG data gated + pretrain cần 28,5M BN → không tái lập end-to-end với dữ liệu PIMA/EHR nhỏ.</li>
+        <li>Là <strong>tham chiếu kiến trúc</strong>: nếu đề tài có dữ liệu EHR longitudinal cho ĐTĐ, có thể mượn ý tưởng pretrain + Prolonged LOS + fine-tune head.</li>
+        <li>Bài học chuyển giao: pretrained embedding <strong>thắng lớn khi training set nhỏ</strong> — đúng tình huống dữ liệu ĐTĐ địa phương ít mẫu.</li>
+        <li>So với baseline tabular cùng layer (hasan2020 AUC 0.950 PIMA, khanam2021 88.6% acc) là <strong>khập khiễng</strong>: khác dataset, khác horizon (cross-sectional vs long-term risk), khác bài toán.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

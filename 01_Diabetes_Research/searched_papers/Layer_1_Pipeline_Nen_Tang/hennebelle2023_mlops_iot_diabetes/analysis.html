@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure & privacy-preserving MLOps IoT–edge–AI–blockchain cho dự đoán ĐTĐ — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; color:#fff; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────────────────────────────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Secure and privacy-preserving automated MLOps trong hệ thống tích hợp đầu-cuối IoT–edge–AI–blockchain để dự đoán đái tháo đường (diabetes mellitus prediction)</h1>
+    <div class="meta">
+      <span>📅 <strong>2023</strong></span>
+      <span>📰 Computational and Structural Biotechnology Journal (CSBJ)</span>
+      <span>📚 <strong>65</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.csbj.2023.11.038" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (3 dataset công khai)</span>
+      <span class="badge horizon">⏱️ Horizon: cross_sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">PIMA Indian</a> — 768 mẫu, 8 feature tabular (NIDDK)</li>
+      <li>🔹 <a href="https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset" target="_blank">Sylhet (Early-Stage Diabetes Risk)</a> — 520 mẫu, 16 triệu chứng (bệnh viện Sylhet, Bangladesh)</li>
+      <li>🔹 <a href="https://physionet.org/content/mimiciii/" target="_blank">MIMIC III</a> — &gt;40.000 bệnh nhân ICU, trích 4 risk factor qua mã ICD9</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Bản thiết kế hệ thống đầu-cuối (end-to-end) IoT–edge–AI–blockchain + pipeline MLOps tự động (AutoML) bảo mật/riêng tư cho dự đoán ĐTĐ; kèm so sánh thiết bị/cảm biến đo risk factor và đánh giá RF/LR/SVM trên 3 dataset trong cùng một setup thống nhất.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">RF + feature selection: <strong>0.9723 accuracy</strong> trên Sylhet (Section 6.4); 0.7827 trên PIMA (Section 6.4). MIMIC III tốt nhất là LR 0.7734, RF 0.7703 (Section 6.4).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Tiền xử lý → RFECV (Recursive Feature Elimination CV, đánh giá bằng RF) → SMOTE chỉ trên train → Random Forest / LR / SVM(poly) tune bằng GridSearchCV + 10-fold CV; hạ tầng edge-cloud + permissioned blockchain.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Khác hẳn baseline tabular cùng layer: đây là góc OPS/hệ thống (MLOps + privacy + blockchain), KHÔNG nhằm vượt accuracy. So với gr2024 (RF acc 94% PIDD) và abnoosian2023 (acc 98.87% IPDD), accuracy của bài này thấp hơn (Sylhet 0.9723, PIMA 0.7827) nhưng giá trị nằm ở thiết kế triển khai đa-dataset (gồm cả MIMIC III).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 1
+    </h2>
+    <p class="lead">Bài báo đề xuất một <strong>hệ thống đầu-cuối (end-to-end)</strong> tích hợp IoT–edge–AI–blockchain để giám sát và dự đoán đái tháo đường type 2 dựa trên risk factor. Phần "hệ thống" gồm: (a) cảm biến/thiết bị y tế đo các risk factor (huyết áp, béo phì, cholesterol, trầm cảm, acid uric, giấc ngủ, vận động, glucose) với bảng so sánh hiệu năng và giá (Bảng 2–7); (b) lớp edge tiền xử lý dữ liệu rồi gửi lên cloud để huấn luyện model; (c) permissioned blockchain lưu hash của hồ sơ/risk factor/tham số model/kết quả dự đoán để bảo mật, riêng tư, truy vết (Bảng 8–10). Phần "thực nghiệm" (Section 5–6) chỉ đánh giá <strong>thành phần tiền xử lý + ML model</strong> trên 3 dataset công khai (PIMA, Sylhet, MIMIC III), so sánh RF, LR, SVM với/không feature selection và trước/sau cân bằng dữ liệu.</p>
+    <p>Điểm cốt lõi để hiểu đúng bài: phần IoT/edge/blockchain là <em>thiết kế kiến trúc + workflow đề xuất</em> (chưa triển khai/đo đạc thực nghiệm trên hệ thống thật); phần được chạy số thực sự là pipeline ML tabular. Vì vậy bài vừa chạm Layer 4 (triển khai/MLOps) vừa cung cấp một pipeline nền (Layer 1) — metadata đánh dấu <code>layer_uncertain = true</code>.</p>
+    <h3>Vì sao là Layer 1 (Pipeline / Nền tảng)?</h3>
+    <table>
+      <tr><td>✔️ Pipeline ML đầy đủ, chuẩn</td><td>Mô tả rõ từng bước: tiền xử lý → feature selection (RFECV) → cân bằng (SMOTE chỉ trên train) → train RF/LR/SVM + tuning (GridSearchCV) + 10-fold CV (Section 5.3–5.6, 6.1).</td></tr>
+      <tr><td>✔️ Bài toán nhị phân tabular</td><td>Mỗi dataset có 2 nhãn diabetic/non-diabetic; dùng risk factor + chỉ số xét nghiệm dạng bảng — đúng phạm vi nền tảng của đề tài.</td></tr>
+      <tr><td>✔️ Đa-dataset, setup thống nhất</td><td>Đánh giá nhất quán trên PIMA + Sylhet + MIMIC III; đặc biệt có MIMIC III (EHR ICU quy mô lớn) hiếm thấy trong các bài tabular.</td></tr>
+      <tr><td>⚠️ Chạm Layer 4 (ops)</td><td>Phần edge–cloud–blockchain–AutoML mang tính triển khai/MLOps — bài là tham chiếu về mặt hạ tầng, không phải benchmark accuracy.</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>RFECV</code></td><td>Feature selection (Recursive Feature Elimination, Cross-Validated) với RF làm bộ đánh giá (Section 5.4)</td><td>Chọn tập feature quan trọng theo Gini impurity; giảm overfitting + giảm thời gian chạy; không làm giảm accuracy (Section 6.4)</td><td>Tốn chi phí tính toán do refit nhiều lần; phụ thuộc vào chính RF</td></tr>
+        <tr><td><code>SMOTE</code></td><td>Cân bằng dữ liệu (oversample lớp thiểu số), chỉ áp dụng trên split train/validation 70% (Section 5.5)</td><td>Áp dụng đúng cách (chỉ trên train, test giữ nguyên) → tránh leakage; tăng phát hiện lớp thiểu số (giảm FN)</td><td>Thêm mẫu "non-informative" khi dữ liệu nghèo feature → MIMIC III bị giảm accuracy 0.77→0.66 (Section 6.4)</td></tr>
+        <tr><td><code>GridSearchCV</code> (sklearn.model_selection)</td><td>Hyperparameter tuning + stratified 10-fold CV (Section 6.1, Bảng 14)</td><td>Dò vét đầy đủ; có công bố dải tham số + giá trị tối ưu cho từng kịch bản</td><td>Đắt khi không gian tham số lớn (RF tới 1000 cây)</td></tr>
+        <tr><td><code>Phik (Φk)</code></td><td>Hệ số tương quan để khám phá dữ liệu (Section 5.2, Fig. 5)</td><td>Nhất quán cho biến categorical/ordinal/interval; bắt được quan hệ phi tuyến</td><td>Chỉ dùng cho EDA, không vào pipeline model</td></tr>
+        <tr><td><code>ICD9 coding</code></td><td>Trích nhãn diabetic + risk factor từ MIMIC III (join PATIENTS/ADMISSIONS/DIAGNOSES_ICD, Section 5.3, Bảng 12)</td><td>Cho phép tận dụng EHR ICU lớn; mã V180 = tiền sử gia đình ĐTĐ</td><td>Nhãn dựa trên mã chẩn đoán → phụ thuộc chất lượng coding; chỉ trích được 4 feature</td></tr>
+        <tr><td><code>Edge–Cloud + permissioned blockchain</code></td><td>Hạ tầng: edge tiền xử lý real-time, cloud train, blockchain (multi-ledger) lưu hash/metadata (Section 3.3–3.4)</td><td>Bảo mật/riêng tư/truy vết bằng kiến trúc blockchain-cloud không bao gói; access control bằng smart contract</td><td>Chỉ là thiết kế, KHÔNG có đo đạc throughput/latency thực nghiệm trong bài</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp theo accuracy đại diện (Sylhet/PIMA, Section 6.4). ⭐ = model bài chọn làm lõi hệ thống.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Accuracy (Section 6.4)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>Random Forest (RF)</code> ⭐</td><td>Model lõi của hệ thống; cũng dùng làm bộ đánh giá trong RFECV</td><td><strong>Sylhet 0.9723 · PIMA 0.7827 · MIMIC 0.7703</strong></td><td>Chính xác nhất trung bình (abstract: +4.57% acc so với LR/SVM); xử lý tốt phi tuyến; cho feature importance</td><td>Thời gian chạy cao nhất (abstract: ×2.87) do số cây lớn (Section 6.3)</td></tr>
+        <tr><td>2</td><td><code>Logistic Regression (LR)</code></td><td>Baseline so sánh (phổ biến nhất theo Fig. 7)</td><td><strong>MIMIC 0.7734 (tốt nhất trên MIMIC)</strong> · PIMA/Sylhet: UNKNOWN số (Fig. 12–13)</td><td>Nhanh, dễ giải thích; vượt RF rất sát trên MIMIC III (chênh 0.4%)</td><td>Tuyến tính → kém trên dữ liệu nhiều feature phi tuyến như Sylhet</td></tr>
+        <tr><td>3</td><td><code>Support Vector Machine (SVM, kernel polynomial)</code></td><td>Baseline so sánh</td><td>UNKNOWN số cụ thể (chỉ trong Fig. 12–14 dạng cột, không nêu số trong text)</td><td>Biên quyết định tối đa hoá margin; tốt cho không gian nhiều chiều</td><td>Không phải model thắng ở bất kỳ dataset nào; tốn chi phí tuning kernel</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Lưu ý: bài KHÔNG benchmark các model boosting (XGBoost/LightGBM/GBM) dù chúng xuất hiện trong related work (Bảng 1).</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu (gốc → sau tiền xử lý)</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PIMA Indian</strong></td><td>768 → <strong>532</strong> (Bảng 11 → Bảng 13). Gốc: 268 pos (34.9%) / 500 neg (65.1%). Sau: 177 pos (33.3%) / 355 neg (66.7%)</td><td>8</td><td>Risk factor tabular (pregnancies, glucose, BP, skin thickness, insulin, BMI, diabetes pedigree, age). Loại quan sát có giá trị 0 ở BP/skin thickness/BMI (Fig. 6)</td><td><a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">Kaggle</a></td></tr>
+        <tr><td><strong>Sylhet</strong></td><td>520 → <strong>520</strong> (không missing). 320 pos (61.5%) / 200 neg (38.5%) (Bảng 11, Bảng 13)</td><td>16</td><td>Triệu chứng từ phiếu hỏi trực tiếp tại Sylhet Diabetes Hospital, Bangladesh (Polyuria, Polydipsia, sudden weight loss, …)</td><td><a href="https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset" target="_blank">UCI</a></td></tr>
+        <tr><td><strong>MIMIC III</strong></td><td>46.520 → <strong>39.289</strong> (Bảng 11 → Bảng 13). Gốc: nhãn "Not Explicitly Mentioned"; sau: 8.820 pos (22.5%) / 30.469 neg (77.5%)</td><td>4</td><td>EHR ICU &gt;40.000 BN (Beth Israel Deaconess, 2001–2012). Trích Ethnicity, Gender, Age, Family history qua join 4 bảng + nhãn từ ICD9 (Section 5.3, Bảng 12)</td><td><a href="https://physionet.org/content/mimiciii/" target="_blank">PhysioNet</a></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Split: 70% train/validation, 30% test (Section 3.3, mục Data splitting). SMOTE chỉ áp dụng trên 70% train; test 30% giữ nguyên (Section 5.5). Đánh giá bằng 10-fold CV (Section 6).</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước (Section 3.3, 5.3–5.6, 6.1)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Thu thập + gán nhãn</td><td>Thu risk factor; gán nhãn diabetic/non-diabetic (PIMA/Sylhet sẵn nhãn; MIMIC trích nhãn qua ICD9 — Section 5.3)</td><td>3 dataset có nhãn nhị phân</td></tr>
+        <tr><td>2</td><td>Tiền xử lý</td><td>Xử lý missing (PIMA: loại quan sát giá trị 0); MIMIC: loại Ethnicity "UNKNOWN/declined"; scaling/normalization (Section 5.3)</td><td>PIMA 768→532; MIMIC 46.520→39.289</td></tr>
+        <tr><td>3</td><td>Khám phá dữ liệu (EDA)</td><td>Tương quan Phik (Φk) feature↔class (Section 5.2, Fig. 5)</td><td>Xác định feature liên quan (Glucose/Age/BMI… cho PIMA)</td></tr>
+        <tr><td>4</td><td>Chia dữ liệu</td><td>70% train/validation – 30% test (Section 3.3)</td><td>Tách train/test</td></tr>
+        <tr><td>5</td><td>Feature selection</td><td>RFECV với RF làm evaluator; xếp hạng theo Gini impurity (Section 5.4, 6.2)</td><td>PIMA 5 feature; Sylhet 10 feature; MIMIC 2 feature (Fig. 8–10)</td></tr>
+        <tr><td>6</td><td>Cân bằng dữ liệu</td><td>SMOTE oversample lớp thiểu số, CHỈ trên 70% train (Section 5.5)</td><td>Train cân bằng; test giữ nguyên</td></tr>
+        <tr><td>7</td><td>Huấn luyện model</td><td>RF / LR / SVM(poly); 4 kịch bản: ±FS × ±balancing (Section 5.6, 6)</td><td>Model cho mỗi kịch bản</td></tr>
+        <tr><td>8</td><td>Tuning + đánh giá</td><td>GridSearchCV + stratified 10-fold CV; mỗi model chạy 10 lần lấy trung bình (Section 6, 6.1, Bảng 14)</td><td>Accuracy, F-measure, precision, recall, AUC, execution time</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng (Section 6, các Equation được nêu)</h3>
+    <div class="formula">
+      <span class="label">Accuracy (Eq. 5, Section 6)</span>
+      Accuracy = (TP + TN) / (TP + TN + FP + FN)
+    </div>
+    <div class="formula">
+      <span class="label">F-measure (Eq. 6) — chỉ số chính cho dữ liệu lệch lớp</span>
+      F-measure = 2 · (Precision · Recall) / (Precision + Recall)
+    </div>
+    <div class="formula">
+      <span class="label">Precision / Recall (Eq. 7–8, theo lớp dương/âm)</span>
+      Precision = TP / (TP + FP)   ·   Recall = TP / (TP + FN)
+    </div>
+    <div class="formula">
+      <span class="label">Logistic Regression — sigmoid (Eq. 1, Section 5.6.2)</span>
+      p(diabetes) = 1 / (1 + e^-(β0 + Σ βi·Ri))   [text mô tả; PDF không in công thức tường minh — dạng đầy đủ: UNKNOWN]
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">🖼️ Hình từ PDF chưa được crop (tuỳ chọn, bỏ qua theo yêu cầu). <span class="caption">Tham chiếu: Fig. 2 (pipeline MLOps), Fig. 4 (sơ đồ triển khai DP/DPMT), Fig. 12–14 (accuracy/F-measure/recall/precision/AUC theo dataset), Fig. 15–17 (confusion matrices).</span></div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <p style="font-size:13px;color:var(--muted);margin:-2px 0 8px">Các số dưới đây lấy từ phần phân tích định lượng (Section 6.4) và abstract. Giá trị accuracy của LR/SVM theo từng dataset chỉ hiển thị dạng cột trong Fig. 12–14, không in số trong text → ghi UNKNOWN, không bịa.</p>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.9723</span><span class="label">RF + FS, accuracy tốt nhất — Sylhet (Section 6.4)</span></div>
+      <div class="metric"><span class="value">0.7827</span><span class="label">RF + FS, accuracy tốt nhất — PIMA (Section 6.4)</span></div>
+      <div class="metric"><span class="value">0.7734</span><span class="label">LR (tốt nhất MIMIC III); RF 0.7703 (Section 6.4)</span></div>
+      <div class="metric"><span class="value">+4.57%</span><span class="label">RF acc trung bình &gt; LR/SVM (abstract)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>Sylhet</td><td>RF</td><td>+ Feature Selection</td><td><strong>Accuracy 0.9723</strong> (tốt nhất Sylhet)</td><td>Section 6.4</td></tr>
+        <tr><td>Sylhet</td><td>RF</td><td>balancing (SMOTE)</td><td><strong>Accuracy 0.97 → 0.98</strong></td><td>Section 6.4</td></tr>
+        <tr><td>PIMA</td><td>RF</td><td>+ Feature Selection</td><td><strong>Accuracy 0.7827</strong> (tốt nhất PIMA)</td><td>Section 6.4</td></tr>
+        <tr><td>PIMA</td><td>RF</td><td>balancing (SMOTE)</td><td><strong>Accuracy 0.77 → 0.81</strong>; FN giảm ~70%</td><td>Section 6.4</td></tr>
+        <tr><td>MIMIC III</td><td>LR</td><td>best setting</td><td><strong>Accuracy 0.7734</strong> (tốt nhất MIMIC)</td><td>Section 6.4</td></tr>
+        <tr><td>MIMIC III</td><td>RF</td><td>best setting</td><td><strong>Accuracy 0.7703</strong> (kém LR 0.4%)</td><td>Section 6.4</td></tr>
+        <tr><td>MIMIC III</td><td>RF</td><td>balancing (SMOTE)</td><td><strong>Accuracy 0.77 → 0.66</strong> nhưng <strong>F-measure 0.51 → 0.66</strong>; FN giảm ~80%</td><td>Section 6.4</td></tr>
+        <tr><td>Trung bình 3 dataset</td><td>RF vs LR/SVM</td><td>—</td><td>RF <strong>+4.57% accuracy</strong>, <strong>×2.87 execution time</strong></td><td>Abstract / Section 6.3</td></tr>
+        <tr><td>PIMA / Sylhet / MIMIC</td><td>—</td><td>tác động Feature Selection</td><td>+1.14% (PIMA), +0.02% (Sylhet), −0.89% (MIMIC)</td><td>Abstract</td></tr>
+        <tr><td>PIMA / Sylhet / MIMIC</td><td>LR, SVM</td><td>accuracy theo dataset</td><td>UNKNOWN (chỉ trong Fig. 12–14 dạng cột, không nêu số)</td><td>Fig. 12–14</td></tr>
+        <tr><td>Tất cả</td><td>RF/LR/SVM</td><td>AUC, precision, recall</td><td>UNKNOWN số chính xác (Fig. 12–14 không in trị số trong text)</td><td>Fig. 12–14</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Feature quan trọng nhất (Fig. 8–10): PIMA → Glucose, BMI, Insulin, Age, Diabetes Pedigree (5 feature). Sylhet → Polyuria, Polydipsia + 8 feature khác (10 feature). MIMIC III → Age, Ethnicity Black/African American (2 feature). Khuyến nghị cuối bài (Section 7): dùng age, ethnicity, glucose, family history, obesity.</p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro / điểm cần kiểm chứng</strong>
+      <ul>
+        <li>Phần IoT–edge–blockchain–AutoML là <strong>thiết kế kiến trúc</strong>, KHÔNG có đo đạc thực nghiệm (throughput, latency, chi phí blockchain) — đừng coi đây là bằng chứng hệ thống đã chạy thật.</li>
+        <li>Không có code public (<code>code_url = null</code>) → tái lập khó hơn dù method mô tả khá chi tiết.</li>
+        <li>MIMIC III chỉ trích được <strong>4 feature</strong> (age, ethnicity, gender, family history) → quá nghèo risk factor; accuracy ~0.77 và SMOTE còn làm <em>giảm</em> accuracy (0.77→0.66). Bài học: cân bằng dữ liệu không phải lúc nào cũng tốt.</li>
+        <li>Nhãn MIMIC dựa trên mã ICD9 V180/diagnoses → phụ thuộc chất lượng coding; chưa có external validation chéo dataset.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn</strong>
+      <ul>
+        <li>Accuracy thực nghiệm thấp hơn các bài tabular cùng layer (PIMA 0.7827 vs gr2024 ~94%; Sylhet 0.9723) — bài KHÔNG nhằm vượt accuracy mà ở thiết kế triển khai.</li>
+        <li>Không benchmark boosting (XGBoost/LightGBM/GBM) dù chúng có trong related work; chỉ so RF/LR/SVM.</li>
+        <li>Các trị số AUC/precision/recall chỉ ở dạng biểu đồ cột (Fig. 12–14), không in số → khó trích chính xác.</li>
+        <li>SMOTE chỉ trên train là điểm ĐÚNG về phương pháp (tránh leakage), nhưng dữ liệu "không lệch nặng" nên lợi ích cân bằng hạn chế (kết luận của chính tác giả).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Đây là tham chiếu <strong>OPS/MLOps + privacy + blockchain</strong> duy nhất kiểu này trong kho — dùng khi cần thiết kế đưa model ra triển khai thực tế (edge tiền xử lý, cloud train/re-train, blockchain audit trail, AutoML feedback loop DP/DPMT).</li>
+        <li>Pipeline ML (RFECV → SMOTE-trên-train → RF + GridSearchCV + 10-fold CV) là khuôn mẫu sạch về <strong>chống leakage</strong> để các layer sau tham khảo.</li>
+        <li>Giá trị dữ liệu: một trong số ít bài chạm <strong>MIMIC III</strong> (EHR ICU lớn) — minh hoạ thách thức "EHR nghèo risk factor" và bài học SMOTE không nên áp dụng mù quáng.</li>
+        <li>Khuyến nghị feature (age, ethnicity, glucose, family history, obesity) khớp Finnish/American Diabetes Association → dùng làm checklist feature cho mô hình của đề tài.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

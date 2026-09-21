@@ -1,0 +1,23 @@
+{
+  "paper_id": "fazakis2021_longterm_t2d_risk",
+  "layer": 3,
+  "prediction_horizon": "long_term_risk",
+  "contribution": "Đề xuất ensemble WeightedVotingLRRFs (bỏ phiếu mềm có trọng số LR+RFs, trọng số tối ưu hoá đa mục tiêu bằng NSGA-II để cực đại đồng thời AUC & Sensitivity) cho dự báo nguy cơ T2DM dài hạn trên cohort dọc người cao tuổi Anh ELSA; nhãn dựng bằng follow-up 2 năm.",
+  "method": "Weighted soft voting (LR + Random Forests) với trọng số NSGA-II [0.2733,0.7266]; feature selection Greedy Stepwise Backward-NaiveBayes (35 feature); random undersampling theo prevalence tuổi; chọn cut-off bằng Youden index; so sánh single (NB/DT/RFs/LR/ANN/DNN), ensemble (voting/stacking) và benchmark FINDRISC/Leicester; đánh giá cả inductive & transductive self-training.",
+  "best_metric": "AUC 0.884 inductive (WeightedVotingLRRFs, ELSA 2.009 mẫu, Table 5/dòng 360); AUC 0.888 transductive (Table 8/dòng 412); Sens 0.856, Youden J 0.654.",
+  "datasets": [
+    "elsa-english-longitudinal-study-of-ageing"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "AUC 0.884 < dinh2019 (XGBoost NHANES lab-case 0.957) nhưng > dinh2019 survey-only 0.862 và > agliata2023 (ANN ensemble 0.934) về tính longitudinal. Điểm riêng vượt cả hai baseline cùng Layer 3: nhãn dài hạn THẬT từ follow-up 2 năm (long_term_risk) thay vì cross_sectional, + tối ưu trọng số ensemble đa mục tiêu NSGA-II mà 2 baseline không có. Mẫu nhỏ hơn nhiều (2.009 vs ~21k dinh2019 / 13.687 agliata).",
+  "gap": "Tập rất nhỏ & cố định (2.009 mẫu, 322 ca dương → CI rộng); undersampling vứt mẫu (nên SMOTE); thiếu family history & gestational diabetes (không có trong ELSA); chưa thử XGBoost/AdaBoost (để future work); không external validation; không code public; không XAI (SHAP/LIME); drop missing thay vì imputation.",
+  "verdict": "maybe",
+  "verdict_reason": "Đạt §7 (150 cite, ELSA public qua UK Data Service, method + hyperparameter mô tả đủ) và quý vì là một trong ít bài Layer 3 dùng nhãn long_term_risk thật (follow-up 2 năm) + kỹ thuật NSGA-II tối ưu ensemble; nhưng AUC 0.884 không vượt boosting baseline cùng layer, mẫu nhỏ, không code public và còn nhiều gap (XAI/boosting/external-val) chưa giải quyết.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Nạn nhân rò rỉ/mẫu nhỏ (ELSA n=2.009). Related work.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

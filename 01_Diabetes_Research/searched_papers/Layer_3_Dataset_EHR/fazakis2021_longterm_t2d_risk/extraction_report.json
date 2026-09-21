@@ -1,0 +1,25 @@
+{
+  "paper": "fazakis2021_longterm_t2d_risk",
+  "status": "OK",
+  "engine": "docling+ocr",
+  "ocr_used": true,
+  "secs": 622.6,
+  "pages": 21,
+  "failed_pages": [],
+  "source_text_chars": 96174,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 50,
+  "qa": {
+    "out_chars": 120800,
+    "n_markdown_tables": 9,
+    "source_table_captions": 8,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 1.0,
+    "score": 100,
+    "warnings": []
+  }
+}

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Risk Prediction of Diabetes: Big data fusion — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: #ecfdf5; }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Risk Prediction of Diabetes: Big data mining with fusion of multifarious physical examination indicators</h1>
+    <div class="meta">
+      <span>📅 <strong>2021</strong></span>
+      <span>📰 Information Fusion (Elsevier)</span>
+      <span>📚 <strong>191</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.inffus.2021.02.015" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không (chỉ web tool)</span>
+      <span class="badge no">📊 Dataset: Private (Luzhou EMR)</span>
+      <span class="badge horizon">⏱️ Horizon: Early detection</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="http://lin-group.cn/server/DRSC/index.html" target="_blank">DRSC — Diabetes Risk Score Card (web tool)</a> — công cụ chấm điểm online (không phải dataset)</li>
+      <li>🔹 Luzhou Municipal Health Commission EMR (Trung Quốc, 2011–2017) — <strong>PRIVATE</strong>, chưa publish, xin corresponding author (§2.7)</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Hệ thống đánh giá nguy cơ ĐTĐ <strong>theo tầng (cascade)</strong> trên big-data khám sức khỏe: <strong>fusion 3 nhóm chỉ số</strong> (nhân khẩu / dấu hiệu sinh tồn / xét nghiệm) + IFS chọn 6 feature + XGBoost + thẻ điểm (scorecard) WoE + mô hình follow-up.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>AUC 0.8763</strong> (XGBoost, 6 feature tối ưu, independent test) · 5-fold CV AUC 0.8713 (Table 4). Abstract ghi 0.8768; Table 7 làm tròn 0.881.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Lọc nhiễu &gt;10% missing → 16 feature (gồm 5 chỉ số dẫn xuất) → IFS với MI/ANOVA/GI → <strong>6 feature</strong> (FBG, MSP, age, WHtR, BMI, UGLU) → <strong>XGBoost</strong> (thắng LR/RF) → scorecard WoE/IV (LR).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Cùng Layer 2 nhưng dùng <strong>EMR private 1.5 triệu mẫu</strong> (vs PIMA 768 của hasan2020/khanam2021). Metric là AUC chứ không phải accuracy → so trực tiếp con số không hợp lệ. Vượt baseline cùng bài: Gao 0.635 / Zhou 0.748 (Table 7).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">
+      Nhóm tác giả xây dựng một <strong>hệ thống đánh giá nguy cơ đái tháo đường theo tầng</strong> dựa trên dữ liệu khám sức khỏe quy mô lớn (EMR Luzhou, Trung Quốc 2011–2017). Điểm cốt lõi là <strong>fusion 3 nhóm chỉ số</strong>: nhân khẩu học (demographics), dấu hiệu sinh tồn (vital signs) và giá trị xét nghiệm (laboratory values). Hệ thống gồm 3 module: (1) mô hình đánh giá nguy cơ ĐTĐ (XGBoost), (2) thẻ điểm nguy cơ (scorecard bằng logistic regression + WoE binning), (3) mô hình mức độ hài lòng follow-up. Mô hình chính đạt <strong>AUC 0.8763</strong> trên tập kiểm định độc lập với chỉ 6 feature tối ưu (Table 4).
+    </p>
+    <p>
+      Chẩn đoán nhãn dùng <strong>OGTT 75g</strong> (§2.1). Bài tự định khung là <em>early diagnosis / large-scale cascade screening</em> cho người chưa được chẩn đoán (§1, §4) — đây là lý do gán <strong>prediction_horizon = early_detection</strong>. Lưu ý: feature khám và nhãn OGTT lấy cùng một lần khám nên bản chất kỹ thuật là cross-sectional; nhưng mục tiêu sử dụng là phát hiện sớm / sàng lọc diện rộng, nên giữ nhãn early_detection (xem callout §7).
+    </p>
+    <h3>Vì sao là Layer 2 (Model hiệu quả)?</h3>
+    <table>
+      <tr><td>✔ Đóng góp = mô hình</td><td>Trọng tâm là pipeline mô hình (fusion + IFS + XGBoost + scorecard), không phải chỉ pipeline nền tảng</td></tr>
+      <tr><td>✔ So sánh model</td><td>So 3 classifier (XGBoost / LR / RF) chọn model tốt nhất theo AUC (Table 4)</td></tr>
+      <tr><td>✔ Chiến lược feature selection</td><td>IFS kết hợp MI/ANOVA/GI → tối ưu hóa subset feature (Table 3)</td></tr>
+      <tr><td>◐ Chạm Layer 3</td><td>Dùng EMR thật triệu mẫu + follow-up nhiều năm → mang tính EHR, nên <code>layer_uncertain=true</code></td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Có web tool deployment nhưng không có XAI/SHAP; giải thích chỉ qua GI feature importance</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Feature fusion</code></td><td>Hợp 3 nhóm chỉ số khám (demographics + vital signs + lab)</td><td>Tăng độ bền/tin cậy, bao phủ rộng</td><td>Phải thu thập nhiều chỉ số, khó ở nơi thiếu lab</td></tr>
+        <tr><td><code>Derived features</code></td><td>5 chỉ số dẫn xuất: WHtR, MSP, MDP, SPD, DPD (Eq. 3–6)</td><td>Sát lâm sàng (mỡ tạng, áp lực chi)</td><td>Phụ thuộc đo huyết áp 2 chi đầy đủ</td></tr>
+        <tr><td><code>MI / ANOVA / GI</code></td><td>3 kỹ thuật xếp hạng feature</td><td>So chéo nhiều phương pháp; GI &amp; ANOVA hội tụ cùng 6 feature</td><td>Có thể bias theo phân phối dữ liệu private</td></tr>
+        <tr><td><code>IFS (Incremental Feature Selection)</code></td><td>Chọn subset tối ưu (thêm dần feature)</td><td>Tránh "lời nguyền chiều" + overfitting</td><td>Tốn tính toán (48 subset = 16×3)</td></tr>
+        <tr><td><code>WoE + IV binning</code></td><td>Rời rạc hóa biến liên tục cho scorecard</td><td>Diễn giải lâm sàng tốt, dễ triển khai tay</td><td>Mất thông tin do binning; chọn số bin thủ công</td></tr>
+        <tr><td><code>KS curve</code></td><td>Đặt ngưỡng chia nhóm nguy cơ (Fig. 7)</td><td>Tối ưu khả năng phân tách</td><td>Ngưỡng phụ thuộc phân phối điểm dataset này</td></tr>
+        <tr><td><code>5-fold CV + independent test</code></td><td>Đánh giá ổn định mô hình (§2.6)</td><td>Giảm rủi ro overfit; báo cả Test &amp; 5V_AUC</td><td>Không nêu seed; weighting class để cân bằng</td></tr>
+        <tr><td><code>Python 3.6 + scikit-learn</code></td><td>Hiện thực thuật toán (§2.7)</td><td>Stack phổ biến, dễ tái lập về công cụ</td><td>Không công bố repo code</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Module 1 (Diabetes risk assessment) — sắp xếp giảm dần theo <strong>Test_AUC</strong> (Table 4). ⭐ = model paper chọn làm cuối cùng.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Test_AUC</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>XGBoost</code> ⭐</td><td>Model chính module nguy cơ</td><td><strong>0.8763</strong></td><td>Phi tuyến mạnh; tính được feature importance (GI); 5V_AUC 0.8713</td><td>Accuracy 0.7274 &amp; Precision 0.5097 thấp hơn LR/RF do ưu tiên recall/AUC</td></tr>
+        <tr><td>2</td><td><code>Random Forest</code></td><td>So sánh</td><td>0.8740</td><td>Ổn định, Accuracy 0.8059 cao nhất</td><td>AUC thấp hơn XGBoost chút ít</td></tr>
+        <tr><td>3</td><td><code>Logistic Regression</code></td><td>So sánh + nền cho scorecard</td><td>0.8650</td><td>Tuyến tính, dễ giải thích, làm cơ sở scorecard</td><td>AUC thấp nhất trong 3 model</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Module 2 — Thẻ điểm nguy cơ (scorecard)</h3>
+    <table>
+      <thead><tr><th>Mô hình</th><th>Vai trò</th><th>Test_AUC</th><th>5V_AUC</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td><code>Logistic Regression + WoE</code></td><td>Thẻ điểm 0–100 cho lâm sàng</td><td>0.8681</td><td>0.8695</td><td>Table 4</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Module 3 — Mô hình hài lòng follow-up</h3>
+    <table>
+      <thead><tr><th>Mô hình</th><th>Setting</th><th>Test_AUC</th><th>5V_AUC</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr class="win"><td><code>XGBoost</code> (giữ FBG) ⭐</td><td>6 feature follow-up</td><td><strong>0.9632</strong></td><td>0.945</td><td>Table 4 / Fig. 9(a)</td></tr>
+        <tr><td><code>XGBoost</code> (bỏ FBG)</td><td>Loại FBG để xếp hạng lại</td><td>0.7876</td><td>0.7742</td><td>Table 4 / Fig. 9(c)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>S1 — Diabetes risk (Luzhou EMR)</strong></td>
+          <td>1,507,563<br><span style="color:var(--muted);font-size:12px">285,965 ĐTĐ / 1,221,598 khỏe</span></td>
+          <td>16 sơ bộ → 6 tối ưu</td>
+          <td>EMR khám sức khỏe Luzhou (TQ) 2011–2017. Nhãn chẩn đoán bằng OGTT 75g. Mất cân bằng ~1:4.3. Tuổi 20–99. (§2.1, Table 1)</td>
+          <td>PRIVATE — xin tác giả (§2.7)</td>
+        </tr>
+        <tr>
+          <td><strong>S2 — Follow-up satisfaction</strong></td>
+          <td>387,076<br><span style="color:var(--muted);font-size:12px">39,547 không hài lòng / 347,529 hài lòng</span></td>
+          <td>6 (SP, DP, BMI, FBG, PS, MA)</td>
+          <td>Bản ghi follow-up ĐTĐ; nhãn = mức độ kiểm soát bệnh (hài lòng/không). Mất cân bằng nặng ~1:8.8. (§2.1, Table 2)</td>
+          <td>PRIVATE — xin tác giả (§2.7)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Tiền xử lý: loại feature có &gt;10% missing, mã hóa text → biến rời rạc, loại giá trị bất thường, xóa mẫu thiếu &amp; trùng. Split <strong>70–30 holdout</strong> (§2.1). Người khỏe có 27 đặc trưng ban đầu, bệnh nhân ĐTĐ có 67 → fusion về cùng tập (Table S1/S2 trong Supplementary).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Thu thập &amp; làm sạch</td><td>Loại feature &gt;10% missing, mã hóa text, loại bất thường/trùng, xóa mẫu thiếu</td><td>S1 (1.5M), S2 (387K) sạch</td></tr>
+        <tr><td>2</td><td>Tạo feature dẫn xuất</td><td>WHtR, MSP, MDP, SPD, DPD (Eq. 3–6)</td><td>16 feature sơ bộ</td></tr>
+        <tr><td>3</td><td>Phân tích đơn biến</td><td>p-value &amp; AUC từng feature (Table 1, 2)</td><td>Đánh giá sức phân biệt</td></tr>
+        <tr><td>4</td><td>Loại feature dư thừa</td><td>Pearson correlation heatmap (Fig. 3)</td><td>Phát hiện tương quan cao</td></tr>
+        <tr><td>5</td><td>Xếp hạng feature</td><td>MI / ANOVA / GI</td><td>3 bảng xếp hạng (Table 3)</td></tr>
+        <tr><td>6</td><td>Chọn subset tối ưu</td><td>IFS + XGBoost (48 subset = 16×3)</td><td><strong>6 feature</strong>: FBG, MSP, age, WHtR, BMI, UGLU</td></tr>
+        <tr><td>7</td><td>Train &amp; so model</td><td>XGBoost / LR / RF, weighting class để cân bằng</td><td>XGBoost thắng (Table 4)</td></tr>
+        <tr><td>8</td><td>Đánh giá</td><td>5-fold CV + independent test; AUC/acc/prec/recall/F1/specificity</td><td>Test_AUC 0.8763</td></tr>
+        <tr><td>9</td><td>Xây scorecard</td><td>WoE/IV binning (50–100 nhóm → merge Chi-square) + LR + KS curve</td><td>Thẻ điểm 0–100, 5 mức nguy cơ (Table 5, 6)</td></tr>
+        <tr><td>10</td><td>Mô hình follow-up</td><td>XGBoost trên 6 chỉ số S2, xếp hạng GI</td><td>FBG &amp; medication adherence là yếu tố chính (§3.4)</td></tr>
+        <tr><td>11</td><td>Deployment</td><td>Web tool online DRSC</td><td><a href="http://lin-group.cn/server/DRSC/index.html" target="_blank">lin-group.cn/server/DRSC</a></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Feature dẫn xuất (Eq. 3–6)</span>
+      WHtR = W / H            &nbsp;&nbsp;(waist / height)<br>
+      MSP  = (LSP + RSP) / 2  &nbsp;(mean systolic pressure)<br>
+      MDP  = (LDP + RDP) / 2  &nbsp;(mean diastolic pressure)<br>
+      SPD  = LSP &minus; RSP        &nbsp;&nbsp;(systolic pressure difference)<br>
+      DPD  = LDP &minus; RDP        &nbsp;&nbsp;(diastolic pressure difference)
+    </div>
+
+    <div class="formula">
+      <span class="label">Scorecard (Section 2.4 / Eq. 14)</span>
+      Score = A &minus; B · ln(odds)<br>
+      odds = (số người khỏe) / (số bệnh nhân ĐTĐ) trong bin<br>
+      Với P0 = 81.3, PDO = 4.5 → A = 66.3, B = 6.5 (§3.3)<br>
+      Base_score = 62; tổng điểm 0–100, ngưỡng 60 (Fig. 7 KS)
+    </div>
+
+    <div class="formula">
+      <span class="label">Metric đánh giá (Section 2.6)</span>
+      Accuracy  = (TP + TN) / (TP + TN + FP + FN)<br>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F1        = 2 · Precision · Recall / (Precision + Recall)<br>
+      FPR       = FP / (FP + TN)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Các hình chính: Fig. 1 (flowchart hệ thống), Fig. 4 (IFS 3 kỹ thuật), Fig. 6 (ROC 3 classifier), Fig. 7 (KS curve scorecard), Fig. 9 (ROC + feature importance follow-up).
+      <span class="caption">Crop base64 bỏ qua (tùy chọn) — ưu tiên số liệu chính xác từ Table 3–7 đã trích đầy đủ ở trên.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.8763</span><span class="label">XGBoost Test_AUC (Table 4)</span></div>
+      <div class="metric"><span class="value">0.8713</span><span class="label">XGBoost 5-fold AUC (Table 4)</span></div>
+      <div class="metric"><span class="value">0.8681</span><span class="label">Scorecard Test_AUC (Table 4)</span></div>
+      <div class="metric"><span class="value">0.9632</span><span class="label">Follow-up (giữ FBG) Test_AUC</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>S1 (Luzhou EMR)</td><td>XGBoost ⭐</td><td>6 feature, independent test</td><td><strong>AUC 0.8763</strong></td><td>Table 4</td></tr>
+        <tr><td>S1</td><td>XGBoost</td><td>5-fold CV</td><td>AUC 0.8713</td><td>Table 4</td></tr>
+        <tr><td>S1</td><td>XGBoost</td><td>Specificity / Recall / Acc / Prec / F1 (test)</td><td>0.8473 / 0.7383 / 0.7274 / 0.5097 / 0.6397</td><td>Table 4</td></tr>
+        <tr><td>S1</td><td>Random Forest</td><td>independent test</td><td>AUC 0.8740 (Acc 0.8059)</td><td>Table 4</td></tr>
+        <tr><td>S1</td><td>Logistic Regression</td><td>independent test</td><td>AUC 0.8650 (Acc 0.8007)</td><td>Table 4</td></tr>
+        <tr><td>S1</td><td>LR + WoE scorecard</td><td>test / 5-fold</td><td>AUC 0.8681 / 0.8695</td><td>Table 4 / Fig. 8</td></tr>
+        <tr><td>S1</td><td>XGBoost (best subset, IFS GI&amp;ANOVA)</td><td>5-fold CV, 6 feature</td><td>AUC 0.8712</td><td>Table 3 / §3.1</td></tr>
+        <tr><td>S2 (follow-up)</td><td>XGBoost (giữ FBG)</td><td>6 feature, test</td><td><strong>AUC 0.9632</strong> (5V 0.945)</td><td>Table 4 / Fig. 9(a)</td></tr>
+        <tr><td>S2</td><td>XGBoost (bỏ FBG)</td><td>5 feature, test</td><td>AUC 0.7876 (5V 0.7742)</td><td>Table 4 / Fig. 9(c)</td></tr>
+        <tr><td>S1</td><td>FBG đơn biến</td><td>univariate AUC</td><td>AUC 0.8307</td><td>Table 1</td></tr>
+        <tr><td>—</td><td>Gao et al. (baseline)</td><td>5 feature, LR</td><td>AUC 0.635</td><td>Table 7</td></tr>
+        <tr><td>—</td><td>Zhou et al. (baseline)</td><td>6 feature, multivariate LR</td><td>AUC 0.748</td><td>Table 7</td></tr>
+        <tr class="win"><td>S1</td><td>This study</td><td>6 feature XGBoost (làm tròn)</td><td><strong>AUC 0.881</strong></td><td>Table 7</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      <strong>Lưu ý số liệu:</strong> AUC mô hình chính xuất hiện 3 giá trị do bối cảnh khác nhau — 0.8763 (Table 4, test), 0.8768 (Abstract), 0.881 (Table 7, làm tròn để so sánh). Best_metric chính thức lấy <strong>0.8763 (Table 4)</strong>. Scorecard: điểm thấp = nguy cơ cao (Table 6): 0–20 very high, 80–100 very low; ngưỡng 60 là median.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Tái lập thấp (low)</strong>
+      <ul>
+        <li>Dataset <strong>PRIVATE</strong> (Luzhou EMR), chưa publish — phải xin corresponding author (§2.7). Không thể tái lập trực tiếp.</li>
+        <li><strong>Không có code repo</strong> — chỉ có web tool DRSC. <code>code_url</code> = null.</li>
+        <li>Hyperparameter XGBoost/LR/RF nằm ở Table S3 (Supplementary), không có trong text chính; không nêu seed.</li>
+        <li>Bù lại: stack là Python 3.6 + sklearn, mô tả pipeline &amp; công thức đủ rõ để dựng lại phương pháp trên dataset khác.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li><strong>Horizon thực chất gần cross-sectional</strong>: feature khám và nhãn OGTT lấy CÙNG lần khám (không có khoảng cách thời gian feature→label). Bài tự gọi là "early detection/screening" theo mục đích dùng → giữ early_detection nhưng <code>horizon_uncertain=true</code>.</li>
+        <li>FBG (đường huyết lúc đói) gần như là một thành phần của chẩn đoán → AUC cao một phần do <em>label leakage</em> nhẹ (FBG đơn biến đã AUC 0.8307, Table 1).</li>
+        <li>Chỉ validate nội bộ (1 nguồn EMR Luzhou) — không external validation trên bệnh viện/vùng khác.</li>
+        <li>Mất cân bằng lớp xử lý bằng class weight (không nêu chi tiết), không SMOTE/oversampling.</li>
+        <li>Không có XAI (SHAP/LIME); giải thích chỉ qua Gini importance.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là <strong>case study quy mô lớn (big-data, 1.5 triệu mẫu)</strong> đối lập với baseline PIMA 768 mẫu (hasan2020, khanam2021) — cho thấy giá trị của EMR thật.</li>
+        <li>Ý tưởng <strong>fusion 3 nhóm feature + IFS</strong> và <strong>scorecard WoE</strong> có thể tái dùng làm hướng cải tiến deployment cho đề tài (sàng lọc + dễ dùng lâm sàng).</li>
+        <li>Metric là AUC (không phải accuracy) → KHÔNG so trực tiếp con số với các bài PIMA dùng accuracy; chỉ so về phương pháp.</li>
+        <li>Cảnh báo phương pháp: nếu tái dùng, cần kiểm tra rò rỉ FBG và bổ sung horizon longitudinal thật (follow-up N năm) để thành early_detection đúng nghĩa.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "paper_id": "olisah2022_preprocessing_ml_perspective",
+  "layer": 1,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Framework tiền xử lý phi tuyến cho dự đoán/chẩn đoán ĐTĐ: Spearman correlation (feature selection, T=0.01) + polynomial regression bậc 7 (missing value imputation) thay mean/median/MICE, kết hợp RF/SVM và model tự thiết kế 2GDNN có tuning.",
+  "method": "Relabel theo glucose → Spearman correlation FS (p<0.01) → polynomial regression bậc 7 imputation (Insulin từ Glucose) → RF / SVM (rbf) / 2GDNN, grid search + repeated stratified k-fold CV (10 splits × 3 repeats)",
+  "best_metric": "ORF 100% mọi metric trên PIMA (Table 7 — cảnh báo overfit/leakage); RF 97.931% test-acc & F1 97.954% trên PIMA (Table 7); O2GDNN 97.248% test-acc PIMA & 97.333% test-acc LMCH (Table 9)",
+  "datasets": [
+    "pima-indians-diabetes",
+    "lmch-medical-city-hospital"
+  ],
+  "has_code": true,
+  "code_url": "https://github.com/chollette/2GDNN-for-Diabetes-Prediction-and-Diagnosis",
+  "reproducible": "high",
+  "vs_baseline": "Cùng Layer 1 với gr2024 (Boruta+RF+random oversampling, 94% PIMA): Olisah đổi góc preprocessing sang Spearman+PR (phi tuyến) thay IQR+oversampling, CÓ code public (gr2024 không) và thêm dataset bệnh viện LMCH; tự nêu hơn SOTA NN-based +8.68~22% trên PIMA (Table 10). Cùng horizon cross_sectional với abnoosian2023 (98.87% multi-class IPDD) — cả hai cùng rủi ro accuracy bão hoà nghi thổi phồng.",
+  "gap": "ORF 100% + relabel theo glucose rồi đưa chính glucose vào feature → nghi vấn leakage/circularity, con số accuracy có thể bị thổi phồng; không nêu rõ FS/PR có fit trong CV-fold hay toàn bộ dữ liệu; PR imputation chỉ 1 predictor (bậc 7 dễ overfit); chưa external validation; LMCH thiếu mô tả attribute; không XAI/deployment; README repo thiếu dependency.",
+  "verdict": "maybe",
+  "verdict_reason": "CHẠY LẠI 26/07/2026: giữ nguyên các dữ kiện (243 cite, CMPB, code public) nhưng đổi kết luận theo đề tài đã chốt (Q007). Bài relabel theo glucose rồi đưa chính glucose vào feature và báo ORF 100% — đây là ĐỐI TƯỢNG bị đề tài phê phán, không phải baseline để 'chạy lại'. Vai trò đúng = dẫn chứng thổi phồng (TO_DO §6 🅓, lấy đúng 1 con số).",
+  "analyzed_at": "2026-06-22T00:00:00+07:00",
+  "verdict_prev": "strong",
+  "verdict_reason_prev": "Đúng scope (chẩn đoán ĐTĐ tabular cross-sectional), CMPB top venue 240 cite, code public đầy đủ notebook + dataset → tái lập cao; dù cần soi kỹ rủi ro leakage/circularity, là baseline Layer 1 giá trị có thể chạy lại và là case-study cảnh báo thiết kế label.",
+  "role": "inflation",
+  "role_note": "Lấy đúng 1 con số: ORF 100% + relabel theo glucose. Dùng cho câu Introduction về accuracy 0.98–1.00.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

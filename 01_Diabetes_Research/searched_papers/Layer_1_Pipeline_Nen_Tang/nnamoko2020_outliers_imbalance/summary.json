@@ -1,0 +1,26 @@
+{
+  "paper_id": "nnamoko2020_outliers_imbalance",
+  "layer": 1,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Tiền xử lý chọn lọc 2 bước GIỮ và khuếch đại outlier (IQR oversample có hoàn lại 500%, bất kể lớp) rồi nhúng tri thức outlier vào tập SMOTE sinh ra — để SMOTE tạo thêm mẫu nhân tạo quanh vùng ca hiếm, cải thiện phân loại ĐTĐ.",
+  "method": "IQR phát hiện outlier (49 ca trên PIMA) → oversample outlier CÓ HOÀN LẠI 500% irrespective-of-class → SMOTE (k=5, Euclidean) cân bằng minority → train Naïve Bayes/SVM-RBF/C4.5/RIPPER + baseline AdaBoostM1/RandomForest; stratified 10-fold CV (fold tạo từ data gốc, chống leakage) + McNemar's test.",
+  "best_metric": "C4.5 (IQRd+SMOTEd) trên PIMA Indians Diabetes: Accuracy 89.5% / Precision 90% / Recall 89.4% / F-score 89.5% / Kappa 83.5% (Table 4); AUC 94.6% / G-mean 88.8% (Table 8); McNemar p<0.0001 (Table 5-6); stratified 10-fold CV",
+  "datasets": [
+    "pima-indians-diabetes",
+    "german-credit-statlog",
+    "qsar-biodegradation",
+    "breast-cancer-wisconsin"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Peer trực tiếp của gr2024_random_oversampling (cùng Layer 1, oversampling trên PIMA): gr2024 đạt 94% acc PIDD nhưng LOẠI outlier; bài này 89.5% acc (Table 4) nhưng GIỮ+khuếch đại outlier và có protocol chống leakage rõ (fold từ data gốc) — đối lập triết lý xử lý outlier, dùng làm ablation. Acc tuyệt đối thấp hơn gr2024 (89.5% vs 94%) và abnoosian2023 (98.87% nhưng đơn-dataset 3 lớp micro-avg bão hoà, không external validation). So nội bộ: vượt baseline AdaBoostM1 0.746 / Random Forest 0.755 (Table 4) và 71 nghiên cứu PIMA trước (cải thiện +1.45 đến +30%, Table 7; best trước = LANFIS 88.05%).",
+  "gap": "%oversample (500%/50%/90%) chọn arbitrarily không tune → chưa rõ độ nhạy; IQR univariate ngưỡng 1.5 cố định có thể gắn nhãn sai ca lâm sàng hợp lệ; method KHÔNG phổ quát (Naïve Bayes & SVM-RBF cải thiện không ý nghĩa thống kê trên PIMA); PIMA 768 mẫu nhỏ chỉ nữ Pima, không có external validation y khoa (tác giả tự nêu); không code public, không nêu đủ siêu tham số (C4.5 confidence / SVM C,gamma); không XAI/deployment. Cơ hội: thay IQR bằng outlier detector đa biến (LOF/IsolationForest) + SMOTE variant (Borderline/ADASYN) và tune % oversample.",
+  "verdict": "strong",
+  "verdict_reason": "Đúng lõi Layer 1 (outlier+imbalance), venue top Artificial Intelligence in Medicine 154 cite, protocol chống leakage mẫu mực (fold từ data gốc) và là peer/ablation đối lập trực tiếp của baseline gr2024 — giá trị tham chiếu cao dù acc tuyệt đối không cao nhất và tái lập chỉ ở mức medium (không code, thiếu siêu tham số).",
+  "analyzed_at": "2026-06-22",
+  "role": "method",
+  "role_note": "Protocol chống rò rỉ mẫu mực: chia fold từ data GỐC rồi mới xử lý + McNemar test. Chép nguyên.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

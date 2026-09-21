@@ -1,0 +1,62 @@
+{
+  "paper_id": "naz2020_deep_learning_pima",
+  "title": "Deep learning approach for diabetes prediction using PIMA Indian dataset",
+  "authors": [
+    "Huma Naz",
+    "Sachin Ahuja"
+  ],
+  "year": 2020,
+  "venue": "Journal of Diabetes and Metabolic Disorders",
+  "doi": "10.1007/s40200-020-00520-5",
+  "arxiv": null,
+  "url": "https://doi.org/10.1007/s40200-020-00520-5",
+  "citations": 340,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 2,
+  "layer_uncertain": false,
+  "dataset_slugs": [
+    "pima-indians-diabetes"
+  ],
+  "method_slugs": [
+    "deep-learning",
+    "artificial-neural-network",
+    "naive-bayes",
+    "decision-tree"
+  ],
+  "code_url": null,
+  "reproducibility": 1,
+  "status": "rejected",
+  "reject_reason": "User loại 11/06/2026 (rejected.json, reason gốc: 'Bỏ'). Lý do kỹ thuật đã ghi trong summary.json: confusion matrix Tables 4–7 tổng 207 mẫu không khớp split 80/20, DT 96.62% bất thường, không AUC/CV → nghi rò rỉ. GIỮ trong kho làm dẫn chứng thổi phồng (DL 98.07% PIMA) theo TO_DO §6 🅓.",
+  "notes": "RED FLAG: Bao cao DL accuracy 98.07% tren PIMA bang RapidMiner Studio 9.2 (GUI, khong reproducible). Confusion matrix (Bang 4-7) co tong 207 mau, khong khop 20%x768=154 cho split 80/20 - so lieu nghi van. Khong K-fold mean+/-std, khong xu ly missing-as-zero kinh dien cua PIMA, khong AUC. DT cung dat 96.62% (literature thuong 73-78%) - bat thuong. Chi nen cite trong related work voi cau critique, KHONG dung lam benchmark de vuot.",
+  "analysis_status": "analyzed",
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "corrections": {
+    "metadata_fields": "Doc full extracted.md (13 trang, extraction score 100, khong OCR/garbled): dataset_slugs, method_slugs, code_url=null, reproducibility=1, venue, prediction_horizon=cross_sectional DEU KHOP - khong can sua field metadata.",
+    "in_paper_anomalies_confirmed": [
+      "Tat ca confusion matrix Tables 4-7 tong = 207 mau, khong khop split 80/20 (20%x768=~154); cung khong khop 30% (~230).",
+      "DT accuracy 96.62% (Table 4/8) bat thuong cao so voi literature PIMA (~73-78%) -> nghi overfit/leakage.",
+      "Table 8 nhan Specificity 99.29% / Sensitivity 95.52% thuc ra la class recall No/Yes tu Table 7 -> nhan bi dung lan; DL Precision Table 8 (95.22%) khong khop class precision Table 7 (97.89%/98.46%).",
+      "Table 3 dong 'Proposed Work' ghi 'DL,ANN,SVM and DT (Highest accuracy achieved using DT)' - nhac SVM (khong he train) va noi DT cao nhat, mau thuan voi DL cao nhat o moi cho khac.",
+      "Activation: text noi 'maxout cho ket qua tot nhat' nhung Table 2 ghi Rectifier.",
+      "Text viet '98.7 on PIMA' (thieu so 0) ben canh '98.07%'.",
+      "Missing-as-zero kinh dien cua PIMA khong duoc xu ly (Table 1 range Glucose/BP/Insulin/BMI bat dau tu 0)."
+    ]
+  },
+  "label_type": "binary",
+  "pdf_status": "downloaded",
+  "source_pdf": "source.pdf",
+  "role": "inflation",
+  "role_note": "Lấy đúng 1 con số: DL 98.07% trên PIMA, không CV. Dẫn chứng thổi phồng.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2020-04-14",
+    "age_years": 6.3,
+    "citations": 340,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

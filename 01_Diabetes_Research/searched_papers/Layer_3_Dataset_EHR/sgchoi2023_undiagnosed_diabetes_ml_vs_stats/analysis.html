@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choi et al. 2023 — ML vs Thống kê cho ĐTĐ chưa chẩn đoán — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --surface: #ffffff; --border: #e2e8f0; --text: #0f172a; --muted: #64748b;
+    --primary: #2563eb; --primary-soft: #dbeafe; --success: #047857; --success-soft: #d1fae5;
+    --danger: #b91c1c; --danger-soft: #fee2e2; --warning: #b45309; --warning-soft: #fef3c7;
+    --accent: #7c3aed; --accent-soft: #ede9fe; --code-bg: #0f172a; --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+  .header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white; border-radius: 16px; padding: 28px 32px; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15); margin-bottom: 22px; }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; color: #fff; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .compare-card { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid var(--accent-soft); border-left: 5px solid var(--accent); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(124,58,237,0.06); }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ 1. HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Comparisons of the prediction models for undiagnosed diabetes between machine learning versus traditional statistical methods</h1>
+    <div class="meta">
+      <span>📅 <strong>2023</strong></span>
+      <span>📰 Scientific Reports</span>
+      <span>📚 <strong>41</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1038/s41598-023-40170-0" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không (không có repo; Python 3.8.8 + Optuna, không public)</span>
+      <span class="badge yes">📊 Dataset: Có (KNHANES công khai)</span>
+      <span class="badge horizon">⏱️ Horizon: Early detection</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://knhanes.kdca.go.kr/knhanes/eng/" target="_blank">KNHANES 2014–2020</a> — Khảo sát Sức khỏe &amp; Dinh dưỡng Quốc gia Hàn Quốc, cắt ngang, đại diện dân số; nhãn ĐTĐ chưa chẩn đoán = FPG ≥ 126 mg/dL hoặc HbA1c ≥ 6.5% mà chưa được chẩn đoán/điều trị.</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ 2. COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">So sánh mô hình <strong>ML</strong> với <strong>thống kê truyền thống (risk score)</strong> để phát hiện ĐTĐ type 2 <strong>chưa được chẩn đoán</strong>, dùng feature <strong>phi-glycemic (no-lab)</strong> trên KNHANES quốc gia (n≈32.827), có <strong>external TEMPORAL validation</strong> (train 2014–2018 → external 2019–2020) + SHAP giải thích.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">AUC <strong>0.819</strong> (LightGBM, 11 feature, external 2019–2020 — Table 5) vs TS risk score 0.765 (P=0.001). Với 4 feature: ML 0.788 (Random Forest) vs TS 0.740 (Table 2).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">5 thuật toán ML (LR, Random Forest, LightGBM, XGBoost, AdaBoost) + Optuna tuning + 5-fold stratified CV; feature selection Shapley/RFECV/Permutation; so với risk score tái lập (Park 2022, Lee 2012); AUC so bằng test Hanley &amp; McNeil; SHAP top-3 model.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Điểm phân biệt độc nhất trong kho: <strong>external temporal validation</strong> mà <code>yu2010</code>, <code>dinh2019</code>, <code>deberneh2021</code> ĐỀU KHÔNG có. Cùng thông điệp trung thực với <code>yu2010</code>: <strong>ML ≈ hồi quy logistic</strong> (LR 0.814 ≈ LightGBM 0.819). Feature no-lab → leakage-safe như <code>yu2010</code>, khác nhánh có-lab AUC 0.96 của <code>dinh2019</code>.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 3. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">Choi và cộng sự (Yonsei University, 2023) đặt câu hỏi kinh điển: liệu <strong>machine learning (ML)</strong> có thực sự vượt <strong>phương pháp thống kê truyền thống (risk score)</strong> khi phát hiện người mắc ĐTĐ type 2 <strong>chưa được chẩn đoán</strong> hay không, khi cả hai chỉ dùng <strong>biến phi-glycemic dễ tiếp cận</strong> (giới, tuổi, vòng eo, nhịp tim nghỉ RHR, tiền sử gia đình, tăng huyết áp, hút thuốc, uống rượu, BMI, WHtR, hoạt động thể chất, giấc ngủ). Họ dùng <strong>KNHANES 2014–2020</strong> (n≈32.827 sau loại trừ), lấy <strong>2014–2018 làm train + internal validation</strong> (n=23.369) và <strong>2019–2020 làm external validation</strong> (n=9.458) — một thiết kế <strong>external temporal validation</strong> mà chính bài này chỉ trích các nghiên cứu Hàn Quốc trước đó vì thiếu (nguy cơ overfitting). Họ chạy 5 thuật toán ML, so với risk score tái lập của Park 2022 và Lee 2012 trên <em>cùng</em> tập external, dùng SHAP để giải thích. Kết luận: ML có AUC cao hơn TS ở cả 4 bộ feature (0.788–0.819 vs 0.740–0.765, tất cả P&lt;0.05) — nhưng đọc kỹ thì các model ML gần như ngang nhau và <strong>hồi quy logistic (LR) bám sát các model boosting</strong>, nên phần thắng chủ yếu đến từ <em>refit trên dữ liệu cùng thời kỳ + thêm feature</em> chứ không phải "phép màu thuật toán".</p>
+    <h3>Vì sao là Layer 3 (Dataset / Cohort)?</h3>
+    <table>
+      <tr><td>🗄️ Giá trị = COHORT + VALIDATION</td><td>Đóng góp phân biệt trong kho KHÔNG nằm ở "ML thắng TS" (kết quả này khiêm tốn) mà ở <strong>thiết kế external temporal validation trên cohort quốc gia lớn</strong> (KNHANES 2014–2020). Đây là đặc trưng dữ liệu/cohort — đúng tinh thần Layer 3, cùng họ khảo sát dân số với <code>dinh2019</code> (NHANES, đã ở L3).</td></tr>
+      <tr><td>⚖️ Ranh giới với Layer 2</td><td>Mục tiêu <em>tuyên bố</em> là so sánh model (nghiêng L2). Nhưng vì các model ML gần như đồng hạng và LR ≈ boosting, "so model" không phải điểm mạnh thật; giá trị neo lại là <strong>cohort + validation methodology + feature leakage-safe</strong> → giữ L3 (gỡ <code>layer_uncertain</code>). Ghi rõ vào <code>corrections</code>.</td></tr>
+      <tr><td>⏱️ Horizon = early_detection</td><td>Nhắm thẳng nhóm <strong>chưa được chẩn đoán</strong> (undiagnosed screening) — tinh thần phát hiện sớm, cùng logic gán của <code>yu2010</code> (Scheme II) và <code>dinh2019</code> (Case II). LƯU Ý: nhãn đo <strong>cắt ngang</strong> (cùng kỳ với feature), tác giả tự nêu hạn chế cross-sectional — KHÔNG phải dự đoán onset tương lai như <code>deberneh2021</code> (Y+1).</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Python 3.8.8</code></td><td>Xây dựng toàn bộ 5 model ML</td><td>Hệ sinh thái ML chuẩn</td><td>Không nêu rõ thư viện (sklearn/lightgbm/xgboost) hay version từng gói; không code repo</td></tr>
+        <tr><td><code>Optuna</code></td><td>Tự động dò siêu tham số (hyperparameter search)</td><td>Tự động hoá tuning, tránh overfit khi kết hợp CV</td><td>Cấu hình tối ưu cuối cùng (learning rate, depth, n_estimators…) <strong>KHÔNG được báo cáo</strong> (UNKNOWN) → khó lặp lại chính xác</td></tr>
+        <tr><td>Feature selection <br>(Shapley / RFECV / Permutation)</td><td>Chọn tập feature "cực đại hiệu năng" (bộ 11 feature ở Table 5), lấy biến chung giữa 3 phương pháp</td><td>Ba phương pháp bổ trợ, giảm thiên lệch chọn biến</td><td>Không nêu ngưỡng/tiêu chí hợp nhất định lượng; kết quả cuối là 11 biến nhưng quy trình gộp mô tả định tính</td></tr>
+        <tr><td><code>SHAP</code> (TreeSHAP)</td><td>Giải thích đóng góp từng feature cho top-3 model (Fig 4)</td><td>Mở "hộp đen" ensemble; xếp hạng feature (WHtR, tuổi, tăng HA, BMI, tiền sử GĐ, giới, RHR)</td><td>Chỉ summary plot toàn cục; không kèm phân tích tương tác/cục bộ định lượng</td></tr>
+        <tr><td>Stratified 5-fold CV</td><td>Chọn thuật toán/siêu tham số/feature trên tập train, giảm phương sai</td><td>Giữ tỉ lệ undiagnosed mỗi fold (mất cân bằng ~4–5%)</td><td>Không nêu rõ scaler/cân bằng lớp fit trước hay trong fold (nguy cơ rò rỉ nhẹ)</td></tr>
+        <tr><td>Hanley &amp; McNeil test</td><td>Kiểm định khác biệt AUC giữa ML và TS</td><td>Chuẩn thống kê so 2 AUC trên cùng ca</td><td>So từng cặp, không hiệu chỉnh đa so sánh (4 bảng)</td></tr>
+        <tr><td><code>SPSS 25</code></td><td>Thống kê mô tả, t-test/chi-square đặc điểm mẫu (Table 1)</td><td>Chuẩn dịch tễ</td><td>Chỉ phần mô tả, không phải model</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 5. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC external (bộ 11 feature — Table 5)</strong> để có cùng một điểm so sánh. ⭐ = model tốt nhất tổng thể paper chọn. <em>Lưu ý: model thắng đổi theo bộ feature</em> (RF ở 4-feature/Table 2, XGBoost ở 7-feature/Table 3, LightGBM ở 8 &amp; 11-feature/Table 4–5).</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC ext (11-feat, Table 5)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>LightGBM</code> ⭐<small> (thắng tổng thể + Table 4)</small></td><td>Gradient boosting</td><td><strong>0.819</strong> (0.805–0.833)</td><td>AUC cao nhất; nhanh; thắng cả 8-feature (0.811) &amp; 11-feature</td><td>Nhỉnh không đáng kể so XGB/RF/LR</td></tr>
+        <tr><td>2</td><td><code>XGBoost</code><small> (thắng Table 3: 0.802)</small></td><td>Gradient boosting</td><td><strong>0.818</strong> (0.804–0.832)</td><td>Gần bằng LightGBM; thắng ở bộ 7-feature</td><td>Không thắng ở bộ tối đa</td></tr>
+        <tr><td>3</td><td><code>Random Forest</code><small> (thắng Table 2: 0.788)</small></td><td>Bagging cây</td><td><strong>0.815</strong> (0.80–0.83)</td><td>Thắng ở bộ 4-feature; ổn định</td><td>Kém boosting chút ở bộ nhiều feature</td></tr>
+        <tr><td>4</td><td><code>Logistic Regression</code></td><td>Baseline "thống kê" trong nhóm ML</td><td><strong>0.814</strong> (0.799–0.829)</td><td><strong>Bám sát boosting</strong> (0.814 vs 0.819) → bằng chứng "ML ≈ model tuyến tính"</td><td>Không phải model thắng, nhưng cũng gần như không thua</td></tr>
+        <tr><td>5</td><td><code>AdaBoost</code></td><td>Boosting</td><td><strong>0.809</strong> (0.786–0.816)</td><td>Vẫn &gt; risk score TS</td><td>Thấp nhất trong 5 model ML ở mọi bảng</td></tr>
+        <tr><td>—</td><td><code>Risk score (TS)</code><small> Park 2022 / Lee 2012</small></td><td>Baseline thống kê truyền thống</td><td><strong>0.765</strong> (0.748–0.782)</td><td>Đơn giản, chỉ cộng điểm; không cần train lại</td><td>Thua mọi model ML (P=0.001–0.015); hệ số cố định từ dữ liệu cũ</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Đọc nhanh: khoảng cách 5 model ML chỉ ~0.01 AUC (0.809→0.819) và LR ≈ LightGBM → thông điệp thực chất giống <code>yu2010</code>: <strong>không có "phép màu ML"</strong>. Phần vượt TS (~+0.05 AUC) đến từ (a) refit trên dữ liệu 2014–2018 cùng thời kỳ với external, và (b) thêm feature (RHR, BMI, WHtR, hoạt động thể chất, giấc ngủ) — chứ không phải bản thân thuật toán boosting.</p>
+  </section>
+
+  <!-- ═══════════════ 6. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>KNHANES 2014–2020</strong></td>
+          <td>Từ 113.091 → loại (age&lt;19 hoặc ≥80: 28.421; đã chẩn đoán ĐTĐ: 11.337; thiếu biến: 40.163) → <strong>32.827</strong>. Train+internal val 2014–2018: <strong>23.369</strong> (undiagnosed 1.008 ≈ 4.3%). External val 2019–2020: <strong>9.458</strong> (undiagnosed 486 ≈ 5.1%) (Table 1, Fig 1)</td>
+          <td>4 / 7 / 8 / <strong>11</strong> feature theo 4 bộ (Table 2–5). Tất cả <strong>phi-glycemic</strong></td>
+          <td>Khảo sát cắt ngang quốc gia Hàn Quốc, đại diện dân số. Nhãn <strong>undiagnosed ĐTĐ</strong> = FPG ≥ 126 mg/dL <em>hoặc</em> HbA1c ≥ 6.5% mà <strong>chưa được chẩn đoán/điều trị</strong>.</td>
+          <td><a href="https://knhanes.kdca.go.kr/knhanes/eng/" target="_blank">KNHANES (KDCA)</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Các bộ feature: <strong>(1) 4 biến</strong> giới, tuổi, WC, RHR; <strong>(2) 7 biến</strong> giới, tuổi, WC, tiền sử GĐ, tăng HA, hút thuốc, uống rượu; <strong>(3) 8 biến</strong> = (2) + RHR; <strong>(4) 11 biến</strong> = (3) + BMI + WHtR (thay WC) + hoạt động thể chất + giấc ngủ. <strong>Không biến nào là glucose/HbA1c</strong> — dù nhãn định nghĩa bằng FPG/HbA1c, feature hoàn toàn no-lab → rò rỉ nhãn (label leakage) thấp, giống <code>yu2010</code> và khác nhánh có-lab của <code>dinh2019</code>. Mất cân bằng lớp mạnh (undiagnosed ~4–5%) — nhưng bài KHÔNG báo PR-AUC/calibration.</p>
+  </section>
+
+  <!-- ═══════════════ 7. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Chọn mẫu</td><td>KNHANES 2014–2020, loại age&lt;19/≥80, đã chẩn đoán ĐTĐ, thiếu biến (Fig 1)</td><td>n = 32.827</td></tr>
+        <tr><td>2</td><td>Lập nhãn</td><td>Undiagnosed = FPG ≥ 126 mg/dL <em>hoặc</em> HbA1c ≥ 6.5% &amp; chưa chẩn đoán/điều trị</td><td>Nhãn nhị phân (binary)</td></tr>
+        <tr><td>3</td><td><strong>Tách theo thời gian</strong></td><td>2014–2018 = train + internal val (n=23.369); 2019–2020 = external val (n=9.458)</td><td>External temporal split</td></tr>
+        <tr><td>4</td><td>Chọn feature</td><td>4 bộ (4/7/8/11); bộ 11 dùng Shapley + RFECV + Permutation lấy biến chung</td><td>4 không gian đặc trưng</td></tr>
+        <tr><td>5</td><td>Cross-validation</td><td><strong>Stratified 5-fold</strong> trên tập train (giữ tỉ lệ undiagnosed)</td><td>Ước lượng AUC nội bộ</td></tr>
+        <tr><td>6</td><td>Train 5 model</td><td>LR, Random Forest, LightGBM, XGBoost, AdaBoost</td><td>5 model / mỗi bộ feature</td></tr>
+        <tr><td>7</td><td>Tuning</td><td><strong>Optuna</strong> dò siêu tham số theo mean AUC internal-CV</td><td>Cấu hình tối ưu (không báo cáo)</td></tr>
+        <tr><td>8</td><td>Chọn model tốt nhất</td><td>Thuật toán có mean AUC internal-CV cao nhất</td><td>1 model/bộ feature</td></tr>
+        <tr><td>9</td><td>External validation</td><td>Áp lên 2019–2020; so với risk score TS tái lập (Park 2022, Lee 2012) trên <em>cùng</em> tập</td><td>AUC external + CI</td></tr>
+        <tr><td>10</td><td>Chọn ngưỡng (cutoff)</td><td>Sn &gt; 80% &amp; Sp &gt; 50%, Youden cao nhất (không lấy Youden tuyệt đối)</td><td>Sn/Sp/PPV/NPV/PLR/NLR</td></tr>
+        <tr><td>11</td><td>So AUC</td><td>Hanley &amp; McNeil test (ML vs TS)</td><td>P-value</td></tr>
+        <tr><td>12</td><td>Giải thích</td><td>SHAP summary top-3 model (Fig 4)</td><td>Xếp hạng feature</td></tr>
+      </tbody>
+    </table>
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Chỉ số tại một ngưỡng cutoff (mục Evaluation)</span>
+      Sensitivity = TP / (TP + FN) &nbsp;·&nbsp; Specificity = TN / (TN + FP)<br>
+      PPV = TP / (TP + FP) &nbsp;·&nbsp; NPV = TN / (TN + FN)<br>
+      PLR = Sn / (1 − Sp) &nbsp;·&nbsp; NLR = (1 − Sn) / Sp
+    </div>
+    <div class="formula">
+      <span class="label">Youden index &amp; quy tắc chọn cutoff của bài (mục Evaluation)</span>
+      Youden = Sensitivity + Specificity − 1<br>
+      Cutoff chọn khi Youden CAO NHẤT <strong>với ràng buộc</strong> Sn &gt; 80% và Sp &gt; 50%<br>
+      (cố ý ưu tiên độ nhạy cho mục tiêu sàng lọc, không lấy Youden tuyệt đối)
+    </div>
+    <div class="formula">
+      <span class="label">Ý tưởng SHAP (mục SHAP analysis)</span>
+      Gán "Shapley value" cho mỗi feature = mức đóng góp vào dự đoán từng ca;<br>
+      giá trị dương → đẩy xác suất về "có ĐTĐ". Top feature: WHtR, tuổi, tăng HA, BMI, tiền sử GĐ, giới, RHR.
+    </div>
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">🖼️ Fig 2 — Sơ đồ khái niệm quy trình xây model &amp; đánh giá (train/internal CV 2014–2018 → external 2019–2020). <span class="caption">Chưa crop base64; các bước đã trích đầy đủ ở bảng Pipeline.</span></div>
+    <div class="figure">🖼️ Fig 3 — So sánh AUC top-3 model ML vs risk score TS (Park 2022). Fig 4 — SHAP summary plot top-3 model. <span class="caption">Chưa crop base64; số AUC ở mục Kết quả (Table 2–5), xếp hạng feature ở mục Công nghệ (SHAP).</span></div>
+  </section>
+
+  <!-- ═══════════════ 8. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.819</span><span class="label">AUC best ML (LightGBM, 11-feat, external · Table 5)</span></div>
+      <div class="metric"><span class="value">0.765</span><span class="label">AUC best TS risk score (external · Table 4/5)</span></div>
+      <div class="metric"><span class="value">0.740→0.788</span><span class="label">TS→ML, chỉ 4 feature (external · Table 2)</span></div>
+      <div class="metric"><span class="value">P=0.001</span><span class="label">ML &gt; TS (Hanley–McNeil, 11-feat)</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Bộ feature</th><th>Model (ML thắng)</th><th>AUC ML (external)</th><th>AUC TS (external)</th><th>P (ML vs TS)</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>4 feature (giới, tuổi, WC, RHR)</td><td>Random Forest</td><td><strong>0.788</strong> (0.772–0.804); Youden 44.0; Sn 87.4 / Sp 56.5</td><td>0.740 (0.721–0.759); Youden 35.0 (Park)</td><td>0.008</td><td>Table 2</td></tr>
+        <tr><td>7 feature (+ tiền sử GĐ, tăng HA, hút thuốc, rượu)</td><td>XGBoost</td><td><strong>0.802</strong> (0.787–0.817); Youden 44.4; Sn 90.0 / Sp 54.5</td><td>0.759 (0.741–0.777) (Lee)</td><td>0.015</td><td>Table 3</td></tr>
+        <tr><td>8 feature (+ RHR)</td><td>LightGBM</td><td><strong>0.811</strong> (0.796–0.826); Youden 48.3; Sn 84.0 / Sp 64.3</td><td>0.765 (0.738–0.792) (Lee+RHR)</td><td>0.008</td><td>Table 4</td></tr>
+        <tr><td>11 feature (+ BMI, WHtR, PA, ngủ)</td><td>LightGBM ⭐</td><td><strong>0.819</strong> (0.805–0.833); Youden 49.6; Sn 84.8 / Sp 64.8</td><td>0.765 (0.748–0.782)</td><td>0.001</td><td>Table 5</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Đọc nhanh: (1) ML &gt; TS ở cả 4 bộ, có ý nghĩa thống kê — nhưng biên độ khiêm tốn (~+0.05 AUC) và <strong>PPV chỉ ~0.10–0.18</strong> ở ngưỡng chọn (Table 2–5) → nhiều dương tính giả, phản ánh sàng lọc trên prevalence thật thấp (~4–5%). (2) Bên trong nhóm ML, 5 model chỉ chênh ~0.01 và LR (0.814) ≈ LightGBM (0.819) — <strong>không có "phép màu thuật toán"</strong>. (3) LƯU Ý mâu thuẫn ở footnote Table 2–5: mô tả model TS được "build trên 2019–2020, validate trên 2014–2018" — <em>ngược</em> với setup ML (build 2014–2018). Text chính lại nói TS tái lập rồi so trên <em>cùng</em> external 2019–2020 → footnote lủng củng/khả nghi, cần đọc bản gốc để chắc.</p>
+  </section>
+
+  <!-- ═══════════════ 9. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+    <div class="callout">
+      <strong>⚠️ Rủi ro / điểm cần soi</strong>
+      <ul>
+        <li><strong>"ML &gt; TS" bị thổi phồng nhẹ:</strong> phần thắng chủ yếu từ <em>refit dữ liệu cùng thời kỳ + thêm feature</em>, không phải sức mạnh thuật toán — LR (0.814) bám sát LightGBM (0.819). So sánh cũng không hoàn toàn công bằng: risk score TS là hệ số <strong>cố định từ dữ liệu cũ hơn</strong>, không được refit trên 2014–2018 như ML.</li>
+        <li><strong>Footnote Table 2–5 mâu thuẫn</strong> về cách build/validate model TS (nói TS build trên 2019–2020, validate 2014–2018 — ngược ML). Text chính nói khác → khả năng lỗi biên tập; làm mờ tính "công bằng" của phép so.</li>
+        <li><strong>PPV rất thấp (~0.10–0.18)</strong> ở ngưỡng chọn → nhiều dương tính giả; ngưỡng ưu tiên Sn&gt;80% đánh đổi bằng Sp thấp. Không có PR-AUC/calibration cho dữ liệu mất cân bằng ~4–5%.</li>
+        <li><strong>Không nêu rõ</strong> scaler/cân bằng lớp fit trước hay trong fold CV → rủi ro rò rỉ quy trình nhẹ (dù nhãn↔feature thì leakage-safe).</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>🎯 Giới hạn</strong>
+      <ul>
+        <li><strong>Cross-sectional</strong> — tác giả tự nêu: nhãn đo cùng kỳ feature, không xác định nhân quả/onset; đề xuất cohort dọc cho tương lai. Là sàng lọc undiagnosed, KHÔNG phải dự đoán ĐTĐ tương lai (khác <code>deberneh2021</code> Y+1).</li>
+        <li><strong>Chỉ dữ liệu Hàn Quốc</strong> — tác giả nêu không tổng quát cho quần thể chủng tộc/sắc tộc khác; external validation là <em>temporal</em> (khác thời điểm) chứ không phải <em>geographic</em> (khác dân số).</li>
+        <li><strong>Không code repo</strong>, siêu tham số Optuna tối ưu không báo cáo → tái lập ở mức <em>medium</em> (method + feature + thuật toán mô tả rõ, nhưng thiếu cấu hình + code).</li>
+        <li>Loại 40.163 mẫu do thiếu biến (listwise) → nguy cơ selection bias; RHR nhạy với giấc ngủ/hút thuốc/rượu (tác giả cảnh báo).</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Neo Layer 3 cho "external validation methodology"</strong> — điểm phân biệt độc nhất so với <code>yu2010</code>/<code>dinh2019</code>/<code>deberneh2021</code> (đều thiếu external validation). Là mẫu mực về <em>train một thời kỳ → validate thời kỳ sau</em> trên cohort quốc gia.</li>
+        <li><strong>Bằng chứng citable "ML ≈ hồi quy logistic"</strong> (LR 0.814 ≈ LightGBM 0.819) — củng cố trực tiếp mũi nhọn "đánh giá trung thực" (QA_LOG): boosting không tự động thắng model tuyến tính.</li>
+        <li><strong>Mẫu feature leakage-safe (phi-glycemic)</strong> trên cohort thật — dùng đối chiếu với các bài giữ FPG/HbA1c làm feature (nhánh có-lab AUC 0.96 của <code>dinh2019</code> bị nghi leakage).</li>
+        <li><strong>Điểm cải tiến cho đề tài:</strong> thêm PR-AUC + calibration (Brier) trên phân bố thật; external validation <em>đa nguồn/địa lý</em> (không chỉ temporal); refit công bằng cả TS lẫn ML; làm rõ thứ tự scaler/balance↔split; đánh giá onset dọc thay vì cross-sectional.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

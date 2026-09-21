@@ -1,0 +1,67 @@
+{
+  "paper_id": "yang2021_bigdata_physical_exam_fusion",
+  "title": "Risk Prediction of Diabetes: Big data mining with fusion of multifarious physical examination indicators",
+  "authors": [
+    "Hui Yang",
+    "Yamei Luo",
+    "Xiaolei Ren",
+    "Ming Wu",
+    "Xiaolin He",
+    "Bowen Peng",
+    "Kejun Deng",
+    "Dan Yan"
+  ],
+  "year": 2021,
+  "venue": "Information Fusion",
+  "doi": "10.1016/j.inffus.2021.02.015",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 191,
+  "citations_secondary": 154,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": null,
+  "license": null,
+  "code_url": null,
+  "datasets_mentioned": [
+    "physical-examination-records-bigdata"
+  ],
+  "dataset_slugs": [
+    "physical-examination-bigdata"
+  ],
+  "method_slugs": [
+    "feature-fusion",
+    "data-mining",
+    "ensemble"
+  ],
+  "layer": 2,
+  "layer_uncertain": true,
+  "prediction_horizon": "early_detection",
+  "horizon_uncertain": true,
+  "reproducibility": 1,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 11,
+  "pdf_status": "downloaded",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "scope_note": "DATASET NÂNG CAO (không PIMA): big-data khám sức khỏe định kỳ đa chỉ số, fusion 3 nhóm feature. Information Fusion — venue top (IF rất cao), 189 cite (§7 đạt mạnh). Layer 2 (đóng góp chính = mô hình fusion + IFS + scorecard) dù chạm Layer 3 (EHR thật triệu mẫu) → layer_uncertain giữ true. Dataset PRIVATE (Luzhou EMR, TQ, xin tác giả), KHÔNG code repo (chỉ web tool DRSC) → reproducibility low; giá trị ở phương pháp fusion + quy mô dữ liệu + chiến lược scorecard deployment.",
+  "corrections": "Sau khi đọc full text: (1) Dataset = EMR khám sức khỏe Luzhou Municipal Health Commission (TQ) 2011-2017, S1=1,507,563 mẫu (285,965 ĐTĐ / 1,221,598 khoẻ) + S2 follow-up 387,076 (39,547 không hài lòng / 347,529 hài lòng) — PRIVATE, chưa publish, xin corresponding author (§2.7). (2) Method: 16 feature sơ bộ (gồm 5 chỉ số dẫn xuất WHtR/MSP/MDP/SPD/DPD) → IFS với MI/ANOVA/GI rank → 6 feature tối ưu (FBG, MSP, age, WHtR, BMI, UGLU); model chính = single XGBoost (không ensemble) thắng LR/RF; + WoE scorecard (LR). (3) Best metric XGBoost AUC 0.8763 Test / 0.8713 5-fold (Table 4); abstract 0.8768; Table 7 ghi 0.881. SỬA: accuracy XGBoost ở Table 4 = 0.7274 (KHÔNG phải 0.806 — 0.806 là của RF/LR; bản summary cũ ghi nhầm 'Acc 0.806' → đã sửa thành Acc 0.7274, Recall 0.7383, Specificity 0.8473). Scorecard LR AUC 0.8681; follow-up XGBoost(giữ FBG) AUC 0.9632 / (bỏ FBG) 0.7876. (4) Code: KHÔNG có repo, chỉ web tool http://lin-group.cn/server/DRSC/index.html → code_url giữ null. (5) Citations 189 (OpenAlex) / 154 (S2) khớp metadata. (6) Horizon: paper tự đặt khung early diagnosis/screening/cascade cho người chưa chẩn đoán → giữ early_detection; lưu ý cấu trúc nhãn (feature & OGTT cùng lần khám) bản chất cross-sectional + FBG gần là thành phần chẩn đoán (label-leakage nhẹ, FBG đơn biến AUC 0.8307 Table 1) → horizon_uncertain giữ true.",
+  "download_link": "https://www.sciencedirect.com/science/article/pii/S1566253521000397",
+  "pdf_fetch_attempts": "2026-06-20: Không có bản OA (Unpaywall/S2/OpenAlex/CORE/EuropePMC đều âm). Information Fusion (Elsevier) — CLOSED. Mở link đăng nhập trường → Download PDF → lưu source.pdf vào folder này. | 2026-06-21: user tải tay qua quyền trường (closed access), verified DOI khớp",
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2021-03-07",
+    "age_years": 5.4,
+    "citations": 191,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

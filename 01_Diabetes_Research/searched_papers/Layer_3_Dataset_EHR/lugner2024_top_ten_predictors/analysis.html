@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top ten predictors of type 2 diabetes (UK Biobank) — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Identifying top ten predictors of type 2 diabetes through machine learning analysis of UK Biobank data</h1>
+    <div class="meta">
+      <span>📅 <strong>2024</strong></span>
+      <span>📰 Scientific Reports (Nature)</span>
+      <span>📚 <strong>64</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1038/s41598-024-52023-5" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Long-term risk (10 năm)</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.ukbiobank.ac.uk/enable-your-research/access-our-data/" target="_blank">UK Biobank</a> (project ID 70236) — cohort 502.625 người UK, 40–69 tuổi; baseline 2006–2010, theo dõi dọc (longitudinal)</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Dùng <strong>XGBoost + SHAP</strong> trên UK Biobank (419 biến, gần như không lọc) để <strong>xếp hạng yếu tố dự báo</strong> T2D trong 10 năm; xác lập <strong>top 10 predictor sinh học</strong> (HbA1c đứng đầu) vượt cả lối sống/kinh tế-xã hội.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>ROC-AUC 0.903</strong> (95% CI 0.900–0.909) model đầy đủ 419 biến · <strong>0.881</strong> model rút gọn 10 biến — validation set, dự báo T2D 10 năm (Table 3).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">One-hot → bỏ low-variance → <strong>downsampling lớp đa số về 1:3</strong> (chỉ train) → XGBoost → tuning Latin hypercube + 5-fold CV → <strong>SHAP global</strong> → model rút gọn 10 feature.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Mẫu <strong>448.277</strong> — lớn nhất Layer 3 (gấp ~20× dinh2019 NHANES, ~33× agliata). Là bài <strong>duy nhất thật sự longitudinal 10 năm</strong> (vs dinh2019/agliata cross-sectional). AUC 0.903 &lt; AUC lab-case 0.957 của dinh2019, nhưng đó là so giữa long-term vs nhãn gần-trùng-feature.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">
+      Mục tiêu của bài <strong>không phải</strong> tối ưu độ chính xác mà là <strong>xác định và xếp hạng yếu tố dự báo</strong> quan trọng nhất của
+      đái tháo đường type 2 (T2D). Tác giả cố ý giữ lại gần như toàn bộ biến baseline của UK Biobank (<strong>419 biến</strong> sau làm sạch), huấn luyện
+      <strong>XGBoost</strong> để dự báo nguy cơ T2D trong <strong>10 năm</strong>, rồi dùng <strong>SHAP</strong> (global) để xếp hạng tầm quan trọng.
+      Kết quả: <strong>HbA1c</strong> là yếu tố mạnh nhất, theo sau là BMI, vòng eo, glucose máu, tiền sử gia đình, GGT, tỉ lệ eo-hông (waist-hip ratio), HDL, tuổi, urate.
+      Mô hình rút gọn chỉ <strong>10 biến sinh học</strong> vẫn đạt ROC-AUC 0.881 — gần ngang model đầy đủ (0.903), cho thấy các yếu tố sinh học dễ đo
+      vượt trội so với chế độ ăn, vận động, kinh tế-xã hội (Section "Discussion" / "Conclusion").
+    </p>
+    <h3>Vì sao là Layer 3 (Dataset / EHR nâng cao)?</h3>
+    <table>
+      <tr><td>✔ Dataset EHR/biobank thật quy mô lớn</td><td>UK Biobank 502.625 người; mẫu nghiên cứu 448.277 — vượt xa benchmark tabular nhỏ (PIMA ~768)</td></tr>
+      <tr><td>✔ Dữ liệu dọc (longitudinal)</td><td>Baseline 2006–2010, theo dõi đến khi xuất hiện ICD-10 E11 — đúng tinh thần Layer 3 (dữ liệu phong phú, theo thời gian)</td></tr>
+      <tr><td>✔ Nguồn dữ liệu y khoa thực</td><td>Ghép Primary Care (Read code), Hospital inpatient (ICD-9/10), Death Register, self-report — đặc trưng EHR</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Có SHAP nhưng dùng để <em>nghiên cứu feature</em>, không phải XAI cho deployment lâm sàng; không có code/sản phẩm triển khai</td></tr>
+      <tr><td>✘ Không phải Layer 1</td><td>Không nhằm lập pipeline benchmark tabular nhỏ — mà khai thác chiều sâu dữ liệu EHR</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>R / RStudio + Tidymodels</code></td><td>Khung dựng & đánh giá model (v1.4.1717-3)</td><td>Quy trình chuẩn hoá, dễ tái lập trong R</td><td>Không công bố script → vẫn khó tái lập</td></tr>
+        <tr><td><code>One-hot encoding</code></td><td>Chuyển biến phân loại → số</td><td>Tương thích XGBoost</td><td>Tăng chiều với biến nhiều mức</td></tr>
+        <tr><td><code>Variance filtering</code></td><td>Loại biến gần-hằng để ổn định model</td><td>Giảm nhiễu, tăng ổn định</td><td>Có thể loại biến hiếm nhưng hữu ích</td></tr>
+        <tr><td><code>Downsampling (1:3)</code></td><td>Cân bằng lớp, <em>chỉ trên train</em></td><td>Đặt đúng chỗ (không đụng validation) → tránh leakage cân bằng</td><td>Vứt mẫu lớp đa số; thực tế lớp vẫn rất lệch</td></tr>
+        <tr><td><code>Latin Hypercube Sampling</code></td><td>Sinh tổ hợp siêu tham số phủ đều không gian</td><td>Tìm kiếm hiệu quả hơn grid thuần</td><td>Vẫn cần định nghĩa bound hợp lý</td></tr>
+        <tr><td><code>5-fold Cross-Validation</code></td><td>Chọn siêu tham số theo ROC-AUC</td><td>Giảm overfit khi tuning</td><td>Tốn tính toán trên 419 biến</td></tr>
+        <tr><td><code>SHAP (global)</code></td><td>Xếp hạng tầm quan trọng (mean |SHAP|) + dependency plot</td><td>Giải thích nhất quán, nền lý thuyết game vững</td><td>Chỉ dùng global, không local; nặng tính toán</td></tr>
+        <tr><td><code>Bootstrapping (1000 lần)</code></td><td>Tính khoảng tin cậy 95% cho mọi metric</td><td>Định lượng độ bất định của đánh giá</td><td>—</td></tr>
+        <tr><td><code>eGFR / biến phái sinh</code></td><td>Tạo biến mới từ dữ liệu sẵn có (eGFR, alcohol/tuần, pulse & mean arterial pressure, điểm tiền sử gia đình 0–2)</td><td>Tăng giá trị thông tin của dataset</td><td>Công thức nằm ở Supplements (ngoài bản trích)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>ROC-AUC</strong> (validation set). ⭐ = model chính tác giả chọn. Cả hai đều là XGBoost, khác nhau ở số feature & siêu tham số.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>ROC-AUC</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>XGBoost — Main (419 feature)</code> ⭐</td><td>Model chính, nguồn để chạy SHAP</td><td><strong>0.903</strong></td><td>Khai thác tối đa thông tin; Sensitivity 0.623 cao hơn</td><td>Khó triển khai (cần 419 biến); chỉ marginal hơn model 10 biến</td></tr>
+        <tr><td>2</td><td><code>XGBoost — Reduced (10 feature)</code></td><td>Chứng minh 10 biến sinh học là đủ</td><td><strong>0.881</strong></td><td>Chỉ cần 10 biến rẻ-dễ đo; gần ngang model đầy đủ</td><td>Sensitivity giảm còn 0.569; vẫn nhạy với imbalance</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Ngoài ra có 2 model phụ <strong>theo giới (sex-specific)</strong> — chỉ dùng để liệt kê top-10 predictor riêng cho nam/nữ; bài <strong>không công bố ROC-AUC riêng</strong> cho 2 model này (Section "Sex-specific models" + Supplements → <strong>UNKNOWN</strong>).</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>UK Biobank</strong><br><span style="color:var(--muted);font-size:12px">project ID 70236</span></td>
+          <td>448.277 (phân tích)<br>12.148 mắc T2D<br><span style="color:var(--muted);font-size:12px">cohort gốc 502.625</span></td>
+          <td>419 biến<br>(reduced: 10)</td>
+          <td>Cohort UK 40–69 tuổi, baseline 2006–2010. 30 xét nghiệm máu + 8 xét nghiệm nước tiểu, đo nhân trắc, huyết áp, FFQ ăn uống, IPAQ vận động, phỏng vấn tiền sử. Loại người đã có ĐTĐ tại baseline (self-report / HbA1c &gt; 48 mmol/mol / chẩn đoán hồ sơ). Nhãn = ICD-10 E11 trong 10 năm (3650 ngày).</td>
+          <td><a href="https://www.ukbiobank.ac.uk/enable-your-research/access-our-data/" target="_blank">UK Biobank AMS</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Đặc điểm baseline (Table 1): nhóm mắc T2D có BMI 31.5 vs 27.0 kg/m², HbA1c 40.1 vs 34.8 mmol/mol, % nam 55.5 vs 43.6, huyết áp tâm thu 143.9 vs 137.3 mmHg. Theo dõi trung vị 4440 ngày (~12.16 năm), IQR 502 ngày.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Lọc biến (manual)</td><td>Bỏ biến vô nghĩa (serial number, thời lượng test…), trung bình hoá biến trùng, bỏ 111 biến &gt;70% missing, tạo biến phái sinh</td><td>419 biến</td></tr>
+        <tr><td>2</td><td>Xác định nhãn</td><td>ICD-10 E11 xuất hiện trong 3650 ngày (10 năm) sau baseline; loại người đã ĐTĐ tại baseline</td><td>Nhãn nhị phân (incidence)</td></tr>
+        <tr><td>3</td><td>Train/validation split</td><td>80:20, <strong>stratified theo nhãn</strong></td><td>Train + Validation</td></tr>
+        <tr><td>4</td><td>Tiền xử lý (học từ train)</td><td>One-hot encoding + loại biến low-variance (áp dụng nhất quán cả 2 tập)</td><td>Ma trận đặc trưng số</td></tr>
+        <tr><td>5</td><td>Cân bằng lớp</td><td><strong>Downsampling lớp đa số về 1:3</strong> — chỉ trên train, không đụng validation</td><td>Train cân bằng 1:3</td></tr>
+        <tr><td>6</td><td>Huấn luyện</td><td>XGBoost (extreme gradient boosting)</td><td>Model main 419 biến</td></tr>
+        <tr><td>7</td><td>Tuning siêu tham số</td><td>Latin Hypercube Sampling + 5-fold CV, mục tiêu max ROC-AUC (mtry, trees, min_n, tree depth, loss reduction, sample size)</td><td>Siêu tham số tối ưu</td></tr>
+        <tr><td>8</td><td>Giải thích & xếp hạng</td><td>SHAP global → mean |SHAP| → top 10 feature + dependency plots</td><td>Bảng xếp hạng predictor</td></tr>
+        <tr><td>9</td><td>Model rút gọn</td><td>XGBoost chỉ với 10 feature mạnh nhất (cùng split & quy trình tuning)</td><td>Model reduced (10 biến)</td></tr>
+        <tr><td>10</td><td>Đánh giá</td><td>ROC-AUC, Accuracy, Sensitivity, Specificity, F1, Precision, PR-AUC + confusion matrix; CI 95% bằng bootstrap 1000 lần — trên validation set</td><td>Table 2 & Table 3</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng (chú thích Table 3)</h3>
+    <div class="formula">
+      <span class="label">Metrics định nghĩa trong bài</span>
+      Accuracy    = (TP + TN) / (TP + TN + FP + FN)<br>
+      Sensitivity = TP / (TP + FN)   (= Recall)<br>
+      Specificity = TN / (TN + FP)<br>
+      Precision   = TP / (TP + FP)<br>
+      F1          = trung bình điều hoà của Precision & Sensitivity<br>
+      PR-AUC      = diện tích dưới đường Precision–Recall
+    </div>
+    <div class="formula">
+      <span class="label">Siêu tham số chốt (Section "Model comparison")</span>
+      Main model   : mtry=273, trees=1306, min_n=32, tree_depth=11,<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; loss_reduction=0.0006507575, sample_size=0.6880322<br>
+      Reduced model: mtry=2, trees=1931, min_n=39, tree_depth=8,<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; loss_reduction=10.91671, sample_size=0.5617388
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 1 (SHAP summary — xếp hạng top predictor) & Fig. 2a–j (SHAP dependency plots) trong PDF gốc.
+      <span class="caption">Chưa crop/embed base64 — ưu tiên số liệu chính xác từ bảng. Xem trực tiếp source.pdf nếu cần hình.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.903</span><span class="label">ROC-AUC — Main 419 feature (Table 3)</span></div>
+      <div class="metric"><span class="value">0.881</span><span class="label">ROC-AUC — Reduced 10 feature (Table 3)</span></div>
+      <div class="metric"><span class="value">0.623</span><span class="label">Sensitivity — Main (Table 3)</span></div>
+      <div class="metric"><span class="value">0.291</span><span class="label">PR-AUC — Main (Table 3)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting / Metric</th><th>Giá trị (95% CI)</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>UK Biobank</td><td>Main (419 ft)</td><td>ROC-AUC</td><td><strong>0.903</strong> (0.900–0.909)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Reduced (10 ft)</td><td>ROC-AUC</td><td><strong>0.881</strong> (0.875–0.888)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Main</td><td>Accuracy</td><td>0.924 (0.922–0.925)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Reduced</td><td>Accuracy</td><td>0.921 (0.920–0.923)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Main</td><td>Sensitivity</td><td>0.623 (0.603–0.641)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Reduced</td><td>Sensitivity</td><td>0.569 (0.549–0.587)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Main</td><td>Specificity</td><td>0.932 (0.930–0.934)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Reduced</td><td>Specificity</td><td>0.931 (0.930–0.933)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Main</td><td>F1-measure</td><td>0.311 (0.300–0.323)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Reduced</td><td>F1-measure</td><td>0.287 (0.275–0.300)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Main</td><td>Precision</td><td>0.207 (0.198–0.217)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Reduced</td><td>Precision</td><td>0.192 (0.183–0.201)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Main</td><td>PR-AUC</td><td>0.291 (0.275–0.309)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Reduced</td><td>PR-AUC</td><td>0.255 (0.239–0.272)</td><td>Table 3</td></tr>
+        <tr><td>UK Biobank</td><td>Main</td><td>Confusion matrix: TP=1554, FN=941, FP=5902, TN=81.259</td><td>—</td><td>Table 2</td></tr>
+        <tr><td>UK Biobank</td><td>Reduced</td><td>Confusion matrix: TP=1419, FN=1076, FP=5976, TN=81.185</td><td>—</td><td>Table 2</td></tr>
+        <tr><td>UK Biobank</td><td>Main (SHAP)</td><td>Top 10 predictor: HbA1c › BMI › vòng eo › blood glucose › tiền sử gia đình › GGT › tỉ lệ eo-hông › HDL › tuổi › urate</td><td>—</td><td>Fig. 1 / Result</td></tr>
+        <tr><td>UK Biobank</td><td>Sex-specific (nam)</td><td>Top-5: HbA1c, plasma glucose, BMI, tiền sử gia đình, GGT</td><td>—</td><td>Result / Supplements</td></tr>
+        <tr><td>UK Biobank</td><td>Sex-specific (nữ)</td><td>Top-5: HbA1c, vòng eo, plasma glucose, tiền sử gia đình, serum urate</td><td>—</td><td>Result / Supplements</td></tr>
+        <tr><td>UK Biobank</td><td>Sex-specific</td><td>ROC-AUC riêng từng giới</td><td>UNKNOWN (bài không nêu)</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Lưu ý: Accuracy 0.92 cao nhưng <strong>dễ gây nhầm</strong> do mất cân bằng lớp nặng — PR-AUC chỉ 0.291/0.255 và Precision 0.207/0.192 mới phản ánh đúng độ khó. Chính tác giả thừa nhận model "không nhất quán đạt mục tiêu" ở các metric nhạy với imbalance, và nhấn mạnh mục đích là <em>xếp hạng feature</em> chứ không phải để dự đoán (Section "Discussion").
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⏱️ Horizon = Long-term risk (xác nhận)</strong>
+      <ul>
+        <li>Nhãn lập theo <strong>incidence T2D trong 10 năm</strong> (3650 ngày) <em>sau</em> baseline → có khoảng cách thời gian rõ giữa feature và label.</li>
+        <li>Đã loại người ĐTĐ tại baseline và yêu cầu đủ 3650 ngày follow-up → đúng thiết kế <strong>dự báo nguy cơ tương lai</strong>, không phải chẩn đoán cắt ngang.</li>
+        <li>Là bài <strong>duy nhất thật sự longitudinal</strong> trong nhóm Layer 3 đã phân tích (dinh2019 early_detection nhưng nhãn gần-trùng feature; agliata cross_sectional).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro & điểm cần thận trọng khi tham chiếu</strong>
+      <ul>
+        <li><strong>Không phải model để dự đoán</strong>: tác giả tự khẳng định mục đích là xếp hạng feature, không phải triển khai dự đoán → đừng dùng AUC 0.903 như "SOTA dự báo".</li>
+        <li><strong>Rò rỉ "mềm" qua HbA1c/glucose</strong>: HbA1c &gt; 38 và glucose &gt; 5 mmol/l đứng đầu — gần như tiêu chí tiền-ĐTĐ, nên một phần "dự báo" thực ra là phát hiện người đã ở ngưỡng. Bài có sensitivity analysis loại tiền-ĐTĐ (Supplements) cho thấy ổn định.</li>
+        <li><strong>Imbalance còn rất nặng</strong> ở validation (giữ phân phối gốc): Precision 0.207, PR-AUC 0.291 → nhiều dương tính giả (FP=5902).</li>
+        <li><strong>Không có code public</strong> (code_url = null); siêu tham số có nêu nhưng danh sách 419 biến + công thức biến phái sinh ở Supplements → tái lập <strong>medium</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>"Healthy volunteer effect" của UK Biobank; cohort chủ yếu trung niên, da trắng UK → khái quát hoá hạn chế.</li>
+        <li>Thiếu C-peptide & kháng thể → có thể nhầm T1D/LADA thành T2D.</li>
+        <li>Chỉ dùng SHAP global, không local; không external validation ngoài UK Biobank.</li>
+        <li>Không công bố ROC-AUC cho 2 model sex-specific.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là <strong>chuẩn neo Layer 3 cho nhánh long_term_risk</strong>: dataset lớn nhất (448k), longitudinal thật, có SHAP — bổ sung cho dinh2019/agliata (đều cross-sectional/early).</li>
+        <li>Danh sách <strong>top 10 predictor sinh học</strong> là tham chiếu feature mạnh để thiết kế model gọn cho đề tài.</li>
+        <li>Gợi ý cải tiến: thay downsampling bằng SMOTE/cost-sensitive để nâng Sensitivity/PR-AUC; thêm calibration (như agliata) + external validation; tách rõ phần "dự báo thật" khỏi phần phát hiện tiền-ĐTĐ.</li>
+        <li>Kết quả chỉ nên dùng cho <strong>sàng lọc / xếp hạng yếu tố nguy cơ</strong>, KHÔNG thay chẩn đoán y khoa.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Oversampling-Based Diabetes Classification — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: var(--success-soft); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Random Oversampling-Based Diabetes Classification via Machine Learning Algorithms</h1>
+    <div class="meta">
+      <span>📅 <strong>2024</strong></span>
+      <span>📰 International Journal of Computational Intelligence Systems</span>
+      <span>📚 <strong>11</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1007/s44196-024-00678-3" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://data.world/uci/pima-indians-diabetes" target="_blank">PIMA Indians Diabetes (PIDD)</a> — 768 mẫu, 8 feature, benchmark NIDDK (Section 3.1.1)</li>
+      <li>🔹 <a href="https://www.kaggle.com/datasets/cdc/behavioral-risk-factor-surveillance-system" target="_blank">BRFSS Diabetes</a> — survey CDC, 21 feature (Table 2), số mẫu cuối không nêu</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Pipeline ML tabular đầy đủ cho phân loại ĐTĐ trên 2 benchmark; xác lập <strong>Boruta + Random Forest</strong> + random oversampling là cấu hình tốt nhất trong 4 model so sánh.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>94% accuracy</strong> trên PIDD &middot; 92% trên BRFSS (RF + Boruta). 10-fold CV: PIDD 94.03% / BRFSS 92.00% (Table 7–8).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Mean imputation → IQR (outlier) → <strong>Random Oversampling</strong> → PCA/Boruta → so sánh RF / GBC / LightGBM / DT.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Cùng Layer 1: acc PIMA cao hơn <code>hennebelle2023</code> (0.94 vs 0.78) nhưng kém <code>abnoosian2023</code> trên IPDD (0.99, khác bài toán 3 lớp, đơn-dataset). Là <strong>pipeline-baseline gọn nhất</strong>.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 1
+    </h2>
+    <p class="lead">
+      Paper đề xuất một <strong>mô hình e-diagnosis chạy trên IoMT</strong> (Internet of Medical Things) để phân loại đái tháo đường (diabetes)
+      trên dữ liệu dạng bảng (tabular). Trọng tâm thật sự là một <strong>pipeline tiền xử lý + cân bằng lớp + chọn feature</strong> rồi
+      so sánh 4 model ML cây (tree-based). Quy trình: mean imputation cho missing → <strong>IQR</strong> loại outlier →
+      <strong>random oversampling</strong> cân bằng lớp → chọn feature bằng <strong>PCA</strong> hoặc <strong>Boruta</strong> →
+      huấn luyện RF / GBC / LightGBM / DT → đánh giá bằng Accuracy, Precision, Recall, F1, AUC-ROC + 10-fold CV.
+      Cấu hình thắng cuộc là <strong>Boruta + Random Forest với tỉ lệ test 20%</strong>, đạt <strong>94% accuracy trên PIDD</strong> và 92% trên BRFSS
+      (Section 5; Table 6, 9).
+    </p>
+    <h3>Vì sao là Layer 1 (Pipeline nền tảng)?</h3>
+    <table>
+      <tr><td>✔ Pipeline raw→eval rõ ràng</td><td>Đủ bước imputation → outlier → balance → feature → model → CV (Section 4, Fig. 4)</td></tr>
+      <tr><td>✔ Dataset benchmark chuẩn</td><td>PIDD (768 mẫu) là baseline kinh điển; BRFSS là survey CDC quy mô lớn hơn</td></tr>
+      <tr><td>✔ Model ML cổ điển</td><td>RF / GBC / LightGBM / DT — tabular, không deep learning, đúng tinh thần nền tảng</td></tr>
+      <tr><td>✘ Chưa phải Layer 3</td><td>Không dùng EHR longitudinal / biobank, không follow-up theo thời gian</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI thật (SHAP/LIME) và không có deployment đo được — IoMT chỉ mô tả khái niệm</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Framework / kỹ thuật phụ trợ (tiền xử lý, cân bằng, chọn feature). Các model ML nằm ở Section 3.</p>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Python + Google Colab</code></td><td>Môi trường chạy (Section 4)</td><td>Pandas/Sklearn/Numpy/Matplotlib, dễ tái lập</td><td>Không công bố notebook/code</td></tr>
+        <tr><td><code>Mean imputation</code></td><td>Điền missing values (Section 4.1)</td><td>Đơn giản, không đổi cỡ mẫu</td><td>Làm giảm phương sai, có thể gây bias</td></tr>
+        <tr><td><code>IQR outlier detection</code></td><td>Loại outlier ngoài [Q1−1.5·IQR, Q3+1.5·IQR] (Section 4.1)</td><td>Robust kể cả khi không phân phối chuẩn</td><td>Có thể loại điểm y khoa hợp lệ; bài còn gọi nhầm IQR là "feature selection"</td></tr>
+        <tr><td><code>Random Oversampling</code></td><td>Cân bằng lớp bằng nhân bản minority (Section 4.1)</td><td>Đơn giản, hiệu quả, cải thiện minority</td><td>Tự thừa nhận dễ <strong>overfit</strong>; không nói rõ áp trước hay sau split → rủi ro leakage</td></tr>
+        <tr><td><code>PCA</code></td><td>Giảm chiều / chọn feature (Section 4.2.1)</td><td>Giảm nhiễu, tạo thành phần không tương quan</td><td>Kém Boruta; component khó giải thích lâm sàng</td></tr>
+        <tr><td><code>Boruta</code></td><td>Chọn feature dựa trên RF + shadow features (Section 4.2.2)</td><td>Hợp tree-based; accuracy cao hơn PCA (Table 5–6)</td><td>Chạy chậm hơn; rủi ro leakage nếu fit trên toàn bộ data</td></tr>
+        <tr><td><code>10-fold cross-validation</code></td><td>Validate độ ổn định (Section 5, Table 7–8)</td><td>Giảm bias, đáng tin hơn train-test split đơn</td><td>Không nêu CV chạy trước hay sau oversampling</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Accuracy trên PIDD</strong> (cấu hình tốt nhất mỗi model: Boruta, 20% test — Table 6). ⭐ = model paper chọn.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Acc PIDD (Boruta)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>Random Forest</code> ⭐</td><td>Model thắng cuộc</td><td><strong>94%</strong></td><td>Ổn định, mạnh với tabular; cặp tốt với Boruta</td><td>Cần XAI bổ sung để giải thích lâm sàng</td></tr>
+        <tr><td>2</td><td><code>LightGBM</code></td><td>Gradient boosting nhanh</td><td>90%</td><td>Nhanh (GOSS), hiệu quả bộ nhớ</td><td>Cần tuning hyperparam</td></tr>
+        <tr><td>2</td><td><code>Gradient Boosting (GBC)</code></td><td>Boosting tuần tự DT</td><td>90%</td><td>Bắt quan hệ phi tuyến, accuracy cao</td><td>Chậm, nhạy tuning</td></tr>
+        <tr><td>4</td><td><code>Decision Tree (DT)</code></td><td>Baseline đơn cây</td><td>85%</td><td>Dễ giải thích nhất</td><td>Dễ overfit, accuracy thấp nhất</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Acc PIDD lấy từ Table 6 (20% test, with feature extraction, nhánh Boruta): RF 94, LightGBM 90, GBC 90, DT 85. Bản extracted.md báo Table 6 bị xáo (transposed); các giá trị đối chiếu khớp Section 5 (RF=94%) và Table 9.</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>PIDD / PIMA</strong></td>
+          <td>768</td>
+          <td>8 + label (Table 1)</td>
+          <td>Benchmark NIDDK, chỉ nữ PIMA Indian. Feature: pregnancies, glucose (OGTT 2h), BP, skin thickness, insulin, BMI, diabetes pedigree, age; label nhị phân Outcome 0/1 (Section 3.1.1)</td>
+          <td><a href="https://data.world/uci/pima-indians-diabetes" target="_blank">data.world</a></td>
+        </tr>
+        <tr>
+          <td><strong>BRFSS</strong></td>
+          <td>UNKNOWN<br><span style="color:var(--muted);font-size:12px">(paper không nêu số mẫu cuối)</span></td>
+          <td>21 (Table 2)</td>
+          <td>Survey CDC quy mô lớn. Label = từng được chẩn đoán ĐTĐ bởi nhân viên y tế (1) hay không (0). Feature: high BP, high chol, BMI, smoking, stroke, heart attack, physical activity, gender, age, education, income… (Section 3.1.2)</td>
+          <td><a href="https://www.kaggle.com/datasets/cdc/behavioral-risk-factor-surveillance-system" target="_blank">Kaggle</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Split train:test = 80:20 hoặc 70:30 (Section 4.1); cấu hình tốt nhất dùng 80:20. Cả hai dataset đều lệch lớp → xử lý bằng random oversampling.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước (Section 4, Fig. 4 — "model flow organized into six stages")</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Load 2 dataset</td><td>PIDD + BRFSS (Pandas)</td><td>Raw dataframe</td></tr>
+        <tr><td>2</td><td>Missing handling</td><td>Mean imputation</td><td>Data không thiếu</td></tr>
+        <tr><td>3</td><td>Outlier handling</td><td>IQR: loại ngoài [Q1−1.5·IQR, Q3+1.5·IQR]</td><td>Data sạch (boxplot)</td></tr>
+        <tr><td>4</td><td>Cân bằng class</td><td>Random oversampling (nhân bản minority)</td><td>Dataset cân bằng</td></tr>
+        <tr><td>5</td><td>Train/test split</td><td>80:20 (chính) hoặc 70:30</td><td>Train + Test</td></tr>
+        <tr><td>6</td><td>Feature selection</td><td>PCA hoặc <strong>Boruta</strong></td><td>Feature set gọn</td></tr>
+        <tr><td>7</td><td>Train 4 model</td><td>RF / GBC / LightGBM / DT</td><td>4 classifier</td></tr>
+        <tr><td>8</td><td>Evaluate</td><td>Accuracy, Precision, Recall, F1, AUC-ROC, confusion matrix</td><td>Bảng metric (Table 3–6)</td></tr>
+        <tr><td>9</td><td>Validate</td><td>10-fold cross-validation</td><td>Trung bình ổn định (Table 7–8)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:6px">⚠️ Thứ tự bước cân bằng vs split <strong>không được paper nêu rõ</strong>. Section 4.1 mô tả oversampling trước khi nói về split → có khả năng oversample trước split (rủi ro leakage). Sơ đồ trên là một cách tái lập <em>an toàn</em>.</p>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">IQR outlier removal (Section 4.1)</span>
+      IQR = Q3 − Q1<br>
+      lower = Q1 − 1.5 × IQR<br>
+      upper = Q3 + 1.5 × IQR<br>
+      → loại mọi giá trị &lt; lower hoặc &gt; upper
+    </div>
+
+    <div class="formula">
+      <span class="label">Metrics đánh giá (Section 4.3.5, Eq. 31–33)</span>
+      Accuracy  = (TP + TN) / (TP + TN + FP + FN)<br>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F1        = 2 · Precision · Recall / (Precision + Recall)
+    </div>
+
+    <div class="formula">
+      <span class="label">Boruta — phân biệt feature (Section 4.2.2)</span>
+      Tạo "shadow features" bằng hoán vị giá trị mỗi cột → gắn vào ma trận gốc → train RF<br>
+      Z_Score(feature) &gt; S_max(shadow)  ⇒ feature CÓ Ý NGHĨA<br>
+      Z_Score(feature) &lt; S_max(shadow)  ⇒ feature LOẠI BỎ
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 4 "The proposed approach for predicting diabetes using ML" (sơ đồ pipeline) và Fig. 1 "E-diagnosis technology in IoMT".
+      <span class="caption">Crop base64 bỏ qua (tùy chọn) — số liệu đã lấy đủ từ bảng + formula block ở trên.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">94%</span><span class="label">PIDD — RF + Boruta, 20% test (Table 6 / Sect 5)</span></div>
+      <div class="metric"><span class="value">92%</span><span class="label">BRFSS — RF + Boruta, 20% test (Table 6 / Sect 5)</span></div>
+      <div class="metric"><span class="value">94.03%</span><span class="label">PIDD — RF+Boruta 10-fold CV avg (Table 7)</span></div>
+      <div class="metric"><span class="value">92.00%</span><span class="label">BRFSS — RF+Boruta 10-fold CV avg (Table 8)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>PIDD</td><td>Random Forest</td><td>Boruta, 20% test</td><td><strong>Acc 94%</strong></td><td>Section 5 + Table 6 + Table 9</td></tr>
+        <tr class="win"><td>BRFSS</td><td>Random Forest</td><td>Boruta, 20% test</td><td><strong>Acc 92%</strong></td><td>Section 5 + Table 6 + Table 9</td></tr>
+        <tr><td>PIDD</td><td>RF + Boruta</td><td>10-fold CV (average)</td><td>Acc 94.03% / Pre 92.02% / Rec 95.06% / F1 94.00%</td><td>Table 7</td></tr>
+        <tr><td>BRFSS</td><td>RF + Boruta</td><td>10-fold CV (average)</td><td>Acc 92.00% / Pre 88.06% / Rec 98.05% / F1 93.06%</td><td>Table 8</td></tr>
+        <tr><td>PIDD</td><td>RF</td><td>PCA, 30% test (kém Boruta)</td><td>Acc 89%</td><td>Section 5 + Table 5</td></tr>
+        <tr><td>BRFSS</td><td>RF</td><td>PCA, 30% test</td><td>Acc 85%</td><td>Section 5 + Table 5</td></tr>
+        <tr><td>PIDD</td><td>RF</td><td>Không feature extraction, 20% test</td><td>Acc 91%</td><td>Table 4</td></tr>
+        <tr><td>BRFSS</td><td>RF</td><td>Không feature extraction, 20% test</td><td>Acc 89%</td><td>Table 4</td></tr>
+        <tr><td>—</td><td>Best baseline (XRL)</td><td>So sánh SOTA</td><td>Acc 89.46%</td><td>Table 9 [18]</td></tr>
+        <tr><td>Cả 2</td><td>Mọi model</td><td>AUC-ROC</td><td>UNKNOWN (nêu trong Abstract/Sect 4.3.5 nhưng không có số trong bảng)</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Bảng best (Table 6, 20% test + feature extraction) trong extracted.md bị <strong>xáo trộn (transposed/garbled)</strong>; giá trị RF=94/92 được xác nhận chéo qua Section 5 ("maximum accuracy of 94% for PIDD and 92% for BRFSS … via the random forest classifier") và Table 9. Hai bảng 10-fold CV (Table 7–8) trích <strong>sạch</strong> nên dùng làm nguồn số chi tiết Precision/Recall/F1.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro data leakage & accuracy có thể thổi phồng</strong>
+      <ul>
+        <li>Paper <strong>không nêu rõ</strong> oversampling/imputation/feature-select fit trước hay sau split — Section 4.1 mô tả oversampling trước khi nói tới split → khả năng <strong>oversample toàn bộ data rồi mới split</strong>, làm rò rỉ test set và đẩy accuracy lên cao giả tạo.</li>
+        <li>Tự thừa nhận random oversampling "can result in overfitting … too biased toward the minority class" (Section 4.3.5) — cần kết hợp CV + regularization.</li>
+        <li>Recall BRFSS 10-fold CV = 98.05% nhưng Precision chỉ 88.06% (Table 8) → mô hình kéo recall lên cao (có thể do oversample), nên xem lại confusion matrix gốc.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>PIDD chỉ 768 mẫu, toàn nữ PIMA Indian → khó khái quát; BRFSS là survey self-report → có recall bias.</li>
+        <li><strong>Không nêu số mẫu cuối của BRFSS</strong> và không nêu số mẫu sau loại outlier/oversample.</li>
+        <li>Claim "cao hơn 3% so với nghiên cứu hiện có" (Abstract) không khớp Table 9: 94 − 89.46 (XRL) ≈ 4.5%; còn so baseline yếu hơn thì chênh tới ~20%. Mốc so sánh mơ hồ.</li>
+        <li>Không external validation trên dữ liệu bệnh viện độc lập; IoMT/e-diagnosis chỉ mô tả khái niệm, không deploy/đo được.</li>
+        <li><strong>Không công bố code</strong> (Data Availability chỉ có link 2 dataset); hyperparam RF/Boruta không liệt kê → tái lập chính xác khó.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài (Layer 1)</strong>
+      <ul>
+        <li>Là <strong>pipeline-baseline gọn</strong>: imputation → IQR → oversampling → Boruta → RF, để các layer sau so chiếu.</li>
+        <li>So peer Layer 1: accuracy PIMA cao hơn <code>hennebelle2023</code> (0.94 vs 0.78 — họ tối ưu MLOps/deployment chứ không tối ưu accuracy) và thấp hơn <code>abnoosian2023</code> (0.99 trên IPDD — khác bài 3-lớp, đơn-dataset). Cấu hình bài này <strong>nhị phân, đa-dataset, đơn giản nhất</strong>.</li>
+        <li>Cơ hội cải tiến: (1) sửa thứ tự pipeline để chống leakage rồi đo lại; (2) thay random oversampling bằng SMOTE/ADASYN; (3) thêm ensemble/stacking để vượt 94%; (4) thêm XAI (SHAP) giải thích RF — đúng định hướng Layer 4.</li>
+        <li>Kết quả 94% chỉ nên xem là <strong>sàng lọc (screening)</strong>, không thay chẩn đoán y khoa.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

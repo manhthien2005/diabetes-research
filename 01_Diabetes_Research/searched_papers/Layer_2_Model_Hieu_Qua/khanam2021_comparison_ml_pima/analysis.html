@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A comparison of machine learning algorithms for diabetes prediction — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: var(--success-soft); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────────────────────────────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>A comparison of machine learning algorithms for diabetes prediction</h1>
+    <div class="meta">
+      <span>📅 <strong>2021</strong></span>
+      <span>📰 ICT Express 7 (2021) 432–439</span>
+      <span>📚 <strong>483</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.icte.2021.02.004" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://archive.ics.uci.edu/dataset/34/pima+indians+diabetes" target="_blank">Pima Indian Diabetes (PID / PIDD)</a> — 768 mẫu nữ ≥21 tuổi, 8 feature + outcome, từ UCI/NIDDK</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Đối chiếu hệ thống <strong>7 thuật toán ML cổ điển</strong> (DT, KNN, RF, NB, AB, LR, SVM) cộng <strong>3 biến thể Neural Network</strong> trên PIMA; chọn 5 feature bằng Pearson correlation. Kết luận: NN 2 lớp ẩn đạt accuracy cao nhất.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>Accuracy 88.6%</strong> — NN 2 lớp ẩn, 400 epoch, lr=0.01 (Bảng 8, train/test 85/15). ML tốt nhất: <strong>KNN &amp; AdaBoost 79.42%</strong> (Bảng 6, splitting).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Mean imputation → IQR outlier removal (còn 699 mẫu) → Pearson feature selection (cutoff 0.2, giữ 5 feature) → chuẩn hoá [0,1] → so sánh ML + NN (Keras/TF, SGD).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Đơn giản hơn <strong>hasan2020</strong> (ensemble AB+XB, AUC 0.950, code public): bài này <strong>không ensemble, không AUC, không xử lý imbalance, không code</strong>. NN 88.6% nhưng K-fold chỉ ~76% → đỉnh không ổn định.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">
+      Đây là bài <strong>benchmark/so sánh mô hình</strong> kinh điển trên Pima Indian Diabetes: tác giả chạy <strong>7 thuật toán ML</strong>
+      (Decision Tree, KNN, Random Forest, Naive Bayes, AdaBoost, Logistic Regression, SVM) trên Weka, cộng <strong>3 cấu hình Neural Network</strong>
+      (1/2/3 lớp ẩn, epoch 200/400/800) trên Keras/TensorFlow. Mỗi mô hình đánh giá bằng hai cách: <strong>K-fold cross-validation</strong> và
+      <strong>train/test split 85/15</strong>. Trọng tâm là tìm mô hình cho accuracy cao nhất — đúng tinh thần Layer 2 (model hiệu quả), không xây
+      EHR longitudinal (Layer 3) cũng không XAI/triển khai (Layer 4). Đề tài dùng bảng so sánh này làm <strong>reference cho related work</strong>.
+    </p>
+    <h3>Vì sao là Layer 2 (Model hiệu quả)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm là so sánh model</td><td>Benchmark 7 ML + 3 NN, xếp hạng theo accuracy để chọn mô hình tốt nhất</td></tr>
+      <tr><td>✔ Cross-sectional binary</td><td>Dự đoán nhãn diabetes/không tại cùng thời điểm đo — đúng kiểu Layer 2 trên tabular</td></tr>
+      <tr><td>✔ Dataset benchmark</td><td>PIMA (PIDD) — benchmark cổ điển, dễ so chéo với hasan2020 cùng layer</td></tr>
+      <tr><td>✘ Không phải Layer 1</td><td>Không đặt mục tiêu xây pipeline nền tảng mới; trọng tâm là đối chiếu model</td></tr>
+      <tr><td>✘ Không phải Layer 3</td><td>Không dùng EHR/biobank longitudinal, không follow-up theo thời gian</td></tr>
+      <tr><td>✘ Không phải Layer 4</td><td>Không có XAI (SHAP/LIME) cũng không có deployment thực tế</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Weka</code></td><td>Tiền xử lý + chạy 7 ML, lọc missing/outlier, tính correlation</td><td>Có sẵn nhiều filter, dễ thao tác GUI</td><td>Khó kiểm soát chi tiết &amp; tái lập bằng code; không lưu seed</td></tr>
+        <tr><td><code>Excel + Weka</code></td><td>Phát hiện missing value (Bảng 2)</td><td>Nhanh, trực quan</td><td>Thủ công, dễ sai sót</td></tr>
+        <tr><td><code>Mean imputation</code></td><td>Điền missing (Insulin 374, SkinThickness 227… → thay bằng mean)</td><td>Đơn giản</td><td>Làm trên TOÀN dataset → leakage nhẹ; bias khi missing nhiều (Insulin 49%)</td></tr>
+        <tr><td><code>IQR (interquartile)</code></td><td>Loại 45 outlier + 26 extreme → còn 699 mẫu</td><td>Robust với phân phối lệch</td><td>Loại mất ~9% dữ liệu, có thể bỏ điểm y khoa thật</td></tr>
+        <tr><td><code>Pearson correlation</code></td><td>Feature selection, cutoff 0.2 → bỏ SkinThickness, BP, DPF</td><td>Đơn giản, có cơ sở thống kê</td><td>Chỉ bắt quan hệ tuyến tính; làm trên toàn dataset</td></tr>
+        <tr><td><code>Min-max normalize [0,1]</code></td><td>Chuẩn hoá feature, tăng tốc hội tụ</td><td>Cần cho NN/SVM/KNN</td><td>Fit trên toàn dataset → leakage</td></tr>
+        <tr><td><code>Keras + TensorFlow</code></td><td>Xây 3 NN (Sequential), optimizer SGD</td><td>Linh hoạt cấu hình lớp ẩn/epoch</td><td>SGD + lr chỉnh thủ công; không nêu seed</td></tr>
+        <tr><td><code>scikit-learn</code></td><td><code>train_test_split</code>, <code>cross_val_score</code>, <code>StratifiedKFold</code></td><td>Chuẩn cho split &amp; CV phân tầng</td><td>—</td></tr>
+        <tr><td><code>Jupyter Notebook (Python)</code></td><td>Môi trường code cho NN</td><td>Tương tác, dễ thử nghiệm</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Accuracy</strong>. ⭐ = mô hình tốt nhất paper chọn. Cột Accuracy lấy giá trị <strong>cao nhất</strong> giữa K-fold và train/test splitting (Bảng 6 &amp; Bảng 8); ghi rõ setting trong ngoặc.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Accuracy</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>NN 2 lớp ẩn</code> ⭐</td><td>Best model (DL)</td><td><strong>88.6%</strong> (split, 400 ep)</td><td>Cao nhất toàn bài; ổn định ~86% với mọi epoch (split)</td><td>K-fold 10 chỉ ~76% → đỉnh không ổn định; chỉ 1 lần split</td></tr>
+        <tr><td>2</td><td><code>NN 1 lớp ẩn</code></td><td>NN baseline</td><td>84.8% (split, 400 ep)</td><td>Đơn giản, nhanh hội tụ</td><td>Thấp hơn 2 lớp ẩn</td></tr>
+        <tr><td>3</td><td><code>NN 3 lớp ẩn</code></td><td>NN sâu hơn</td><td>83.8% (split, 400 ep)</td><td>—</td><td>Sâu hơn không giúp; overfit (train 87% / test 79% @800 ep)</td></tr>
+        <tr><td>4</td><td><code>KNN</code> (k=7)</td><td>ML lazy learner</td><td>79.42% (split)</td><td>ML cao nhất; đơn giản</td><td>K-fold tụt còn 75.10%; nhạy với scale</td></tr>
+        <tr><td>5</td><td><code>AdaBoost</code></td><td>ML boosting</td><td>79.42% (split)</td><td>ML cao nhất (đồng hạng KNN)</td><td>K-fold tụt còn 73.96% — chênh lớn</td></tr>
+        <tr><td>6</td><td><code>Logistic Regression</code></td><td>ML tuyến tính</td><td>78.85% (split)</td><td>Ổn định cả 2 cách test (K-fold 76.82%); tác giả khen "works well"</td><td>Tuyến tính, trần thấp</td></tr>
+        <tr><td>7</td><td><code>Naive Bayes</code></td><td>ML xác suất</td><td>78.28% (split)</td><td>Nhanh, ít tham số</td><td>Giả định độc lập feature; K-fold 75.53%</td></tr>
+        <tr><td>8</td><td><code>SVM</code></td><td>ML margin</td><td>77.71% (split)</td><td>Tác giả khen "works well" cùng LR; ổn định (K-fold 76.82%)</td><td>Không nêu kernel/C; không vượt KNN/AB</td></tr>
+        <tr><td>9</td><td><code>Random Forest</code></td><td>ML ensemble cây</td><td>77.14% (split)</td><td>Robust với tabular</td><td>K-fold 74.96%; thấp hơn boosting đơn lẻ ở đây</td></tr>
+        <tr><td>10</td><td><code>Decision Tree</code></td><td>ML baseline cây</td><td>74.24% (K-fold)</td><td>Dễ giải thích</td><td>Thấp nhất; dễ overfit</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Pima Indian Diabetes (PID / PIDD)</strong></td>
+          <td>768 gốc<br><span style="color:var(--muted);font-size:12px">(268 diabetic / 500 non); còn <strong>699</strong> sau loại outlier (466 non / 233 diabetic)</span></td>
+          <td>8 + outcome<br><span style="color:var(--muted);font-size:12px">dùng 5 sau Pearson</span></td>
+          <td>Bệnh nhân nữ ≥21 tuổi, gốc NIDDK, lấy từ UCI. Feature: Pregnancy, Glucose (OGTT 2h), BP, SkinThickness, Insulin, BMI, DPF, Age. Label nhị phân: 1=diabetes, 0=non (cross-sectional). 5 feature giữ lại: Glucose, BMI, Insulin, Preg, Age (Mục 3.2.3).</td>
+          <td><a href="https://archive.ics.uci.edu/dataset/34/pima+indians+diabetes" target="_blank">UCI</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Missing nặng (Bảng 2): Insulin 374 (≈49%), SkinThickness 227 (≈30%), BP 35, BMI 11, Glucose 5 — tất cả thay bằng mean. Mất cân bằng lớp ~2:1 (non:diabetic) <strong>không được xử lý</strong> (không SMOTE/oversampling).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước (theo đúng thứ tự paper, Mục 3)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Nhận diện missing</td><td>Excel + Weka (Bảng 2)</td><td>Đếm missing từng cột (Insulin 374…)</td></tr>
+        <tr><td>2</td><td>Điền missing</td><td>Mean imputation</td><td>Data không thiếu</td></tr>
+        <tr><td>3</td><td>Loại outlier</td><td>IQR / extreme (Weka), Fig.1</td><td>768 → 699 mẫu (loại 45 outlier + 26 extreme)</td></tr>
+        <tr><td>4</td><td>Feature selection</td><td>Pearson correlation, cutoff 0.2 (Bảng 3)</td><td>Bỏ SkinThickness, BP, DPF → giữ 5 feature</td></tr>
+        <tr><td>5</td><td>Chuẩn hoá</td><td>Min-max [0,1] (Bảng 4)</td><td>Feature scaled</td></tr>
+        <tr><td>6</td><td>Chia train/test</td><td>K-fold CV (10-fold) <em>và</em> split 85/15 (chạy riêng)</td><td>2 protocol đánh giá</td></tr>
+        <tr><td>7</td><td>Train ML</td><td>DT, KNN(k=7), RF, NB, AB, LR, SVM (Weka)</td><td>7 classifier + confusion matrix (Bảng 5)</td></tr>
+        <tr><td>8</td><td>Train NN</td><td>Keras/TF Sequential, 1/2/3 lớp ẩn, epoch 200/400/800, SGD, RELU+sigmoid</td><td>9 cấu hình NN (Bảng 8)</td></tr>
+        <tr><td>9</td><td>Đánh giá</td><td>Precision, Recall, F-measure, Accuracy; ROC cho NN tốt nhất (Fig.11)</td><td>Bảng 6, Bảng 7, Bảng 8</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cấu hình Neural Network (Mục 3.5)</h3>
+    <table>
+      <thead><tr><th>Model</th><th>Kiến trúc lớp ẩn</th><th>Activation</th><th>Optimizer / lr</th></tr></thead>
+      <tbody>
+        <tr><td>NN 1 lớp ẩn</td><td>5 input → 5 → 1 output</td><td>RELU + sigmoid</td><td>SGD, lr=0.01</td></tr>
+        <tr class="win"><td>NN 2 lớp ẩn ⭐</td><td>5 input → 26 → 5 → 1 output</td><td>RELU + sigmoid</td><td>SGD, lr=0.01, 400 epoch</td></tr>
+        <tr><td>NN 3 lớp ẩn</td><td>5 input → 16 → 10 → 5 → 1 output</td><td>RELU + sigmoid</td><td>SGD, lr=0.01</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:6px">lr được chọn từ Bảng 7: thử 0.1 (acc 0.829) / 0.01 (0.838) / 0.005 (0.800) → chọn 0.01.</p>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Metrics từ confusion matrix (Eq. 1–4, Mục 4.1)</span>
+      Accuracy  = (TP + TN) / (TP + TN + FP + FN)<br>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F-measure = 2 · Precision · Recall / (Precision + Recall)
+    </div>
+    <div class="formula">
+      <span class="label">Pearson correlation — chọn feature (Mục 3.2.3, Bảng 3)</span>
+      |r| ≥ 0.2  → giữ feature (cutoff của tác giả)<br>
+      Giữ: Glucose 0.484 · BMI 0.316 · Insulin 0.261 · Preg 0.226 · Age 0.224<br>
+      Bỏ:  SkinThickness 0.193 · BP 0.183 · DPF 0.178
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 4 (Proposed model diagram), Fig. 6 (NN 2 lớp ẩn), Fig. 11 (ROC curve cho NN 2 lớp ẩn @400 epoch).
+      <span class="caption">Chưa crop base64 (tuỳ chọn) — số liệu đã lấy trực tiếp từ Bảng 6 &amp; Bảng 8. Xem PDF gốc trang 6–8.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">88.6%</span><span class="label">NN 2 lớp ẩn @400 ep (Bảng 8)</span></div>
+      <div class="metric"><span class="value">79.42%</span><span class="label">KNN &amp; AdaBoost — split (Bảng 6)</span></div>
+      <div class="metric"><span class="value">78.85%</span><span class="label">LR — split (Bảng 6)</span></div>
+      <div class="metric"><span class="value">~76%</span><span class="label">NN 2HL — 10-fold CV (Mục 4.2)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig/Section)</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>PIMA (699)</td><td>NN 2 lớp ẩn ⭐</td><td>400 epoch, lr=0.01, split 85/15</td><td><strong>Accuracy 88.6%</strong> (testing 88.57%, training 78.96%)</td><td>Bảng 8 (Table 8), Mục 4.2</td></tr>
+        <tr><td>PIMA (699)</td><td>NN 2 lớp ẩn</td><td>200 epoch, split</td><td>Accuracy 87.6% (test 87.62%)</td><td>Bảng 8</td></tr>
+        <tr><td>PIMA (699)</td><td>NN 2 lớp ẩn</td><td>200 epoch, 10-fold CV</td><td>Accuracy ~76% (mean)</td><td>Mục 4.2 (Section 4.2)</td></tr>
+        <tr><td>PIMA (699)</td><td>NN 1 lớp ẩn</td><td>400 epoch, split</td><td>Accuracy 84.8% (test 84.76%)</td><td>Bảng 8</td></tr>
+        <tr><td>PIMA (699)</td><td>NN 3 lớp ẩn</td><td>400 epoch, split</td><td>Accuracy 83.8% (test 83.81%)</td><td>Bảng 8</td></tr>
+        <tr><td>PIMA (699)</td><td>KNN (k=7)</td><td>Train/test splitting</td><td>Acc 79.42% · P 0.804 · R 0.794 · F 0.798</td><td>Bảng 6 (Table 6)</td></tr>
+        <tr><td>PIMA (699)</td><td>AdaBoost</td><td>Train/test splitting</td><td>Acc 79.42% · P 0.792 · R 0.794 · F 0.793</td><td>Bảng 6</td></tr>
+        <tr><td>PIMA (699)</td><td>Logistic Regression</td><td>Train/test splitting</td><td>Acc 78.85% · P 0.788 · R 0.789 · F 0.788</td><td>Bảng 6</td></tr>
+        <tr><td>PIMA (699)</td><td>Naive Bayes</td><td>Train/test splitting</td><td>Acc 78.28% · P 0.787 · R 0.783 · F 0.785</td><td>Bảng 6</td></tr>
+        <tr><td>PIMA (699)</td><td>SVM</td><td>Train/test splitting</td><td>Acc 77.71% · P 0.774 · R 0.777 · F 0.775</td><td>Bảng 6</td></tr>
+        <tr><td>PIMA (699)</td><td>Random Forest</td><td>Train/test splitting</td><td>Acc 77.14% · P 0.779 · R 0.771 · F 0.774</td><td>Bảng 6</td></tr>
+        <tr><td>PIMA (699)</td><td>Decision Tree</td><td>Train/test splitting</td><td>Acc 73.14% · P 0.735 · R 0.731 · F 0.733</td><td>Bảng 6</td></tr>
+        <tr><td>PIMA (699)</td><td>LR / SVM</td><td>K-fold cross-validation</td><td>Acc 76.82% (cả hai)</td><td>Bảng 6</td></tr>
+        <tr><td>PIMA (699)</td><td>AUC (giá trị số)</td><td>NN 2 lớp ẩn @400 ep</td><td><strong>UNKNOWN</strong> — chỉ vẽ ROC, không cho số AUC</td><td>Fig. 11</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      <strong>Lưu ý đọc số:</strong> Accuracy ML cao nhất (79.42%) đến từ <em>train/test split</em>, không phải K-fold; ở K-fold mọi ML đều ~73–77%.
+      "Best" 88.6% là NN, chỉ đo bằng 1 lần split — khi đổi sang 10-fold CV thì tụt còn ~76% (Mục 4.2). Paper <strong>không công bố AUC dạng số</strong> (chỉ có đường ROC ở Fig.11). Confusion matrix chi tiết ở Bảng 5.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro về tính tin cậy của con số</strong>
+      <ul>
+        <li><strong>Data leakage nhẹ:</strong> mean imputation, Pearson feature selection và min-max normalize đều fit trên <em>toàn bộ dataset</em> trước khi split → accuracy có thể bị thổi lên ~1–2%.</li>
+        <li><strong>88.6% không ổn định:</strong> chỉ là 1 lần train/test split; chính tác giả báo NN 2 lớp ẩn ở 10-fold CV chỉ ~76% (Mục 4.2). Đỉnh 88.6% nên đọc dè dặt.</li>
+        <li><strong>Không xử lý imbalance:</strong> lớp ~2:1 (non:diabetic) giữ nguyên; accuracy dễ thiên về lớp đa số. Không báo cáo sensitivity/specificity riêng theo lớp.</li>
+        <li><strong>Không có AUC số:</strong> chỉ vẽ ROC (Fig.11), không công bố giá trị AUC → khó so công bằng với hasan2020 (AUC 0.950).</li>
+        <li><strong>Không seed, không code public</strong> → khó tái lập đúng con số.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>PIMA 699 mẫu, chỉ nữ Pima Indian ≥21 tuổi → khó khái quát ra dân số rộng.</li>
+        <li>Insulin missing ~49% nhưng vẫn giữ làm 1 trong 5 feature (điền mean) → tín hiệu yếu/nhiễu.</li>
+        <li>Không external validation; không nêu kernel/C của SVM, không nêu siêu tham số đầy đủ của ML trong Weka.</li>
+        <li>Cross-sectional thuần: nhãn và feature cùng thời điểm đo → không nói được về <em>nguy cơ tương lai</em>.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Dùng làm <strong>bảng so sánh tham chiếu</strong> trong related work: một benchmark 7 ML + 3 NN trên PIMA được trích dẫn nhiều (378 cite).</li>
+        <li>Là <strong>điểm so chiếu Layer 2</strong>: hasan2020 nâng cấp rõ rệt (ensemble AB+XB, AUC 0.950, CV phân tầng, code public) — cho thấy hướng đi tốt hơn bài này.</li>
+        <li><strong>Gap khai thác được:</strong> thêm xử lý imbalance (SMOTE), báo AUC/sensitivity/specificity, fit preprocessing trong từng CV fold (chống leakage), công bố code + seed.</li>
+        <li>Con số accuracy chỉ nên xem như <strong>sàng lọc</strong>, KHÔNG thay chẩn đoán y khoa.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

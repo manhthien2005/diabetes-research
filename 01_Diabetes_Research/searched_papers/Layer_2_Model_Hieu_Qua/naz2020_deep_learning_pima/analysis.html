@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep learning approach for diabetes prediction using PIMA Indian dataset — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Deep learning approach for diabetes prediction using PIMA Indian dataset</h1>
+    <div class="meta">
+      <span>📅 <strong>2020</strong></span>
+      <span>📰 Journal of Diabetes and Metabolic Disorders</span>
+      <span>📚 <strong>340</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1007/s40200-020-00520-5" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://data.world/data-society/pima-indians-diabetes-database" target="_blank">PIMA Indian Diabetes (PID)</a> — 768 mẫu, 8 feature + label, NIDDK benchmark</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">So sánh 4 thuật toán (DL, DT, NB, ANN) trên PIMA bằng <strong>RapidMiner Studio 9.2</strong> (GUI), tuyên bố Deep Learning đạt accuracy <strong>98.07%</strong> — "cao nhất tới nay" trên PIMA.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>DL: 98.07% accuracy</strong> trên PIMA (Table 7, Table 8). ⚠️ Con số nghi vấn — xem Section 6 &amp; 7.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">DL = MLP feed-forward 4 lớp (8→50→50→2), activation Rectifier + Softmax, SGD + backprop, L1=1e-5, chạy trong RapidMiner. Sampling: stratified.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Accuracy "đẹp" hơn <strong>hasan2020</strong> (AUC 0.950) và <strong>khanam2021</strong> (NN 88.6%), nhưng <strong>kém tin cậy hơn cả hai</strong>: không code, không AUC, không K-fold mean±std, test set size không khớp split.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">
+      Bài báo huấn luyện và so sánh <strong>4 thuật toán data mining</strong> — Decision Tree (DT), Naive Bayes (NB),
+      Artificial Neural Network (ANN) và Deep Learning (DL) — trên <strong>PIMA Indian Diabetes dataset</strong> (768 mẫu).
+      Toàn bộ thực nghiệm chạy trong công cụ GUI <strong>RapidMiner Studio 9.2.000</strong> (kéo-thả, không lập trình).
+      Nhóm tác giả kết luận DL cho kết quả tốt nhất với <strong>accuracy 98.07%</strong>, và đề xuất dùng làm công cụ tiên lượng
+      (prognosis tool) cho phát hiện sớm. Đây là bài <strong>cross-sectional</strong>: nhãn được gán cùng thời điểm với các chỉ số
+      đo (không có theo dõi dọc thời gian / follow-up), nên không phải <em>long-term risk</em> dù lời văn nhấn mạnh "phát hiện sớm".
+    </p>
+    <h3>Vì sao là Layer 2 (Model &amp; hiệu quả)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm là so sánh model</td><td>Bốn classifier (DL/DT/NB/ANN) được benchmark theo Accuracy/Precision/Recall/F1 (Table 8)</td></tr>
+      <tr><td>✔ Dataset benchmark chuẩn</td><td>PIMA — đúng dataset cốt lõi của Layer 2 để đo "model nào mạnh hơn"</td></tr>
+      <tr><td>✔ Tuyên bố vượt SOTA accuracy</td><td>Đặt mình vào bảng so sánh literature (Table 3), claim 98.07% là cao nhất tới nay</td></tr>
+      <tr><td>✘ Không phải Layer 1</td><td>Không đóng góp pipeline tiền xử lý/cân bằng mới — bỏ qua cả missing &amp; imbalance</td></tr>
+      <tr><td>✘ Không phải Layer 3/4</td><td>Không dùng EHR/biobank longitudinal, không có XAI, không deployment thật</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>RapidMiner Studio 9.2</code></td><td>Nền tảng GUI chạy toàn bộ thực nghiệm (kéo-thả, ~400 operator)</td><td>Nhanh, không cần code, có sẵn validation/visualization</td><td>Không reproducible bằng script; phiên bản &amp; seed khó tái lập; che chi tiết cấu hình</td></tr>
+        <tr><td><code>Stratified sampling</code></td><td>Chia subset giữ tỉ lệ lớp ổn định (mặc định của "Automatic")</td><td>Giữ phân phối lớp đều giữa các subset</td><td>Paper mô tả nhiều kiểu sampling (linear/shuffled/stratified) nhưng không nói rõ dùng cái nào ở kết quả cuối</td></tr>
+        <tr><td><code>Cross-validation</code></td><td>Ước lượng hiệu năng (train sub-process + test sub-process)</td><td>Giảm phụ thuộc vào 1 lần split</td><td>Không nêu số fold; không báo cáo mean±std → không biết độ ổn định</td></tr>
+        <tr><td><code>L1 / L2 regularization</code></td><td>Chống overfitting trong DL (L1=1e-5, L2=0 theo Table 2)</td><td>Giảm overfit, sparsity (L1 = Lasso)</td><td>L2=0 nghĩa là chỉ dùng L1; mức 1e-5 rất nhỏ, gần như không ràng buộc</td></tr>
+        <tr><td><code>Pre-pruning (DT)</code></td><td>Cắt nhánh không ý nghĩa; confidence=0.1, depth 1–20, criteria=information gain</td><td>Hạn chế overfit cây</td><td>DT vẫn đạt 96.62% (bất thường cao so với literature ~73–78%)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Accuracy</strong> (Table 8). ⭐ = model paper chọn là tốt nhất.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Accuracy</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>Deep Learning (DL)</code> ⭐</td><td>MLP feed-forward 4 lớp (8→50→50→2), Rectifier+Softmax, SGD+backprop</td><td><strong>98.07%</strong></td><td>Accuracy/F1 cao nhất bảng; nhiều hyperparam được liệt kê (Table 2)</td><td>Con số nghi vấn (test set tổng 207 ≠ ~154); không AUC; GUI-only</td></tr>
+        <tr><td>2</td><td><code>Decision Tree (DT)</code></td><td>Cây phân loại, information gain, pre-pruning</td><td><strong>96.62%</strong></td><td>Dễ giải thích</td><td>96.62% bất thường cao cho DT trên PIMA → nghi overfit/leakage</td></tr>
+        <tr><td>3</td><td><code>Artificial Neural Network (ANN)</code></td><td>NN 2 hidden layer, 500 training cycle, lr=0.1</td><td><strong>90.34%</strong></td><td>Hợp lý so với literature</td><td>Thấp hơn DL/DT đáng kể dù cùng họ NN</td></tr>
+        <tr><td>4</td><td><code>Naive Bayes (NB)</code></td><td>Phân loại xác suất Bayes</td><td><strong>76.33%</strong></td><td>Nhanh, nhẹ, ít tuning</td><td>Thấp nhất; precision lớp Yes chỉ 64.52% (Table 5)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Mâu thuẫn nội bộ: Table 3 ghi dòng "Proposed Work" là <code>DL,ANN,SVM and DT (Highest accuracy achieved using DT)</code>
+      — nhắc tới <strong>SVM</strong> (không hề được train ở phần kết quả) và nói "DT cao nhất", trong khi mọi chỗ khác khẳng định <strong>DL</strong> cao nhất.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>PIMA Indian Diabetes (PID)</strong></td>
+          <td>768 (268 diabetic / 500 non-diabetic)</td>
+          <td>8 + label</td>
+          <td>NIDDK benchmark, chỉ nữ PIMA Indian ≥21 tuổi (Arizona). Feature: Pregnancies, Glucose (OGTT 2h), Diastolic BP, Skin thickness, Serum insulin, BMI, Diabetes Pedigree Function, Age (Table 1). Split 80/20 train/validation</td>
+          <td><a href="https://data.world/data-society/pima-indians-diabetes-database" target="_blank">data.world</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Range trong Table 1 cho thấy các cột Glucose/BP/SkinThickness/Insulin/BMI đều bắt đầu từ <strong>0</strong> — tức zero-as-missing kinh điển của PIMA <strong>không hề được xử lý</strong> trong bài (không impute, không loại). Đây là nguồn rủi ro lớn cho con số accuracy.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước (theo Methodology + section "Deep learning")</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Nạp dữ liệu</td><td>PIMA từ data.world (768 mẫu, 8 feature + Outcome)</td><td>Dữ liệu thô</td></tr>
+        <tr><td>2</td><td>Sampling</td><td>Stratified / shuffled / linear (mặc định Automatic = stratified); KHÔNG xử lý missing, KHÔNG cân bằng lớp</td><td>Các subset đại diện</td></tr>
+        <tr><td>3</td><td>Chia train/validation</td><td>Tỉ lệ 80/20 (section "Healthcare data")</td><td>Train + validation 20%</td></tr>
+        <tr><td>4</td><td>Train 4 model</td><td>DL (8→50→50→2, Rectifier+Softmax), DT (info gain, pre-prune), NB, ANN (2 hidden, 500 cycle, lr=0.1)</td><td>4 classifier</td></tr>
+        <tr><td>5</td><td>Cross-validation</td><td>train sub-process + test sub-process (số fold UNKNOWN)</td><td>Ước lượng hiệu năng</td></tr>
+        <tr><td>6</td><td>Đánh giá</td><td>Confusion matrix + Accuracy/Precision/Recall/F-measure/Specificity/Sensitivity (Tables 4–8)</td><td>Báo cáo metric</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Kiến trúc DL (Table 2)</h3>
+    <table>
+      <thead><tr><th>Layer</th><th>Units</th><th>Type</th><th>Dropout</th><th>L1</th><th>L2</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>8</td><td>Input</td><td>0.00%</td><td>—</td><td>—</td></tr>
+        <tr><td>2</td><td>50</td><td>Rectifier</td><td>0.00%</td><td>1e-5</td><td>0</td></tr>
+        <tr><td>3</td><td>50</td><td>Rectifier</td><td>0.00%</td><td>1e-5</td><td>0</td></tr>
+        <tr><td>4</td><td>2</td><td>Softmax</td><td>—</td><td>1e-5</td><td>0</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Dropout = 0% ở mọi lớp, L2 = 0 → gần như không có cơ chế regularization mạnh; cấu hình này dễ overfit trên 768 mẫu. Lời văn còn nói "maxout cho kết quả tốt nhất" nhưng Table 2 lại ghi activation = Rectifier — mâu thuẫn.</p>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Accuracy — eq. (7)</span>
+      X = t / n   (t = số phân loại đúng, n = tổng số mẫu)<br>
+      = (TP + TN) / (TP + TN + FP + FN)
+    </div>
+    <div class="formula">
+      <span class="label">Recall / Sensitivity / TPR — eq. (8)</span>
+      Recall = TP / (TP + FN)
+    </div>
+    <div class="formula">
+      <span class="label">Precision — eq. (9)</span>
+      Precision = TP / (TP + FP)
+    </div>
+    <div class="formula">
+      <span class="label">F-measure — eq. (10)</span>
+      F = 2 · (Precision · Recall) / (Precision + Recall)
+    </div>
+    <div class="formula">
+      <span class="label">Specificity — eq. (11)</span>
+      Specificity = TN / (TN + FP)   (tỉ lệ âm thật ở nhóm không bệnh)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 5 "multilayer DL neural network used as a prediction model" và Fig. 4 "flow chart of the proposed model" — chưa crop từ PDF.
+      <span class="caption">Tuỳ chọn: bỏ qua vì số liệu cốt lõi đã lấy đủ từ Tables 1–8.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">98.07%</span><span class="label">DL — Accuracy (Table 7/8)</span></div>
+      <div class="metric"><span class="value">96.62%</span><span class="label">DT — Accuracy (Table 4/8)</span></div>
+      <div class="metric"><span class="value">90.34%</span><span class="label">ANN — Accuracy (Table 6/8)</span></div>
+      <div class="metric"><span class="value">76.33%</span><span class="label">NB — Accuracy (Table 5/8)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting / Metric</th><th>Giá trị</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>PIMA</td><td>DL</td><td>Accuracy</td><td><strong>98.07%</strong></td><td>Table 7, Table 8</td></tr>
+        <tr><td>PIMA</td><td>DL</td><td>Precision</td><td><strong>95.22%</strong></td><td>Table 8</td></tr>
+        <tr><td>PIMA</td><td>DL</td><td>Recall</td><td><strong>98.46%</strong></td><td>Table 8</td></tr>
+        <tr><td>PIMA</td><td>DL</td><td>F-Measure</td><td><strong>96.81%</strong></td><td>Table 8</td></tr>
+        <tr><td>PIMA</td><td>DL</td><td>Specificity</td><td><strong>99.29%</strong></td><td>Table 8 (= class recall "No", Table 7)</td></tr>
+        <tr><td>PIMA</td><td>DL</td><td>Sensitivity</td><td><strong>95.52%</strong></td><td>Table 8 (= class recall "Yes", Table 7)</td></tr>
+        <tr><td>PIMA</td><td>DL</td><td>Confusion: TN=139, FP=3, FN=1, TP=64 (tổng=207)</td><td>—</td><td>Table 7</td></tr>
+        <tr><td>PIMA</td><td>DT</td><td>Acc / Precision / Recall / F1</td><td>96.62 / 94.02 / 95.45 / 94.72</td><td>Table 8 (CM: Table 4)</td></tr>
+        <tr><td>PIMA</td><td>ANN</td><td>Acc / Precision / Recall / F1</td><td>90.34 / 88.05 / 83.09 / 85.98</td><td>Table 8 (CM: Table 6)</td></tr>
+        <tr><td>PIMA</td><td>NB</td><td>Acc / Precision / Recall / F1</td><td>76.33 / 59.07 / 64.51 / 61.67</td><td>Table 8 (CM: Table 5)</td></tr>
+        <tr><td>PIMA</td><td>—</td><td>AUC / ROC</td><td>UNKNOWN</td><td>Không báo cáo</td></tr>
+        <tr><td>PIMA</td><td>—</td><td>K-fold mean ± std</td><td>UNKNOWN</td><td>Không báo cáo (chỉ nói "cross-validation")</td></tr>
+        <tr><td>PIMA</td><td>—</td><td>Số fold CV / seed</td><td>UNKNOWN</td><td>Không nêu</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Mâu thuẫn số liệu: (a) Table 8 ghi DL Precision = 95.22% trong khi Table 7 cho class precision lớp No/Yes = 97.89% / 98.46% — không khớp. (b) Table 8 nhãn "Sensitivity 95.52% / Specificity 99.29%" thực ra chính là <em>class recall</em> Yes/No từ Table 7 (95.52% / 99.29%), tức nhãn Specificity/Sensitivity bị dùng lẫn lộn. (c) Phần text còn viết "98.7 on PIMA" (thiếu số 0) cạnh "98.07%".
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Số liệu nghi vấn — KHÔNG dùng làm benchmark để "vượt"</strong>
+      <ul>
+        <li><strong>Test set size không khớp split:</strong> mọi confusion matrix (Tables 4–7) đều tổng <strong>207 mẫu</strong>, nhưng 20% × 768 = ~154 (và 30% = ~230). 207 không khớp split 80/20 mà bài tự khai báo.</li>
+        <li><strong>DT 96.62% bất thường:</strong> literature thường cho DT trên PIMA ~73–78%; 96.62% gợi ý overfit hoặc đánh giá trên dữ liệu đã thấy (data leakage).</li>
+        <li><strong>Không xử lý missing-as-zero:</strong> Glucose/BP/Insulin/BMI = 0 (Table 1 range bắt đầu từ 0) bị giữ nguyên — sai lệch y khoa kinh điển của PIMA.</li>
+        <li><strong>Không AUC, không mean±std K-fold:</strong> chỉ 1 con số accuracy điểm; không đo được độ ổn định trên dữ liệu mất cân bằng (35% dương).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn tái lập (reproducibility = low)</strong>
+      <ul>
+        <li>Chạy hoàn toàn trong <strong>RapidMiner Studio 9.2 GUI</strong> — không có code/script công bố (code_url = null).</li>
+        <li>Không nêu seed, số fold CV, cách chia chính xác → không thể tái lập đúng con số.</li>
+        <li>Mâu thuẫn nội bộ giữa Table 3 (nói DT cao nhất, có SVM), Table 7/8 (DL cao nhất), Table 2 (Rectifier) vs text (maxout) → giảm độ tin cậy tổng thể.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Chỉ nên <strong>cite trong related work</strong> kèm câu phê bình về tính tái lập, KHÔNG đặt làm SOTA accuracy để vượt.</li>
+        <li>Benchmark Layer 2 đáng tin của đề tài là <strong>hasan2020</strong> (AUC 0.950, code public, 5-fold stratified) và <strong>khanam2021</strong> (bảng so sánh 7 model) — không phải bài này.</li>
+        <li>Bài học cho đề tài: trên PIMA phải báo cáo <strong>AUC + K-fold mean±std</strong>, xử lý zero-as-missing, và làm preprocessing/balancing trong từng fold để tránh con số "đẹp giả".</li>
+        <li>Accuracy 98.07% nên xem như <strong>ví dụ cảnh báo</strong> về over-claim, không phải mục tiêu lâm sàng.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

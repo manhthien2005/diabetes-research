@@ -1,0 +1,27 @@
+{
+  "paper": "phan2025_remed_t2d_ensemble",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": true,
+  "secs": 117.2,
+  "pages": 13,
+  "failed_pages": [],
+  "source_text_chars": 71817,
+  "scanned_pages": [
+    7
+  ],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 13,
+  "qa": {
+    "out_chars": 79333,
+    "n_markdown_tables": 4,
+    "source_table_captions": 4,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 1.0,
+    "score": 100,
+    "warnings": []
+  }
+}

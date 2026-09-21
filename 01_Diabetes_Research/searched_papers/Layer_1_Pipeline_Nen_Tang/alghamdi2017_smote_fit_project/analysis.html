@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analysis — alghamdi2017_smote_fit_project</title>
+  <style>
+    :root {
+      --ink: #123;
+      --muted: #5b6675;
+      --line: #dbe5f2;
+      --blue1: #0f766e;
+      --blue2: #2563eb;
+      --purple1: #6d28d9;
+      --purple2: #9333ea;
+      --ok: #0f9f6e;
+      --bad: #dc2626;
+      --warn: #f59e0b;
+      --bg: #f7fbff;
+      --card: #ffffff;
+      --soft: #eef6ff;
+      --code: #08111f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef7ff 0, #f8fbff 240px, #ffffff 100%);
+      line-height: 1.55;
+    }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 48px; }
+    .block {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      margin: 18px 0;
+      box-shadow: 0 12px 28px rgba(15, 55, 99, 0.08);
+    }
+    .header {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.22), transparent 26%),
+        linear-gradient(135deg, var(--blue1), var(--blue2));
+    }
+    .compare {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 88% 10%, rgba(255,255,255,0.18), transparent 28%),
+        linear-gradient(135deg, var(--purple1), var(--purple2));
+    }
+    h1, h2, h3 { margin: 0 0 12px; line-height: 1.18; }
+    h1 { font-size: clamp(28px, 4vw, 46px); letter-spacing: -0.03em; }
+    h2 { font-size: 26px; color: #102a43; }
+    .header h2, .compare h2 { color: #fff; }
+    .lead { font-size: 17px; color: #263647; margin: 0 0 14px; }
+    .header .lead, .compare .lead { color: rgba(255,255,255,0.92); }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 14px;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.26);
+      color: #fff;
+    }
+    .pill.ok { background: rgba(16,185,129,0.22); }
+    .pill.bad { background: rgba(239,68,68,0.24); }
+    .pill.horizon { background: rgba(168,85,247,0.28); }
+    a { color: #1d4ed8; }
+    .header a, .compare a { color: #fff; text-decoration-thickness: 2px; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .compare-item, .metric {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 18px;
+      padding: 15px;
+      min-height: 118px;
+    }
+    .compare-item strong, .metric strong { display: block; margin-bottom: 8px; font-size: 15px; }
+    .compare-item p, .metric p { margin: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; overflow: hidden; border-radius: 14px; }
+    th, td { border: 1px solid var(--line); padding: 11px 12px; text-align: left; vertical-align: top; }
+    th { background: #eaf4ff; color: #16324f; }
+    tr:nth-child(even) td { background: #fbfdff; }
+    .note {
+      border-left: 5px solid var(--blue2);
+      background: #edf6ff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: #17324d;
+      margin: 14px 0;
+    }
+    .formula {
+      background: var(--code);
+      color: #d8ecff;
+      border-radius: 16px;
+      padding: 16px;
+      font-family: "Cascadia Mono", Consolas, monospace;
+      white-space: pre-wrap;
+      margin: 14px 0;
+      border: 1px solid #18314f;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .metric {
+      background: linear-gradient(180deg, #f8fcff, #eef7ff);
+      border: 1px solid #cfe2f6;
+      color: #102a43;
+    }
+    .metric .big { font-size: 30px; font-weight: 900; color: #0f4c81; line-height: 1.05; }
+    .metric .src { color: var(--muted); font-size: 13px; margin-top: 8px; }
+    .callouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .callout {
+      border: 1px solid #f8d47a;
+      background: #fffbeb;
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .callout strong { display: block; margin-bottom: 8px; color: #8a5600; }
+    .svg-wrap {
+      border: 1px solid var(--line);
+      background: #f8fbff;
+      border-radius: 18px;
+      padding: 12px;
+      margin-top: 14px;
+      overflow-x: auto;
+    }
+    .muted { color: var(--muted); }
+    @media (max-width: 880px) {
+      .grid, .metrics, .callouts { grid-template-columns: 1fr; }
+      main { padding: 18px 12px 34px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <section class="block header">
+    <h1>Predicting diabetes mellitus using SMOTE and ensemble machine learning approach: The Henry Ford ExercIse Testing (FIT) project</h1>
+    <p class="lead">Paper ID: <strong>alghamdi2017_smote_fit_project</strong> · 2017 · PLOS ONE · 📚 306 citations (07/2026) · DOI: <a href="https://doi.org/10.1371/journal.pone.0179805">10.1371/journal.pone.0179805</a></p>
+    <div class="meta">
+      <span class="pill bad">💻 Code: Không</span>
+      <span class="pill ok">📊 Dataset: Có — procedure xin access IRB</span>
+      <span class="pill horizon">⏱️ Horizon: Long-term risk</span>
+      <span class="pill">Layer 1 · Pipeline_Nen_Tang</span>
+      <span class="pill">PDF: verified · 15 pages · extract QA 100/100</span>
+    </div>
+    <p class="lead" style="margin-top:14px">Dataset: <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0179805">Henry Ford ExercIse Testing (FIT) project</a> — dữ liệu bệnh án/claim/stress-test, có thể xin truy cập sau phê duyệt IRB theo Data Availability của PLOS.</p>
+  </section>
+
+  <section class="block compare">
+    <h2>Compare Card</h2>
+    <div class="grid">
+      <div class="compare-item">
+        <strong>🎯 Đóng góp chính</strong>
+        <p>Xây pipeline dự đoán mắc đái tháo đường sau 5 năm trên cohort FIT bằng feature selection + xử lý mất cân bằng lớp (SMOTE/under-sampling) + ensemble Vote.</p>
+      </div>
+      <div class="compare-item">
+        <strong>🏆 Best metric (số + dataset)</strong>
+        <p>Vote ensemble trên FIT: ROC/AUC = 92.2% (0.922), Accuracy = 89.0%, F1 = 91.3; nguồn: Table 6.</p>
+      </div>
+      <div class="compare-item">
+        <strong>🔧 Method chính</strong>
+        <p>Information Gain + Multiple Linear Regression chọn 13 biến, SMOTE 300%, Random Forest/NBTree/LMT, rồi Vote ensemble.</p>
+      </div>
+      <div class="compare-item">
+        <strong>🔄 So với baseline / paper khác cùng Layer</strong>
+        <p>Mạnh hơn các paper PIMA/BRFSS thuần cross-sectional ở chỗ dùng cohort lâm sàng thật và nhãn 5 năm; yếu hơn ở tái lập vì không có code và có rủi ro leakage nếu SMOTE không nằm trong từng fold.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>📋 Tổng quan & vì sao Layer 1</h2>
+    <p class="lead">Đây là paper đúng scope: dự đoán nhị phân có/không mắc đái tháo đường trên dữ liệu tabular/EHR. Nó nên được đặt ở <strong>Layer 1</strong> vì đóng góp chính không phải mô hình deep mới, mà là một pipeline nền tảng: chọn biến, rời rạc hoá biến, xử lý mất cân bằng bằng SMOTE/under-sampling, huấn luyện nhiều classifier và ghép Vote.</p>
+    <table>
+      <thead>
+        <tr><th>Lý do</th><th>Giải thích</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Đúng chủ đề diabetes prediction</td>
+          <td>Dự đoán trạng thái mắc đái tháo đường sau theo dõi 5 năm; label là diabetic/non-diabetic.</td>
+        </tr>
+        <tr>
+          <td>Layer 1 — Pipeline_Nen_Tang</td>
+          <td>Trọng tâm nằm ở tiền xử lý, chọn feature, cân bằng lớp bằng SMOTE/random under-sampling và baseline/ensemble ML.</td>
+        </tr>
+        <tr>
+          <td>Horizon = long_term_risk</td>
+          <td>Dữ liệu baseline từ stress-test/EMR, sau đó theo dõi hoàn chỉnh 5 năm; 5,099/32,555 người phát triển đái tháo đường.</td>
+        </tr>
+        <tr>
+          <td>Đạt tiêu chí giữ lại</td>
+          <td>282 citations; dataset có procedure xin access qua IRB; method mô tả đủ mức medium để tái lập, dù không có GitHub public.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2>🔧 Công nghệ & mô hình</h2>
+    <table>
+      <thead>
+        <tr><th>Kỹ thuật</th><th>Vai trò</th><th>Mạnh</th><th>Yếu</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Unsupervised discretization</td>
+          <td>Rời rạc hoá biến liên tục trước khi train model.</td>
+          <td>Làm pipeline dễ chạy với các cây/quy tắc rời rạc.</td>
+          <td>Có thể làm mất thông tin định lượng; paper không phân tích sensitivity.</td>
+        </tr>
+        <tr>
+          <td>Information Gain Ranking + Multiple Linear Regression</td>
+          <td>Chọn từ 26 biến lâm sàng xuống 13 biến G2.</td>
+          <td>Top features hợp lý lâm sàng: age, resting heart rate, MET, blood pressure, obesity, hypertension.</td>
+          <td>Không thấy mô tả rõ việc chọn feature nằm bên trong từng fold CV hay làm trước CV.</td>
+        </tr>
+        <tr>
+          <td>Random Under-Sampling</td>
+          <td>Giảm lớp majority non-diabetic theo spread 2.5/1.5/1.0.</td>
+          <td>Dễ hiểu, dễ tái lập.</td>
+          <td>Không cải thiện ROC; có thể làm mất thông tin ở cohort lớn.</td>
+        </tr>
+        <tr>
+          <td>SMOTE</td>
+          <td>Tăng mẫu minority diabetic 100%, 200%, 300%.</td>
+          <td>Cải thiện mạnh ROC; SMOTE 300% giúp RF đạt ROC 91.8%.</td>
+          <td>Nếu áp dụng trước chia fold, sẽ có nguy cơ synthetic-neighbor leakage.</td>
+        </tr>
+        <tr>
+          <td>J48, NBTree, Logistic Regression, Naïve Bayes, LMT, Random Forest</td>
+          <td>Nhóm mô hình baseline để so sánh.</td>
+          <td>Đủ rộng cho một paper pipeline nền tảng.</td>
+          <td>Thiếu calibration, PR-AUC và external validation.</td>
+        </tr>
+        <tr>
+          <td>⭐ Vote ensemble: NBTree + Random Forest + LMT</td>
+          <td>Mô hình thắng cuối cùng.</td>
+          <td>ROC/AUC 92.2%, recall gần 99.9%, specificity 74.6–74.7 trên Table 6.</td>
+          <td>Paper chưa mô tả chi tiết trọng số Vote và không phát hành code.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2>🗄️ Dataset</h2>
+    <table>
+      <thead>
+        <tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả</th><th>Link</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Henry Ford ExercIse Testing (FIT) project</td>
+          <td>32,555 bệnh nhân; 5,099 incident diabetes sau 5 năm; 27,456 không mắc.</td>
+          <td>62 thuộc tính ban đầu; 26 biến lâm sàng G1; 13 biến G2 sau feature selection.</td>
+          <td>Cohort bệnh nhân không có CAD/HF biết trước, trải qua treadmill stress testing tại Henry Ford Health Systems giai đoạn 1991–2009; ghép EMR, administrative databases, claim files và death registry.</td>
+          <td><a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0179805">PLOS article/Data Availability</a></td>
+        </tr>
+        <tr>
+          <td>Access procedure</td>
+          <td>Không tải công khai trực tiếp.</td>
+          <td>UNKNOWN về data dictionary đầy đủ trong bản extract; paper nhắc S1 Appendix.</td>
+          <td>Dữ liệu có hạn chế đạo đức; có thể xin sau IRB approval. Paper nêu liên hệ Dr. Tim Roehrs, Henry Ford Health Systems IRB.</td>
+          <td><a href="https://doi.org/10.1371/journal.pone.0179805">DOI</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">Ý nghĩa với đề tài: đây là một mảnh quan trọng để cân bằng kho paper, vì nó không phải PIMA/cross-sectional lặp lại mà là long-term risk trên cohort lâm sàng thật.</div>
+  </section>
+
+  <section class="block">
+    <h2>⚙️ Cách triển khai</h2>
+    <table>
+      <thead>
+        <tr><th>Bước pipeline</th><th>Chi tiết theo paper</th><th>Ghi chú tái lập</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1. Lập cohort</td>
+          <td>Chọn bệnh nhân FIT không có CAD/HF biết trước, có baseline treadmill stress-test và follow-up 5 năm.</td>
+          <td>Label là diabetic/non-diabetic sau 5 năm, không phải chẩn đoán cùng thời điểm.</td>
+        </tr>
+        <tr>
+          <td>2. Chuẩn hoá biến</td>
+          <td>Binary attributes đổi thành nominal Yes/No; biến liên tục rời rạc hoá.</td>
+          <td>Cần ghi rõ binning khi tái lập; paper mô tả ở mức tổng quát.</td>
+        </tr>
+        <tr>
+          <td>3. Feature selection</td>
+          <td>G1 gồm 26 biến theo clinical importance; G2 gồm 13 biến có Information Gain ≥ 0.01.</td>
+          <td>Top biến: Age, Resting Heart Rate, MET, Resting SBP/DBP, Sedentary Lifestyle, Black, Obesity, Hypertension...</td>
+        </tr>
+        <tr>
+          <td>4. Balance dữ liệu</td>
+          <td>So sánh random under-sampling và SMOTE 100/200/300%.</td>
+          <td>Khi làm lại nên đặt SMOTE trong training fold của CV để tránh leakage.</td>
+        </tr>
+        <tr>
+          <td>5. Train & validate</td>
+          <td>Huấn luyện 6 classifier + Vote ensemble, đánh giá bằng 10-fold cross-validation.</td>
+          <td>Paper thiếu external validation, nên chưa đủ để kết luận triển khai lâm sàng.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="formula">D = {(x_i, y_i)}, y_i ∈ {diabetic, non_diabetic}
+
+G2 = {feature_j | InformationGain(feature_j) ≥ 0.01}
+
+D_train_balanced = SMOTE(D_train_minority, k-nearest-neighbors)
+
+Vote(x) = mode{ NBTree(x), RandomForest(x), LMT(x) }
+
+Best reported: AUC_ROC(Vote, FIT, 10-fold CV) = 0.922</div>
+    <div class="svg-wrap" aria-label="Pipeline figure reconstructed from paper">
+      <svg width="980" height="180" viewBox="0 0 980 180" role="img" aria-label="Pipeline FIT to preprocessing to SMOTE to models to Vote ensemble">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1">
+            <stop offset="0" stop-color="#0f766e"/>
+            <stop offset="1" stop-color="#2563eb"/>
+          </linearGradient>
+          <linearGradient id="g2" x1="0" x2="1">
+            <stop offset="0" stop-color="#6d28d9"/>
+            <stop offset="1" stop-color="#9333ea"/>
+          </linearGradient>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#526273"/>
+          </marker>
+        </defs>
+        <rect x="10" y="35" width="150" height="92" rx="18" fill="url(#g1)"/>
+        <text x="85" y="68" text-anchor="middle" fill="#fff" font-weight="700">FIT cohort</text>
+        <text x="85" y="94" text-anchor="middle" fill="#fff" font-size="13">32,555 patients</text>
+        <text x="85" y="114" text-anchor="middle" fill="#fff" font-size="13">5-year label</text>
+        <line x1="168" y1="82" x2="222" y2="82" stroke="#526273" stroke-width="3" marker-end="url(#arrow)"/>
+        <rect x="230" y="35" width="160" height="92" rx="18" fill="#eaf4ff" stroke="#b9d4ef"/>
+        <text x="310" y="64" text-anchor="middle" fill="#16324f" font-weight="700">Preprocess</text>
+        <text x="310" y="90" text-anchor="middle" fill="#31465c" font-size="13">discretize</text>
+        <text x="310" y="110" text-anchor="middle" fill="#31465c" font-size="13">G1 → G2 features</text>
+        <line x1="398" y1="82" x2="452" y2="82" stroke="#526273" stroke-width="3" marker-end="url(#arrow)"/>
+        <rect x="460" y="35" width="150" height="92" rx="18" fill="#fff7ed" stroke="#fed7aa"/>
+        <text x="535" y="68" text-anchor="middle" fill="#7c2d12" font-weight="700">SMOTE</text>
+        <text x="535" y="94" text-anchor="middle" fill="#7c2d12" font-size="13">100/200/300%</text>
+        <text x="535" y="114" text-anchor="middle" fill="#7c2d12" font-size="13">class balance</text>
+        <line x1="618" y1="82" x2="672" y2="82" stroke="#526273" stroke-width="3" marker-end="url(#arrow)"/>
+        <rect x="680" y="18" width="130" height="42" rx="14" fill="#f0fdf4" stroke="#bbf7d0"/>
+        <text x="745" y="44" text-anchor="middle" fill="#166534" font-size="13" font-weight="700">NBTree</text>
+        <rect x="680" y="70" width="130" height="42" rx="14" fill="#f0fdf4" stroke="#bbf7d0"/>
+        <text x="745" y="96" text-anchor="middle" fill="#166534" font-size="13" font-weight="700">Random Forest</text>
+        <rect x="680" y="122" width="130" height="42" rx="14" fill="#f0fdf4" stroke="#bbf7d0"/>
+        <text x="745" y="148" text-anchor="middle" fill="#166534" font-size="13" font-weight="700">LMT</text>
+        <line x1="818" y1="91" x2="872" y2="91" stroke="#526273" stroke-width="3" marker-end="url(#arrow)"/>
+        <rect x="880" y="43" width="90" height="96" rx="18" fill="url(#g2)"/>
+        <text x="925" y="79" text-anchor="middle" fill="#fff" font-weight="800">Vote</text>
+        <text x="925" y="105" text-anchor="middle" fill="#fff" font-size="13">AUC</text>
+        <text x="925" y="125" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">0.922</text>
+      </svg>
+      <p class="muted" style="margin:8px 4px 0">Sơ đồ pipeline được tái dựng từ Methods/Results của PDF; paper gốc không cung cấp code.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>🏆 Kết quả</h2>
+    <div class="metrics">
+      <div class="metric">
+        <strong>Best ROC/AUC</strong>
+        <div class="big">0.922</div>
+        <p>Vote ensemble trên FIT.</p>
+        <div class="src">Nguồn: Table 6; Discussion/Conclusion.</div>
+      </div>
+      <div class="metric">
+        <strong>Accuracy</strong>
+        <div class="big">89.0%</div>
+        <p>Vote ensemble, cả G1 và G2.</p>
+        <div class="src">Nguồn: Table 6.</div>
+      </div>
+      <div class="metric">
+        <strong>Recall</strong>
+        <div class="big">99.9%</div>
+        <p>Vote ensemble với G2.</p>
+        <div class="src">Nguồn: Table 6.</div>
+      </div>
+      <div class="metric">
+        <strong>Specificity</strong>
+        <div class="big">74.6%</div>
+        <p>Vote ensemble với G2.</p>
+        <div class="src">Nguồn: Table 6.</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>FIT</td>
+          <td>Logistic Regression</td>
+          <td>Imbalanced data, G1</td>
+          <td>ROC = 69.1%; Accuracy = 84.29%; Recall = 99.8%; Specificity = 0.70%</td>
+          <td>Fig 1 + Table 4</td>
+        </tr>
+        <tr>
+          <td>FIT</td>
+          <td>Logistic Regression</td>
+          <td>Imbalanced data, G2</td>
+          <td>ROC = 68.9%; Accuracy = 84.32%; Recall = 99.9%; Specificity = 0.50%</td>
+          <td>Fig 2 + Table 5</td>
+        </tr>
+        <tr>
+          <td>FIT</td>
+          <td>Logistic Regression</td>
+          <td>Random under-sampling, distribution spread 1.0/1.5/2.5</td>
+          <td>ROC cao nhất khoảng 69.1%; paper kết luận không cải thiện so với imbalanced data</td>
+          <td>Results, Random under-sampling paragraph + Fig 3</td>
+        </tr>
+        <tr>
+          <td>FIT</td>
+          <td>LMT</td>
+          <td>SMOTE 100% và 200%</td>
+          <td>ROC = 83.7% và 88.9%</td>
+          <td>Results, SMOTE paragraph + Fig 4</td>
+        </tr>
+        <tr>
+          <td>FIT</td>
+          <td>Random Forest</td>
+          <td>SMOTE 300%</td>
+          <td>ROC = 91.8%</td>
+          <td>Results, SMOTE paragraph + Fig 4</td>
+        </tr>
+        <tr>
+          <td>FIT</td>
+          <td>⭐ Vote: NBTree + RF + LMT</td>
+          <td>SMOTE/ensemble, G1</td>
+          <td>ROC = 92.2%; Kappa = 76.8; Recall = 99.7%; Specificity = 74.7%; Precision = 84.1%; Accuracy = 89.0%; F1 = 91.3</td>
+          <td>Table 6</td>
+        </tr>
+        <tr>
+          <td>FIT</td>
+          <td>⭐ Vote: NBTree + RF + LMT</td>
+          <td>SMOTE/ensemble, G2</td>
+          <td>ROC = 92.2%; Kappa = 77; Recall = 99.9%; Specificity = 74.6%; Precision = 84.1%; Accuracy = 89.0%; F1 = 91.3</td>
+          <td>Table 6</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">Đọc đúng kết quả: paper rất mạnh về ROC/AUC sau SMOTE + Vote, nhưng baseline imbalanced có specificity cực thấp. Vì vậy nếu dùng làm nền cho đề tài, cần nhấn mạnh bài học về imbalance và đánh giá đa metric, không chỉ accuracy/recall.</div>
+  </section>
+
+  <section class="block">
+    <h2>⚠️ Lưu ý quan trọng</h2>
+    <div class="callouts">
+      <div class="callout">
+        <strong>⚠️ Rủi ro</strong>
+        <p>Paper không nói đủ rõ SMOTE/feature selection/discretization được fit riêng trong từng training fold hay làm trên toàn bộ dữ liệu trước 10-fold CV. Nếu làm trước CV, AUC 0.922 có thể bị lạc quan do leakage.</p>
+      </div>
+      <div class="callout">
+        <strong>🎯 Giới hạn</strong>
+        <p>Không có code public; dữ liệu không tải mở trực tiếp mà cần IRB approval; thiếu external validation, calibration, PR-AUC và phân tích fairness theo nhóm dân số.</p>
+      </div>
+      <div class="callout">
+        <strong>💡 Vai trò trong đề tài</strong>
+        <p>Nên giữ làm paper Layer 1 tiêu biểu cho long-term risk: dùng cohort EHR thật, xử lý imbalance bằng SMOTE, và chứng minh ensemble cải thiện rõ so với baseline. Khi viết, cần phê bình leakage và validation để không “ăn theo” con số AUC một cách dễ dãi.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,69 @@
+{
+  "paper_id": "islam2019_early_stage_diabetes",
+  "title": "Likelihood Prediction of Diabetes at Early Stage Using Data Mining Techniques",
+  "authors": [
+    "M. M. Faniqul Islam",
+    "Rahatara Ferdousi",
+    "Sadikur Rahman",
+    "Humayra Yasmin Bushra"
+  ],
+  "year": 2019,
+  "venue": "Computer Vision and Machine Intelligence in Medical Image Analysis",
+  "doi": "10.1007/978-981-13-8798-2_12",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 258,
+  "citations_secondary": 216,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 2,
+  "layer_uncertain": false,
+  "prediction_horizon": "early_detection",
+  "horizon_uncertain": false,
+  "datasets_mentioned": [
+    "Early Stage Diabetes Risk Prediction Dataset"
+  ],
+  "dataset_slugs": [
+    "early-stage-diabetes-risk-prediction"
+  ],
+  "method_slugs": [
+    "random-forest",
+    "logistic-regression",
+    "naive-bayes",
+    "ten-fold-cross-validation",
+    "holdout-validation"
+  ],
+  "code_url": null,
+  "reproducibility": 2,
+  "source_pdf": null,
+  "page_count": null,
+  "open_access_pdf": null,
+  "license": null,
+  "pdf_status": "pending_closed_access",
+  "pdf_fetch_attempts": "2026-07-01: Unpaywall không có OA location; Springer VOR closed access. ResearchGate author-manuscript direct URL trả 403; Springer content/pdf trả HTML, không phải PDF. Cần tải tay qua Springer/quyền trường hoặc nút Download full-text trên ResearchGate.",
+  "download_link": "https://link.springer.com/chapter/10.1007/978-981-13-8798-2_12",
+  "is_seed": false,
+  "lookup_status": "ok",
+  "status": "searched",
+  "analysis_status": "none",
+  "reject_reason": null,
+  "found_by": "paper-finder/codex-multi-agent",
+  "abstract": "A 520-participant symptom questionnaire dataset from Sylhet Diabetes Hospital is used to compare Naive Bayes, logistic regression and random forest under 10-fold cross-validation and an 80:20 split for early-stage diabetes likelihood prediction.",
+  "url": "https://doi.org/10.1007/978-981-13-8798-2_12",
+  "scope_note": "Đạt §7: 216 citations trên Semantic Scholar (257 OpenAlex); dataset 520×16 công khai tại UCI theo CC BY 4.0; feature, ba classifier và hai protocol đánh giá đủ tái lập. Layer 2 vì trọng tâm so sánh model; horizon early_detection theo framing và đối tượng newly/would-be diabetic.",
+  "corrections": "Năm metadata dùng 2019 theo Crossref, Semantic Scholar và OpenAlex; một số citation hiển thị chapter trong volume xuất bản 2020.",
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Chưa phân tích + chưa có PDF (closed access). Related work.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2019-08-28",
+    "age_years": 6.9,
+    "citations": 258,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

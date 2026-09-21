@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zou et al. 2018 — RF / DT / NN + mRMR / PCA cho ĐTĐ — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --surface: #ffffff; --border: #e2e8f0; --text: #0f172a; --muted: #64748b;
+    --primary: #2563eb; --primary-soft: #dbeafe; --success: #047857; --success-soft: #d1fae5;
+    --danger: #b91c1c; --danger-soft: #fee2e2; --warning: #b45309; --warning-soft: #fef3c7;
+    --accent: #7c3aed; --accent-soft: #ede9fe; --code-bg: #0f172a; --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+  .header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white; border-radius: 16px; padding: 28px 32px; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15); margin-bottom: 22px; }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; color: #fff; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .compare-card { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid var(--accent-soft); border-left: 5px solid var(--accent); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(124,58,237,0.06); }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ 1. HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Predicting Diabetes Mellitus With Machine Learning Techniques</h1>
+    <div class="meta">
+      <span>📅 <strong>2018</strong></span>
+      <span>📰 Frontiers in Genetics</span>
+      <span>📚 <strong>917</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.3389/fgene.2018.00515" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không (không repo; chỉ mirror dữ liệu PIMA, URL 2018 gần như đã chết)</span>
+      <span class="badge yes">📊 Dataset: Có (PIMA công khai; Luzhou riêng tư)</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="#" target="_blank">Luzhou physical examination (Trung Quốc)</a> — dữ liệu khám sức khỏe bệnh viện, 14 chỉ số; <strong>riêng tư / restricted</strong> ("collected by ourselves, unable to use for comparison"). Nhãn ĐTĐ xác định tại thời điểm khám (fasting glucose).</li>
+      <li>🔹 <a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">PIMA Indians Diabetes</a> — công khai; 8 biến; 768 mẫu → 392 sau khi bỏ mẫu thiếu. Nhãn theo dung nạp glucose 2h (OGTT).</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ 2. COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Benchmark <strong>Decision Tree (J48) vs Random Forest vs Neural Network</strong> để dự đoán ĐTĐ trên dữ liệu tabular, kèm khảo sát <strong>giảm chiều mRMR vs PCA</strong> và xử lý mất cân bằng bằng <strong>random undersampling</strong>. Kết luận: RF thắng ổn định nhất; mRMR &gt; PCA; chỉ dùng fasting glucose là chưa đủ. Là bài ML-dự-đoán-ĐTĐ <strong>được trích dẫn nhiều nhất</strong> (914).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">ACC <strong>0.8084</strong> — Luzhou, RF, all features, 5-fold CV (Table 1 = headline abstract). PIMA best ACC <strong>0.7721</strong> (RF + mRMR, Table 3). Luzhou independent test ACC <strong>0.8963</strong> (RF all features, Table 7). <strong>Không báo AUC</strong> — chỉ ACC/SN/SP/MCC.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">RF / J48 / NN (WEKA + MATLAB) → xóa mẫu thiếu/bất thường → <strong>random undersample</strong> về 68.994/lớp, lặp 5 lần lấy trung bình → giảm chiều <strong>mRMR</strong> (SPSS/tự cài) &amp; <strong>PCA</strong> (SPSS) → <strong>5-fold CV</strong> + <strong>independent hold-out</strong> (Luzhou) / 10-fold CV (PIMA). Hyperparameter không báo cáo.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Yếu hơn <code>hasan2020</code> trên PIMA (họ AUC <strong>0.950</strong> + code + ensemble AUC-weighted + CV phân tầng; zou chỉ ACC 0.7721, không AUC, không code). Ngang tính chất <code>khanam2021</code> (đều "so classifier trên PIMA", đều không code/không AUC) nhưng zou <strong>báo MCC</strong> + thêm dataset lâm sàng lớn Luzhou; khanam headline 88.6% acc cao hơn nhưng chỉ 1 split (tụt ~76% ở K-fold).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 3. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">Zou và cộng sự (Tianjin University &amp; Southwest Medical University, 2018) so sánh ba thuật toán phân loại — <strong>decision tree (J48)</strong>, <strong>random forest (RF)</strong> và <strong>neural network (NN)</strong> — để dự đoán đái tháo đường trên hai bộ dữ liệu tabular: (1) dữ liệu khám sức khỏe bệnh viện <strong>Luzhou, Trung Quốc</strong> (14 chỉ số, hàng trăm nghìn mẫu, riêng tư) và (2) <strong>PIMA Indians</strong> công khai (8 biến). Họ khảo sát hai kỹ thuật giảm chiều — <strong>mRMR</strong> (minimum redundancy maximum relevance) và <strong>PCA</strong> — cùng cách xử lý mất cân bằng bằng <strong>random undersampling</strong> (chọn ngẫu nhiên 68.994 mẫu mỗi lớp, lặp 5 lần lấy trung bình). Kết luận trung thực và khiêm tốn: <strong>RF cho kết quả tốt nhất và ổn định nhất</strong>, ba model chênh nhau không nhiều khi có glucose; <strong>mRMR nhỉnh hơn PCA</strong> (PCA "không phù hợp" cho hai bộ này); và <strong>chỉ dùng fasting glucose là chưa đủ</strong> để đạt kết quả tốt nhất. Với 914 trích dẫn, đây là bài ML-dự-đoán-ĐTĐ được cite nhiều nhất — vai trò của nó trong kho là <strong>chuẩn tham chiếu bắt buộc cho phần "so sánh model" (RF thắng)</strong>, chứ không phải một phương pháp SOTA để xây model chính.</p>
+    <h3>Vì sao là Layer 2 (Model Hiệu Quả)?</h3>
+    <table>
+      <tr><td>🎯 Đóng góp = MÔ HÌNH</td><td>Trọng tâm là <strong>benchmark thuật toán phân loại</strong> (J48 vs RF vs NN) và chọn tổ hợp model + feature-selection tốt nhất — đúng phạm vi Layer 2, không phải tiền xử lý (L1), cohort EHR theo thời gian (L3) hay giải thích/triển khai (L4).</td></tr>
+      <tr><td>🔬 Feature selection + so model</td><td>Khảo sát <strong>mRMR vs PCA</strong> và ảnh hưởng của bỏ/giữ biến (all features, chỉ glucose, bỏ glucose, 11 biến) — bản chất là tối ưu &amp; tuyển chọn mô hình + đặc trưng.</td></tr>
+      <tr><td>⏱️ Horizon = cross_sectional</td><td>Nhãn ĐTĐ được xác định <strong>cùng thời điểm</strong> với các feature (dữ liệu khám sức khỏe / xét nghiệm tại một lần khám), <strong>không có follow-up theo thời gian</strong>, không nhắm nhóm chưa chẩn đoán như một bài toán tầm soát. Đây là phân loại cắt ngang thuần → <code>cross_sectional</code>.</td></tr>
+      <tr><td>🏷️ Label = binary</td><td>Bài toán là ĐTĐ vs khỏe (nhị phân). Tác giả nói rõ "due to the data, we cannot predict the type of diabetes" → <strong>không phân giai đoạn / không multiclass staging</strong>.</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>WEKA</code></td><td>Cài đặt &amp; chạy Decision Tree (J48) và Random Forest</td><td>Mã nguồn mở, phổ biến, dễ tái lập trên PIMA</td><td>Dùng cấu hình mặc định; <strong>hyperparameter (số cây RF, confidence J48) không báo cáo</strong></td></tr>
+        <tr><td><code>MATLAB</code> (Neural Pattern Recognition)</td><td>Train mạng nơ-ron hai lớp feed-back (sigmoid ẩn + softmax ra)</td><td>Công cụ chuẩn, có sẵn app</td><td>Thương mại (không mở); chỉ nêu 10 nơ-ron ẩn, không nêu epoch/lr/khởi tạo</td></tr>
+        <tr><td><code>mRMR</code> (min-redundancy max-relevance)</td><td>Giảm chiều / chọn đặc trưng theo thông tin tương hỗ</td><td>Chọn biến ít dư thừa, tổng quát tốt; <strong>hợp với PIMA</strong> (giúp RF đạt 0.7721)</td><td>Với Luzhou không vượt "all features"; danh sách biến chọn mô tả sơ lược</td></tr>
+        <tr><td><code>PCA</code> (qua <code>SPSS</code>)</td><td>Giảm chiều bằng phép chiếu (KMO + Bartlett kiểm định, ma trận thành phần)</td><td>Gộp nhiều chỉ số về ít thành phần không tương quan</td><td>Tác giả kết luận <strong>PCA "không phù hợp"</strong> cho cả hai bộ (ACC thấp nhất); phá cấu trúc/diễn giải feature</td></tr>
+        <tr><td>Random undersampling</td><td>Cân bằng lớp: chọn ngẫu nhiên 68.994 mẫu/lớp, lặp <strong>5 lần</strong> lấy trung bình</td><td>Đơn giản, khử thiên lệch đa số; giảm phương sai bằng lặp 5 lần</td><td>Vứt bỏ nhiều mẫu majority; prevalence 50/50 <strong>nhân tạo</strong> → ACC không suy ra vận hành thật</td></tr>
+        <tr><td>5-fold CV + Independent hold-out</td><td>Đánh giá chính (5-fold) + kiểm tra "universal applicability" trên tập độc lập 13.700 mẫu (Luzhou); PIMA dùng 10-fold để so bài khác</td><td>Có tách tập độc lập — hiếm ở bài cùng thời</td><td>Không seed công bố; test độc lập ACC (0.8963) cao bất thường so CV (0.8084) → cần soi phân phối</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 5. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>ACC — Luzhou, all features, 5-fold CV</strong> (Table 1, chính là số headline abstract). ⭐ = model tác giả chọn là tốt nhất tổng thể.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>ACC (Luzhou, all feat)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>Random Forest</code> ⭐<small> (thắng tổng thể)</small></td><td>Ensemble bagging nhiều cây</td><td><strong>0.8084</strong></td><td>Tốt &amp; ổn định nhất; thắng cả independent test (0.8963, Table 7) và PIMA+mRMR (0.7721, Table 3); MCC cao nhất (0.6189)</td><td>Hộp đen; trên PIMA all-features thua NN chút (0.7604 vs 0.7667)</td></tr>
+        <tr><td>2</td><td><code>Decision Tree (J48)</code></td><td>Cây quyết định đơn (C4.8/C4.5)</td><td><strong>0.7853</strong></td><td>Dễ diễn giải (Fig 2/3 cho thấy glucose là root node); thắng vài setting glucose-only/mRMR trên Luzhou</td><td>Kém RF; dễ overfit; chênh không nhiều khi có glucose</td></tr>
+        <tr><td>3</td><td><code>Neural Network</code></td><td>Mạng 2 lớp feed-back, 10 nơ-ron ẩn (MATLAB)</td><td><strong>0.7841</strong></td><td>Nhỉnh nhất trên vài setting PIMA (all-features 0.7667; PCA 0.7475)</td><td>Kém nhất khi bỏ glucose; sụp trên glucose-only independent test (ACC 0.5010, Table 7); không nêu siêu tham số</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Ghi chú chọn model: khi feature-set chứa glucose, ba model chênh lệch nhỏ; khi <strong>bỏ glucose</strong> (Table 5/6) RF vượt trội rõ (0.7225 vs J48 0.6917 / NN 0.6986). Trên PIMA, model &amp; feature-selection thắng khác nhau: RF+mRMR tốt nhất (0.7721), còn all-features thì NN ≈ RF. Tác giả kết luận "random forests are obviously better than the other classifiers in some methods" → chọn RF làm đại diện.</p>
+  </section>
+
+  <!-- ═══════════════ 6. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Luzhou physical examination (China)</strong></td>
+          <td>Sau lọc: 151.598 ĐTĐ + 69.082 khỏe → train cân bằng <strong>68.994/lớp</strong> (≈137.988), lặp 5 lần lấy trung bình. Independent test = <strong>13.700</strong> mẫu (khác 5 tập train).</td>
+          <td><strong>14</strong> chỉ số</td>
+          <td>Dữ liệu khám sức khỏe bệnh viện. 14 biến: tuổi, mạch, nhịp thở, huyết áp tâm thu/tâm trương trái-phải, cao, nặng, physique index, <strong>fasting glucose</strong>, vòng eo, LDL, HDL. Nhãn ĐTĐ tại thời điểm khám. <strong>Riêng tư / restricted</strong>.</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>PIMA Indians Diabetes</strong></td>
+          <td>768 → <strong>392</strong> sau khi bỏ mẫu thiếu (paper viết nhầm "786")</td>
+          <td><strong>8</strong> biến</td>
+          <td>Nữ ≥21 tuổi gốc Pima. Biến: số lần mang thai, <strong>glucose 2h-OGTT</strong>, huyết áp tâm trương, độ dày da tam đầu, insulin 2h, BMI, pedigree, tuổi. Công khai.</td>
+          <td><a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">Kaggle / UCI</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">mRMR chọn: Luzhou top-5 = <em>height, HDL, fasting glucose, breathe, LDL</em>; PIMA top-3 = <em>glucose, insulin 2h, age</em>. PCA: Luzhou → 5 thành phần (loại height &amp; weight trước PCA vì trùng physique index), PIMA → 3 thành phần. Lưu ý quan trọng: <strong>cả hai bộ đều giữ glucose làm feature — trong khi glucose chính là tiêu chí chẩn đoán ĐTĐ</strong> → nguy cơ rò rỉ nhãn (xem Lưu ý).</p>
+  </section>
+
+  <!-- ═══════════════ 7. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Làm sạch</td><td>Xóa mẫu bất thường &amp; thiếu (Luzhou); bỏ mẫu thiếu PIMA (768→392)</td><td>151.598 ĐTĐ + 69.082 khỏe (Luzhou); 392 (PIMA)</td></tr>
+        <tr><td>2</td><td>Cân bằng lớp</td><td><strong>Random undersample</strong> 68.994/lớp, lặp <strong>5 lần</strong>, lấy trung bình kết quả</td><td>5 tập train cân bằng</td></tr>
+        <tr><td>3</td><td>Giảm chiều (chạy song song 3 nhánh)</td><td>(a) All features · (b) <strong>mRMR</strong> chọn top-k · (c) <strong>PCA</strong> (SPSS) → thành phần chính</td><td>Các không gian đặc trưng để so sánh</td></tr>
+        <tr><td>4</td><td>Khảo sát biến glucose</td><td>Thêm setting: chỉ glucose / bỏ glucose / 11 biến (bỏ glucose, LDL, HDL)</td><td>Đo đóng góp của xét nghiệm máu</td></tr>
+        <tr><td>5</td><td>Train &amp; so sánh</td><td>J48 &amp; RF (WEKA) + NN 2 lớp 10 nơ-ron ẩn (MATLAB), trên mọi setting</td><td>Ma trận model × feature-set</td></tr>
+        <tr><td>6</td><td>Đánh giá</td><td><strong>5-fold CV</strong> (chính) · <strong>independent hold-out</strong> 13.700 (Luzhou) · <strong>10-fold CV</strong> (PIMA, để so bài khác)</td><td>ACC, SN, SP, MCC</td></tr>
+        <tr><td>7</td><td>So với văn liệu</td><td>PIMA 10-fold vs AWAIS / NNEE / AIRS (Table 8)</td><td>Định vị hiệu năng</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Chỉ số đánh giá (mục Measurement — định nghĩa theo TP/TN/FP/FN)</span>
+      ACC = (TP + TN) / (TP + TN + FP + FN)<br>
+      Sensitivity (SN) = TP / (TP + FN) &nbsp;·&nbsp; Specificity (SP) = TN / (TN + FP)
+    </div>
+    <div class="formula">
+      <span class="label">Matthews correlation coefficient (mục Measurement — định nghĩa chuẩn; range [−1, 1])</span>
+      MCC = (TP·TN − FP·FN) / √((TP+FP)(TP+FN)(TN+FP)(TN+FN))
+    </div>
+    <div class="formula">
+      <span class="label">Information gain của J48 (mục Decision Tree — paper mô tả bằng chữ, công thức gốc là ảnh, không trích số)</span>
+      Node được chọn theo Information Gain lớn nhất = Entropy(trước tách) − Entropy(sau tách theo thuộc tính A). <span style="color:#94a3b8">// công thức chi tiết: UNKNOWN (ảnh trong PDF)</span>
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">🖼️ Fig 2 &amp; 3 — Cây quyết định J48 trên Luzhou (root = fasting blood sugar; weight/age quan trọng) và trên PIMA (root = glucose; insulin/age quan trọng). Fig 4 &amp; 5 — biểu đồ ACC từng phương pháp trên Luzhou/PIMA. <span class="caption">Chưa crop base64; mọi số ACC/SN/SP/MCC tương ứng đã trích đầy đủ từ Table 1–8 ở mục Kết quả. KHÔNG bịa hình.</span></div>
+  </section>
+
+  <!-- ═══════════════ 8. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.8084</span><span class="label">ACC — Luzhou, RF, all feat, 5-fold CV (Table 1, headline)</span></div>
+      <div class="metric"><span class="value">0.7721</span><span class="label">ACC — PIMA best, RF + mRMR, 5-fold CV (Table 3)</span></div>
+      <div class="metric"><span class="value">0.8963</span><span class="label">ACC — Luzhou independent test, RF all feat (Table 7)</span></div>
+      <div class="metric"><span class="value">0.6189</span><span class="label">MCC — Luzhou RF all feat (Table 1); không có AUC</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>Luzhou</td><td>RF ⭐</td><td>All features · 5-fold CV</td><td><strong>ACC 0.8084</strong> · SN 0.8495 · SP 0.7673 · MCC 0.6189</td><td>Table 1</td></tr>
+        <tr><td>Luzhou</td><td>J48</td><td>All features · 5-fold CV</td><td>ACC 0.7853 · SN 0.8153 · SP 0.7563 · MCC 0.5726</td><td>Table 1</td></tr>
+        <tr><td>Luzhou</td><td>NN</td><td>All features · 5-fold CV</td><td>ACC 0.7841 · SN 0.8231 · SP 0.7451 · MCC 0.5699</td><td>Table 1</td></tr>
+        <tr><td>PIMA</td><td>RF ⭐</td><td>mRMR (3 biến) · 5-fold CV</td><td><strong>ACC 0.7721</strong> · SN 0.7458 · SP 0.7985 · MCC 0.5451</td><td>Table 3</td></tr>
+        <tr><td>PIMA</td><td>NN</td><td>All features · 5-fold CV</td><td>ACC 0.7667 · MCC 0.5349</td><td>Table 1</td></tr>
+        <tr><td>PIMA</td><td>RF</td><td>All features · 5-fold CV</td><td>ACC 0.7604 · MCC 0.5210</td><td>Table 1</td></tr>
+        <tr><td>Luzhou</td><td>RF</td><td>All features · <strong>Independent test</strong></td><td><strong>ACC 0.8963</strong> · SN 0.9226 · SP 0.8700 · MCC 0.7937</td><td>Table 7</td></tr>
+        <tr><td>Luzhou</td><td>RF</td><td>mRMR · Independent test</td><td>ACC 0.8857 · SN 0.9568 · SP 0.8146 · MCC 0.7794</td><td>Table 7</td></tr>
+        <tr><td>Luzhou</td><td>NN</td><td><strong>Chỉ blood glucose</strong> · Independent test</td><td>ACC 0.5010 · SP 0.0631 · MCC 0.0040 (sụp đổ)</td><td>Table 7</td></tr>
+        <tr><td>Luzhou</td><td>RF</td><td><strong>Bỏ blood glucose</strong> · 5-fold CV</td><td>ACC 0.7225 (tụt từ 0.8084)</td><td>Table 5</td></tr>
+        <tr><td>Luzhou</td><td>RF</td><td>11 biến (bỏ glucose, LDL, HDL)</td><td>ACC 0.7104</td><td>Table 6</td></tr>
+        <tr><td>PIMA</td><td>mRMR (RF)</td><td>10-fold CV vs văn liệu</td><td>ACC 0.7852 &gt; AWAIS 0.7587 · NNEE 0.7557 · AIRS 0.7410</td><td>Table 8</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Đọc nhanh: (1) RF thắng ổn định; (2) <strong>independent test 0.8963 &gt; CV 0.8084</strong> — bất thường (test thường thấp hơn train), cần soi phân phối tập test 13.700; (3) <strong>bỏ glucose → ACC tụt mạnh</strong> (0.8084 → 0.72 → 0.71) và chỉ-glucose-NN sụp còn 0.50 → glucose gánh phần lớn tín hiệu; (4) mRPR &gt; PCA, mRMR đặc biệt hợp PIMA. Lưu ý docling gán nhầm caption Table 8 ("without blood glucose") — nội dung thực là bảng so PIMA 10-fold với AWAIS/NNEE/AIRS.</p>
+  </section>
+
+  <!-- ═══════════════ 9. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+    <div class="callout">
+      <strong>⚠️ Rủi ro / điểm cần soi</strong>
+      <ul>
+        <li><strong>Rò rỉ nhãn (label leakage):</strong> fasting glucose vừa là <em>feature</em> vừa là <em>tiêu chí chẩn đoán</em> ĐTĐ. Cây quyết định lấy glucose làm root node (max information gain, Fig 2/3). Đây là ví dụ điển hình biomarker-định-nghĩa-nhãn-làm-feature — cần nêu rõ khi trích dẫn.</li>
+        <li><strong>Accuracy một phần "thổi phồng" do glucose:</strong> bỏ glucose thì RF tụt 0.8084 → 0.7225 (Table 5) → 0.7104 (Table 6); NN chỉ-glucose sụp còn ACC 0.5010 (Table 7). Con số 0.80 không tách bạch được đóng góp mô hình khỏi đóng góp của biến gần-như-nhãn.</li>
+        <li><strong>Undersampling 50/50 nhân tạo:</strong> train cân bằng 68.994/lớp không phản ánh prevalence thật → ACC/SN/SP không suy trực tiếp ra vận hành lâm sàng; và đề tài dùng ACC làm metric chính (không AUC/PR) trên bài toán vốn mất cân bằng.</li>
+        <li><strong>Independent test cao hơn CV (0.8963 &gt; 0.8084):</strong> ngược trực giác; không rõ tập test 13.700 có cùng phân phối/không trùng tiền xử lý với train — cần thận trọng khi coi 0.8963 là "hiệu năng thật".</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>🎯 Giới hạn</strong>
+      <ul>
+        <li><strong>Luzhou riêng tư / restricted</strong> ("collected by ourselves, unable to use this data for comparison") → nhánh kết quả chính (số 0.8084 / 0.8963) <strong>không tái lập được</strong>; chỉ PIMA công khai.</li>
+        <li><strong>Không code repo</strong>, không seed, <strong>không báo hyperparameter</strong> (số cây RF, confidence J48, epoch/lr NN — chỉ nêu "10 nơ-ron ẩn") → tái lập ở mức <em>medium</em> (dựa mô tả WEKA/MATLAB).</li>
+        <li><strong>Không external validation chéo dân số</strong>: Luzhou (TQ) và PIMA là hai bài toán tách biệt, không validate model của bộ này lên bộ kia.</li>
+        <li><strong>Không AUC</strong> — chỉ ACC/SN/SP/MCC → khó so trực tiếp với baseline dùng AUC (hasan2020 AUC 0.950).</li>
+        <li>PCA tự kết luận "không phù hợp"; mRMR chỉ giúp PIMA. Bài không có mô hình boosting/ensemble hiện đại (XGBoost/AdaBoost) hay deep learning.</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Baseline Layer 2 cite cao nhất (914)</strong> — chuẩn tham chiếu bắt buộc cho luận điểm "RF là model tabular mạnh cho ĐTĐ" và cho phần so sánh J48 vs RF vs NN.</li>
+        <li><strong>Case study cảnh báo leakage:</strong> dùng chính bài này minh họa glucose-as-feature làm phồng ACC → củng cố mũi nhọn "đánh giá trung thực" (QA_LOG); đề tài nên tách nhánh no-lab (đối chiếu <code>yu2010</code>) hoặc kiểm soát biến gần-nhãn.</li>
+        <li><strong>Bằng chứng mRMR &gt; PCA</strong> cho tabular ĐTĐ (PCA phá cấu trúc feature) → định hướng ưu tiên feature-selection thay vì phép chiếu; và bằng chứng "chỉ glucose là chưa đủ".</li>
+        <li><strong>KHÔNG phải component để xây model chính</strong> (cũ 2018, không code, Luzhou private, không AUC, có leakage) — dùng làm mốc so sánh + related work, giống vai trò của <code>khanam2021</code> nhưng mạnh hơn về độ phủ dataset.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

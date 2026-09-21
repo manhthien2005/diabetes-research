@@ -1,0 +1,77 @@
+{
+  "paper_id": "hennebelle2023_mlops_iot_diabetes",
+  "title": "Secure and privacy-preserving automated machine learning operations into end-to-end integrated IoT-edge-artificial intelligence-blockchain monitoring system for diabetes mellitus prediction",
+  "authors": [
+    "Alain Hennebelle",
+    "Leila Ismail",
+    "Huned Materwala",
+    "Juma Al Kaabi",
+    "Priya Ranjan",
+    "Rajiv Janardhanan"
+  ],
+  "year": 2023,
+  "venue": "Computational and Structural Biotechnology Journal",
+  "doi": "10.1016/j.csbj.2023.11.038",
+  "arxiv": null,
+  "pubmed": "38169966",
+  "pmc": "PMC10758733",
+  "citations": 65,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://europepmc.org/articles/PMC10758733?pdf=render",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "pima",
+    "sylhet-early-stage",
+    "mimic",
+    "nhanes"
+  ],
+  "dataset_slugs": [
+    "pima",
+    "sylhet",
+    "mimic",
+    "nhanes"
+  ],
+  "method_slugs": [
+    "mlops",
+    "automated-machine-learning",
+    "iot-edge",
+    "blockchain",
+    "privacy-preserving-ml",
+    "end-to-end-pipeline"
+  ],
+  "layer": 1,
+  "layer_uncertain": true,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 3,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 29,
+  "pdf_status": "ok",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "corrections": {
+    "datasets": "Dataset THỰC SỰ dùng trong thực nghiệm chỉ gồm PIMA Indian, Sylhet, MIMIC III (Section 5.1, Bảng 11/13). 'nhanes' trong datasets_mentioned/dataset_slugs là SAI — NHANES chỉ xuất hiện ở related work (Bảng 1, ref [11]), không phải dữ liệu của bài này. Đề nghị bỏ nhanes khỏi dataset của bài.",
+    "method": "Cân bằng dữ liệu dùng SMOTE và CHỈ áp dụng trên 70% train (Section 5.5) — đúng chống leakage; feature selection là RFECV với RF làm evaluator (Section 5.4). method_slugs cũ ('mlops','iot-edge','blockchain','privacy-preserving-ml','end-to-end-pipeline','automated-machine-learning') khớp phần kiến trúc nhưng thiếu pipeline ML lõi: rfecv-feature-selection, smote, random-forest, grid-search, 10-fold-cv.",
+    "code": "code_url=null xác nhận ĐÚNG — đọc full text không thấy repo công khai (chỉ nêu dùng sklearn GridSearchCV).",
+    "prediction_horizon": "Xác nhận cross_sectional: nhãn lập đồng thời với risk factor — PIMA/Sylhet nhãn sẵn theo trạng thái hiện tại, MIMIC III nhãn trích từ ICD9 cùng lần khám; KHÔNG có khoảng cách thời gian feature→label, không follow-up N năm."
+  },
+  "scope_note": "PIPELINE/MLOps CẤP HỆ THỐNG — RẤT KHÁC BIỆT trong kho: thiết kế end-to-end IoT–edge–AI–blockchain + AutoML + bảo mật/riêng tư cho dự đoán ĐTĐ. Đánh giá trên NHIỀU dataset gồm cả MIMIC + NHANES (tiên tiến) lẫn PIMA/Sylhet → tham chiếu tốt cho hạ tầng triển khai. CSBJ 2023, 62 cite (§7 đạt). Gold OA CC-BY, PDF 29 trang qua Europe PMC. Chạm Layer 4 (triển khai/MLOps) → layer_uncertain. Không thấy code public. GIÁ TRỊ: bản thiết kế pipeline vận hành thực tế (AutoML+privacy+blockchain) để anh tham khảo khi đưa mô hình ra triển khai — góc nhìn ops mà các bài tabular khác thiếu.",
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2023-11-23",
+    "age_years": 2.7,
+    "citations": 65,
+    "threshold": ">=30 (bài 1-3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

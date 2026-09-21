@@ -1,0 +1,25 @@
+{
+  "paper": "hasan2020_diabetes_prediction_ensembling",
+  "status": "OK",
+  "engine": "docling+ocr",
+  "ocr_used": true,
+  "secs": 446.5,
+  "pages": 16,
+  "failed_pages": [],
+  "source_text_chars": 62866,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 61,
+  "qa": {
+    "out_chars": 70859,
+    "n_markdown_tables": 9,
+    "source_table_captions": 9,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 14,
+    "text_density": 1.0,
+    "score": 100,
+    "warnings": []
+  }
+}

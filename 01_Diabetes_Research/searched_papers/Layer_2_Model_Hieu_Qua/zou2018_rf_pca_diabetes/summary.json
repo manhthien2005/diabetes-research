@@ -1,0 +1,24 @@
+{
+  "paper_id": "zou2018_rf_pca_diabetes",
+  "layer": 2,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Benchmark Decision Tree (J48) vs Random Forest vs Neural Network cho dự đoán ĐTĐ trên 2 bộ tabular (Luzhou riêng tư + PIMA công khai), kèm khảo sát giảm chiều mRMR vs PCA và cân bằng lớp bằng random undersampling; kết luận RF thắng ổn định, mRMR > PCA, chỉ fasting glucose là chưa đủ. Bài ML-dự-đoán-ĐTĐ cite cao nhất kho (917).",
+  "method": "Xóa mẫu thiếu/bất thường -> random undersample 68.994/lớp (lặp 5 lần lấy TB) -> 3 nhánh giảm chiều (all features / mRMR / PCA-qua-SPSS) + khảo sát glucose (chỉ glucose / bỏ glucose / 11 biến) -> train J48 & RF (WEKA) + NN 2 lớp 10 nơ-ron ẩn (MATLAB) -> 5-fold CV (chính) + independent hold-out 13.700 (Luzhou) + 10-fold CV (PIMA). Hyperparameter không báo cáo.",
+  "best_metric": "ACC 0.8084 (RF, Luzhou, all features, 5-fold CV — Table 1, số headline abstract); PIMA best ACC 0.7721 (RF + mRMR — Table 3); Luzhou independent test ACC 0.8963 (RF all features — Table 7); MCC 0.6189 (Table 1). KHÔNG có AUC.",
+  "datasets": [
+    "luzhou-physical-exam",
+    "pima-indians-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Yếu hơn hasan2020 trên PIMA (họ AUC 0.950 + code public + ensemble AUC-weighted AB+XB + CV phân tầng; zou chỉ ACC 0.7721, không AUC, không code, không ensemble). Ngang tính chất khanam2021 (đều 'so classifier trên PIMA', đều không code/không AUC/không xử lý imbalance bằng phương pháp hiện đại) nhưng zou báo thêm MCC + thêm dataset lâm sàng lớn Luzhou (14 biến, hàng trăm nghìn mẫu); khanam headline 88.6% acc cao hơn zou 0.7721 nhưng chỉ 1 lần split (tụt ~76% ở K-fold), còn RF-zou ổn định qua 5-fold + independent test.",
+  "gap": "Label leakage: fasting glucose vừa là feature vừa là tiêu chí chẩn đoán (root node cây, Fig 2/3) — bỏ glucose ACC tụt 0.8084->0.7104, NN chỉ-glucose sụp 0.5010 → ACC bị phồng bởi biến gần-nhãn. Luzhou riêng tư nên nhánh kết quả chính không tái lập; không code/seed/hyperparameter; không AUC (chỉ ACC/SN/SP/MCC) trên bài toán vốn imbalance nhưng train cân bằng 50/50 nhân tạo; independent test (0.8963) cao hơn CV (0.8084) bất thường; không external validation chéo dân số; không boosting/ensemble/deep hiện đại.",
+  "verdict": "maybe",
+  "verdict_reason": "Baseline Layer 2 cite cao nhất (917) — chuẩn tham chiếu bắt buộc cho phần so RF/J48/NN và bằng chứng mRMR>PCA; nhưng leakage glucose làm phồng ACC, không code, không AUC, Luzhou private không tái lập → dùng làm reference + case-study cảnh báo leakage, KHÔNG đủ mạnh làm component xây model chính.",
+  "analyzed_at": "2026-07-06T00:00:00+07:00",
+  "role": "related",
+  "role_note": "Bài cite cao nhất kho (917) + case-study rò rỉ glucose (bỏ glucose ACC 0.808→0.710). Related work + có thể thay olisah2022 làm dẫn chứng rò rỉ.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

@@ -1,0 +1,26 @@
+{
+  "paper_id": "phan2025_remed_t2d_ensemble",
+  "layer": 2,
+  "prediction_horizon": "early_detection",
+  "contribution": "Đánh giá 20 ML/DL trên năm tập under-sampled, thử bốn chiến lược ensemble và chọn aggregation ổn định qua ba external datasets; cung cấp web server với mô hình 5/7/8 feature.",
+  "method": "IQR → median imputation → 5 balanced datasets → randomized 10-fold CV cho 20 classifiers → ensemble feature importance → Ensemble1 probability aggregation → external validation RTML1/RTML2/Pabna",
+  "best_metric": "RTML2 external: ACC 0.954, MCC 0.865, AUC 0.972, Sn 0.913, Sp 0.965 (Fig. S10F, §3.4(iv))",
+  "datasets": [
+    "pima-indians-diabetes",
+    "rtml1",
+    "rtml2",
+    "pabna-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Hơn hasan2020_diabetes_prediction_ensembling ở external validation đa cohort và web deployment; kém hơn về reproducibility vì không có code repository, trong khi hasan2020 có GitHub và báo cáo CV mean±std rõ.",
+  "gap": "Chỉ nữ, external cohorts nhỏ và không có CI/calibration; chưa làm rõ meta-feature stacking có hoàn toàn out-of-fold; số mẫu sau IQR mâu thuẫn 648 với 462+222=684; horizon là screening framing chứ không phải future onset.",
+  "verdict": "strong",
+  "verdict_reason": "Đáng follow vì minh họa external validation và cho thấy aggregation đơn giản tổng quát tốt hơn stacking thắng trên training; nên dùng như mẫu thiết kế validation, không xem accuracy cao là bằng chứng lâm sàng hoàn tất.",
+  "analyzed_at": "2026-07-01T00:00:00+07:00",
+  "role": "positioning",
+  "role_note": "SOTA gần nhất trong kho có 3 external dataset — xem người ta external thế nào.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

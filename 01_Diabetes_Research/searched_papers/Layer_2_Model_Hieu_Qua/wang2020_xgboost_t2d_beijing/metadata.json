@@ -1,0 +1,69 @@
+{
+  "paper_id": "wang2020_xgboost_t2d_beijing",
+  "title": "Prediction of Type 2 Diabetes Risk and Its Effect Evaluation Based on the XGBoost Model",
+  "authors": [
+    "Liyang Wang",
+    "Xiaoya Wang",
+    "Angxuan Chen",
+    "Xian Jin",
+    "Huilian Che"
+  ],
+  "year": 2020,
+  "venue": "Healthcare",
+  "doi": "10.3390/healthcare8030247",
+  "arxiv": null,
+  "pubmed": "32751894",
+  "pmc": "PMC7551910",
+  "citations": 140,
+  "citations_secondary": 120,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://europepmc.org/articles/PMC7551910?pdf=render",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "beijing-xicheng-health-survey"
+  ],
+  "dataset_slugs": [
+    "beijing-xicheng-survey"
+  ],
+  "method_slugs": [
+    "xgboost",
+    "svm",
+    "random-forest",
+    "knn"
+  ],
+  "layer": 2,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 3,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 12,
+  "pdf_status": "ok",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "scope_note": "Layer 2 model: XGBoost vs SVM/RF/KNN cho nguy cơ T2D. Dataset KHẢO SÁT THỰC ĐỊA Bắc Kinh (Xicheng, n=368 hợp lệ trên 380 phát ra, trung niên/cao tuổi, questionnaire lối sống + tiền sử gia đình) — dữ liệu thật, không PIMA (nhưng nhỏ). AUC 0.9182, Acc 0.8909 (Table 6). Healthcare (MDPI), 138 cite (§7 đạt). OA CC-BY, PDF lấy qua Europe PMC. Không code public.",
+  "corrections": [
+    "scope_note cũ ghi 'n=380' — đọc full thấy 380 là số phiếu PHÁT RA; số mẫu phân tích thực tế là 368 hợp lệ (sau loại 12 phiếu thiếu/mâu thuẫn — §2.1 & §3.1). Đã sửa thành n=368.",
+    "Phân bố lớp mất cân bằng: 108 dương / 260 âm (§3.2) — bài KHÔNG dùng cân bằng lớp (SMOTE/oversampling).",
+    "Nhãn = FPG ≥ 7.0 mmol/L chuẩn WHO, đo cùng thời điểm khảo sát → xác nhận prediction_horizon = cross_sectional (tác giả cũng tự nhận 'cross-sectional data has inherent defects' ở §4).",
+    "page_count metadata = 12 nhưng extraction_report ghi pages = 11 (chênh do trang bìa/metadata MDPI) — không ảnh hưởng nội dung.",
+    "Table 1 (XGBoost) ghi max_depth = 0.5 — bất thường (max_depth phải nguyên ≥1), nghi lỗi in của paper; giữ nguyên văn, KHÔNG sửa số."
+  ],
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2020-07-31",
+    "age_years": 6.0,
+    "citations": 140,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

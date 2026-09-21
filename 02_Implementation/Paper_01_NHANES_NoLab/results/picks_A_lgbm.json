@@ -1,0 +1,352 @@
+[
+ {
+  "seed": 1,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 1,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 1,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 1,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 1,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "31",
+  "select__k": "all"
+ },
+ {
+  "seed": 2,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 2,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 2,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 2,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 2,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "15",
+  "select__k": "all"
+ },
+ {
+  "seed": 3,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 3,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "15",
+  "select__k": "all"
+ },
+ {
+  "seed": 3,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 3,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "15",
+  "select__k": "all"
+ },
+ {
+  "seed": 3,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 4,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 4,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 4,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 4,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "15",
+  "select__k": "all"
+ },
+ {
+  "seed": 4,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 5,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 5,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 5,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 5,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 5,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 6,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 6,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 6,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 6,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 6,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "31",
+  "select__k": "all"
+ },
+ {
+  "seed": 7,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 7,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 7,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 7,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 7,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 8,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "31",
+  "select__k": "all"
+ },
+ {
+  "seed": 8,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 8,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 8,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 8,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 9,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 9,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 9,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 9,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 9,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "31",
+  "select__k": "all"
+ },
+ {
+  "seed": 10,
+  "fold": 0,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 10,
+  "fold": 1,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 10,
+  "fold": 2,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 10,
+  "fold": 3,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ },
+ {
+  "seed": 10,
+  "fold": 4,
+  "model__learning_rate": "0.02",
+  "model__num_leaves": "7",
+  "select__k": "all"
+ }
+]

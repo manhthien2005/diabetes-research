@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction of Type 2 Diabetes Based on Machine Learning Algorithm — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure (crop từ PDF, embed base64) ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Prediction of Type 2 Diabetes Based on Machine Learning Algorithm</h1>
+    <div class="meta">
+      <span>📅 <strong>2021</strong></span>
+      <span>📰 Int. J. Environ. Res. Public Health (IJERPH, MDPI)</span>
+      <span>📚 <strong>247</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.3390/ijerph18063317" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (riêng tư)</span>
+      <span class="badge horizon">⏱️ Horizon: Long-term risk (onset Y+1)</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <span style="color:#fff">Hanaro Medical Foundation EHR (Seoul, Hàn Quốc, 2013–2018)</span> — EHR tư nhân, 535.169 bản ghi / 253.395 đối tượng, 1444 feature gốc. KHÔNG công khai (cấp khi có yêu cầu hợp lý gửi tác giả liên hệ).</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Dùng EHR tư nhân Hàn Quốc 6 năm để <strong>dự đoán mắc T2D NĂM SAU (Y+1)</strong> từ biến năm hiện tại (Y), phân loại 3 lớp <em>normal / prediabetes / diabetes</em>; pipeline feature-selection (ANOVA + chi-squared + RFE) → RF/XGB/SVM/LR + ensemble (CIM/stacking/soft-voting).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>73% accuracy</strong> trên test set (RF/SVM/CIM/Soft-voting, Table 2); <strong>CV accuracy đạt 81%</strong> khi dùng 4 năm dữ liệu với 12-feature set (Section 5). KHÔNG báo cáo AUC.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Lọc null → under-sampling + SMOTE cân bằng → ANOVA/chi-squared/RFE chọn 12 feature → 10-fold grid-search tuning → RF/XGB/SVM/LR + ensemble (CIM, stacking, soft-voting).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">EHR thật + horizon <strong>long_term_risk</strong> (sửa 26/07/2026: onset Y+1 có follow-up ⇒ §3b long_term_risk, KHÔNG phải early_detection). Accuracy 73% test thấp hơn AUC-based dinh2019 (NHANES, AUC 0.957) / agliata2023 (AUC 0.934) — nhưng 2 bài đó <em>cross_sectional</em>; Deberneh có lợi thế <strong>onset Y+1 thực thụ</strong> + bài toán 3 lớp (gồm prediabetes).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">
+      Nghiên cứu xây dựng mô hình ML <strong>dự báo khả năng mắc T2D ở năm kế tiếp (Y+1)</strong> dựa trên các biến đo ở năm hiện tại (Y),
+      sử dụng <strong>EHR thật</strong> thu thập tại Hanaro Medical Foundation (Seoul, Hàn Quốc) trong 6 năm 2013–2018.
+      Đầu ra là phân loại 3 lớp: <em>normal (không tiểu đường)</em>, <em>prediabetes</em>, <em>diabetes</em> — định nghĩa theo
+      ngưỡng FPG của ADA (normal &lt;100, prediabetes 100–125, diabetes &gt;125 mg/dL). Đây là bài toán
+      <strong>dự đoán sớm (forward prediction)</strong> đúng nghĩa: feature ở năm Y, nhãn ở năm Y+1 — khác hẳn các bài
+      "current condition identification" (chẩn đoán cùng thời điểm).
+    </p>
+    <h3>Vì sao là Layer 3 (Dataset EHR)?</h3>
+    <table>
+      <tr><td>✔ EHR thật, longitudinal</td><td>Bản ghi y tế điện tử 6 năm theo dõi (follow-up) tại viện y tư nhân — không phải benchmark đồ chơi PIMA</td></tr>
+      <tr><td>✔ Quy mô lớn</td><td>535.169 bản ghi / 253.395 đối tượng, 1444 feature gốc (Section 3.1)</td></tr>
+      <tr><td>✔ Nhãn có khoảng cách thời gian</td><td>Feature năm Y → nhãn năm Y+1, đã loại người đã được chẩn đoán, EHR 6 năm có follow-up ⇒ <strong>long_term_risk</strong> theo §3b (Section 1, 3.3). <em>Sửa 26/07/2026 — bản trước gán nhầm <code>early_detection</code>.</em></td></tr>
+      <tr><td>✘ Chạm Layer 2</td><td>Có cả thành phần "so sánh nhiều mô hình + ensemble" của Layer 2 → layer_uncertain</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI (SHAP/LIME) hay deployment thật (chỉ đề xuất web/mobile là future work)</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Loại bỏ null rows</code></td><td>Xử lý missing (Section 3.1.2)</td><td>Đơn giản, sạch với dataset cực lớn</td><td>Vứt bỏ mẫu → có thể lệch phân phối, mất minority</td></tr>
+        <tr><td><code>Majority under-sampling</code></td><td>Cân bằng lớp majority (Section 3.1.3)</td><td>Giảm bias về lớp normal (68,1%)</td><td>Vứt mẫu → mất thông tin</td></tr>
+        <tr><td><code>SMOTE</code></td><td>Over-sample lớp minority (Section 3.1.3)</td><td>Tăng đại diện lớp diabetes (4,3%)</td><td>Sinh mẫu tổng hợp → rủi ro overfit / leakage nếu làm trước split</td></tr>
+        <tr><td><code>ANOVA F-test</code></td><td>Xếp hạng feature số (Section 2.3.1)</td><td>Chọn biến số phân biệt 3 lớp tốt</td><td>Giả định tuyến tính/đơn biến</td></tr>
+        <tr><td><code>Chi-squared test</code></td><td>Xếp hạng feature phân loại (Section 2.3.2)</td><td>Phù hợp biến hỏi-đáp questionnaire</td><td>Chỉ đo độc lập đơn biến</td></tr>
+        <tr><td><code>RFE (tree-based)</code></td><td>Loại đệ quy đến 12 feature (Section 2.3.3, 3.2)</td><td>Tối ưu theo độ chính xác mô hình</td><td>Đắt tính toán, phụ thuộc model lõi</td></tr>
+        <tr><td><code>10-fold grid-search</code></td><td>Tuning hyperparameter (Section 3.3)</td><td>Coarse→fine search, chọn tham số tốt</td><td>Không liệt kê tham số cuối → khó tái lập</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Accuracy test (Table 2)</strong>. ⭐ = đồng hạng cao nhất. Chênh lệch giữa các model "không đáng kể" trên test theo tác giả (Section 4.2); ensemble chỉ vượt rõ ở CV.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Accuracy (test, Table 2)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>RF</code> ⭐</td><td>Single model (dùng cho confusion matrix Table 3)</td><td><strong>0.73</strong></td><td>Ổn định với tabular; F1=0.74, MCC=0.60</td><td>Vẫn kẹt ở 73% do class overlap prediabetes</td></tr>
+        <tr><td>2</td><td><code>SVM</code> ⭐</td><td>Single model</td><td><strong>0.73</strong></td><td>F1=0.74, MCC=0.60 (đồng hạng cao nhất)</td><td>Khó scale dataset rất lớn</td></tr>
+        <tr><td>3</td><td><code>CIM</code> ⭐</td><td>Ensemble (confusion-matrix-based classifier integration)</td><td><strong>0.73</strong></td><td>Ưu thế rõ ở CV (Section 4.2, Fig 4)</td><td>Trên test gần như đồng hạng single model</td></tr>
+        <tr><td>4</td><td><code>Soft voting (SV)</code> ⭐</td><td>Ensemble</td><td><strong>0.73</strong></td><td>Robust ở CV</td><td>Trên test không vượt single model</td></tr>
+        <tr><td>5</td><td><code>XGBoost</code></td><td>Single model</td><td>0.72</td><td>Precision 0.74</td><td>Không vượt RF/SVM</td></tr>
+        <tr><td>6</td><td><code>Stacking classifier (ST)</code></td><td>Ensemble</td><td>0.72</td><td>Precision cao nhất (0.75)</td><td>Accuracy không vượt</td></tr>
+        <tr><td>7</td><td><code>LR</code></td><td>Single model (baseline thống kê)</td><td>0.71</td><td>Đơn giản, dễ giải thích</td><td>Thấp nhất; coi là phương pháp thống kê hiện hữu</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Hanaro Medical Foundation EHR</strong></td>
+          <td>535.169 bản ghi / 253.395 đối tượng (gốc).<br><span style="color:var(--muted);font-size:12px">Sau lọc &amp; cân bằng: train 17.131 + test 200 <em>mỗi lớp</em> (Section 4.2)</span></td>
+          <td>1444 gốc → <strong>12 chọn lọc</strong></td>
+          <td>EHR tư nhân Seoul 2013–2018; kết hợp xét nghiệm máu, đo nhân trắc, kết quả chẩn đoán + 140 biến questionnaire. Tuổi TB 41,2 (18–108), tỉ lệ nam/nữ 1,25. Loại người đã chẩn đoán tiểu đường/mỡ máu/tăng huyết áp hoặc đang dùng thuốc (Section 3.1, 3.1.1)</td>
+          <td><span style="color:var(--muted)">Không public (cấp khi yêu cầu)</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>12 feature được chọn (Section 3.2 / Fig 2)</h3>
+    <p style="font-size:14px">FPG, HbA1c, triglycerides, BMI, gamma-GTP, age, uric acid, sex, smoking, drinking, physical activity, family history. <strong>FPG và HbA1c</strong> là 2 predictor quan trọng nhất theo information-gain, kế đến gamma-GTP, BMI, triglycerides, age (Section 5). Phân bố lớp gốc: normal 68,1% · diabetes 4,3% · prediabetes phần còn lại (~27,6%) (Section 3.1.3).</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Chọn đối tượng</td><td>Lấy người có ≥2 năm khám liên tục; loại đã mắc DM/mỡ máu/tăng HA hoặc đang dùng thuốc (Section 3.1.1)</td><td>Nhóm "chuyển trạng thái từ normal"</td></tr>
+        <tr><td>2</td><td>Gán nhãn (label)</td><td>Theo ngưỡng FPG của ADA tại năm Y+1: normal &lt;100 / prediabetes 100–125 / diabetes &gt;125 mg/dL (Section 2.2)</td><td>Nhãn 3 lớp ở năm kế tiếp (Y+1)</td></tr>
+        <tr><td>3</td><td>Missing handling</td><td>Loại bỏ row có null (Section 3.1.2)</td><td>Dataset đầy đủ giá trị</td></tr>
+        <tr><td>4</td><td>Cân bằng lớp</td><td>Majority under-sampling + SMOTE (Section 3.1.3)</td><td>3 lớp cân bằng hơn</td></tr>
+        <tr><td>5</td><td>Feature selection</td><td>Tách số/phân loại → ANOVA (số) + chi-squared (phân loại) → gộp → RFE tree-based (Section 3.2, Fig 1)</td><td>12 feature</td></tr>
+        <tr><td>6</td><td>Train/test split</td><td>Train 17.131 + test 200 mỗi lớp (Section 4.2)</td><td>Train + Test</td></tr>
+        <tr><td>7</td><td>Tuning</td><td>10-fold cross-validated grid search, coarse → fine (Section 3.3)</td><td>Hyperparameter tối ưu</td></tr>
+        <tr><td>8</td><td>Train models</td><td>LR / RF / XGBoost / SVM + ensemble CIM / stacking / soft-voting (Section 3.3)</td><td>7 mô hình</td></tr>
+        <tr><td>9</td><td>Evaluate</td><td>Accuracy/Precision/Recall/F1/MCC/KC trên test + 10-fold CV; thí nghiệm tăng số năm 1→4 năm (Section 4)</td><td>Báo cáo metric</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">ANOVA F-statistic — chọn feature số (Eq. 1, Section 2.3.1)</span>
+      F = MS_between / MS_within<br>
+      = (SSB / df_b) / (SSW / df_w)<br>
+      SSB = biến thiên trung bình nhóm quanh grand mean; SSW = tổng bình phương sai lệch trong nhóm.<br>
+      <span style="color:#94a3b8">F càng lớn ⇒ feature phân biệt lớp càng tốt.</span>
+    </div>
+    <div class="formula">
+      <span class="label">Chi-squared — chọn feature phân loại (Eq. 2, Section 2.3.2)</span>
+      χ² = Σ_i ( (x_i − E_i)² / E_i )<br>
+      x_i = tần số quan sát, E_i = tần số kỳ vọng, n = số category. Chọn top-n feature có χ² lớn nhất.
+    </div>
+    <div class="formula">
+      <span class="label">Metrics (Table 1)</span>
+      Accuracy  = (TP + TN) / (TP + TN + FP + FN)<br>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F1        = 2 · (Recall · Precision) / (Recall + Precision)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig 1 (quy trình feature selection), Fig 2 (xếp hạng feature importance), Fig 3 (kiến trúc mô hình), Fig 4 (box plot CV), Fig 5 (accuracy theo số năm), Fig 6 (12-feature vs 5-feature).
+      <span class="caption">Chưa crop base64 — ưu tiên số liệu đúng từ bảng. Xem trực tiếp source.pdf nếu cần hình.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">73%</span><span class="label">Accuracy test cao nhất — RF/SVM (Table 2)</span></div>
+      <div class="metric"><span class="value">81%</span><span class="label">CV accuracy max — 12-feat, 4 năm (Section 5)</span></div>
+      <div class="metric"><span class="value">78%</span><span class="label">CV accuracy — chỉ 1 năm dữ liệu (Section 5)</span></div>
+      <div class="metric"><span class="value">90%</span><span class="label">Precision lớp diabetes (RF, Table 3)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>Hanaro EHR</td><td>RF</td><td>Test, 12-feat</td><td><strong>Acc 0.73 · Prec 0.74 · Rec 0.73 · F1 0.74 · MCC 0.60 · KC 0.60</strong></td><td>Table 2</td></tr>
+        <tr><td>Hanaro EHR</td><td>SVM</td><td>Test, 12-feat</td><td><strong>Acc 0.73 · Prec 0.74 · Rec 0.74 · F1 0.74 · MCC 0.60 · KC 0.60</strong></td><td>Table 2</td></tr>
+        <tr><td>Hanaro EHR</td><td>XGBoost</td><td>Test, 12-feat</td><td>Acc 0.72 · Prec 0.74 · Rec 0.72 · F1 0.73 · MCC 0.58</td><td>Table 2</td></tr>
+        <tr><td>Hanaro EHR</td><td>CIM</td><td>Test, ensemble</td><td>Acc 0.73 · Prec 0.73 · Rec 0.73 · F1 0.73 · MCC 0.59</td><td>Table 2</td></tr>
+        <tr><td>Hanaro EHR</td><td>Stacking (ST)</td><td>Test, ensemble</td><td>Acc 0.72 · Prec 0.75 · Rec 0.72 · F1 0.73 · MCC 0.58</td><td>Table 2</td></tr>
+        <tr><td>Hanaro EHR</td><td>Soft voting (SV)</td><td>Test, ensemble</td><td>Acc 0.73 · Prec 0.74 · Rec 0.73 · F1 0.73 · MCC 0.59</td><td>Table 2</td></tr>
+        <tr><td>Hanaro EHR</td><td>LR (baseline)</td><td>Test, 12-feat</td><td>Acc 0.71 · Prec 0.71 · Rec 0.71 · F1 0.71 · MCC 0.56</td><td>Table 2</td></tr>
+        <tr><td>Hanaro EHR</td><td>RF</td><td>Precision theo lớp (suy từ confusion matrix)</td><td>normal 70% · prediabetes 61% · diabetes 90%</td><td>Section 4.2 (suy từ Table 3)</td></tr>
+        <tr><td>Hanaro EHR</td><td>Ensemble</td><td>CV max, 12-feat, 4 năm</td><td><strong>81% accuracy</strong></td><td>Section 5 (Discussion)</td></tr>
+        <tr><td>Hanaro EHR</td><td>—</td><td>CV, 12-feat, chỉ 1 năm (last year)</td><td>78% accuracy</td><td>Section 5 (Discussion)</td></tr>
+        <tr><td>Hanaro EHR</td><td>—</td><td>CV, 5-feat truyền thống, 4 năm</td><td>77% accuracy</td><td>Section 5 (Discussion) / Fig 6</td></tr>
+        <tr><td>Hanaro EHR</td><td>Ensemble (CIM/ST/SV)</td><td>CV vs single model</td><td>Ensemble > single (chênh "đáng kể" ở CV)</td><td>Fig 4 (UNKNOWN số chính xác)</td></tr>
+        <tr><td>Hanaro EHR</td><td>RF</td><td>AUC / ROC</td><td>UNKNOWN — paper KHÔNG báo cáo AUC</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Table 3 (confusion matrix RF): false-positive cao nhất đến từ lớp prediabetes (58 ca chảy sang normal, 16 ca chảy sang diabetes) — class overlap của prediabetes là nguyên nhân chính ghìm accuracy ở 73%. Các giá trị box-plot CV (Fig 4) và đường accuracy theo số năm (Fig 5) chỉ là hình, paper không liệt kê số rời rạc → ghi UNKNOWN cho từng điểm.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro phương pháp khi tái lập</strong>
+      <ul>
+        <li><strong>Label leakage tiềm ẩn</strong>: FPG vừa là feature năm Y vừa là tiêu chí định nghĩa nhãn năm Y+1 — FPG/HbA1c cao ở Y dễ "rò" sang nhãn Y+1; tác giả tự nêu chỉ dùng FPG để định nghĩa lớp (không có HbA1c/OGTT — limitation Section 5).</li>
+        <li><strong>Thứ tự SMOTE/under-sampling vs split không nêu rõ</strong> → nếu cân bằng trước khi tách test sẽ rò rỉ; test set 200/lớp đã bị cân bằng nhân tạo, KHÔNG phản ánh prevalence thật (diabetes thật chỉ 4,3%).</li>
+        <li>Loại bỏ row có null trên dataset 1444-feature có thể loại lệch một nhóm bệnh nhân nhất định.</li>
+        <li>Không liệt kê hyperparameter cuối → khó tái lập chính xác.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper (tác giả tự nêu + quan sát)</strong>
+      <ul>
+        <li>Chỉ dùng FPG để định nghĩa 3 lớp; KHÔNG dùng HbA1c hay OGTT (Section 5).</li>
+        <li>Chỉ validate trên <strong>1 dataset duy nhất</strong>, KHÔNG external validation — tác giả nói "compulsory" phải kiểm trên nguồn khác.</li>
+        <li>Accuracy bị ghìm ở 73% do <strong>class overlap của prediabetes</strong> (Table 3).</li>
+        <li>KHÔNG báo cáo AUC/ROC → khó so trực tiếp với các bài AUC-based (dinh2019, agliata2023, lugner2024).</li>
+        <li>KHÔNG có code public; dataset EHR riêng tư (chỉ cấp khi yêu cầu) → reproducible = low.</li>
+        <li>KHÔNG XAI (SHAP/LIME); web/mobile app chỉ là future work.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là <strong>bài nền tham chiếu mạnh cho thiết lập bài toán "dự đoán onset năm kế tiếp (Y+1)"</strong> — thuộc nhánh <code>long_term_risk</code> (đã có rasmy2021 / li2020 / lugner2024 / fazakis2021 / alghamdi2017 nên KHÔNG còn hiếm).</li>
+        <li>Mẫu hình pipeline <em>feature-selection (ANOVA/chi-squared/RFE) → ensemble</em> có thể tái dùng; bài chứng minh thêm năm dữ liệu → tăng accuracy (78%→81%).</li>
+        <li>Gap rõ để đề tài cải tiến: thêm AUC/PR-AUC + giữ prevalence thật ở test, external validation, XAI, xử lý leakage FPG↔label, và dùng HbA1c/OGTT để định nghĩa nhãn.</li>
+        <li>241 cite + Gold OA CC-BY ⇒ uy tín cao; nhưng accuracy 73% chỉ nên xem là <strong>cảnh báo/sàng lọc sớm</strong>, KHÔNG thay chẩn đoán y khoa.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

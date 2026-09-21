@@ -1,0 +1,25 @@
+{
+  "paper": "wang2020_xgboost_t2d_beijing",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 44.6,
+  "pages": 11,
+  "failed_pages": [],
+  "source_text_chars": 35347,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 17,
+  "qa": {
+    "out_chars": 42897,
+    "n_markdown_tables": 6,
+    "source_table_captions": 6,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 1.214,
+    "score": 100,
+    "warnings": []
+  }
+}

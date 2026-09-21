@@ -1,0 +1,26 @@
+{
+  "paper_id": "jin2025_opportunistic_screening_type",
+  "layer": 3,
+  "prediction_horizon": "long_term_risk",
+  "contribution": "Khung Deep Metric Learning (DML) HỢP NHẤT 2 nhiệm vụ trong cùng một latent space học theo sample-similarity: vừa dự đoán onset T2D trước 2-7 năm, vừa subtyping ra 3 nhóm Green/Yellow/Red — chỉ dùng feature EHR thường quy, validate trên 2 cohort lớn (AoU + MGB) để chứng minh transferability.",
+  "method": "DML encoder 3-4 lớp FC + ReLU + dropout 0.2, loss triplet/N-pair/Lifted/ProxyNCA, latent 32/64-d (Adam lr 1e-4, 50 epoch, chọn theo val AUROC) → LR tuyến tính trên latent dự đoán onset 2 năm (3-fold CV); KMeans k=3 trên latent ca T2D để subtyping; censor date >=2 năm trước chẩn đoán (tối đa 10 năm) chống leakage; PopControl kNN-match (train) vs GenControl prevalence thật (test); 698-d feature (conditions 71/meds 89/vitals 6/labs 21/demo) trên 3 cửa sổ thời gian; PRS-CS post-hoc.",
+  "best_metric": "AUROC 0.969 dự đoán onset 2 năm (DML, AoU PopControl, Fig 2b); AUROC 0.754 ở mốc 7 năm trước chẩn đoán (Fig 2a / abstract); transfer MGB->AoU 0.829 (Fig 2c)",
+  "datasets": [
+    "all-of-us",
+    "mgb-biobank"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "Cùng Layer 3: AUROC onset cao hơn nguyen2019 Wide&Deep (84.13% / forward-prediction) và deberneh2021 Korean EHR (acc 0.73, early_detection Y+1); cùng hướng forward-prediction nhưng horizon dài hơn (2-7 năm vs 1 năm). Tuy nhiên số 0.969 đo trên PopControl ghép cặp 1:1 nên không so trực tiếp được với dinh2019 NHANES (AUROC 0.957 nhưng cross-sectional, prevalence thật). Điểm vượt trội DUY NHẤT trong kho: latent THỐNG NHẤT phục vụ ĐỒNG THỜI predict + subtype, kèm transfer giữa 2 biobank lớn.",
+  "gap": "Code null + MGB private (chỉ hứa phát hành synthetic) → tái lập chính xác bất khả; AUROC cao đo trên PopControl ghép cặp chứ không prevalence thật của GenControl (số screening thật UNKNOWN trong text); chủ yếu báo AUROC, thiếu PR-AUC/calibration/sensitivity-specificity; subtype là continuum mượt không cụm rõ (k=3 chỉ biện minh bằng Supp Fig 10); cohort subtype nhỏ (AoU 1501/7567) không giải thích; thiếu tiền sử gia đình; PRS lệch tổ tiên châu Âu; nhãn dùng HbA1c>6.5 cần kiểm rủi ro leakage dù đã censor >=2 năm.",
+  "verdict": "weak",
+  "verdict_reason": "CHẠY LẠI 26/07/2026: kiểm lại OpenAlex — vẫn 0 citations, code null, cohort MGB private → §7 trượt cả 3 gate. Đã nằm trong rejected.json; verdict 'maybe' gây hiểu nhầm là còn cân nhắc.",
+  "analyzed_at": "2026-06-22",
+  "verdict_prev": "maybe",
+  "verdict_reason_prev": "Phương pháp mới và đúng scope long-term risk trên EHR thật (latent thống nhất predict+subtype, transfer 2 biobank), đáng tham khảo; nhưng 0 citations (mới 11/2025), code null, MGB private và AUROC đo trên PopControl ghép cặp làm độ tin cậy/khả thi triển khai + tái lập thấp — metadata đang status rejected theo §7.",
+  "role": "related",
+  "role_note": "ĐÃ LOẠI theo §7 (0 cite, code null, MGB private). Chỉ trích dẫn nếu cần nói về deep metric learning.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

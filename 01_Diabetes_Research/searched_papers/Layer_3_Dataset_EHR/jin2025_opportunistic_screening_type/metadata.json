@@ -1,0 +1,63 @@
+{
+  "paper_id": "jin2025_opportunistic_screening_type",
+  "title": "Opportunistic screening of type 2 diabetes with deep metric learning using electronic health records",
+  "authors": [
+    "Qixuan Jin",
+    "Haoran Zhang",
+    "L. Szczerbiński",
+    "Jiacheng Zhu",
+    "Walter Gerych",
+    "Xuhai Xu",
+    "Kai Wang",
+    "Sarah Hsu",
+    "Ravi Mandla",
+    "Aaron J Deutsch",
+    "Alisa K. Manning",
+    "Josep M. Mercader",
+    "Tom Hartvigsen",
+    "M. Udler",
+    "Marzyeh Ghassemi"
+  ],
+  "year": 2025,
+  "venue": "Scientific Reports",
+  "doi": "10.1038/s41598-025-25759-x",
+  "arxiv": null,
+  "citations": 0,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "code_url": null,
+  "datasets_mentioned": [
+    "all-of-us",
+    "mgb-biobank"
+  ],
+  "prediction_horizon": "long_term_risk",
+  "is_seed": true,
+  "lookup_status": "ok",
+  "source_pdf": "Opportunistic screening of type 2 diabetes with deep metric learning using electronic health records.pdf",
+  "page_count": 11,
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-06-22T00:00:00.000Z",
+  "status": "rejected",
+  "reject_reason": "Không đạt §7: 0 citations (xuất bản 2025-11-25, <1 năm, không phải rising star); code_url null; dataset EHR MGB private không link/DUA rõ. User quyết loại khỏi chosen.",
+  "corrections": {
+    "datasets_mentioned": "metadata cũ để rỗng []; đọc full thấy dùng 2 dataset EHR: All of Us (AoU, T2D n=7567, eMERGE) + MGB Biobank (T2D n=3298, PheCAP). Đã điền.",
+    "prediction_horizon": "metadata cũ None; xác định = long_term_risk vì dự đoán onset T2D 2-7 năm trước chẩn đoán, censor date >=2 năm (tối đa 10 năm) trước nhãn để chống leakage (abstract + Methods).",
+    "code_url": "Xác nhận null — paper không phát hành code; chỉ hứa phát hành cohort synthetic của MGB khi paper được chấp nhận. method=Deep Metric Learning (DML) khớp metadata."
+  },
+  "layer": 3,
+  "citations_source": "openalex",
+  "label_type": "binary",
+  "horizon_uncertain": false,
+  "pdf_status": "downloaded",
+  "role": "related",
+  "role_note": "ĐÃ LOẠI theo §7 (0 cite, code null, MGB private). Chỉ trích dẫn nếu cần nói về deep metric learning.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2025-11-25",
+    "age_years": 0.7,
+    "citations": 0,
+    "threshold": "rising star >=5 cite/thang (bài <1 năm)",
+    "pass": false,
+    "note": "Cổng §7 là cổng NHẬN VÀO lúc tìm được, KHÔNG phải cổng duy trì — bài không bị loại chỉ vì già đi qua mốc 3 năm. Ghi lại để phiên sau khỏi tranh luận."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "paper_id": "alghamdi2017_smote_fit_project",
+  "layer": 1,
+  "prediction_horizon": "long_term_risk",
+  "contribution": "Pipeline nền tảng dự đoán mắc đái tháo đường (incident diabetes) SAU 5 năm trên cohort lâm sàng thật Henry Ford ExercIse Testing (FIT) — 32,555 bệnh nhân, 5,099 ca mắc mới sau theo dõi hoàn chỉnh 5 năm. Chuỗi xử lý: rời rạc hoá biến (unsupervised discretization) → chọn feature bằng Information Gain + Multiple Linear Regression (từ 62 thuộc tính → 26 biến G1 → 13 biến G2) → xử lý mất cân bằng lớp bằng random under-sampling và SMOTE (100/200/300%) → huấn luyện 6 classifier (J48, NBTree, Logistic Regression, Naïve Bayes, LMT, Random Forest) → ghép Vote ensemble (NBTree + Random Forest + LMT). Giá trị chính là dùng EHR/stress-test cohort thật với nhãn tương lai 5 năm thay vì dữ liệu cross-sectional bão hoà kiểu PIMA.",
+  "method": "Feature selection: Information Gain ranking (giữ biến IG ≥ 0.01) + Multiple Linear Regression để lập G1 (26 biến theo clinical importance) và G2 (13 biến); top biến gồm Age, Resting Heart Rate, METs, Resting SBP/DBP, Sedentary Lifestyle, Black, Obesity, Hypertension. Imbalance handling: random under-sampling theo distribution spread 1.0/1.5/2.5 (không cải thiện) và SMOTE oversample lớp minority ở 100/200/300%. Models: J48, NBTree, Logistic Regression, Naïve Bayes, Logistic Model Tree (LMT), Random Forest, và Vote ensemble (kết hợp NBTree+RF+LMT). Đánh giá bằng 10-fold cross-validation; báo cáo ROC/AUC, Accuracy, Recall, Specificity, Precision, F1, Kappa. Công cụ dạng WEKA (discretize + Vote). LƯU Ý: paper KHÔNG nói rõ SMOTE/feature-selection/discretization được fit riêng trong từng training fold hay áp trên toàn bộ dữ liệu trước CV.",
+  "best_metric": "Vote ensemble (NBTree + Random Forest + LMT) trên FIT: ROC/AUC 92.2% (0.922), Accuracy 89.0%, Recall 99.9%, Specificity 74.6%, Precision 84.1%, F1 91.3, Kappa 76.8 (Table 6, cho cả G1 và G2). SMOTE 300% giúp Random Forest đạt ROC 91.8% (Results, SMOTE paragraph + Fig 4). Baseline imbalanced Logistic Regression: ROC ~69.1%, Accuracy 84.29% nhưng Specificity chỉ ~0.70% (Table 4) — cho thấy accuracy/recall cao là ảo do lệch lớp.",
+  "datasets": [
+    "henry-ford-fit-project"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "So với các peer Layer 1 khác: nnamoko2020 (IQR+SMOTE, C4.5, AUC 94.6% trên PIMA) và gr2024 (Random Oversampling+Boruta+RF, Acc 94% PIMA / 92% BRFSS) đều là cross_sectional trên dataset nhỏ/bão hoà (PIMA/BRFSS) với xử lý imbalance tương tự; olisah2022 báo ORF 100% trên PIMA (cờ leakage rõ). alghamdi2017 là bài Layer 1 DUY NHẤT thuộc horizon long_term_risk trên cohort lâm sàng thật lớn (FIT 32,555, nhãn 5 năm) — mạnh hơn hẳn về tính đại diện quần thể và ý nghĩa lâm sàng, chung chủ đề SMOTE/imbalance với nnamoko2020 & gr2024. Yếu hơn gr2024 ở kiểm chứng đa-dataset (gr2024 chạy 2 dataset; bài này 1 cohort, không external validation) và yếu hơn về tái lập (không code public, dữ liệu cần IRB). Chia sẻ đúng rủi ro leakage như olisah2022 nếu SMOTE/feature-selection nằm ngoài CV fold → AUC 0.922 có thể lạc quan.",
+  "gap": "Không có code public; dataset FIT không tải mở trực tiếp (cần IRB approval qua Henry Ford Health Systems). Không external/temporal validation (chỉ 10-fold CV nội bộ). KHÔNG mô tả rõ SMOTE/feature-selection/discretization có nằm trong từng training fold hay áp trước CV → nguy cơ synthetic-neighbor leakage thổi phồng AUC. Thiếu calibration, PR-AUC/AUPRC và PPV theo prevalence thật, thiếu phân tích fairness theo nhóm dân số (race/giới). Baseline imbalanced có specificity ~0.7% cho thấy paper dựa mạnh vào accuracy/recall — cần đọc bằng đa metric.",
+  "verdict": "strong",
+  "verdict_reason": "Nên giữ làm paper Layer 1 tiêu biểu cho long_term_risk trên EHR/cohort lâm sàng thật (hiếm trong kho vốn nghiêng PIMA cross-sectional), minh hoạ trực diện tác động của imbalance handling (imbalanced → under-sampling → SMOTE → ensemble); nhưng khi dùng trong đề tài phải phê bình rõ nguy cơ leakage (SMOTE ngoài fold), thiếu external validation và thiếu đánh giá đa metric.",
+  "analyzed_at": "2026-07-05T13:05:08+07:00",
+  "role": "related",
+  "role_note": "Đã promote: neo long_term_risk trên cohort FIT thật; nhưng SMOTE có thể ngoài fold. Related work.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

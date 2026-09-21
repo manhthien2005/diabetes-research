@@ -1,0 +1,67 @@
+{
+  "paper_id": "rasmy2021_medbert_ehr",
+  "title": "Med-BERT: pretrained contextualized embeddings on large-scale structured electronic health records for disease prediction",
+  "authors": [
+    "Laila Rasmy",
+    "Yang Xiang",
+    "Ziqian Xie",
+    "Cui Tao",
+    "Degui Zhi"
+  ],
+  "year": 2021,
+  "venue": "npj Digital Medicine",
+  "doi": "10.1038/s41746-021-00455-y",
+  "arxiv": null,
+  "pubmed": "34017034",
+  "pmc": null,
+  "citations": 845,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://www.nature.com/articles/s41746-021-00455-y.pdf",
+  "license": "CC-BY",
+  "code_url": "https://github.com/ZhiGroup/Med-BERT",
+  "datasets_mentioned": [
+    "cerner-health-facts",
+    "truven-marketscan"
+  ],
+  "dataset_slugs": [
+    "cerner-health-facts",
+    "truven-marketscan"
+  ],
+  "method_slugs": [
+    "bert",
+    "transformer",
+    "pretraining",
+    "masked-lm",
+    "ehr-embeddings",
+    "transfer-learning",
+    "disease-prediction"
+  ],
+  "layer": 2,
+  "layer_uncertain": true,
+  "prediction_horizon": "long_term_risk",
+  "horizon_uncertain": false,
+  "reproducibility": 3,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 13,
+  "pdf_status": "downloaded",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "scope_note": "Transformer EHR đa-bệnh (ĐTĐ là điều kiện đầu vào của cohort DHF, không phải tác vụ chẩn đoán ĐTĐ độc lập); giá trị = code + kiến trúc tái sử dụng + transfer learning cho dữ liệu nhỏ. Code public thật (ZhiGroup/Med-BERT + pytorch_ehr). Data Cerner + Truven (gated). Layer phân vân 2 (model) vs 3 (EHR) — chốt Layer 2 vì đóng góp lớn nhất là kiến trúc.",
+  "corrections": "dataset_slugs: thêm 'truven-marketscan' (metadata cũ chỉ có cerner) — text xác nhận Truven là cohort đánh giá thật PaCa-Truven (Table 2, n=42,721), không chỉ mentioned. method_slugs: thêm 'masked-lm' + 'transfer-learning' cho khớp pretraining tasks thật. code_available + pdf_status được thêm. horizon_uncertain: true→false (xác nhận long_term_risk: nhãn DHF tính khi suy tim xảy ra ≥30 ngày sau lần khám DM đầu — có khoảng cách thời gian feature→label; PaCa dự đoán onset tương lai). prediction_horizon giữ nguyên long_term_risk (gợi ý đúng). [2026-06-22 re-analyze] Sửa best_metric PaCa-Truven: bản tóm tắt cũ ghi 80.57 ở field này nhưng prose Section 'Performance boost' lại nói GRU+Med-BERT (80.37) là best — ĐÂY LÀ MÂU THUẪN NỘI TẠI của paper. Đối chiếu Table 4: số IN ĐẬM là Bi-GRU+Med-BERT (DHF 85.39 / PaCa-Cerner 82.23 / PaCa-Truven 80.57) → ưu tiên số in đậm của bảng; ghi rõ discrepancy trong analysis.html Section 6 + summary gap. Không có số nào bị bịa; Precision/Recall/F1 chỉ ở Supplementary Tables 1–2 (ngoài extracted.md) → UNKNOWN.",
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "KHÔNG tái lập: Cerner gated + compute ngoài tầm tuyệt đối. Chỉ 1 câu Related Work (TO_DO §6 🅕).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2021-05-20",
+    "age_years": 5.2,
+    "citations": 845,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

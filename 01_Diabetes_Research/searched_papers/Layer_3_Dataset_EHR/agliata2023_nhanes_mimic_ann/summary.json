@@ -1,0 +1,25 @@
+{
+  "paper_id": "agliata2023_nhanes_mimic_ann",
+  "layer": 3,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Lần đầu hợp nhất 3 nguồn EHR/khảo sát công khai dị nguồn (NHANES 1999-2018 + MIMIC-III + MIMIC-IV) qua khoá định danh thành 1 dataset cân bằng 13.687 mẫu chỉ với 9 đặc trưng dễ đo, rồi huấn luyện ANN nông + ensemble bỏ phiếu để chẩn đoán T2D; nhấn mạnh chất lượng/số lượng dữ liệu và calibration (Brier score).",
+  "method": "ANN fully-connected 1 hidden layer (grid search node 5-15, 100 epoch, ReLU/sigmoid, BCE, lr=0.001); chọn optimizer bằng k-fold CV (k=9, 11 lần) -> ADAM tốt nhất ở CV; ensemble 9x11=99 model bỏ phiếu đa số cho từng optimizer (SGD/ADAM/RMSPROP/LM); z-score standardization; under-sampling cân bằng lớp; ablation feature reduction; calibration plot + Brier score.",
+  "best_metric": "ROC AUC = 0.934 (ANN ensemble, test set dataset hợp nhất NHANES+MIMIC, Section 2.5 / Figure 3); Accuracy ~86% (Abstract / Section 5); ensemble SGD acc 0.862 (Table 5); Brier 0.101 (Section 2.6). Precision/Recall/F1/PR-AUC: UNKNOWN (paper không báo cáo).",
+  "datasets": [
+    "nhanes",
+    "mimic-iii",
+    "mimic-iv"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Cùng Layer 3 / cùng nguồn NHANES với dinh2019 (XGBoost, AUC 0.957 Case I có-lab / 0.862 survey-only, ~21k mẫu): AUC 0.934 của agliata THẤP HƠN ca có-lab, dù agliata trộn thêm MIMIC-III/IV và có calibration+Brier mà dinh2019 thiếu. Khác deberneh2021 (early_detection onset Y+1, EHR Hàn private, acc 0.73 không AUC): agliata là cross_sectional (chẩn đoán hiện trạng). Điểm sáng riêng so cả 2 baseline: có calibration + Brier score; điểm độc đáo: merge multi-source EHR/khảo sát qua khoá định danh.",
+  "gap": "Horizon thực là cross_sectional dù abstract quảng cáo long-term (nhãn trích cùng thời điểm feature; LSTM chỉ future work, Section 5). Rủi ro rò rỉ qua glucose (gần tiêu chí chẩn đoán). Trộn ICU MIMIC với khảo sát cộng đồng NHANES -> distribution shift, model có thể tách lớp theo nguồn dữ liệu. Under-sampling vứt mẫu + ép 50/50 -> accuracy không phản ánh prevalence thật ~13%. Thiếu precision/recall/F1/PR-AUC; thiếu external validation; không nêu rõ thứ tự fit scaler/cân bằng/chia tập (rủi ro leakage). Không code public, không SHAP/LIME.",
+  "verdict": "maybe",
+  "verdict_reason": "Đạt §7 (61 cite/2023 >=30, NHANES public + MIMIC qua PhysioNet DUA, method mô tả khá đủ để tái lập ý tưởng) và quý ở kỹ thuật merge EHR đa nguồn + calibration/Brier, NHƯNG AUC 0.934 không vượt boosting baseline cùng layer (dinh2019 0.957 có-lab), horizon cross_sectional trùng nhánh đã đông, và nhiều rủi ro leakage/distribution-shift chưa kiểm soát -> giữ làm tham chiếu kỹ thuật, không ưu tiên promote.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

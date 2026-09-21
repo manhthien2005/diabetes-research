@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Efficient treatment of outliers and class imbalance for diabetes prediction — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  tr.win td { background: var(--success-soft); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────────────────────────────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure svg { max-width: 100%; height: auto; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Efficient treatment of outliers and class imbalance for diabetes prediction</h1>
+    <div class="meta">
+      <span>📅 <strong>2020</strong></span>
+      <span>📰 Artificial Intelligence in Medicine (Elsevier)</span>
+      <span>📚 <strong>154</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.artmed.2020.101815" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (public)</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.kaggle.com/uciml/pima-indians-diabetes-database" target="_blank">PIMA Indians Diabetes</a> — 768 mẫu (500 âm / 268 dương), 8 feature + label (Section 3.1, Table 1–2)</li>
+      <li>🔹 <a href="https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic)" target="_blank">Breast Cancer Wisconsin (Diagnostic)</a> — 569 mẫu (357 Benign / 212 Malignant), validate ngoài domain (Section 4.2, Table 9)</li>
+      <li>🔹 <a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)" target="_blank">German Credit (Statlog)</a> — 1000 mẫu, 20 feature (Appendix A, Table 10)</li>
+      <li>🔹 <a href="https://archive.ics.uci.edu/ml/datasets/QSAR+biodegradation" target="_blank">QSAR Biodegradation</a> — 1055 mẫu, 41 feature (Appendix B, Table 10)</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Tiền xử lý hai bước <strong>chọn lọc</strong>: nhận diện outlier bằng IQR rồi <strong>oversample có hoàn lại (irrespective of class)</strong> để khuếch đại outlier TRƯỚC khi chạy SMOTE — nhúng tri thức outlier vào tập sinh tổng hợp.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>C4.5 (IQRd+SMOTEd) = 89.5% Accuracy</strong> trên PIMA (Table 4); kèm AUC 94.6% · G-mean 88.8% · F-score 89.5% (Table 8). Stratified 10-fold CV.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">IQR outlier detection → oversample outlier 500% (with replacement, bất kể lớp) → <strong>SMOTE</strong> (k=5, Euclidean) cân bằng lớp → train NB / SVM-RBF / C4.5 / RIPPER; baseline AdaBoostM1 &amp; Random Forest; kiểm định McNemar.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Là <strong>peer trực tiếp của gr2024</strong> ở Layer 1 nhưng ĐỐI LẬP triết lý xử lý outlier: gr2024 <em>loại</em> outlier bằng IQR, bài này <em>giữ &amp; khuếch đại</em> outlier. Acc 89.5% (PIMA) thấp hơn con số 94% của gr2024, nhưng giao thức chống leakage chặt hơn (fold tạo từ data gốc).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 1
+    </h2>
+    <p class="lead">
+      Paper giải quyết <strong>đồng thời hai khó khăn cốt lõi của dữ liệu y tế</strong>: mất cân bằng lớp (class imbalance)
+      và outlier. Quan điểm trung tâm (dẫn Stefanowski et al.): mất cân bằng lớp <em>tự thân</em> không gây hại — nó chỉ
+      làm hỏng nhận diện lớp thiểu số khi <strong>kết hợp với outlier / overlap</strong>. Vì vậy thay vì loại outlier,
+      tác giả <strong>nhận diện outlier bằng IQR rồi oversample có hoàn lại 500% (bất kể lớp)</strong> để tăng mật độ
+      các ca hiếm, sau đó chạy <strong>SMOTE</strong> sinh thêm mẫu tổng hợp quanh vùng lân cận các outlier này. Kết quả:
+      C4.5 trên dữ liệu IQRd+SMOTEd đạt <strong>89.5% Accuracy</strong> trên PIMA — vượt 71 nghiên cứu trước (dải 59.5–88.05%).
+    </p>
+    <h3>Vì sao là Layer 1 (Pipeline nền tảng)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm tiền xử lý</td><td>Toàn bộ đóng góp nằm ở khâu data-level preprocessing (outlier + imbalance) — đúng phạm vi nền tảng của Layer 1</td></tr>
+      <tr><td>✔ Dataset benchmark</td><td>PIMA Indians Diabetes — benchmark kinh điển; dùng thêm 3 dataset công khai để validate phương pháp</td></tr>
+      <tr><td>✔ Model ML cổ điển</td><td>NB, SVM-RBF, C4.5, RIPPER + baseline AdaBoostM1/RF — không phải DL hay EHR longitudinal</td></tr>
+      <tr><td>✔ Ablation cho gr2024</td><td>Đối chứng trực tiếp triết lý "giữ vs loại outlier" với baseline gr2024 cùng Layer 1</td></tr>
+      <tr><td>✘ Chưa phải Layer 3</td><td>Không dùng EHR / biobank / dữ liệu theo dõi dọc (longitudinal)</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI (SHAP/LIME) cũng không có deployment</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Kỹ thuật tiền xử lý / đánh giá phụ trợ (model ML xem Section 3).</p>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>IQR outlier detection</code></td><td>Nhận diện outlier (ngoài Q1−1.5·IQR / Q3+1.5·IQR) — Section 2.2</td><td>Đơn giản, robust, classifier-independent</td><td>Đơn biến; trên PIMA chỉ tìm 49 outlier</td></tr>
+        <tr><td><code>Outlier oversampling (with replacement)</code></td><td>Khuếch đại outlier 500% bất kể lớp, cộng vào data gốc — Section 3</td><td>Phơi bày ca hiếm cho SMOTE; ý tưởng mới (chưa ai làm)</td><td>% chọn "tuỳ ý" (arbitrary); nhân bản trùng → nguy cơ overfit outlier</td></tr>
+        <tr><td><code>SMOTE</code> (k=5, Euclidean)</td><td>Sinh mẫu tổng hợp cân bằng lớp thiểu số — Section 2.1</td><td>Sinh mẫu mới (không nhân bản); chuẩn vàng cho imbalance</td><td>Có thể sinh nhiễu nếu vùng lân cận lẫn lớp</td></tr>
+        <tr><td><code>Stratified 10-fold CV</code></td><td>Đánh giá; fold tạo từ DATA GỐC rồi mới preprocess — Section 3.2</td><td>Chống leakage mẫu mực: test fold luôn là mẫu gốc chưa preprocess</td><td>PIMA nhỏ → không có hold-out riêng để test ngoài</td></tr>
+        <tr><td><code>McNemar's test</code></td><td>Kiểm định ý nghĩa thống kê chênh lệch cặp model — Section 3.2, Table 3,5,6</td><td>Phi tham số; chứng minh cải thiện ★ p&lt;0.0001 cho C4.5/RIPPER</td><td>Chỉ so cặp, không hiệu chỉnh đa so sánh</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Accuracy (IQRd+SMOTEd, PIMA, Table 4)</strong>. ⭐ = model thắng. AdaBoostM1/RF là baseline trên dữ liệu GỐC (không preprocess).</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Accuracy</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>C4.5</code> ⭐</td><td>Model chính (IQRd+SMOTEd)</td><td><strong>0.895</strong></td><td>Phản hồi tốt nhất với tiền xử lý; cải thiện ★ p&lt;0.0001 (Table 5,6)</td><td>Trên data gốc chỉ 0.747 → phụ thuộc mạnh vào preprocessing</td></tr>
+        <tr><td>2</td><td><code>RIPPER</code></td><td>Rule induction (IQRd+SMOTEd)</td><td><strong>0.836</strong></td><td>Cũng cải thiện ★ p&lt;0.0001 với IQRd+SMOTEd</td><td>Thấp hơn C4.5 ~5.9%</td></tr>
+        <tr><td>3</td><td><code>SVM-RBF</code></td><td>Kernel SVM (IQRd+SMOTEd)</td><td><strong>0.777</strong></td><td>Best overall trên 2 dataset ngoài y tế (Credit, QSAR)</td><td>Kết quả "mixed"; Kappa tụt so baseline; cải thiện KHÔNG có ý nghĩa thống kê trên PIMA</td></tr>
+        <tr><td>4</td><td><code>Naïve Bayes</code></td><td>Sinh xác suất (IQRd+SMOTEd)</td><td><strong>0.770</strong></td><td>Vẫn vượt baseline</td><td>"Mixed results"; không đáp ứng preprocessing; cải thiện không có ý nghĩa</td></tr>
+        <tr><td>—</td><td><code>Random Forest</code> (baseline)</td><td>Baseline trên data GỐC</td><td>0.755</td><td>Mạnh sẵn với data lệch lớp</td><td>Không dùng preprocessing đề xuất; thua C4.5 (IQRd+SMOTEd) ★</td></tr>
+        <tr><td>—</td><td><code>AdaBoostM1</code> (baseline)</td><td>Baseline trên data GỐC (Decision Stump)</td><td>0.746</td><td>Boosting chống lệch lớp</td><td>Thấp nhất; thua C4.5 (IQRd+SMOTEd) ★</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>PIMA Indians Diabetes</strong> (chính)</td>
+          <td>768<br><span style="color:var(--muted);font-size:12px">500 âm / 268 dương</span></td>
+          <td>8 + label</td>
+          <td>Nữ gốc PIMA ≥21 tuổi. Feature: pregnancies, glucose (OGTT 2h), BP, skin thickness, insulin 2h, BMI, pedigree, age (Table 1). IQR tìm 49 outlier → IQRd+SMOTEd = 1157 mẫu (579/578, Table 2)</td>
+          <td><a href="https://www.kaggle.com/uciml/pima-indians-diabetes-database" target="_blank">Kaggle</a></td>
+        </tr>
+        <tr>
+          <td><strong>Breast Cancer Wisconsin</strong></td>
+          <td>569<br><span style="color:var(--muted);font-size:12px">357 Benign / 212 Malignant</span></td>
+          <td>UNKNOWN<br><span style="color:var(--muted);font-size:12px">(số feature không nêu trong text)</span></td>
+          <td>Validate ngoài domain y tế, đối chiếu Jegierski &amp; Saganowski. 11 outlier oversample 500% → SMOTE +35% (Section 4.2)</td>
+          <td><a href="https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic)" target="_blank">UCI</a></td>
+        </tr>
+        <tr>
+          <td><strong>German Credit</strong> (Statlog)</td>
+          <td>1000<br><span style="color:var(--muted);font-size:12px">700 pos / 300 neg</span></td>
+          <td>20</td>
+          <td>Domain tài chính (credit-worthy?). 25 outlier oversample 200% → SMOTE +105% → IQRd+SMOTEd = 1445 (Appendix A, Table 10)</td>
+          <td><a href="https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)" target="_blank">UCI</a></td>
+        </tr>
+        <tr>
+          <td><strong>QSAR Biodegradation</strong></td>
+          <td>1055<br><span style="color:var(--muted);font-size:12px">356 pos / 699 neg</span></td>
+          <td>41</td>
+          <td>Domain hoá học (ready vs non-ready biodegradable). 366 outlier oversample 100% → SMOTE +100% → IQRd+SMOTEd = 1894 (Appendix B, Table 10)</td>
+          <td><a href="https://archive.ics.uci.edu/ml/datasets/QSAR+biodegradation" target="_blank">UCI</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước (theo Section 3, đúng thứ tự — số liệu PIMA)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Stratified 10-fold split trên DATA GỐC</td><td>Tạo 10 fold từ 768 mẫu gốc TRƯỚC preprocess (Section 3.2)</td><td>10 fold; mỗi vòng giữ 1 fold gốc làm test</td></tr>
+        <tr><td>2</td><td>Nhận diện outlier</td><td>IQR (Q1−1.5·IQR / Q3+1.5·IQR)</td><td>49 outlier trên PIMA</td></tr>
+        <tr><td>3</td><td>Oversample outlier (with replacement)</td><td>×500%, bất kể lớp → 245 outlier</td><td>(768−49)+245 = 964 mẫu</td></tr>
+        <tr><td>4</td><td>SMOTE cân bằng lớp thiểu số</td><td>+50% (n=193), k=5, Euclidean</td><td>IQRd+SMOTEd = 1157 (579 pos / 578 neg)</td></tr>
+        <tr><td>5</td><td>Train 4 classifier</td><td>Naïve Bayes / SVM-RBF / C4.5 / RIPPER</td><td>Model trên mỗi biến thể data</td></tr>
+        <tr><td>6</td><td>Train baseline trên data GỐC</td><td>AdaBoostM1 (Decision Stump) + Random Forest</td><td>2 baseline đối chiếu</td></tr>
+        <tr><td>7</td><td>Đánh giá &amp; kiểm định</td><td>Accuracy/Precision/Recall/F-score/Kappa + McNemar</td><td>Table 4–8</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:6px">Chống leakage (Section 3.2): mỗi vòng CV lấy test = 1 fold của data GỐC; mọi instance của fold đó bị loại khỏi bản preprocessed → train fold = bản preprocessed trừ đi mẫu test. Biến thể chỉ-SMOTE (PIMA) oversample minority +90% (n=241) → 1009 mẫu (509/500).</p>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">IQR — phát hiện outlier (Section 2.2)</span>
+      IQR = Q3 − Q1<br>
+      lower = Q1 − 1.5 × IQR<br>
+      upper = Q3 + 1.5 × IQR<br>
+      → outlier = điểm &lt; lower HOẶC &gt; upper
+    </div>
+    <div class="formula">
+      <span class="label">SMOTE — sinh mẫu tổng hợp (Section 2.1)</span>
+      new = Di + (Dneighbor − Di) × gap<br>
+      với gap ∈ [0, 1] ngẫu nhiên; k = 5 neighbour; khoảng cách = Euclidean
+    </div>
+    <div class="formula">
+      <span class="label">Metric đánh giá (Section 3.2)</span>
+      Accuracy  = (TP + TN) / (TP + TN + FP + FN)<br>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F-score   = 2 · Precision · Recall / (Precision + Recall)<br>
+      G-mean    = √(sensitivity × specificity)<br>
+      Kappa     ∈ [−1, 1] (Cohen's Kappa)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      <svg width="520" height="120" viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sơ đồ pipeline tiền xử lý IQR + SMOTE">
+        <defs>
+          <marker id="arrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#2563eb"/>
+          </marker>
+        </defs>
+        <rect x="6" y="40" width="92" height="40" rx="7" fill="#dbeafe" stroke="#2563eb"/>
+        <text x="52" y="64" font-size="11" text-anchor="middle" fill="#0f172a">Data gốc</text>
+        <line x1="100" y1="60" x2="128" y2="60" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+        <rect x="130" y="40" width="92" height="40" rx="7" fill="#ede9fe" stroke="#7c3aed"/>
+        <text x="176" y="58" font-size="11" text-anchor="middle" fill="#0f172a">IQR tìm</text>
+        <text x="176" y="71" font-size="11" text-anchor="middle" fill="#0f172a">outlier</text>
+        <line x1="224" y1="60" x2="252" y2="60" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+        <rect x="254" y="40" width="104" height="40" rx="7" fill="#fef3c7" stroke="#b45309"/>
+        <text x="306" y="58" font-size="11" text-anchor="middle" fill="#0f172a">Oversample</text>
+        <text x="306" y="71" font-size="11" text-anchor="middle" fill="#0f172a">outlier ×500%</text>
+        <line x1="360" y1="60" x2="388" y2="60" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+        <rect x="390" y="40" width="92" height="40" rx="7" fill="#d1fae5" stroke="#047857"/>
+        <text x="436" y="58" font-size="11" text-anchor="middle" fill="#0f172a">SMOTE</text>
+        <text x="436" y="71" font-size="11" text-anchor="middle" fill="#0f172a">cân bằng lớp</text>
+      </svg>
+      <span class="caption">Tái dựng sơ đồ phương pháp (Fig. 2, Section 3) — outlier được GIỮ &amp; khuếch đại trước, SMOTE sinh thêm quanh vùng lân cận outlier. (Vẽ lại bằng SVG, không crop ảnh PDF.)</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">89.5%</span><span class="label">Accuracy — C4.5 IQRd+SMOTEd, PIMA (Table 4)</span></div>
+      <div class="metric"><span class="value">90.0%</span><span class="label">Precision (Table 4 / Conclusion)</span></div>
+      <div class="metric"><span class="value">89.4%</span><span class="label">Recall (Table 4 / Conclusion)</span></div>
+      <div class="metric"><span class="value">83.5%</span><span class="label">Kappa (Table 4 / Conclusion)</span></div>
+      <div class="metric"><span class="value">94.6%</span><span class="label">AUC (Table 8)</span></div>
+      <div class="metric"><span class="value">88.8%</span><span class="label">G-mean (Table 8)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>PIMA</td><td>C4.5 ⭐</td><td>IQRd+SMOTEd, 10-fold CV</td><td><strong>Acc 0.895 · P 0.900 · R 0.894 · F 0.895 · Kappa 0.835</strong></td><td>Table 4 (dòng 195)</td></tr>
+        <tr><td>PIMA</td><td>RIPPER</td><td>IQRd+SMOTEd, 10-fold CV</td><td>Acc 0.836 · F 0.836 · Kappa 0.743</td><td>Table 4</td></tr>
+        <tr><td>PIMA</td><td>SVM-RBF</td><td>IQRd+SMOTEd, 10-fold CV</td><td>Acc 0.777 · F 0.779 · Kappa 0.641</td><td>Table 4</td></tr>
+        <tr><td>PIMA</td><td>Naïve Bayes</td><td>IQRd+SMOTEd, 10-fold CV</td><td>Acc 0.770 · F 0.768 · Kappa 0.653</td><td>Table 4</td></tr>
+        <tr><td>PIMA</td><td>Random Forest (baseline)</td><td>data gốc, 10-fold CV</td><td>Acc 0.755 · F 0.750 · Kappa 0.650</td><td>Table 4</td></tr>
+        <tr><td>PIMA</td><td>AdaBoostM1 (baseline)</td><td>data gốc, 10-fold CV</td><td>Acc 0.746 · F 0.741 · Kappa 0.638</td><td>Table 4</td></tr>
+        <tr class="win"><td>PIMA</td><td>C4.5 ⭐ vs Nanni/Raghuwanshi</td><td>IQRd+SMOTEd</td><td><strong>AUC 94.6% · G-mean 88.8% · F 89.5%</strong> (Nanni 84.2/75.8/69.2; Raghuwanshi 81.6/75.8/N-A)</td><td>Table 8 (dòng 264)</td></tr>
+        <tr><td>PIMA</td><td>vs 71 nghiên cứu trước</td><td>89.5% acc</td><td>Vượt từ +1.45% đến +30% (best trước = LANFIS 88.05%, 3-fold CV)</td><td>Table 7 / Section 4.1 / Conclusion</td></tr>
+        <tr><td>Breast Cancer</td><td>Random Forest</td><td>IQRd+SMOTEd, 10-fold CV</td><td>F-score 94.7% (SupE-không-SemE 95.1%; RanE 92.3%; SemE 93.6%)</td><td>Table 9 (dòng 272)</td></tr>
+        <tr><td>German Credit</td><td>SVM-RBF ⭐ (best nhóm này)</td><td>IQRd+SMOTEd, 10-fold CV</td><td>Acc 0.953 · F 0.953 · Kappa 0.843</td><td>Table A.1 (dòng 318)</td></tr>
+        <tr><td>QSAR Biodeg</td><td>SVM-RBF ⭐ (best nhóm này)</td><td>IQRd+SMOTEd, 10-fold CV</td><td>Acc 0.885 · F 0.887 · Kappa 0.817</td><td>Table B.1 (dòng 381)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      McNemar (Table 5): chỉ <strong>C4.5</strong> và <strong>RIPPER</strong> đạt cải thiện ★ p&lt;0.0001 khi so IQRd+SMOTEd với data gốc/SMOTEd; NB và SVM-RBF KHÔNG có ý nghĩa thống kê trên PIMA. Table 6: C4.5 (IQRd+SMOTEd) vượt mọi model khác kể cả baseline, đều ★ p&lt;0.0001. Trên QSAR (Table B.3) SVM-RBF không vượt được Random Forest (p=0.0621). Các số khớp đúng extracted.md, không suy diễn.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro &amp; điểm cần soi khi tái lập</strong>
+      <ul>
+        <li><strong>Oversample outlier 500% là nhân bản CÓ HOÀN LẠI</strong> → tạo nhiều bản trùng của cùng một outlier rồi mới SMOTE quanh chúng. Nguy cơ overfit vào vài ca hiếm; cần kiểm chứng acc 89.5% do model học thật hay "thuộc lòng" outlier nhân bản.</li>
+        <li><strong>% oversample chọn "tuỳ ý" (arbitrary)</strong> — 500% (PIMA), 200% (Credit), 100% (QSAR) không có cơ sở tối ưu hoá → khó tổng quát, cần grid search / sensitivity analysis.</li>
+        <li>Phương pháp chỉ ăn với <strong>2/4 model</strong> (C4.5, RIPPER có ý nghĩa thống kê); NB và SVM-RBF cải thiện KHÔNG đáng kể trên PIMA — tác giả tự thừa nhận chưa rõ vì sao NB không đáp ứng.</li>
+        <li>Điểm CỘNG: giao thức 10-fold tạo từ <em>data gốc</em> rồi mới preprocess là cách chống leakage mẫu mực — đáng kế thừa (gr2024 không nói rõ điều này).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>PIMA chỉ 768 mẫu, chỉ nữ gốc PIMA → khó khái quát; không có hold-out riêng (tác giả tự nêu) nên phải validate gián tiếp bằng dataset ngoài domain.</li>
+        <li>Không tìm được dataset y tế thứ hai tương đồng để external validation (tác giả tự thừa nhận).</li>
+        <li>Không public code; không nêu siêu tham số đầy đủ (C4.5 confidence factor, SVM-RBF C/gamma) → tái lập ở mức <strong>medium</strong>.</li>
+        <li>Chỉ so SMOTE gốc; chưa so biến thể (Borderline / Safe-Level / ADASYN) — tác giả để vào hướng tương lai.</li>
+        <li>Không XAI, không deployment.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Ablation đối chứng cho gr2024</strong> (cùng Layer 1): gr2024 <em>loại</em> outlier bằng IQR; bài này <em>giữ &amp; khuếch đại</em> outlier — hai triết lý ngược nhau trên cùng dataset PIMA, lý tưởng để bàn "nên xử outlier thế nào".</li>
+        <li>Bài học giao thức chống leakage (fold từ data gốc) nên áp dụng cho mọi pipeline Layer 1 của đề tài.</li>
+        <li>Con số tham chiếu chắc chắn: <strong>89.5% acc / AUC 94.6% / G-mean 88.8%</strong> trên PIMA — dùng làm mốc so cho các layer trên.</li>
+        <li>Venue mạnh (Artificial Intelligence in Medicine) + 154 citation → nguồn uy tín để trích dẫn nền tảng; nhưng acc PIMA (89.5%) thấp hơn con số 94% của gr2024, cần lưu ý khác biệt giao thức khi so trực tiếp.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

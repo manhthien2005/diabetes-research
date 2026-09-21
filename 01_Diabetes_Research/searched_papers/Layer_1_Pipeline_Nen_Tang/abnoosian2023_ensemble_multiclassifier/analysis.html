@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction of diabetes disease using an ensemble of machine learning multi-classifier models — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────────────────────────────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Prediction of diabetes disease using an ensemble of machine learning multi-classifier models</h1>
+    <div class="meta">
+      <span>📅 <strong>2023</strong></span>
+      <span>📰 BMC Bioinformatics</span>
+      <span>📚 <strong>127</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1186/s12859-023-05465-z" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không (Additional file 1 chỉ là pseudo-code)</span>
+      <span class="badge yes">📊 Dataset: Có (public Mendeley)</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://data.mendeley.com/datasets/wj9rwkp9c2/1" target="_blank">Iraqi Patient Dataset for Diabetes (IPDD)</a> — 1000 mẫu (993 sau loại trùng), 11 chỉ số khám, 3 lớp Y/N/P, mất cân bằng nặng</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Pipeline tiền xử lý đầy đủ + <strong>ensemble bỏ phiếu có trọng số = AUC One-Vs-One</strong> (thay oversampling) để xử lý mất cân bằng lớp trên dataset ĐTĐ 3 lớp (IPDD).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>Accuracy 0.9887</strong>, AUC 0.999, F1 0.9851 (micro-avg, ensemble K-NN+AB+DT+RF) trên IPDD — Abstract &amp; Table 9; so sánh Table 10 ghi 99.87% ACC.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Loại trùng → k-NN imputation → min-max + Z chuẩn hoá → MRMR / PCA / ICA → 6 base model (tuning Bayes + grid) → <strong>weighted voting (AUC-OVO weight)</strong>; kCV 5-fold lồng.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Cùng Layer 1 với gr2024 (Boruta+RF, 94% PIDD). Bài này KHÔNG dùng SMOTE/oversampling mà cân bằng bằng <strong>trọng số AUC</strong> — góc tham chiếu khác. Acc danh nghĩa cao hơn (98.87%) nhưng micro-avg trên 1 dataset 3 lớp bão hoà, nghi thổi phồng.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 1
+    </h2>
+    <p class="lead">
+      Paper đề xuất một <strong>khung pipeline đa lớp (multi-class)</strong> dự đoán ĐTĐ ở 3 lớp: <em>Diabetic (Y)</em>, <em>Non-diabetic (N)</em>, <em>Predicted/Pre-diabetic (P)</em> trên
+      <strong>Iraqi Patient Dataset for Diabetes (IPDD)</strong> — một dataset mất cân bằng nặng (837/103/53). Đóng góp cốt lõi: thay vì oversampling, tác giả
+      kết hợp nhiều base model rồi <strong>bỏ phiếu có trọng số bằng AUC theo cách One-Vs-One (OVO)</strong> — vì AUC không thiên lệch theo phân phối lớp nên dùng làm trọng số voting tốt hơn accuracy.
+      Mô hình ensemble tốt nhất (K-NN + AdaBoost + DT + RF, chỉ tiền xử lý imputation "I") đạt <strong>accuracy 0.9887, AUC 0.999, F1 0.9851</strong> (micro-averaging, Abstract &amp; Table 9).
+    </p>
+    <h3>Vì sao là Layer 1 (Pipeline nền tảng)?</h3>
+    <table>
+      <tr><td>✔ Pipeline tiền xử lý đầy đủ</td><td>Loại trùng → imputation → normalization/standardization → feature selection → kCV: đúng lõi "pipeline nền tảng" của Layer 1</td></tr>
+      <tr><td>✔ Trọng tâm mất cân bằng lớp</td><td>Xử lý imbalance bằng trọng số AUC-OVO trong voting — một biến thể của chủ đề cân bằng lớp Layer 1</td></tr>
+      <tr><td>✔ Dataset tabular công khai</td><td>IPDD là dữ liệu khám lâm sàng dạng bảng (11 feature), cross-sectional</td></tr>
+      <tr><td>✘ Chưa phải Layer 3</td><td>Không dùng EHR/biobank longitudinal, không follow-up theo thời gian</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không có XAI (SHAP/LIME) và không có deployment thực tế</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng (tiền xử lý &amp; kỹ thuật phụ trợ)
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Loại mẫu trùng</code></td><td>Bỏ 7 mẫu giống hệt (1000 → 993)</td><td>Giảm rò rỉ trùng lặp</td><td>Tác động nhỏ</td></tr>
+        <tr><td><code>Attribute conversion</code></td><td>Mã hoá Gender &amp; Class label sang số (Eq. 1, 2)</td><td>Cần thiết cho model</td><td>Eq. không decode được trong bản trích</td></tr>
+        <tr><td><code>k-NN Imputation</code></td><td>Điền giá trị thiếu (có tham vấn bác sĩ nội tiết)</td><td>Giữ cấu trúc lân cận, hợp lý y khoa</td><td>Nếu fit trên cả tập → rủi ro leakage</td></tr>
+        <tr><td><code>Min-max normalization (N)</code></td><td>Đưa feature liên tục về [0,1] (Eq. 3)</td><td>Giảm bias thang đo</td><td>Nhạy với outlier</td></tr>
+        <tr><td><code>Z-score standardization (Z)</code></td><td>Chuẩn hoá mean=0, std=1 (Eq. 4)</td><td>Tốt cho GNB (giả định phân phối chuẩn)</td><td>—</td></tr>
+        <tr><td><code>MRMR</code></td><td>Chọn feature (max relevance, min redundancy)</td><td>Feature set gọn, tổng quát hơn</td><td>—</td></tr>
+        <tr><td><code>PCA</code></td><td>Giảm chiều (variance 90/95/98%)</td><td>Giảm nhiễu</td><td>Paper kết luận KHÔNG cải thiện trên IPDD</td></tr>
+        <tr><td><code>ICA (FastICA)</code></td><td>Giảm chiều (5 component)</td><td>Tách nguồn phi-Gaussian</td><td>Khó giải thích lâm sàng</td></tr>
+        <tr><td><code>Bayesian optimization + Grid search</code></td><td>Tuning hyper-parameter (vòng trong)</td><td>Tối ưu hoá hệ thống</td><td>Tốn tính toán</td></tr>
+        <tr><td><code>k-fold CV (5-fold lồng)</code></td><td>Đánh giá; vòng trong tuning, vòng ngoài test</td><td>Ước lượng ổn định, lặp 5 lần</td><td>Chưa external validation</td></tr>
+        <tr><td><code>AUC-OVO weighting</code></td><td>Trọng số voting cho ensemble (Eq. 7)</td><td>Không thiên lệch phân phối lớp → hợp dữ liệu imbalance</td><td>Phụ thuộc ước lượng AUC từng base model</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AAC (average accuracy)</strong> tốt nhất của từng base model (Table 4). ⭐ = ensemble cuối tác giả chọn. AAC base model lấy từ Table 4 (narrative OK); các bảng AAC chi tiết (5–8) bị vỡ cấu trúc — xem Lưu ý.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AAC tốt nhất (Table 4)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>★</td><td><code>EMLM: K-NN+AB+DT+RF</code> ⭐</td><td>Ensemble cuối (voting trọng số AUC-OVO, tiền xử lý I)</td><td><strong>Acc 0.9887 / AUC 0.999</strong> (Table 9–10, micro-avg)</td><td>Kết hợp điểm mạnh nhiều model, tốt cho imbalance</td><td>Phức tạp, lâu train, khó giải thích</td></tr>
+        <tr><td>1</td><td><code>Random Forest (RF)</code></td><td>Base model mạnh nhất đơn lẻ (I+N, MRMR=6/8/10)</td><td><strong>0.988 ± 0.003</strong></td><td>Ổn định, mạnh với tabular imbalance</td><td>Cần XAI bổ sung</td></tr>
+        <tr><td>2</td><td><code>k-NN</code></td><td>Base model (I+N, MRMR=6, k=25)</td><td>0.971 ± 0.003</td><td>Đơn giản, không tham số phân phối</td><td>Nhạy với scale &amp; chiều</td></tr>
+        <tr><td>3</td><td><code>Decision Tree (DT)</code></td><td>Base model (I+Z, MRMR=10)</td><td>0.968 ± 0.003</td><td>Dễ giải thích</td><td>Dễ overfit</td></tr>
+        <tr><td>4</td><td><code>AdaBoost (AB, Multi-class AdaBoost.MH)</code></td><td>Base model (I, MRMR=10)</td><td>0.961 ± 0.003</td><td>Boosting giảm bias</td><td>Nhạy với nhiễu/outlier</td></tr>
+        <tr><td>5</td><td><code>SVM (Multi-class, RBF, OVO)</code></td><td>Base model (I+N)</td><td>0.948 ± 0.003</td><td>Biên quyết định mạnh</td><td>Khó tuning, kém trên imbalance</td></tr>
+        <tr><td>6</td><td><code>Gaussian Naïve Bayes (GNB)</code></td><td>Base model (I+Z+PCA=12)</td><td>0.926 ± 0.006</td><td>Nhanh, ít tham số</td><td>Giả định phân phối chuẩn, yếu nhất</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Lưu ý: paper thử 6 base model × nhiều tổ hợp tiền xử lý (4 thí nghiệm: all-feature / MRMR / PCA / ICA). RF là base model thắng (kết hợp MRMR + I+N), nhưng ensemble cuối được chọn là K-NN+AB+DT+RF — chi tiết tổ hợp ensemble tối ưu cần đối chiếu source.pdf (Table 9, Fig. 6).</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>IPDD (Iraqi Patient Dataset for Diabetes)</strong></td>
+          <td>1000 → <strong>993</strong> (sau loại 7 trùng)</td>
+          <td>11 chỉ số khám + 1 label 3 lớp</td>
+          <td>Khám lâm sàng tại Al-Kindy Teaching Hospital, Iraq; 565 nam/435 nữ, tuổi 20–79. Phân lớp mất cân bằng nặng: Diabetic Y=837, Non-diabetic N=103, Predicted/Pre P=53. Feature: Gender, Age, FBS, BUN, Cr, Chol, TG, LDL, HDL, BMI, HbA1c (Table 1). Lưu ý: bản Mendeley gốc thiếu FBS, tác giả bổ sung qua liên hệ chủ dataset.</td>
+          <td><a href="https://data.mendeley.com/datasets/wj9rwkp9c2/1" target="_blank">Mendeley</a></td>
+        </tr>
+        <tr>
+          <td><strong>"PIDD" (so sánh, gián tiếp)</strong></td>
+          <td>UNKNOWN<br><span style="color:var(--muted);font-size:12px">(chỉ dùng để đối chiếu Table 10)</span></td>
+          <td>UNKNOWN</td>
+          <td>Table 10 nhắc "PIDD" khi so với mô hình Hybrid KNN-ID3 của Soukaena Hassan et al. [67]. Context Table 10 vẫn dùng tiền xử lý "I" trên IPDD; việc gọi "PIDD" có thể là nhầm ký hiệu (PIDD vs IPDD). Không trích được số mẫu/feature riêng → UNKNOWN.</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Không có train/test split tỉ lệ cố định: paper dùng <strong>5-fold cross-validation lồng</strong> (4 fold train + tuning ở vòng trong, 1 fold test ở vòng ngoài, lặp 5 lần — Fig. 4, mục "k-fold cross-validation").</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước (mục "Methods")</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Loại mẫu trùng</td><td>Bỏ 7 mẫu giống hệt</td><td>993 mẫu</td></tr>
+        <tr><td>2</td><td>Attribute conversion</td><td>Mã hoá Gender &amp; Class → số (Eq. 1, 2)</td><td>Dữ liệu số</td></tr>
+        <tr><td>3</td><td>Điền giá trị thiếu (I)</td><td>k-NN Imputation (tham vấn bác sĩ) — Fig. 3</td><td>Không còn null</td></tr>
+        <tr><td>4</td><td>Chuẩn hoá (N / Z)</td><td>Min-max [0,1] (Eq. 3) và/hoặc Z-score (Eq. 4)</td><td>Feature đồng thang đo</td></tr>
+        <tr><td>5</td><td>Feature selection / giảm chiều</td><td>MRMR / PCA (90,95,98%) / ICA (5 comp)</td><td>Feature set gọn</td></tr>
+        <tr><td>6</td><td>Tuning hyper-parameter (vòng trong)</td><td>Bayesian optimization + Grid search (Table 2, 4)</td><td>Hyper-param tối ưu</td></tr>
+        <tr><td>7</td><td>Train 6 base model</td><td>k-NN, SVM, DT, RF, AdaBoost, GNB (OVO)</td><td>6 classifier đã tune</td></tr>
+        <tr><td>8</td><td>Ensemble voting</td><td>Tổng hợp confidence × trọng số AUC-OVO (Eq. 7)</td><td>EMLM dự đoán</td></tr>
+        <tr><td>9</td><td>Đánh giá (vòng ngoài)</td><td>5-fold CV lồng; Acc/Precision/Recall/F1/AUC (micro-avg)</td><td>Báo cáo metric</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Min-max normalization (Eq. 3)</span>
+      N(x_ij) = (x_ij − min(x_·j)) / (max(x_·j) − min(x_·j))   →  đưa về [0,1]
+    </div>
+
+    <div class="formula">
+      <span class="label">Z-score standardization (Eq. 4)</span>
+      Z(x_ij) = (x_ij − x̄_j) / σ_j     (mean=0, std=1)
+    </div>
+
+    <div class="formula">
+      <span class="label">Ensemble confidence có trọng số AUC-OVO (Eq. 7, mục "proposed EMLM")</span>
+      P_EMLM_i = (1/norm) · Σ_{j=1..m} ( A_j · P_ij )   với A_j = AUC(OVO) của base model j<br>
+      chuẩn hoá sao cho Σ_{i=1..3} P_EMLM_i = 1 ; chọn lớp C_i nếu P_EMLM_i = max(Y = f(X))
+    </div>
+
+    <div class="formula">
+      <span class="label">Metrics multi-class (Table 3, micro-averaging)</span>
+      Average accuracy = Σ_i (tp_i+tn_i)/(tp_i+tn_i+fp_i+fn_i) / k   (Eq. 8)<br>
+      Precision = Σ_i tp_i / Σ_i (tp_i+fp_i)   (Eq. 9)<br>
+      Recall    = Σ_i tp_i / Σ_i (tp_i+fn_i)   (Eq. 10)<br>
+      F1 = 2 · Precision · Recall / (Precision + Recall)   (Eq. 11)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 2 (sơ đồ pipeline) &amp; Fig. 6 (bar chart AUC + ROC của EMLM tối ưu) trong PDF gốc.
+      <span class="caption">Chưa crop/embed base64 (tuỳ chọn) — ưu tiên số đúng từ bảng. Xem source.pdf, Fig. 2 / Fig. 6.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.9887</span><span class="label">Accuracy (Abstract; Table 10: 99.87%)</span></div>
+      <div class="metric"><span class="value">0.999</span><span class="label">AUC (Abstract &amp; Table 9, cột EMLM tối ưu)</span></div>
+      <div class="metric"><span class="value">0.9861</span><span class="label">Precision (Abstract; Table 9 ≈ 0.986)</span></div>
+      <div class="metric"><span class="value">0.9792</span><span class="label">Recall (Abstract; Table 9 ≈ 0.979)</span></div>
+      <div class="metric"><span class="value">0.9851</span><span class="label">F1-score (Abstract; Table 9 ≈ 0.985)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>IPDD</td><td>EMLM (K-NN+AB+DT+RF)</td><td>Tiền xử lý I, micro-avg, 5-fold CV</td><td><strong>Acc 0.9887 / Pre 0.9861 / Rec 0.9792 / F1 0.9851 / AUC 0.999</strong></td><td>Abstract (mục Results)</td></tr>
+        <tr><td>IPDD</td><td>EMLM tối ưu</td><td>Cột "AUC 0.999±0.000" của Table 9</td><td>Pre ≈0.986 / Rec ≈0.979 / F1 ≈0.985 / AUC 0.999±0.000</td><td>Table 9 (cột EMLM tối ưu — khớp Abstract)</td></tr>
+        <tr><td>IPDD</td><td>Current study (K-NN+AB+DT+RF, I)</td><td>So sánh ACC%</td><td><strong>99.87%</strong></td><td>Table 10</td></tr>
+        <tr><td>"PIDD"</td><td>Hassan et al. [67] Hybrid KNN-ID3 (I)</td><td>Baseline so sánh</td><td>98.25%</td><td>Table 10</td></tr>
+        <tr><td>IPDD</td><td>RF (base model tốt nhất)</td><td>I+N, MRMR=6/8/10, Bayes opt</td><td>AAC 0.988 ± 0.003</td><td>Table 4</td></tr>
+        <tr><td>IPDD</td><td>k-NN (base)</td><td>I+N, MRMR=6, k=25, grid search</td><td>AAC 0.971 ± 0.003</td><td>Table 4</td></tr>
+        <tr><td>IPDD</td><td>DT (base)</td><td>I+Z, MRMR=10, Bayes opt</td><td>AAC 0.968 ± 0.003</td><td>Table 4</td></tr>
+        <tr><td>IPDD</td><td>AdaBoost (base)</td><td>I, MRMR=10, AdaBoost.MH</td><td>AAC 0.961 ± 0.003</td><td>Table 4</td></tr>
+        <tr><td>IPDD</td><td>SVM (base)</td><td>I+N, RBF, OVO, Bayes opt</td><td>AAC 0.948 ± 0.003</td><td>Table 4</td></tr>
+        <tr><td>IPDD</td><td>GNB (base)</td><td>I+Z+PCA=12, grid search</td><td>AAC 0.926 ± 0.006</td><td>Table 4</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Các bảng AAC chi tiết theo từng tổ hợp tiền xử lý (Table 5 = all-feature, Table 6 = MRMR, Table 7 = PCA, Table 8 = ICA) <strong>bị vỡ cấu trúc trong bản trích</strong> (xem Lưu ý) — số trong các ô đó KHÔNG đáng tin, phải mở source.pdf đối chiếu. Các con số dùng ở đây lấy từ <strong>Abstract, Table 4, Table 9 (cột khớp Abstract) và Table 10</strong> là phần narrative/bảng OK. AUC 0.999 trong Table 9 trùng khớp Abstract nên đáng tin.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>🧩 Bảng 5–8 VỠ CẤU TRÚC — đối chiếu source.pdf</strong>
+      <ul>
+        <li>extraction_report.json cảnh báo: 4/10 bảng (Table 5, 6, 7, 8 — ma trận AAC của 4 thí nghiệm all-feature/MRMR/PCA/ICA) bị scatter ô và tách ký hiệu ±, empty 36–55%.</li>
+        <li><strong>KHÔNG tin số trong các ô của Table 5–8</strong>. Nếu cần con số cụ thể (vd AAC của model X với tiền xử lý Y), phải MỞ source.pdf đối chiếu, hoặc ghi UNKNOWN.</li>
+        <li>Phần dùng được: Table 1 (dataset), Table 4 (AAC tốt nhất từng base model), Table 9 (micro-avg ensemble — cột tối ưu khớp Abstract), Table 10 (so sánh), và toàn bộ narrative.</li>
+        <li>Table 9 cũng bị xáo thứ tự cột EMLM trong bản trích; tuy nhiên cột "AUC 0.999±0.000 / F1 0.985 / Rec 0.979 / Pre 0.986" trùng khít Abstract nên giữ là kết quả ensemble tối ưu.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro thổi phồng &amp; leakage</strong>
+      <ul>
+        <li>Accuracy 98.87% là <strong>micro-averaging</strong> trên dataset cực mất cân bằng (837/103/53): micro-avg bị lớp Diabetic Y áp đảo → có thể che giấu hiệu năng kém ở 2 lớp hiếm N, P. Cần xem per-class / macro-avg (paper không công bố rõ).</li>
+        <li>Không nêu rõ thứ tự fit của imputation/normalization/feature-selection so với fold split → nếu fit trên toàn bộ dữ liệu trước CV thì có <strong>data leakage</strong>, làm metric lạc quan.</li>
+        <li>Mâu thuẫn nội bộ cần soi: RF đơn lẻ là base model tốt nhất (Table 4) nhưng ensemble cuối chọn K-NN+AB+DT+RF; cần đối chiếu source.pdf (Table 9 + Fig. 6) để xác nhận tổ hợp ensemble tối ưu.</li>
+        <li>Ký hiệu dataset trong Table 10 ghi "PIDD" trong khi toàn bài dùng IPDD — khả năng nhầm ký hiệu; nên kiểm tra source.pdf.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Chỉ 1 dataset (IPDD, 993 mẫu nhỏ, dân số Iraq) — <strong>không external validation</strong> trên dân số/bệnh viện khác → khó khái quát.</li>
+        <li>Không công bố code (Additional file 1 chỉ là pseudo-code thuật toán), khó tái lập chính xác — reproducible ở mức <strong>medium</strong>.</li>
+        <li>Bài toán 3 lớp (gồm pre-diabetes) khác bài toán binary chuẩn của đề tài — cần cẩn thận khi đối chiếu metric với paper binary.</li>
+        <li>Không có XAI và không có deployment thực tế.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là <strong>đối chứng/tham chiếu Layer 1</strong>: cung cấp một chiến lược xử lý mất cân bằng KHÁC oversampling — <strong>cân bằng bằng trọng số AUC-OVO trong voting</strong> (đối lập gr2024 Random Oversampling, nnamoko2020 SMOTE+outlier, olisah2022 Spearman+PR).</li>
+        <li>Ý tưởng "dùng AUC làm trọng số ensemble vì AUC không thiên lệch phân phối lớp" đáng để thử lại trên pipeline binary của đề tài.</li>
+        <li>Con số 98.87% nên xem là <strong>thượng giới hạn lạc quan</strong> (micro-avg, 1 dataset, nghi leakage) — KHÔNG dùng làm benchmark tin cậy; dùng phương pháp, không dùng con số.</li>
+        <li>Đề xuất cải tiến: tái hiện trên dữ liệu binary + external validation + báo cáo macro/per-class + cố định CV-safe pipeline (fit trong fold).</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

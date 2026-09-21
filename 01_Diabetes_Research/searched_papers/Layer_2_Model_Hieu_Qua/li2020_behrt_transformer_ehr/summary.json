@@ -1,0 +1,23 @@
+{
+  "paper_id": "li2020_behrt_transformer_ehr",
+  "layer": 2,
+  "prediction_horizon": "long_term_risk",
+  "contribution": "BEHRT = BERT/Transformer cho chuỗi mã EHR: pre-train MLM trên ~1.6M bệnh nhân CPRD UK, dự đoán đồng thời 301 bệnh ở các lần khám tương lai (next visit / 6M / 12M). Cải thiện 8.0–13.2% APS so với deep EHR SOTA; đái tháo đường là 1/301 nhãn downstream.",
+  "method": "Transformer encoder (6 layer, 12 head, hidden 288, intermediate 512) + 4 embedding (disease/age/position/segment) → pre-train Masked Language Model (MLM, 86.5/12/1.5%) → fine-tune multi-label disease prediction (T1/T2/T3); Bayesian Optimisation, BertAdam, Caliber code mapping (ICD-10 + Read)",
+  "best_metric": "APS 0.525 | AUROC 0.958 (BEHRT, tác vụ Next 6-month, CPRD — Table 1); pre-train MLM precision 0.6597 (Section Results: Disease Embedding)",
+  "datasets": [
+    "cprd-uk-ehr"
+  ],
+  "has_code": true,
+  "code_url": "https://github.com/deepmedicine/BEHRT",
+  "reproducible": "medium",
+  "vs_baseline": "Không cùng hệ với baseline Layer-2 trên PIMA: hasan2020 (ensemble AdaBoost+XGBoost, AUC 0.950, code public, PIMA 768 cross_sectional) và khanam2021 (NN 88.6% acc / K-fold ~76%, PIMA cross_sectional). BEHRT là sequential EHR / long_term_risk trên 1.6M bệnh nhân, đa nhãn 301 bệnh, đo APS+AUROC trung bình theo bệnh nhân — bài toán khó hơn hẳn, KHÔNG so trực tiếp con số với PIMA binary. Trong nội bộ paper, BEHRT thắng Deepr (APS Next6M 0.393) và RETAIN (APS Next6M 0.417) ở mọi tác vụ (Table 1, Table 2).",
+  "gap": "Dữ liệu CPRD không public (cần giấy phép ISAC) + compute lớn (1.6M bệnh nhân, GPU Titan Xp); chỉ dùng 4 concept (bỏ thuốc/xét nghiệm/đo lường); không tách AUROC/APS riêng cho đái tháo đường (chỉ tổng quát ở Fig.6/Suppl. S6); không external validation ngoài UK; segment embedding gần như vô tác dụng (ablation Suppl. S8); APS tuyệt đối thấp (0.46–0.53) dù AUROC ~0.95 do mất cân bằng lớp nặng.",
+  "verdict": "strong",
+  "verdict_reason": "Kiến trúc foundation-model trên EHR có code public, 543 cite, vượt SOTA (Deepr/RETAIN) rõ rệt — nền tảng mạnh để mở rộng dự đoán nguy cơ ĐTĐ long-term, dù không tái lập y hệt được vì CPRD bị hạn chế truy cập.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "KHÔNG tái lập: CPRD cần giấy phép ISAC + compute ngoài tầm. Chỉ 1 câu Related Work (TO_DO §6 🅕).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

@@ -1,0 +1,25 @@
+{
+  "paper": "nguyen2019_wide_deep_onset",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 37.2,
+  "pages": 9,
+  "failed_pages": [],
+  "source_text_chars": 46066,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 11,
+  "qa": {
+    "out_chars": 46407,
+    "n_markdown_tables": 4,
+    "source_table_captions": 4,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 1.007,
+    "score": 100,
+    "warnings": []
+  }
+}

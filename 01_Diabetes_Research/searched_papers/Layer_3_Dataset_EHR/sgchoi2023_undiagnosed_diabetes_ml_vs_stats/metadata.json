@@ -1,0 +1,70 @@
+{
+  "paper_id": "sgchoi2023_undiagnosed_diabetes_ml_vs_stats",
+  "title": "Comparisons of the prediction models for undiagnosed diabetes between machine learning versus traditional statistical methods",
+  "authors": [
+    "Seong Gyu Choi",
+    "Minsuk Oh",
+    "Dong-Hyuk Park",
+    "Byeongchan Lee",
+    "Yong-ho Lee",
+    "Sun Ha Jee",
+    "Justin Y. Jeon"
+  ],
+  "year": 2023,
+  "venue": "Scientific Reports",
+  "doi": "10.1038/s41598-023-40170-0",
+  "arxiv": null,
+  "pubmed": "37567907",
+  "pmc": null,
+  "citations": 41,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 3,
+  "prediction_horizon": "early_detection",
+  "label_type": "binary",
+  "datasets_mentioned": [
+    "KNHANES 2014-2020"
+  ],
+  "dataset_slugs": [
+    "knhanes"
+  ],
+  "method_slugs": [
+    "machine-learning",
+    "logistic-regression",
+    "external-validation"
+  ],
+  "code_url": null,
+  "reproducibility": 2,
+  "source_pdf": "source.pdf",
+  "page_count": 11,
+  "open_access_pdf": "https://www.nature.com/articles/s41598-023-40170-0.pdf",
+  "license": "CC-BY-4.0",
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "2026-07-06: Nature Scientific Reports Gold OA PDF; tải trực tiếp thành công. Verify: %PDF-, 1.499.128 bytes, 11 trang.",
+  "download_link": null,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "found_by": "claude/paper-finder-workflow (Q006)",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-07-06T00:00:00+07:00",
+  "reject_reason": null,
+  "abstract": "So sánh mô hình ML với phương pháp thống kê truyền thống để phát hiện ĐTĐ CHƯA được chẩn đoán trên KNHANES 2014-2020 (n≈32.827); dùng feature phi-glycemic (giới, tuổi, nhịp tim nghỉ, vòng eo...) + external temporal validation (train 2014-2018, external 2019-2020). ML AUC ~0.788 vs thống kê ~0.740.",
+  "url": "https://doi.org/10.1038/s41598-023-40170-0",
+  "scope_note": "Đề xuất & lưu ở Q006 (2026-07-06). ĐẠT §7: 40 citations (OpenAlex, khung 1-3 năm ≥30 — sát mép 3 năm nhưng còn trong khung); KNHANES public; external temporal validation. layer_uncertain=true (đóng góp vừa là so sánh model=L2 vừa là external-validation-trên-cohort-thật=L3; chọn L3 vì giá trị phân biệt so với yu2010/choi2014 nằm ở external validation trên cohort quốc gia lớn). horizon early_detection (framing undiagnosed screening, giống yu2010 Scheme II) — horizon_uncertain=true vì nhãn đo cùng thời điểm. VAI TRÒ: anchor leakage-safe (feature phi-glycemic) + external validation, cho cả đề tài 1 và đề tài 2. CHƯA deep-analyze — cần đọc full xác nhận model cụ thể + layer/horizon.",
+  "corrections": "Sau khi đọc full 11 trang (2026-07-06): (1) GIỮ layer=3, gỡ layer_uncertain — mục tiêu tuyên bố là so model (nghiêng L2) NHƯNG các model ML gần đồng hạng và LR≈boosting nên 'so model' không phải điểm mạnh thật; giá trị neo phân biệt là external TEMPORAL validation trên cohort quốc gia + feature leakage-safe, cùng họ survey-cohort với dinh2019 (đã ở L3) → L3. (2) GIỮ prediction_horizon=early_detection, gỡ horizon_uncertain — framing undiagnosed screening (giống yu2010 Scheme II, dinh2019 Case II) dù nhãn CROSS-SECTIONAL (tác giả tự nêu hạn chế cross-sectional); KHÔNG phải onset tương lai như deberneh2021. (3) THÊM label_type='binary' (undiagnosed vs non-diabetes). (4) Xác nhận metric: best AUC ML 0.819 (LightGBM, 11 feature, external, Table 5) vs TS 0.765, P=0.001; 4-feature ML 0.788 (Random Forest, Table 2) vs TS 0.740. Model thắng đổi theo bộ feature: RF (Table 2), XGBoost (Table 3), LightGBM (Table 4-5). (5) Xác nhận không có code_url (chỉ Python 3.8.8 + Optuna, không public) → reproducibility=2/medium. (6) n=32.827 (từ 113.091), train 2014-2018 n=23.369, external 2019-2020 n=9.458. (7) Method_slugs khớp: machine-learning, logistic-regression, external-validation — bổ sung ngầm: lightgbm/xgboost/random-forest/adaboost, shap, risk-score-comparison. (8) CỜ ĐỎ ghi trong analysis: footnote Table 2-5 mâu thuẫn về cách build/validate model TS (nói TS build 2019-2020 validate 2014-2018, ngược setup ML).",
+  "horizon_uncertain": false,
+  "role": "design",
+  "role_note": "Bài gần đề tài nhất: định nghĩa ĐTĐ chưa chẩn đoán + bộ feature no-lab; điểm anh vượt = external theo QUẦN THỂ chứ không chỉ theo thời gian.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2023-08-11",
+    "age_years": 3.0,
+    "citations": 41,
+    "threshold": ">=30 (bài 1-3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

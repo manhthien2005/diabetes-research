@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning Tools for Long-Term Type 2 Diabetes Risk Prediction — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Machine Learning Tools for Long-Term Type 2 Diabetes Risk Prediction</h1>
+    <div class="meta">
+      <span>📅 <strong>2021</strong></span>
+      <span>📰 IEEE Access</span>
+      <span>📚 <strong>150</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1109/ACCESS.2021.3098691" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge horizon">⏱️ Horizon: long_term_risk</span>
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.elsa-project.ac.uk/" target="_blank">ELSA — English Longitudinal Study of Ageing</a> — cohort dọc người Anh ≥50 tuổi (SN:5050, waves 0-8), trích tập con 2.009 mẫu cân bằng cho bài này.</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Đề xuất ensemble <strong>WeightedVotingLRRFs</strong> (bỏ phiếu mềm có trọng số LR+RFs), trọng số tối ưu hoá đa mục tiêu bằng NSGA-II để cực đại đồng thời AUC &amp; Sensitivity; dự báo nguy cơ T2DM dài hạn (follow-up 2 năm) trên cohort người cao tuổi Anh ELSA.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">AUC = <strong>0.884</strong> (inductive, WeightedVotingLRRFs, Table 5); AUC = 0.888 (transductive, Table 8) — trên tập ELSA 2.009 mẫu.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Weighted soft voting (LR + Random Forests), trọng số NSGA-II; chọn cut-off bằng Youden index; feature selection GSW-NB (35 feature); so cả inductive &amp; transductive self-training.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">AUC 0.884 &lt; dinh2019 (XGBoost NHANES lab-case 0.957) nhưng &gt; dinh2019 survey-only 0.862 và &gt; agliata2023 (ANN ensemble 0.934 ở mẫu nhỏ hơn về longitudinal); ĐIỂM RIÊNG: đây là cohort dọc ELSA, nhãn từ follow-up 2 năm thật (long_term_risk), khác cross_sectional của 2 baseline NHANES.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">Bài thuộc dự án EU <strong>SmartWork</strong> (khung IoT theo dõi sức khoẻ người lao động cao tuổi). Trọng tâm khoa học là <strong>dự báo nguy cơ T2DM dài hạn</strong>: chọn các tham gia viên CHƯA bị tiểu đường tại các "reference waves" (waves 2, 4, 6 của ELSA) và gán nhãn dựa trên <strong>đánh giá theo dõi sau 2 năm</strong> (waves 3, 5, 7). Vì feature đo ở thời điểm gốc còn nhãn xác định ở lần khám sau 2 năm, đây là bài <strong>tiên lượng onset tương lai</strong> chứ không phải chẩn đoán đồng thời. Nhóm tác giả so sánh nhiều mô hình ML đơn lẻ, ensemble (voting/stacking) và 2 hệ thống điểm nguy cơ kinh điển (FINDRISC, Leicester); mô hình đề xuất là ensemble bỏ phiếu mềm có trọng số tối ưu hoá đa mục tiêu (NSGA-II) <code>WeightedVotingLRRFs</code>, đạt AUC 0.884.</p>
+    <h3>Vì sao là Layer 3 (Dataset / EHR)?</h3>
+    <table>
+      <tr><td>📋 Nguồn dữ liệu y tế dọc thực</td><td>Dùng tập con <strong>ELSA</strong> (English Longitudinal Study of Ageing) — khảo sát + dữ liệu khám lâm sàng/xét nghiệm máu do y tá thu thập, không phải bộ tabular nhỏ kiểu PIMA. Đây là đặc trưng của Layer 3 (Dataset/EHR).</td></tr>
+      <tr><td>⏱️ Có chiều thời gian (longitudinal)</td><td>Nhãn dựng từ chênh lệch thời gian (baseline → follow-up 2 năm), khai thác cấu trúc theo dõi của cohort — điểm phân biệt rõ với Layer 1 (pipeline/cân bằng) và Layer 2 (mô hình thuần).</td></tr>
+      <tr><td>🧬 Hơn 100 biến gốc, đa miền</td><td>Khởi đầu &gt;100 biến (nhân khẩu, lối sống, xét nghiệm máu: hbA1c, fglu, chol, hdl, ldl, sys/dias…) rồi rút còn 35 — đúng tinh thần khai thác EHR phong phú của Layer 3.</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Weka (Java)</code></td><td>Cài đặt &amp; đánh giá các mô hình ML, voting/stacking (Section V)</td><td>Mã nguồn mở, dễ tích hợp vào hệ triển khai SmartWork</td><td>Hạn chế tinh chỉnh sâu so với sklearn; không nêu phiên bản</td></tr>
+        <tr><td><code>Python Statsmodels</code></td><td>Fit các mô hình Logistic Regression (FindLogist, LeicLogist)</td><td>Báo cáo thống kê đầy đủ (p-value, hệ số)</td><td>Chỉ dùng cho phần LR điểm nguy cơ</td></tr>
+        <tr><td><code>NSGA-II (GA đa mục tiêu)</code></td><td>Tối ưu hoá trọng số voting để cực đại đồng thời AUC &amp; Sensitivity (Pareto Front, Table 7)</td><td>Robust hơn tối ưu đơn mục tiêu; tránh kẹt 1 metric</td><td>Tốn tính toán; trọng số phụ thuộc tập dữ liệu cố định</td></tr>
+        <tr><td><code>LASSO (L1)</code></td><td>Feature selection nhúng (Embedded)</td><td>Đơn giản, dễ diễn giải hơn Ridge</td><td>Cuối cùng KHÔNG được chọn — tác giả dùng GSW-NB</td></tr>
+        <tr><td><code>Greedy Stepwise Backward (Wrapper)</code></td><td>Feature selection: GSW-NB được chọn làm bộ 35 feature huấn luyện</td><td>Chia sẻ nhiều biến chung với các phương pháp khác &amp; với y văn</td><td>Greedy, đắt tính toán; mang tính kinh nghiệm cao</td></tr>
+        <tr><td><code>Pearson correlation / Z-score</code></td><td>Lọc tương quan &amp; chuẩn hoá đặc trưng</td><td>Tiêu chuẩn, nhanh</td><td>Chỉ bắt quan hệ tuyến tính</td></tr>
+        <tr><td><code>Random undersampling</code></td><td>Cân bằng lớp theo tỉ lệ mắc thực tế từng nhóm tuổi (9%→24%)</td><td>Phản ánh prevalence theo tuổi thay vì ép 50/50</td><td>Vứt bỏ mẫu non-diabetic → tập chỉ còn 2.009</td></tr>
+        <tr><td><code>Transductive self-training wrapper</code></td><td>Tận dụng mẫu unlabeled trong test để tăng tập train (ngưỡng tin cậy 0.90, ≤10 vòng)</td><td>Cải thiện nhẹ mô hình phức tạp (RFs, DNN, ensemble)</td><td>Không lợi cho LR/NB/DT/ANN; rủi ro nhiễu nhãn giả</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC (inductive, Table 5)</strong>. ⭐ = model tốt nhất paper chọn.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC (inductive)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>Weighted Voting: LR,RFs</code> ⭐</td><td>Ensemble đề xuất, trọng số NSGA-II [0.2733, 0.7266]</td><td><strong>0.884</strong></td><td>AUC &amp; Youden J (0.654) cao nhất; Sensitivity 0.856 tốt</td><td>Phụ thuộc tinh chỉnh trọng số trên tập cố định nhỏ</td></tr>
+        <tr><td>2</td><td><code>Voting: LR,RFs</code></td><td>Ensemble bỏ phiếu mềm (không trọng số)</td><td><strong>0.881</strong></td><td>Specificity 0.840 cao nhất nhóm</td><td>Sensitivity 0.794 thấp hơn weighted voting</td></tr>
+        <tr><td>3</td><td><code>Random Forests</code></td><td>Single classifier mạnh nhất</td><td><strong>0.880</strong></td><td>Học được biên phi tuyến; nền của ensemble</td><td>Single model → kém ổn định hơn ensemble</td></tr>
+        <tr><td>4</td><td><code>Logistic Regression</code> (35 feature)</td><td>Single classifier; base learner của ensemble</td><td><strong>0.863</strong></td><td>Tuyến tính, diễn giải tốt; vượt xa FindLogist/LeicLogist</td><td>Phân tách lớp kém hơn RFs (biên tuyến tính)</td></tr>
+        <tr><td>5</td><td><code>DNN</code> (kiến trúc theo [29])</td><td>Mạng sâu benchmark</td><td><strong>0.847</strong></td><td>Sensitivity 0.897 cao</td><td>Thua ~3.7% AUC do specificity yếu</td></tr>
+        <tr><td>6</td><td><code>Stacking: LR,RFs</code></td><td>Ensemble meta-classifier = RFs</td><td><strong>0.833</strong></td><td>Heterogeneous base</td><td>Thua cả 2 voting; voting hợp hơn khi base tương đồng</td></tr>
+        <tr><td>7</td><td><code>FindLogist</code> (FINDRISC-LR)</td><td>Hệ điểm nguy cơ benchmark</td><td><strong>0.821</strong></td><td>Tốt hơn LeicLogist 3.3%</td><td>Ít feature → AUC thấp hơn mọi mô hình ML 35-feature</td></tr>
+        <tr><td>8</td><td><code>Decision Trees</code></td><td>Single classifier</td><td><strong>0.797</strong></td><td>Diễn giải; Sensitivity 0.876</td><td>AUC thấp</td></tr>
+        <tr><td>9</td><td><code>LeicLogist</code> (Leicester-LR)</td><td>Hệ điểm nguy cơ benchmark</td><td><strong>0.788</strong></td><td>Đơn giản, lâm sàng quen thuộc</td><td>AUC thấp nhất nhóm benchmark</td></tr>
+        <tr><td>10</td><td><code>ANN</code> (kiến trúc theo [29])</td><td>Mạng nông benchmark</td><td><strong>0.776</strong></td><td>Specificity 0.808</td><td>Sensitivity 0.711 thấp</td></tr>
+        <tr><td>11</td><td><code>Naive Bayes</code></td><td>Single classifier</td><td><strong>0.766</strong></td><td>Hợp dữ liệu mất cân bằng / thiếu giá trị</td><td>AUC thấp nhất toàn bảng</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Ở thiết lập transductive (Table 8), WeightedVotingLRRFs đạt AUC = <strong>0.888</strong> — cao nhất toàn bài. RFs transductive 0.886, Voting 0.885.</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td><strong>ELSA (subset đã cân bằng)</strong></td><td>2.009 (322 diabetic / 1.687 non-diabetic)</td><td>35 (GSW-NB + biến bổ sung theo y văn) + nhãn <code>rYdiabe</code></td><td>Tập con từ ELSA waves 2/4/6 (baseline) ghép follow-up 3/5/7. Đã loại người diabetic ở baseline + người không phỏng vấn cả 2 lần. Cân bằng bằng random undersampling theo tỉ lệ mắc theo tuổi (9%→24%).</td><td><a href="https://www.elsa-project.ac.uk/" target="_blank">ELSA project</a></td></tr>
+        <tr><td><strong>ELSA (tập gốc trước cân bằng)</strong></td><td>16.931 (16.609 No / 322 Yes, Table 2)</td><td>&gt;100 biến gốc trước feature selection</td><td>Toàn bộ tham gia viên thoả tiêu chí ở 3 cặp wave; chỉ 322 ca mới chẩn đoán T2DM ở follow-up 2 năm → cực mất cân bằng (~1.9%).</td><td><a href="https://www.elsa-project.ac.uk/" target="_blank">ELSA project</a></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Split: stratified train/test <strong>70%/30%</strong>, lặp ngẫu nhiên <strong>10 lần</strong> (seed khác nhau), giữ tỉ lệ lớp (Section V-A, dòng 285). Không nêu k-fold CV cho đánh giá cuối; CV chỉ dùng gián tiếp trong wrapper feature selection. Lưu ý: dòng 204 nói "34 features + class" còn dòng 414 nói "selected 35 features" — đề tài nên hiểu là 34/35 feature tuỳ cách đếm biến lớp.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Dựng nhãn dài hạn</td><td>Chọn người KHÔNG diabetic ở reference wave (2/4/6); gán nhãn theo follow-up 2 năm (wave 3/5/7)</td><td>Bài toán nhị phân Diabetic(1)/NonDiabetic(0) kiểu onset tương lai</td></tr>
+        <tr><td>2</td><td>Tiền xử lý</td><td>Drop missing (chỉ cho feature của FINDRISC/Leicester LR); chuẩn hoá Z-score; mã hoá biến phân loại/thứ tự (Table 9)</td><td>Bảng đặc trưng sạch</td></tr>
+        <tr><td>3</td><td>Cân bằng lớp</td><td>Random undersampling theo tỉ lệ mắc thực tế từng nhóm tuổi (9/12/15/18/21/24%)</td><td>2.009 mẫu (Table 3)</td></tr>
+        <tr><td>4</td><td>Feature selection</td><td>Filter (Pearson), Wrapper (Greedy Stepwise Backward với NB/LR/DT), Embedded (LASSO) → chọn <strong>GSW-NB</strong>; bỏ fcntf, work; thêm 15 biến theo y văn</td><td>35 feature huấn luyện</td></tr>
+        <tr><td>5</td><td>Chia tập</td><td>Stratified 70/30, lặp 10 lần với seed khác nhau</td><td>10 cặp train/test giữ tỉ lệ lớp</td></tr>
+        <tr><td>6</td><td>Huấn luyện model</td><td>Single (NB, DT, RFs, LR, ANN, DNN) + Ensemble (voting, weighted voting, stacking) + benchmark FindLogist/LeicLogist</td><td>Dự đoán xác suất diabetic</td></tr>
+        <tr><td>7</td><td>Tối ưu trọng số ensemble</td><td>NSGA-II đa mục tiêu (max AUC &amp; Sensitivity) → Pareto Front (Table 7); chọn [0.2733, 0.7266]</td><td>WeightedVotingLRRFs</td></tr>
+        <tr><td>8</td><td>Chọn cut-off</td><td>Youden index trên ROC (cut-off 0.193 cho weighted voting)</td><td>Ngưỡng phân loại tối ưu</td></tr>
+        <tr><td>9</td><td>Transductive (bổ sung)</td><td>Self-training wrapper, ngưỡng tin cậy 0.90, ≤10 vòng</td><td>AUC transductive (Table 8)</td></tr>
+        <tr><td>10</td><td>Đánh giá</td><td>AUC, Sensitivity, Specificity, +PV/-PV, +LR/-LR, Youden J, Wald test cho AUC</td><td>Table 5 (inductive), Table 8 (transductive)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Weighted soft voting (mô hình đề xuất)</span>
+      pred(x) = argmax<sub>c∈{0,1}</sub> Σ<sub>k=1..K</sub> w<sub>k</sub> · p<sub>k</sub>(c | x) &nbsp;&nbsp; với (w<sub>LR</sub>, w<sub>RFs</sub>) = (0.2733, 0.7266)
+    </div>
+    <div class="formula">
+      <span class="label">LASSO (L1) — feature selection nhúng</span>
+      min<sub>a</sub> Σ ( y − a<sub>0</sub> − Σ<sub>j</sub> a<sub>j</sub> f<sub>j</sub> )² + λ Σ<sub>j</sub> |a<sub>j</sub>|
+    </div>
+    <div class="formula">
+      <span class="label">Mục tiêu NSGA-II (bi-objective)</span>
+      maximize { AUC(w), Sensitivity(w) } &nbsp;→&nbsp; điểm Pareto chọn có AUC=0.88381, Youden-Sensitivity=0.856 (Table 7)
+    </div>
+    <div class="formula">
+      <span class="label">Youden index (chọn cut-off tối ưu)</span>
+      J = Sensitivity + Specificity − 1 &nbsp;→&nbsp; J<sub>max</sub> = 0.654 (WeightedVotingLRRFs, Table 5)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">🖼️ Hình từ PDF chưa được crop (công cụ render PDF không khả dụng trong môi trường). <span class="caption">Figure 3 = ROC inductive; Figure 4 = ROC/cut-off/phân bố của WeightedVotingLRRFs; Figure 5 = ROC transductive. Mọi số liệu đã lấy trực tiếp từ Table 5/7/8.</span></div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.884</span><span class="label">AUC inductive — WeightedVotingLRRFs (Table 5)</span></div>
+      <div class="metric"><span class="value">0.888</span><span class="label">AUC transductive — WeightedVotingLRRFs (Table 8)</span></div>
+      <div class="metric"><span class="value">0.856</span><span class="label">Sensitivity — Weighted Voting (Table 5)</span></div>
+      <div class="metric"><span class="value">0.654</span><span class="label">Youden J — Weighted Voting (Table 5)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>ELSA (2.009)</td><td>Weighted Voting: LR,RFs ⭐</td><td>Inductive, cut-off Youden 0.193</td><td><strong>AUC 0.884; Sens 0.856; Spec 0.798; +PV 0.449; -PV 0.967; J 0.654</strong></td><td>Table 5 (extracted.md dòng 360)</td></tr>
+        <tr><td>ELSA (2.009)</td><td>Weighted Voting: LR,RFs ⭐</td><td>Transductive self-training</td><td><strong>AUC 0.888; Sens 0.825; Spec 0.846; +PV 0.506; J 0.670</strong></td><td>Table 8 (dòng 412); text dòng 364 &amp; 467</td></tr>
+        <tr><td>ELSA (2.009)</td><td>Voting: LR,RFs</td><td>Inductive</td><td>AUC 0.881; Sens 0.794; Spec 0.840</td><td>Table 5 (dòng 359)</td></tr>
+        <tr><td>ELSA (2.009)</td><td>Random Forests</td><td>Inductive</td><td>AUC 0.880; Sens 0.845; Spec 0.785</td><td>Table 5 (dòng 355)</td></tr>
+        <tr><td>ELSA (2.009)</td><td>Logistic Regression (35 feat)</td><td>Inductive</td><td>AUC 0.863; Sens 0.794; Spec 0.787</td><td>Table 5 (dòng 354)</td></tr>
+        <tr><td>ELSA (2.009)</td><td>DNN</td><td>Inductive</td><td>AUC 0.847; Sens 0.897; Spec 0.700</td><td>Table 5 (dòng 357)</td></tr>
+        <tr><td>ELSA (2.009)</td><td>Stacking: LR,RFs</td><td>Inductive (meta=RFs)</td><td>AUC 0.833</td><td>Table 5 (dòng 358)</td></tr>
+        <tr><td>ELSA (2.009)</td><td>FindLogist (FINDRISC)</td><td>Benchmark LR</td><td>AUC 0.821; Sens 0.742; Spec 0.747</td><td>Table 5 (dòng 351); text dòng 332</td></tr>
+        <tr><td>ELSA (2.009)</td><td>LeicLogist (Leicester)</td><td>Benchmark LR</td><td>AUC 0.788; Sens 0.784; Spec 0.688</td><td>Table 5 (dòng 350); text dòng 332</td></tr>
+        <tr><td>ELSA (2.009)</td><td>ANN / Naive Bayes</td><td>Inductive</td><td>ANN AUC 0.776; NB AUC 0.766</td><td>Table 5 (dòng 356, 352)</td></tr>
+        <tr><td>ELSA (gốc)</td><td>—</td><td>Phân bố nhãn</td><td>322 ca mới chẩn đoán T2DM / 16.931 (~1.9%)</td><td>Table 2 (dòng 254-263)</td></tr>
+        <tr><td>ELSA (cân bằng)</td><td>—</td><td>Phân bố nhãn</td><td>322 Yes / 2.009 tổng; nữ 53.4%; diabetic nữ 13.8% / nam 18.6%</td><td>Table 3 (dòng 267-276); Section V-A (dòng 250)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Tất cả AUC có p-value = 0 (Wald test, bác bỏ AUC=0.5; AUC thấp nhất ghi nhận 0.727). Trọng số voting tối ưu [0.2733, 0.7266] từ Pareto Front (Table 7). Hyperparameter đầy đủ tại Table 6. Số đã đối chiếu chéo 3 nơi (Abstract dòng 15, Table 5 dòng 360, Conclusion dòng 467) — extracted.md QA score 100/100, 0 bảng lỗi (extraction_report.json), nên tin cậy cao dù bài qua OCR.</p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro / điểm cần cảnh giác</strong>
+      <ul>
+        <li><strong>Tập rất nhỏ &amp; cố định (2.009 mẫu)</strong>: chính tác giả nêu đây là hạn chế (dòng 461); chỉ 322 ca dương → mọi metric có khoảng tin cậy rộng (vd AUC weighted voting 0.884 với CI [0.850, 0.918]).</li>
+        <li><strong>Cân bằng bằng undersampling</strong> vứt bỏ phần lớn non-diabetic (16.609 → ~1.687); có thể bỏ thông tin &amp; làm metric không phản ánh prevalence thực ~1.9%.</li>
+        <li><strong>Thiếu family history &amp; gestational diabetes</strong> (không có trong ELSA) — 2 yếu tố nguy cơ T2DM quan trọng bị loại (dòng 414), có thể hạ trần hiệu năng.</li>
+        <li><strong>hbA1c &amp; fasting glucose nằm trong feature</strong>: đây là biến gần tiêu chí chẩn đoán; dù nhãn lấy ở follow-up 2 năm (giảm rò rỉ), vẫn nên kiểm chứng mức độ phụ thuộc nhãn vào các biến này.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn</strong>
+      <ul>
+        <li><strong>Không có code public</strong> (chỉ nêu dùng thư viện Weka + Statsmodels; metadata code_url=null) → tái lập MEDIUM: hyperparameter đầy đủ (Table 6) &amp; method rõ, nhưng ELSA cần xin cấp quyền (UK Data Service SN:5050) và quy trình dựng tập con/seed không kèm script.</li>
+        <li><strong>Không external validation</strong>: chỉ đánh giá trong cùng tập ELSA; chưa thử trên cohort khác.</li>
+        <li><strong>Chưa thử boosting</strong> (XGBoost/AdaBoost để future work, dòng 420) — trong khi baseline cùng layer dinh2019 đạt AUC cao hơn nhờ XGBoost.</li>
+        <li><strong>Không XAI</strong> (SHAP/LIME): chỉ có feature importance qua selection, chưa giải thích dự đoán cá nhân.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Mẫu chuẩn cho nhánh long_term_risk</strong>: đây là 1 trong ít bài Layer 3 dùng nhãn theo dõi thật (follow-up 2 năm) thay vì cross_sectional — hữu ích để định nghĩa rõ horizon và cách dựng nhãn onset.</li>
+        <li><strong>Kỹ thuật đáng học</strong>: tối ưu trọng số ensemble đa mục tiêu bằng NSGA-II (cân bằng Sensitivity-AUC) + chọn cut-off Youden — pattern có thể tái dùng cho đề tài.</li>
+        <li><strong>Khoảng trống làm điểm cải tiến</strong>: thêm boosting/XAI, dùng SMOTE thay undersampling, imputation thay vì drop, mở rộng dữ liệu (big-data) — chính tác giả gợi ý ở future work.</li>
+        <li><strong>So sánh đối chiếu</strong>: AUC 0.884 không vượt boosting NHANES lab-case (dinh2019 0.957) nhưng vượt survey-only 0.862 &amp; agliata2023 ở khía cạnh longitudinal — minh hoạ trade-off giữa horizon dài hạn (khó hơn) và chẩn đoán đồng thời.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

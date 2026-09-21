@@ -1,0 +1,66 @@
+{
+  "paper_id": "hasan2020_diabetes_prediction_ensembling",
+  "title": "Diabetes Prediction Using Ensembling of Different Machine Learning Classifiers",
+  "authors": [
+    "Md. Kamrul Hasan",
+    "Md. Ashraful Alam",
+    "Dola Das",
+    "Eklas Hossain",
+    "Mahmudul Hasan"
+  ],
+  "year": 2020,
+  "venue": "IEEE Access",
+  "doi": "10.1109/ACCESS.2020.2989857",
+  "arxiv": null,
+  "citations": 589,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "code_url": "https://github.com/kamruleee51/Diabetes-Prediction-Using-ML-Classifiers",
+  "datasets_mentioned": [],
+  "is_seed": true,
+  "lookup_status": "ok",
+  "source_pdf": "Diabetes Prediction Using Ensembling of Different Machine Learning Classifiers.pdf",
+  "page_count": 16,
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-06-22T00:00:00.000Z",
+  "status": "chosen",
+  "layer": 2,
+  "dataset_slugs": [
+    "pima-indians-diabetes"
+  ],
+  "method_slugs": [
+    "iqr-outlier-rejection",
+    "mean-imputation",
+    "standardization",
+    "correlation-feature-selection",
+    "stratified-kfold-cv",
+    "grid-search",
+    "soft-voting-ensemble",
+    "adaboost",
+    "xgboost"
+  ],
+  "reproducibility": 3,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "corrections": {
+    "datasets_mentioned": "Trống trong metadata cũ; full-text xác nhận chỉ dùng 1 dataset: PIMA Indians Diabetes (PID) 768 mẫu (268 dương / 500 âm), 8 thuộc tính → khớp dataset_slugs ['pima-indians-diabetes'].",
+    "prediction_horizon": "Xác nhận cross_sectional: nhãn = tình trạng ĐTĐ tại thời điểm đo 8 chỉ số (glucose OGTT 2h, BMI, …), không có khoảng cách thời gian / follow-up.",
+    "best_metric_verified": "AUC 0.950 ± 0.021 (AB+XB) + Sn 0.789 / Sp 0.934 / FOR 0.092 / DOR 66.234 — đã đối chiếu source.pdf (text layer) khớp với OCR (Bảng 7 & 8). XB đơn AUC 0.946 (Bảng 4), MLP AUC 0.902 (Bảng 8).",
+    "code_url": "Footnote trong PDF bị OCR rớt dấu gạch nối ('Diabetes-Prediction-UsingMLClassifiers'); URL canonical trong metadata ('...Using-ML-Classifiers') giữ nguyên là đúng.",
+    "method_slugs": "Khớp full-text; không sửa."
+  },
+  "citations_source": "openalex",
+  "label_type": "binary",
+  "pdf_status": "downloaded",
+  "role": "method",
+  "role_note": "Có code public — ĐỌC CODE để thấy pipeline sạch trông thế nào, không đọc bài.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2020-01-01",
+    "age_years": 6.6,
+    "citations": 589,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

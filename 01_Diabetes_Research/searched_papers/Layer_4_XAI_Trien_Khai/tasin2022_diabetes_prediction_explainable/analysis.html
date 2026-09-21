@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diabetes prediction using machine learning and explainable AI techniques — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .win { background: var(--success-soft); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure svg { max-width: 100%; height: auto; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Diabetes prediction using machine learning and explainable AI techniques</h1>
+    <div class="meta">
+      <span>📅 <strong>2022</strong> (xuất bản 2023)</span>
+      <span>📰 Healthcare Technology Letters (IET)</span>
+      <span>📚 <strong>320</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1049/htl2.12039" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <a class="badge yes" href="https://github.com/tansin-nabil/Diabetes-Prediction-Using-Machine-Learning" target="_blank">💻 Code: GitHub ↗</a>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">PIMA Indian Diabetes (PIDD)</a> — 768 mẫu, 8 feature, 268 dương tính (Section 2.1)</li>
+      <li>🔹 <a href="https://github.com/tansin-nabil/Diabetes-Prediction-Using-Machine-Learning" target="_blank">RTML private (Rownak Textile Mills, Bangladesh)</a> — 203 nữ, 6 feature, dữ liệu mới của bài (Section 2.1)</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Hệ thống dự đoán ĐTĐ end-to-end: gộp <strong>PIMA + dataset RTML mới (203 nữ Bangladesh)</strong>, bù insulin bằng XGB regressor bán giám sát, cân bằng SMOTE/ADASYN, giải thích bằng <strong>SHAP + LIME</strong>, rồi triển khai thật ra <strong>website + app Android</strong>. Code public.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>XGBoost + ADASYN: Acc 81%, F1 0.81, AUC 0.84</strong> trên dataset gộp (Table 5, Fig. 7–8). Domain adaptation (train PIMA → test RTML): Acc 96% (Table 6).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Mean impute → Mutual Information (bỏ DPF) → semi-supervised <strong>XGB regressor</strong> bù insulin → merge → split 80/20 → <strong>ADASYN</strong> (train only) → Min-Max → GridSearchCV → <strong>XGBoost</strong> + SHAP/LIME.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Là <strong>baseline gốc của Layer 4</strong> (266 cite). Bao trùm hơn các bài cùng layer: kaliappan2024 / xu2025 không deploy &amp; không code; dharmarathne2024 chỉ app Tkinter cục bộ, XGB 77% PIMA. Đây là bài duy nhất có <strong>dataset mới + XAI + deploy web/Android + code</strong> đầy đủ.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 4
+    </h2>
+    <p class="lead">
+      Bài xây <strong>hệ thống dự đoán đái tháo đường tự động hoàn chỉnh</strong>: tác giả tự thu thập một dataset mới (<strong>RTML</strong> — 203 nữ công nhân dệt may Dhaka, Bangladesh, 6 feature), bù feature insulin còn thiếu bằng một <strong>mô hình hồi quy XGB bán giám sát</strong> học từ PIMA, gộp hai dataset (877 mẫu, bỏ Diabetes Pedigree Function vì kém quan trọng theo Mutual Information), cân bằng lớp bằng <strong>SMOTE và ADASYN</strong>, so 9 classifier ML/ensemble, rồi dùng <strong>SHAP + LIME</strong> để diễn giải quyết định. Cuối cùng triển khai mô hình tốt nhất (<strong>XGBoost + ADASYN</strong>) ra <strong>website</strong> và <strong>app Android</strong> dự đoán thời gian thực. Đây là một trong những bài XAI + deployment được trích dẫn nhiều nhất (266 cite) và là hạt nhân của Layer 4 trong đề tài.
+    </p>
+    <h3>Vì sao là Layer 4 (XAI &amp; Triển khai)?</h3>
+    <table>
+      <tr><td>✔ Có XAI thực sự</td><td>SHAP (feature importance, Fig. 9) + LIME (giải thích từng ca, Fig. 10) áp lên XGBoost+ADASYN</td></tr>
+      <tr><td>✔ Có deployment</td><td>Website (HTML/CSS + Spyder/Anaconda) và app Android (Java + Heroku API + pickle), Section 2.4 + Fig. 5–6, 11–12</td></tr>
+      <tr><td>✔ Có code + dataset public</td><td>GitHub: code + dataset RTML — hiếm với bài có dữ liệu riêng</td></tr>
+      <tr><td>✔ Pipeline ML đầy đủ</td><td>Vẫn có đủ tiền xử lý → cân bằng → feature selection → tuning, kế thừa Layer 1</td></tr>
+      <tr><td>✘ Không phải Layer 3</td><td>Không dùng EHR/biobank longitudinal; nhãn cross-sectional tại thời điểm khám</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Mean imputation</code></td><td>Điền giá trị 0 bất thường (skin thickness, BMI) bằng mean</td><td>Đơn giản, nhanh</td><td>Làm phẳng phương sai, có thể gây bias</td></tr>
+        <tr><td><code>Mutual Information</code></td><td>Feature selection — đo phụ thuộc giữa feature và nhãn; loại Diabetes Pedigree Function</td><td>Bắt được quan hệ phi tuyến; minh bạch</td><td>Chấm trên toàn dataset → rủi ro rò rỉ nhẹ; ngưỡng loại feature chủ quan</td></tr>
+        <tr><td><code>XGB Regressor (semi-supervised)</code></td><td>Dự đoán/bù feature insulin còn thiếu của RTML từ PIMA</td><td>RMSE thấp nhất (0.36 vs SVR 0.45, GPR 0.43), Table 3</td><td>Insulin RTML là giá trị suy ra, không đo thật → nguồn sai số ~1.33–2.33% acc</td></tr>
+        <tr><td><code>SMOTE</code></td><td>Sinh mẫu thiểu số (oversampling) — chỉ trên train</td><td>Cân bằng lớp; chuẩn mực phổ biến</td><td>Nội suy tuyến tính có thể tạo mẫu phi thực tế</td></tr>
+        <tr><td><code>ADASYN</code> ⭐</td><td>Oversampling thích nghi — sinh nhiều mẫu cho vùng "khó học" (kỹ thuật cho kết quả tốt nhất)</td><td>Tập trung biên khó; cho XGBoost Acc cao nhất</td><td>Nhạy nhiễu/outlier; có thể đẩy mẫu lệch biên</td></tr>
+        <tr><td><code>Min-Max normalization</code></td><td>Đưa feature về [0,1]</td><td>Cần cho KNN/SVM/LR</td><td>Nhạy outlier</td></tr>
+        <tr><td><code>GridSearchCV</code></td><td>Tuning hyperparameter chống overfit</td><td>Tìm có hệ thống</td><td>Tốn tính toán; không gian lưới hữu hạn</td></tr>
+        <tr><td><code>SHAP</code></td><td>XAI global — xếp hạng tầm quan trọng feature của XGBoost+ADASYN (Fig. 9)</td><td>Nền tảng Shapley vững; nhất quán</td><td>Bài chỉ trình bày định tính, không bảng giá trị Shapley số</td></tr>
+        <tr><td><code>LIME</code></td><td>XAI local — giải thích từng ca dự đoán (Fig. 10)</td><td>Trực quan với người dùng cuối</td><td>Chỉ minh hoạ 1 ca; surrogate cục bộ kém ổn định</td></tr>
+        <tr><td><code>HTML/CSS + Spyder/Anaconda</code></td><td>Frontend + deploy website</td><td>Đưa mô hình ra sản phẩm thực</td><td>Mô tả deploy sơ lược</td></tr>
+        <tr><td><code>Android Studio (Java) + Heroku + pickle</code></td><td>App Android dự đoán thời gian thực</td><td>Tiếp cận người dùng di động</td><td>Heroku free đã ngừng; chưa kiểm thử lâm sàng</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>Accuracy (dataset gộp + ADASYN, Table 5)</strong>. ⭐ = model tốt nhất paper chọn để deploy.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Acc (ADASYN, Table 5)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>1</td><td><code>XGBoost</code> ⭐</td><td>Model thắng, được deploy; max_depth=4, objective binary:logistic</td><td><strong>81% · F1 0.81 · AUC 0.84</strong></td><td>Acc &amp; F1 cao nhất với ADASYN; ổn định với tabular</td><td>Cần XAI để giải thích; tuning nhiều tham số</td></tr>
+        <tr><td>2</td><td><code>Bagging</code></td><td>Ensemble bagging; n=500, max_samples=100, OOB</td><td><strong>79% · F1 0.79 · AUC 0.84</strong></td><td>Tốt nhất ở nhánh SMOTE (Table 4); ổn định</td><td>Kém XGBoost một chút với ADASYN</td></tr>
+        <tr><td>3</td><td><code>SVM</code></td><td>Phân loại lề; linear kernel, C=10, gamma=1</td><td><strong>78% · F1 0.77 · AUC 0.83</strong></td><td>Mạnh trên biên tuyến tính</td><td>Nhạy scale; kém phi tuyến</td></tr>
+        <tr><td>4</td><td><code>Voting</code></td><td>Ensemble soft voting</td><td><strong>77% · F1 0.77 · AUC 0.84</strong></td><td>Gộp nhiều base, giảm phương sai</td><td>Không vượt thành phần mạnh nhất</td></tr>
+        <tr><td>5</td><td><code>Random Forest</code></td><td>Ensemble cây; n=400, min_samples_leaf=5, Gini</td><td><strong>76% · F1 0.76 · AUC 0.84</strong></td><td>Robust, ít overfit</td><td>Acc dưới XGBoost ở dataset này</td></tr>
+        <tr><td>5</td><td><code>AdaBoost</code></td><td>Boosting; n=50, lr=0.10</td><td><strong>76% · F1 0.76 · AUC 0.84</strong></td><td>Tập trung mẫu khó</td><td>Nhạy nhiễu/outlier</td></tr>
+        <tr><td>7</td><td><code>Logistic Regression</code></td><td>Tuyến tính baseline; max_iter=150</td><td><strong>75% · F1 0.75 · AUC 0.84</strong></td><td>Đơn giản, dễ giải thích</td><td>Chỉ bắt quan hệ tuyến tính</td></tr>
+        <tr><td>8</td><td><code>KNN</code></td><td>Láng giềng; K=5</td><td><strong>73% · F1 0.73 · AUC 0.82</strong></td><td>Không tham số, trực quan</td><td>Nhạy scale &amp; chiều</td></tr>
+        <tr><td>9</td><td><code>Decision Tree</code></td><td>Cây đơn; max_depth=2, min_samples_leaf=50, Gini</td><td><strong>72% · F1 0.72 · AUC 0.78</strong></td><td>Dễ giải thích nhất</td><td>Thấp nhất; dễ underfit ở depth=2</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Ghi chú: ở nhánh <strong>SMOTE</strong> (Table 4), model tốt nhất lại là <strong>Bagging 79% (F1 0.79, AUC 0.87)</strong>, còn XGBoost 78%. Tác giả chọn nhánh ADASYN vì XGBoost ở đó đạt 81% — cao nhất toàn bài.</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>PIMA Indian (PIDD)</strong></td>
+          <td>768<br><span style="color:var(--muted);font-size:12px">268 dương tính</span></td>
+          <td>8 + label</td>
+          <td>Benchmark mở (Section 2.1, Table 1). Feature: pregnancies, glucose, blood pressure, skin thickness, insulin, BMI, diabetes pedigree function, age</td>
+          <td><a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">Kaggle</a></td>
+        </tr>
+        <tr>
+          <td><strong>RTML private</strong></td>
+          <td>203<br><span style="color:var(--muted);font-size:12px">nữ, 18–77 tuổi</span></td>
+          <td>6 + label</td>
+          <td>Dataset MỚI của bài — nữ công nhân Rownak Textile Mills, Dhaka (Section 2.1, Table 2). Feature: pregnancy, glucose, blood pressure, skin thickness, BMI, age. <strong>Thiếu insulin</strong> → suy ra bằng XGB regressor</td>
+          <td><a href="https://github.com/tansin-nabil/Diabetes-Prediction-Using-Machine-Learning" target="_blank">GitHub</a></td>
+        </tr>
+        <tr>
+          <td><strong>Merged (gộp)</strong></td>
+          <td>877 / 971<br><span style="color:var(--muted);font-size:12px">302 ĐTĐ + 669 không</span></td>
+          <td>7 (bỏ DPF)</td>
+          <td>PIMA + RTML sau khi bù insulin và bỏ Diabetes Pedigree Function. Section 2.2 nêu 877 mẫu "all features"; phần SMOTE/ADASYN nêu 302 + 669 = 971. Split holdout 80/20, stratified</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Lưu ý số mẫu gộp: Section 2.2 ghi <strong>877</strong>, nhưng đoạn SMOTE/ADASYN (Section 2.2) ghi <strong>302 diabetes + 669 non-diabetes = 971</strong>. Bài không giải thích chênh lệch này (đọc trực tiếp source.pdf — không phải lỗi OCR).</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Thu thập RTML</td><td>Đo glucose (GlucoLeader), BP (OMRON HEM-7156T), skin thickness (LCD caliper) trên 203 nữ</td><td>Dataset mới 6 feature</td></tr>
+        <tr><td>2</td><td>Làm sạch</td><td>Thay giá trị 0 bất thường (skin thickness, BMI) bằng mean</td><td>Data sạch</td></tr>
+        <tr><td>3</td><td>Feature selection</td><td>Mutual Information → bỏ Diabetes Pedigree Function (kém quan trọng)</td><td>Tập feature gọn</td></tr>
+        <tr><td>4</td><td>Bù insulin RTML</td><td>Semi-supervised: chọn regressor RMSE thấp nhất trên PIMA (XGB 0.36) rồi suy insulin cho RTML</td><td>RTML đủ feature insulin</td></tr>
+        <tr><td>5</td><td>Gộp dataset</td><td>Merge PIMA + RTML</td><td>877 mẫu (7 feature)</td></tr>
+        <tr><td>6</td><td>Train/test split</td><td>Holdout 80/20, stratified <em>(test giữ nguyên)</em></td><td>Train + Test</td></tr>
+        <tr><td>7</td><td>Cân bằng class</td><td><strong>SMOTE</strong> &amp; <strong>ADASYN</strong> <em>(chỉ train)</em></td><td>Train cân bằng (2 nhánh)</td></tr>
+        <tr><td>8</td><td>Chuẩn hoá</td><td>Min-Max → [0,1]</td><td>Feature đồng thang</td></tr>
+        <tr><td>9</td><td>Tuning + train</td><td>GridSearchCV cho 9 classifier (DT, LR, KNN, RF, SVM, AdaBoost, XGBoost, Voting, Bagging)</td><td>9 model đã tuned</td></tr>
+        <tr><td>10</td><td>Chọn + domain adaptation</td><td>Chọn XGBoost+ADASYN; train PIMA → test RTML</td><td>Best model + kiểm versatility</td></tr>
+        <tr><td>11</td><td>Giải thích (XAI)</td><td>SHAP (global, Fig. 9) + LIME (local, Fig. 10)</td><td>Diễn giải feature/ca</td></tr>
+        <tr><td>12</td><td>Deploy</td><td>Website (HTML/CSS + Spyder) + Android (Java + Heroku + pickle)</td><td>Sản phẩm thời gian thực</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Chọn regressor bù insulin — RMSE (Table 3)</span>
+      RMSE = sqrt( (1/N) · Σ (y_pred − y_true)² )<br>
+      → XGB = 0.36  (thấp nhất)  |  GPR = 0.43  |  SVR = 0.45
+    </div>
+
+    <div class="formula">
+      <span class="label">Metrics (Section 3)</span>
+      Accuracy  = (TP + TN) / (TP + TN + FP + FN)<br>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F1        = 2 · Precision · Recall / (Precision + Recall)
+    </div>
+
+    <div class="formula">
+      <span class="label">Min-Max normalization (Section 2.2)</span>
+      X_norm = (X − X_min) / (X_max − X_min)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      <svg width="420" height="150" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+        <text x="10" y="18" font-size="12" fill="#334155" font-weight="700">SHAP feature importance — XGBoost + ADASYN (sơ đồ hoá Fig. 9)</text>
+        <g font-size="11" fill="#475569">
+          <text x="10" y="42">Glucose</text>      <rect x="95" y="33" width="300" height="11" fill="#7c3aed"/>
+          <text x="10" y="62">BMI</text>          <rect x="95" y="53" width="215" height="11" fill="#8b5cf6"/>
+          <text x="10" y="82">Age</text>          <rect x="95" y="73" width="175" height="11" fill="#a78bfa"/>
+          <text x="10" y="102">SkinThickness</text><rect x="95" y="93" width="120" height="11" fill="#c4b5fd"/>
+          <text x="10" y="122">Pregnancies</text> <rect x="95" y="113" width="95" height="11" fill="#ddd6fe"/>
+          <text x="10" y="142">Insulin</text>      <rect x="95" y="133" width="80" height="11" fill="#ede9fe"/>
+        </g>
+      </svg>
+      <span class="caption">Thứ tự định tính glucose &gt; BMI &gt; age &gt; … theo SHAP (Fig. 9) và Mutual Information (Section 3). Độ dài thanh chỉ minh hoạ, KHÔNG phải giá trị Shapley công bố.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">81%</span><span class="label">XGBoost+ADASYN — Acc (Table 5)</span></div>
+      <div class="metric"><span class="value">0.81</span><span class="label">XGBoost+ADASYN — F1 (Table 5)</span></div>
+      <div class="metric"><span class="value">0.84</span><span class="label">XGBoost+ADASYN — AUC (Table 5, Fig. 8)</span></div>
+      <div class="metric"><span class="value">96%</span><span class="label">Domain adaptation PIMA→RTML — Acc (Table 6)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>Merged</td><td>XGBoost ⭐</td><td>ADASYN, holdout 80/20</td><td><strong>Acc 81% · P 0.81 · R 0.81 · F1 0.81 · AUC 0.84</strong></td><td>Table 5; Fig. 7–8</td></tr>
+        <tr><td>Merged</td><td>Bagging</td><td>SMOTE</td><td><strong>Acc 79% · F1 0.79 · AUC 0.87</strong></td><td>Table 4</td></tr>
+        <tr><td>Merged</td><td>XGBoost</td><td>SMOTE</td><td>Acc 78% · F1 0.78 · AUC 0.84</td><td>Table 4</td></tr>
+        <tr><td>RTML (private)</td><td>XGBoost</td><td>Domain adaptation: train PIMA → test RTML</td><td><strong>Acc 96% · P 0.95 · R 0.96 · F1 0.95</strong></td><td>Table 6</td></tr>
+        <tr><td>Merged</td><td>XGBoost</td><td>Confusion matrix (test): TP=43, TN=98, 141 đúng</td><td>—</td><td>Fig. 7 + Section 3</td></tr>
+        <tr><td>PIMA (insulin selection)</td><td>XGB Regressor</td><td>Bù insulin, so RMSE</td><td><strong>RMSE 0.36</strong> (vs SVR 0.45, GPR 0.43)</td><td>Table 3</td></tr>
+        <tr><td>Merged</td><td>AdaBoost/RF/XGBoost</td><td>ADASYN, insulin = mean PIMA</td><td>XGBoost Acc 78% · F1 0.78</td><td>Table 7</td></tr>
+        <tr><td>Merged</td><td>AdaBoost/RF/XGBoost</td><td>ADASYN, insulin = median PIMA</td><td>AdaBoost Acc 78% · F1 0.78</td><td>Table 8</td></tr>
+        <tr><td>Merged</td><td>AdaBoost/RF/XGBoost</td><td>ADASYN, insulin bị bỏ → giảm</td><td>XGBoost Acc 74% · F1 0.73</td><td>Table 9</td></tr>
+        <tr><td>PIMA (so sánh)</td><td>XGBoost+ADASYN</td><td>So với works khác — "This work"</td><td>F1 0.81 · <strong>Acc 88.5%</strong> · P 0.82 · R 0.80 <span style="color:var(--danger)">(⚠ lệch 81% — xem Lưu ý)</span></td><td>Table 10</td></tr>
+        <tr><td>LIME</td><td>XGBoost+ADASYN</td><td>Giải thích 1 ca: glucose &gt; 140.25 &amp; pregnancies &gt; 6</td><td>Dự đoán ĐTĐ đúng, <strong>độ tin cậy 80%</strong></td><td>Fig. 10</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Headline được xác nhận trùng khớp ở 4 chỗ độc lập: Table 5, abstract, conclusion (Section 4) và Fig. 7–8 → <strong>81% / F1 0.81 / AUC 0.84</strong>. Riêng Table 10 in 88.5% (đối chiếu trực tiếp source.pdf — KHÔNG phải lỗi OCR mà là lệch nội tại trong bài).</p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Số liệu lệch trong chính bài (cần thận trọng khi trích)</strong>
+      <ul>
+        <li><strong>Accuracy headline = 81%</strong> (Table 5, abstract, conclusion, Fig. 7–8 — nhất quán). Nhưng <strong>Table 10 in 88.5%</strong> cho "This work". Đã đối chiếu trực tiếp source.pdf: 88.5% là số in trong bài (lệch nội tại, không phải OCR). Khi trích dẫn nên dùng <strong>81%</strong> và ghi chú anomaly 88.5%.</li>
+        <li>Số mẫu gộp ghi <strong>877</strong> (Section 2.2) nhưng phần SMOTE/ADASYN ghi <strong>302 + 669 = 971</strong> — bài không giải thích chênh lệch.</li>
+        <li>Insulin của RTML là <strong>giá trị suy ra</strong> (XGB regressor / mean / median), không đo thật → tác giả tự thừa nhận sai số phân loại trung bình ~1.33% (mean) và ~2.33% (median).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Chỉ <strong>holdout 80/20</strong>, KHÔNG K-fold cross-validation → ước lượng acc/AUC có phương sai cao, kém vững so với baseline Layer 1 (gr2024 dùng 10-fold).</li>
+        <li>Mutual Information chấm trên toàn dataset (trước hay sau split không nói rõ) → rủi ro rò rỉ nhẹ.</li>
+        <li>RTML chỉ 203 nữ, một nhà máy → khó khái quát; gộp hai quần thể khác nhau (PIMA vs Bangladesh) có thể gây dịch chuyển phân phối.</li>
+        <li>Domain adaptation 96% nghe ấn tượng nhưng tập test RTML rất nhỏ và insulin là giá trị suy ra → con số dễ lạc quan.</li>
+        <li>SHAP/LIME chỉ trình bày <strong>định tính</strong> (Fig. 9–10), không bảng giá trị Shapley số, không đo fidelity/stability của giải thích.</li>
+        <li>Deploy Heroku free (đã ngừng từ 2022) → link app có thể không còn sống.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Đây là <strong>baseline gốc của Layer 4</strong> (266 cite) — chuẩn để các bài XAI/deploy khác trong layer so chiếu.</li>
+        <li>Bao trùm hơn các peer cùng layer: là bài duy nhất có đủ <strong>dataset mới + XAI (SHAP+LIME) + deploy web/Android + code public</strong>; kaliappan2024 &amp; xu2025 không deploy/không code, dharmarathne2024 chỉ app Tkinter cục bộ.</li>
+        <li>Mẫu để học cách <strong>đưa XAI vào sản phẩm thật</strong> và cách bù feature thiếu bằng semi-supervised regressor.</li>
+        <li>Cơ hội cải tiến cho đề tài: thêm <strong>K-fold CV</strong>, công bố <strong>giá trị SHAP số</strong> + đo fidelity, xử lý cẩn thận rò rỉ feature selection, và đo lại 81% vs 88.5% cho dứt khoát.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEHRT: Transformer for Electronic Health Records — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>BEHRT: Transformer for Electronic Health Records</h1>
+    <div class="meta">
+      <span>📅 <strong>2020</strong></span>
+      <span>📰 Scientific Reports</span>
+      <span>📚 <strong>543</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1038/s41598-020-62922-y" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <a class="badge yes" href="https://github.com/deepmedicine/BEHRT" target="_blank">💻 Code: GitHub ↗</a>
+      <span class="badge yes">📊 Dataset: Có</span>
+      <span class="badge horizon">⏱️ Horizon: Long-term risk</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.cprd.com/" target="_blank">CPRD UK EHR (linked HES)</a> — ~1.6 triệu bệnh nhân (lọc từ 8 triệu), 301 mã bệnh (Caliber). Truy cập có license (ISAC), KHÔNG public.</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Đưa <strong>BERT/Transformer</strong> vào chuỗi EHR (BEHRT): pre-train MLM rồi fine-tune, đồng thời dự đoán nguy cơ <strong>301 bệnh</strong> trong lần khám / 6 / 12 tháng tương lai.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>APS 0.525 · AUROC 0.958</strong> (task Next 6M, đa nhãn 301 bệnh, Table 1). Vượt SOTA <strong>8.0–13.2% APS</strong> (Abstract).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">4 embedding (disease + age + position + segment) → Transformer 6 layer / 12 head → pre-train <strong>MLM</strong> → fine-tune multi-label.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Vượt <strong>Deepr</strong> và <strong>RETAIN</strong> ở cả 3 task (Table 1). Khác hệ với baseline tabular cùng layer (<strong>hasan2020</strong>, <strong>khanam2021</strong> trên PIMA): EHR longitudinal, đa nhãn, không phải PIMA.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">
+      BEHRT (BERT for EHR) là <strong>mô hình deep sequence Transformer</strong> coi mỗi chẩn đoán như một "từ", mỗi lần khám như một "câu",
+      và toàn bộ bệnh sử như một "văn bản". Mô hình được <strong>pre-train bằng masked language model (MLM)</strong> trên ~1.6 triệu bệnh nhân CPRD UK,
+      rồi fine-tune để <strong>đồng thời dự đoán xác suất 301 bệnh</strong> sẽ xuất hiện trong lần khám tiếp theo (T1), trong 6 tháng tới (T2) và 12 tháng tới (T3).
+      Đây là một trong những công trình đầu tiên mang kiến trúc BERT từ NLP sang EHR và trở thành <strong>foundation model</strong> nền tảng (526 cite).
+      Đái tháo đường (diabetes) là <em>một trong các đích downstream</em> nằm trong tập 301 bệnh, không phải bài chuyên về ĐTĐ — đây là lý do <code>layer_uncertain</code>.
+    </p>
+    <h3>Vì sao là Layer 2 (Model hiệu quả)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm là kiến trúc model</td><td>Đóng góp chính là <em>thuật toán/kiến trúc</em> (Transformer + MLM cho EHR), không phải pipeline tiền xử lý tabular (Layer 1)</td></tr>
+      <tr><td>✔ So hiệu năng model rõ ràng</td><td>So trực tiếp BEHRT vs Deepr vs RETAIN trên cùng task, cùng dữ liệu (Table 1, 2)</td></tr>
+      <tr><td>✔ Vượt SOTA có số đo</td><td>+8.0–13.2% APS so với deep EHR model tốt nhất (Abstract / Discussion)</td></tr>
+      <tr><td>~ Chạm Layer 3</td><td>Dùng EHR longitudinal quy mô lớn (CPRD) — gần Layer 3 (biobank/EHR), nhưng đóng góp chính vẫn là model nên xếp Layer 2 (layer_uncertain)</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Có interpretability (attention, t-SNE) nhưng chưa XAI lâm sàng hoàn chỉnh / chưa deployment thực</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Masked Language Model (MLM)</code></td><td>Pre-train tự giám sát: 86.5% từ giữ nguyên, 12% → [mask], 1.5% thay ngẫu nhiên</td><td>Học biểu diễn 2 chiều từ dữ liệu không nhãn</td><td>Cần dữ liệu khổng lồ; precision pre-train chỉ 0.6597</td></tr>
+        <tr><td><code>Multi-head self-attention</code></td><td>Bắt quan hệ giữa các bệnh vượt khoảng cách thời gian</td><td>Bắt long-range dependency, không vanishing gradient như RNN</td><td>Tốn bộ nhớ với chuỗi dài</td></tr>
+        <tr><td><code>Positional encoding</code> (Vaswani)</td><td>Mã hoá vị trí sự kiện trong chuỗi</td><td>Pre-determined → tránh học yếu do mất cân bằng độ dài chuỗi</td><td>Không học được, cố định</td></tr>
+        <tr><td><code>Age &amp; Segment embedding</code></td><td>Thêm tuổi (mốc dịch tễ) + đánh dấu xen kẽ lần khám (A/B)</td><td>Cho model cảm nhận thời gian giữa sự kiện</td><td>Segment đóng góp gần như không đáng kể (ablation, Suppl. Table S8)</td></tr>
+        <tr><td><code>Bayesian Optimisation</code></td><td>Tìm hyperparameter (layers, heads, hidden, intermediate)</td><td>Hiệu quả hơn grid/random search</td><td>UNKNOWN không gian tìm kiếm chi tiết (ở Suppl.)</td></tr>
+        <tr><td><code>t-SNE</code></td><td>Giảm chiều 288→2 để soi disease embedding (Fig. 4)</td><td>Trực quan hoá cụm bệnh theo chương Caliber</td><td>Bóp méo cấu trúc do giảm chiều cực đoan</td></tr>
+        <tr><td><code>BertAdam</code></td><td>Optimiser cho cả MLM và downstream</td><td>Chuẩn của BERT</td><td>—</td></tr>
+        <tr><td><code>Python + NVIDIA Titan Xp GPU</code></td><td>Cài đặt &amp; huấn luyện</td><td>—</td><td>UNKNOWN framework cụ thể (PyTorch/TF) trong text trích</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>APS (Next 6M, Table 1)</strong>. ⭐ = model đề xuất / tốt nhất.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>APS Next6M | AUROC</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>BEHRT</code> ⭐</td><td>Model đề xuất (Transformer + MLM)</td><td><strong>0.525 | 0.958</strong></td><td>Bắt long-range dependency; pre-train transfer; đa nhãn; có interpretability</td><td>Tốn dữ liệu/compute; chỉ dùng chẩn đoán (chưa thuốc/xét nghiệm)</td></tr>
+        <tr><td>2</td><td><code>RETAIN</code></td><td>Baseline (RNN reverse-time attention, đã tăng cường bidirectional + time)</td><td>0.417 | 0.927</td><td>Có interpretability, baseline mạnh</td><td>RNN khó train, kém BEHRT mọi task</td></tr>
+        <tr><td>3</td><td><code>Deepr</code></td><td>Baseline (CNN trên chuỗi EHR, có gender + time-gap word)</td><td>0.393 | 0.943</td><td>Đơn giản, nhanh</td><td>CNN receptive field hạn chế; APS thấp nhất</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Ghi chú: ở AUROC, Deepr (0.943) nhỉnh hơn RETAIN (0.927) tại Next6M nhưng cả hai đều kém BEHRT (0.958). Thứ hạng theo APS: BEHRT &gt; RETAIN &gt; Deepr; theo AUROC: BEHRT &gt; Deepr &gt; RETAIN (Table 1).</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature / nhãn</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>CPRD UK (linked HES)</strong></td>
+          <td>~1.6 triệu BN (lọc từ 8 triệu; ≥5 visit + có HES linkage). Train/test 80/20.</td>
+          <td>301 mã bệnh (Caliber). 4 embedding: disease, age, position, segment</td>
+          <td>Dữ liệu chăm sóc ban đầu (GP) UK liên kết HES (hospital). ICD-10 + Read code → Caliber. Đại diện dân số theo tuổi/giới/sắc tộc.</td>
+          <td><a href="https://www.cprd.com/" target="_blank">cprd.com</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Số mẫu theo task downstream (Section: Disease Prediction): <strong>T1 = 699K</strong>, <strong>T2 = 391K</strong>, <strong>T3 = 342K</strong> bệnh nhân (chỉ giữ BN có ≥1 chẩn đoán ở mốc tương lai tương ứng).
+      Thống kê dân số chi tiết ở Supplementary Table S1 (UNKNOWN trong extracted.md). Dữ liệu KHÔNG public — cần license ISAC.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Lọc &amp; liên kết CPRD</td><td>8M BN → giữ BN đủ chuẩn CPRD + có HES linkage + ≥5 visit (Fig. 1)</td><td>~1.6M bệnh nhân</td></tr>
+        <tr><td>2</td><td>Mã hoá bệnh</td><td>ICD-10 (level 4) + Read code → ánh xạ Caliber</td><td>301 mã bệnh</td></tr>
+        <tr><td>3</td><td>Dựng chuỗi EHR</td><td>Sắp xếp visit theo thời gian; chèn token <code>CLS</code> đầu chuỗi, <code>SEP</code> giữa các visit (Fig. 2)</td><td>Chuỗi token mỗi BN</td></tr>
+        <tr><td>4</td><td>Tạo embedding</td><td>Tổng 4 embedding: disease + age + position (pre-determined) + segment (A/B) (Fig. 3a)</td><td>Biểu diễn ngữ cảnh</td></tr>
+        <tr><td>5</td><td>Pre-train MLM</td><td>86.5% giữ / 12% [mask] / 1.5% random; 100 epoch; BertAdam</td><td>Disease embedding 288-d; precision 0.6597</td></tr>
+        <tr><td>6</td><td>Tối ưu kiến trúc</td><td>Bayesian Optimisation → 6 layer, 12 head, intermediate 512, hidden 288</td><td>Kiến trúc tối ưu</td></tr>
+        <tr><td>7</td><td>Tạo nhãn downstream</td><td>T1 next visit / T2 next 6M / T3 next 12M — multi-hot vector dài 301</td><td>Cặp (input, label)</td></tr>
+        <tr><td>8</td><td>Fine-tune &amp; phân loại</td><td>Pool → 1 lớp feed-forward classifier; train 15–20 epoch; 3 lần riêng cho T1–T3</td><td>Xác suất 301 bệnh</td></tr>
+        <tr><td>9</td><td>Đánh giá</td><td>APS &amp; AUROC tính theo từng BN rồi trung bình toàn bộ BN</td><td>Bảng kết quả</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Tỉ lệ thay từ trong MLM (Section: Pre-training)</span>
+      86.5% từ-bệnh giữ nguyên<br>
+      12.0% từ-bệnh → [mask]<br>
+      1.5%  từ-bệnh → thay bằng từ-bệnh ngẫu nhiên<br>
+      (tổng 13.5% bị thay đổi)
+    </div>
+
+    <div class="formula">
+      <span class="label">Metric đánh giá (Section: Disease Prediction)</span>
+      APS  = trung bình có trọng số của precision tại các threshold (≈ diện tích PR curve)<br>
+      AUROC = diện tích dưới đường ROC<br>
+      Quy trình: tính APS &amp; AUROC cho TỪNG bệnh nhân, rồi LẤY TRUNG BÌNH trên toàn bộ BN
+    </div>
+
+    <div class="formula">
+      <span class="label">Kiến trúc tối ưu (Section: Disease Embedding)</span>
+      layers = 6 ; attention_heads = 12<br>
+      intermediate_size = 512 ; hidden_size = 288<br>
+      MLM: 100 epoch → precision 0.6597 ; downstream: 15–20 epoch
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Hình "BEHRT architecture" (Fig. 3) và "Disease embedding t-SNE" (Fig. 4) nằm trong PDF gốc.
+      <span class="caption">Chưa crop/embed base64 (tuỳ chọn) — ưu tiên số liệu chuẩn từ Table 1/2. Xem trực tiếp Fig. 1–6 trong source.pdf.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.525</span><span class="label">APS — BEHRT Next6M (Table 1)</span></div>
+      <div class="metric"><span class="value">0.958</span><span class="label">AUROC — BEHRT Next6M (Table 1)</span></div>
+      <div class="metric"><span class="value">8.0–13.2%</span><span class="label">cải thiện APS vs SOTA (Abstract)</span></div>
+      <div class="metric"><span class="value">0.6597</span><span class="label">Precision — MLM pre-train (Results)</span></div>
+    </div>
+
+    <h3>Bảng 1 — Hiệu năng dự đoán (toàn bộ bệnh)</h3>
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric (APS | AUROC)</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>CPRD</td><td>BEHRT ⭐</td><td>Next visit (T1)</td><td><strong>0.462 | 0.954</strong></td><td>Table 1</td></tr>
+        <tr><td>CPRD</td><td>BEHRT ⭐</td><td>Next 6M (T2)</td><td><strong>0.525 | 0.958</strong></td><td>Table 1</td></tr>
+        <tr><td>CPRD</td><td>BEHRT ⭐</td><td>Next 12M (T3)</td><td><strong>0.506 | 0.955</strong></td><td>Table 1</td></tr>
+        <tr><td>CPRD</td><td>Deepr</td><td>Next visit / 6M / 12M</td><td>0.360|0.942 · 0.393|0.943 · 0.393|0.943</td><td>Table 1</td></tr>
+        <tr><td>CPRD</td><td>RETAIN</td><td>Next visit / 6M / 12M</td><td>0.382|0.921 · 0.417|0.927 · 0.413|0.928</td><td>Table 1</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Bảng 2 — Hiệu năng trên bệnh xuất hiện LẦN ĐẦU (first incidence)</h3>
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric (APS | AUROC)</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>CPRD</td><td>BEHRT ⭐</td><td>Next visit / 6M / 12M</td><td><strong>0.216|0.904 · 0.228|0.907 · 0.226|0.905</strong></td><td>Table 2</td></tr>
+        <tr><td>CPRD</td><td>Deepr</td><td>Next visit / 6M / 12M</td><td>0.095|0.800 · 0.104|0.814 · 0.098|0.805</td><td>Table 2</td></tr>
+        <tr><td>CPRD</td><td>RETAIN</td><td>Next visit / 6M / 12M</td><td>0.108|0.836 · 0.115|0.845 · 0.109|0.836</td><td>Table 2</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Phân tích bổ sung (định tính, không số trong text trích): gender analysis trên T2 (Suppl. Table S7), disease-wise precision Fig. 6 + Suppl. Table S6,
+      ablation embedding (Suppl. Table S8 — position &amp; age quan trọng, segment gần như không), độ trùng top-10 neighbour với chuyên gia = <strong>0.757</strong> (Section: Disease Embedding).
+      Các bảng Supplementary (S1–S8) <strong>UNKNOWN</strong> trong extracted.md — KHÔNG có số cụ thể để dẫn.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro / khác biệt khi đối chiếu với đề tài ĐTĐ tabular</strong>
+      <ul>
+        <li>Đây là bài toán <strong>đa nhãn 301 bệnh</strong>, không phải nhị phân ĐTĐ trên PIMA → metric APS/AUROC <em>không so trực tiếp</em> với accuracy 88–94% của baseline tabular (hasan2020, khanam2021).</li>
+        <li>Dữ liệu CPRD <strong>KHÔNG public</strong> (license ISAC) → khó tái lập đầy đủ dù code public.</li>
+        <li>Chỉ dùng <strong>chẩn đoán</strong>; bỏ thuốc, xét nghiệm, chỉ số đo (tác giả thừa nhận là hướng tương lai).</li>
+        <li>"Male/female infertility" bị gán nhầm do mã Read gender-agnostic ánh xạ về cùng Caliber code (Results) — nhắc nhở về chất lượng mapping.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Precision MLM pre-train chỉ 0.6597 — biểu diễn còn nhiễu.</li>
+        <li>APS tuyệt đối còn thấp (0.46–0.53) dù AUROC rất cao (~0.95) → dữ liệu rất mất cân bằng (nhiều bệnh hiếm), AUROC dễ "đẹp ảo".</li>
+        <li>Segment embedding gần như vô ích (ablation) → kiến trúc còn dư thừa.</li>
+        <li>Toàn bộ số liệu Supplementary (S1–S8) không có trong extracted.md → cần PDF gốc để moi sâu hơn.</li>
+        <li>Không phải bài chuyên ĐTĐ → ĐTĐ chỉ là 1 trong 301 nhãn, không có metric riêng cho diabetes.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Foundation/kiến trúc tham chiếu</strong>: mẫu mực cho "Transformer/BERT trên chuỗi EHR" — nền để mở rộng nếu đề tài chuyển từ tabular sang dữ liệu chuỗi/longitudinal.</li>
+        <li><strong>Code public</strong> (github.com/deepmedicine/BEHRT) → có thể tái dùng kiến trúc, fine-tune trên dữ liệu chuỗi EHR riêng để dự đoán nguy cơ ĐTĐ tương lai (long-term risk).</li>
+        <li>Minh hoạ giá trị của <strong>pre-training + transfer learning</strong> và <strong>interpretability bằng attention</strong> — hướng nâng cấp cho Layer 2/4.</li>
+        <li>Cảnh báo phương pháp: khi dữ liệu mất cân bằng cao, nên báo cáo APS/PR thay vì chỉ accuracy/AUROC.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

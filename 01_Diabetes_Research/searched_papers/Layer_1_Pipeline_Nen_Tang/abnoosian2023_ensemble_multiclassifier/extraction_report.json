@@ -1,0 +1,56 @@
+{
+  "paper": "abnoosian2023_ensemble_multiclassifier",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 249.7,
+  "pages": 24,
+  "failed_pages": [],
+  "source_text_chars": 63972,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 12,
+  "qa": {
+    "out_chars": 83228,
+    "n_markdown_tables": 10,
+    "source_table_captions": 10,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 4,
+    "garbled_tables": [
+      {
+        "table_index": 5,
+        "cells": 600,
+        "empty_pct": 55,
+        "lone_pm_cells": 21,
+        "rows": 30
+      },
+      {
+        "table_index": 6,
+        "cells": 180,
+        "empty_pct": 36,
+        "lone_pm_cells": 23,
+        "rows": 30
+      },
+      {
+        "table_index": 7,
+        "cells": 165,
+        "empty_pct": 43,
+        "lone_pm_cells": 19,
+        "rows": 33
+      },
+      {
+        "table_index": 8,
+        "cells": 150,
+        "empty_pct": 53,
+        "lone_pm_cells": 0,
+        "rows": 25
+      }
+    ],
+    "n_equationish_lines": 0,
+    "text_density": 1.301,
+    "score": 80,
+    "warnings": [
+      "4/10 markdown table(s) structurally garbled (split ±/scattered cells); analyzer should consult source.pdf for these: tables [5, 6, 7, 8]"
+    ]
+  }
+}

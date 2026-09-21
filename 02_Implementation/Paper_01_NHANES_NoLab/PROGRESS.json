@@ -1,0 +1,922 @@
+{
+  "_meta": {
+    "version": 1,
+    "purpose": "Trạng thái thi công đề tài. Nguồn chân lý cho trang /tien-do của ExploreX VÀ cho Claude ở các phiên sau. Filesystem là nguồn chân lý (AGENTS.md §2) — webapp chỉ là giao diện.",
+    "convention": "Claude ĐỌC file này đầu mỗi phiên (cùng START_HERE.md + QA_LOG.md) để biết anh đang ở đâu. Khi anh báo xong việc → cập nhật status + done_at. KHÔNG xoá task cũ; việc bỏ thì để status 'skipped' + ghi lý do vào note.",
+    "status_enum": [
+      "todo",
+      "doing",
+      "done",
+      "skipped",
+      "blocked"
+    ],
+    "created_at": "2026-07-26",
+    "updated_at": "2026-08-21"
+  },
+  "config": {
+    "start_date": "2026-07-26",
+    "total_weeks": 20,
+    "hours_per_week": 12,
+    "topic": "Sàng lọc ĐTĐ chưa được chẩn đoán bằng biến không-xét-nghiệm (no-lab)",
+    "claim": "Phần lớn khoảng cách hiệu năng công bố giữa ML và thang điểm lâm sàng biến mất khi chặn rò rỉ + đánh giá ở prevalence thật + external cross-population. Chúng tôi định lượng mỗi yếu tố."
+  },
+  "tiers": [
+    {
+      "id": 0,
+      "name": "Tầng 0 — Bài báo tối thiểu",
+      "goal": "NHANES + ablation rò rỉ + đánh giá trung thực vs FINDRISC/ADA",
+      "outcome": "ĐÃ LÀ MỘT BÀI BÁO. Nộp được hội nghị trong nước.",
+      "weeks": "tuần 1–12",
+      "required": true
+    },
+    {
+      "id": 1,
+      "name": "Tầng 1 — Nâng lên tạp chí",
+      "goal": "Thêm 1 cohort external + trọng số khảo sát",
+      "outcome": "Đủ tầm tạp chí Q2–Q3.",
+      "weeks": "tuần 13–16",
+      "required": false
+    },
+    {
+      "id": 2,
+      "name": "Tầng 2 — Chỉ nếu còn thời gian VÀ còn hứng",
+      "goal": "TabPFN v2 · SHAP · cohort thứ 3 · web demo",
+      "outcome": "Bài mạnh hơn, nhưng KHÔNG cần để có bài.",
+      "weeks": "tuần 17–20",
+      "required": false
+    }
+  ],
+  "phases": [
+    {
+      "id": "P0",
+      "tier": 0,
+      "name": "Khởi động",
+      "weeks": "tuần 1"
+    },
+    {
+      "id": "P1",
+      "tier": 0,
+      "name": "Baseline & bộ đánh giá",
+      "weeks": "tuần 2–5"
+    },
+    {
+      "id": "P2",
+      "tier": 0,
+      "name": "Ablation rò rỉ (trái tim bài)",
+      "weeks": "tuần 6–8"
+    },
+    {
+      "id": "P3",
+      "tier": 0,
+      "name": "Viết & phản biện",
+      "weeks": "tuần 9–12"
+    },
+    {
+      "id": "P4",
+      "tier": 1,
+      "name": "External validation",
+      "weeks": "tuần 13–16"
+    },
+    {
+      "id": "P5",
+      "tier": 2,
+      "name": "Nâng cấp tuỳ chọn",
+      "weeks": "tuần 17–20"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "label": "Dựng được nhãn NHANES, prevalence ~3–5%",
+      "due_week": 6,
+      "task_id": "T0.1",
+      "fallback": "Trễ 1 tuần → bỏ cohort thứ 3. Trễ 2 tuần → giảm còn 3 chu kỳ NHANES."
+    },
+    {
+      "id": "M2",
+      "label": "Table 3 — ablation rò rỉ có số",
+      "due_week": 11,
+      "task_id": "T0.15",
+      "fallback": "Cat cau hinh B, D, G — GIU BANG MOI GIA E, F, C. (Doi 26/07/2026 theo Q009 — xem LEAKAGE_MAP.md §3.1. Ban cu ghi 'giu D, E, F' la sai vi gop under-sampling voi over-sampling: under-sampling KHONG ro ri.)"
+    },
+    {
+      "id": "M3",
+      "label": "External chạy được trên ≥1 cohort",
+      "due_week": 13,
+      "task_id": "T1.4",
+      "fallback": "Đổi sang temporal external trong chính NHANES (chu kỳ cũ → chu kỳ mới). Yếu hơn nhưng vẫn là external thật."
+    },
+    {
+      "id": "M4",
+      "label": "Bắt đầu viết — KHÔNG được dời",
+      "due_week": 15,
+      "task_id": "T0.16",
+      "fallback": "Không có fallback. Đến tuần 15 là viết, dù thí nghiệm chưa đẹp."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T0.1",
+      "tier": 0,
+      "phase": "P0",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Dựng bảng phân tích NHANES (nhãn + feature no-lab)",
+      "why": "Không có bảng này thì không có gì để làm cả. Đây là nền của toàn bộ đề tài.",
+      "how": "src/build_nhanes.py — tải XPT từ CDC, ghép theo SEQN, dựng nhãn undiagnosed DM, dựng 17 feature no-lab, ghép trọng số khảo sát.",
+      "done_when": "Chạy ra prevalence có trọng số 3–5% và kiểm tra chống rò rỉ báo ĐẠT.",
+      "est_hours": 6,
+      "status": "done",
+      "done_at": "2026-07-26",
+      "blocked_by": [],
+      "note": "Kết quả: 4.170 mẫu · 259 ca · prevalence thô 6.21% · có trọng số 3.91% (khớp ước lượng NHANES đã công bố). Phát hiện dọc đường: CDC đổi URL (pattern cũ trả HTTP 200 + trang HTML lỗi), OGTT ngừng thu sau 2015-2016, BPXPLS có sẵn nên harmonize được đúng bộ feature sgchoi2023.",
+      "links": [
+        {
+          "label": "src/build_nhanes.py",
+          "href": "src/build_nhanes.py"
+        },
+        {
+          "label": "CHEATSHEET §5 — bẫy kỹ thuật",
+          "href": "CHEATSHEET.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.2",
+      "tier": 0,
+      "phase": "P0",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Chạy build_nhanes.py và nhìn con số hiện ra",
+      "why": "Để đề tài thôi trừu tượng. Anh cần THẤY dữ liệu của mình là thật, trước khi tin là mình làm được.",
+      "how": "Mở terminal ở D:\\Dev\\Projects\\NCKH rồi chạy: python src/build_nhanes.py",
+      "done_when": "Anh thấy dòng 'Prevalence CÓ TRỌNG SỐ khảo sát 3.91 %' trên màn hình của chính mình.",
+      "est_hours": 0.25,
+      "status": "done",
+      "done_at": "2026-07-27",
+      "blocked_by": [],
+      "note": "Claude chạy hộ 27/07. Tái lập ĐÚNG số cũ: 4.170 mẫu · 259 ca · thô 6.21% · có trọng số 3.91% · kiểm tra rò rỉ ĐẠT.",
+      "links": [
+        {
+          "label": "START_HERE §7",
+          "href": "START_HERE.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.3",
+      "tier": 0,
+      "phase": "P0",
+      "kind": "task",
+      "owner": "anh",
+      "critical": true,
+      "title": "Viết bài báo NGƯỢC — vẽ 6 bảng + 4 hình RỖNG trước",
+      "why": "Kỹ thuật chống trễ quan trọng nhất. Vẽ xong bảng rỗng là biết CHÍNH XÁC phải chạy bao nhiêu thí nghiệm — không thừa, không thiếu. Người chưa viết bài hay làm hết thí nghiệm rồi mới viết, phát hiện thiếu, phải chạy lại, trễ deadline.",
+      "how": "Tạo paper/outline.md. Viết IMRaD rỗng. Trong Results vẽ Table 1–6 và Fig 1–4 CHỈ có tiêu đề + tên cột, ô số để trống. Viết Abstract 150 từ với số bịa.",
+      "done_when": "File paper/outline.md tồn tại, có đủ 6 bảng rỗng và 1 abstract giả định.",
+      "est_hours": 3,
+      "status": "done",
+      "done_at": "2026-08-21",
+      "blocked_by": [
+        "T0.2"
+      ],
+      "note": "",
+      "links": [
+        {
+          "label": "TO_DO §5 Phase 0",
+          "href": "TO_DO.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.4",
+      "tier": 0,
+      "phase": "P0",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Đọc sgchoi2023 — MỘT lần, một tiếng",
+      "why": "Bài gần đề tài anh nhất (KNHANES, no-lab, undiagnosed, ML vs thống kê, external). Đọc để thấy người ta TRÌNH BÀY thế nào, không phải để học kiến thức.",
+      "how": "Mở analysis.html trong webapp. Viết notes.md ≤1 trang, đúng 3 mục: tôi lấy gì / nó thiếu gì mà tôi có / tôi trích nó ở câu nào.",
+      "done_when": "notes.md có 3 mục, mỗi mục ≥1 câu.",
+      "est_hours": 1.5,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [],
+      "note": "Số liệu chính đã trích sẵn ở CHEATSHEET §2–3, không cần lấy lại.",
+      "links": [
+        {
+          "label": "CHEATSHEET §2–3",
+          "href": "CHEATSHEET.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.5",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Cài môi trường Python còn thiếu",
+      "why": "Máy anh đã có pandas/numpy/scipy nhưng THIẾU scikit-learn, lightgbm, matplotlib — không có thì không train được gì.",
+      "how": "pip install scikit-learn lightgbm matplotlib",
+      "done_when": "python -c \"import sklearn, lightgbm, matplotlib; print('ok')\" chạy không lỗi.",
+      "est_hours": 0.5,
+      "status": "done",
+      "done_at": "2026-07-27",
+      "blocked_by": [],
+      "note": "Claude cài 27/07: scikit-learn 1.9.0 · lightgbm 4.7.0 · matplotlib 3.11.1 (đã có sẵn pandas 3.0.3, numpy 2.4.6, scipy 1.18.0). Python 3.12.10.",
+      "links": []
+    },
+    {
+      "id": "T0.6",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Cài đặt FINDRISC + ADA/CDC Risk Test trên NHANES",
+      "why": "Đây là ĐỐI THỦ mà mô hình của anh phải so. Không có nó thì claim C5 vô nghĩa. Quan trọng: hai thang điểm này KHÔNG train — tính thẳng theo công thức gốc.",
+      "how": "src/scores.py — FINDRISC 8 mục (tuổi, BMI, vòng eo, vận động, rau quả, thuốc HA, đường huyết cao từng biết, tiền sử gia đình); ADA test 7 mục. Ánh xạ từng mục sang biến NHANES, ghi rõ mục nào phải xấp xỉ.",
+      "done_when": "Có cột findrisc_score và ada_score trong bảng, phân bố điểm hợp lý, AUC thô nằm khoảng 0.72–0.83.",
+      "est_hours": 5,
+      "status": "done",
+      "done_at": "2026-07-26",
+      "blocked_by": [
+        "T0.2"
+      ],
+      "note": "XONG. src/scores.py chay that tren NHANES 2017-2018 (4.170 mau). KET QUA:\n  FINDRISC (8 muc)      AUC tho 0.751 | co trong so 0.760 | CI95 [0.718, 0.780] | thieu 9.8%\n  FINDRISC ep muc7=0    AUC tho 0.714 | co trong so 0.734 | CI95 [0.686, 0.745] | thieu 6.1%\n  ADA/CDC (7 muc)       AUC tho 0.736 | co trong so 0.769 | CI95 [0.708, 0.763] | thieu 2.7%\n  -> DAT done_when: AUC ADA 0.736 nam trong [0.72, 0.83].\nDIEM VAN HANH o prevalence THAT (co trong so): FINDRISC>=11 Sn 0.798 / Sp 0.589 / PPV 0.059 (gan co 42.3% dan so); ADA>=5 Sn 0.815 / Sp 0.622 / PPV 0.078. PPV ~6-8% chinh la bai hoc TO_DO §7.1 muc 3.\nPHAT HIEN PHU (moi, dung cho Discussion): FINDRISC MAT 0.036-0.037 AUC khi ep muc 7 ('tung duoc phat hien duong huyet cao') = 0. Tuc mot thang diem tu nhan la 'khong can xet nghiem' dang vay muon hieu nang tu mot lan xet nghiem trong qua khu, va cho muc do 5/26 diem. Chua thay bai nao trong kho tach ra con so nay.\nBAY DA DINH (ghi de phien sau khoi mat buoi): build_nhanes.py DA doi ma MCQ300C/BPQ020/SMQ020 sang 1.0/0.0, nen ham _yes_no map {1:1, 2:0} lam gia tri 'Khong' (0.0) roi thanh NaN -> 85% mau mat diem va FINDRISC min=5 (chi nguoi co tien su gia dinh moi tinh duoc diem, va ho deu +5). Da sua: _yes_no nhan CA HAI kieu ma hoa.\nRANG BUOC LEAKAGE: DIQ160/BPQ040A/BPQ050A/RHQ162 duoc tai vao BANG PHU TRO RIENG, join theo SEQN chi de tinh diem, va bi DROP truoc khi luu — kiem tra chong ro ri chay tren dung bang se duoc luu, khong phai ban nhap trong bo nho.\nSAN PHAM: data/nhanes_scores.csv (4.170 x 45) + paper/score_mapping.md (bang anh xa muc<->bien NHANES, danh dau CHINH XAC / GAN DUNG / XAP XI / THIEU — dan thang vao Methods, tra loi phan bien #5).\nLUU Y METHODS: FINDRISC muc 5 (an rau/qua hang ngay) NHANES KHONG CO -> cho 0 diem cho moi nguoi (--veg-policy zero). Phai khai bao. OGTT da ngung sau 2015-2016 nen chu ky 2017 chi dung HbA1c + FPG.",
+      "links": [
+        {
+          "label": "src/scores.py",
+          "href": "src/scores.py"
+        },
+        {
+          "label": "paper/score_mapping.md",
+          "href": "paper/score_mapping.md"
+        },
+        {
+          "label": "CHEATSHEET §3 — bảng benchmark",
+          "href": "CHEATSHEET.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.7",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Dựng khung Pipeline chống rò rỉ + nested CV",
+      "why": "Đây là thứ làm bài anh khác mọi bài trong kho. Impute/scale/select PHẢI nằm trong sklearn Pipeline và fit TRONG TỪNG FOLD. Làm sai ở đây thì mọi con số sau đều vô nghĩa.",
+      "how": "src/pipeline.py — Pipeline([imputer, scaler, model]) + nested CV (outer đánh giá, inner tuning). Seed cố định, ≥10 seed, báo mean ± SD. Test set chạm đúng 1 lần.",
+      "done_when": "Chạy 2 lần cùng seed ra đúng cùng số. Có LR + LightGBM chạy qua khung này.",
+      "est_hours": 6,
+      "status": "done",
+      "done_at": "2026-07-27",
+      "blocked_by": [
+        "T0.5"
+      ],
+      "note": "src/pipeline.py. Thiết kế cốt lõi: mỗi vi phạm của Table 3 là MỘT CỜ BOOLEAN trong dataclass Protocol (A-G), nên \"chỉ đổi 1 thứ mỗi dòng\" được đảm bảo bằng cấu trúc chứ không bằng kỷ luật. Có --self-test chứng minh khung không rò rỉ: trên dữ liệu nhiễu thuần n=4.000, cấu hình A ra AUROC 0.504±0.017 (đúng ~0.5) còn F ra 1.000. PHÁT HIỆN dọc đường: ở n=1.200 nhiễu thuần cho AUROC dao động [0.357, 0.543] (10 seed) — nền nhiễu ở cỡ mẫu nhỏ rộng hơn nhiều so với cảm nhận; liên quan các bài dùng PIMA n=768 một split cố định (nipa2023, kaliappan2024, dharmarathne2024). KẾT QUẢ THẬT giao thức A, 10 seed, nested CV 5x3: hồi quy logistic AUROC 0.7657±0.0047 · LightGBM 0.7386±0.0089.",
+      "links": [
+        {
+          "label": "TO_DO §10 — bẫy phải tránh",
+          "href": "TO_DO.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.8",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Bộ đánh giá trung thực — AUROC + AUPRC + PPV@Sn80 + calibration",
+      "why": "Claim C3: ở prevalence 3.91%, AUROC che giấu việc mô hình gần như vô dụng khi triển khai. Chỉ báo AUROC là điều cả lĩnh vực đang làm sai.",
+      "how": "src/evaluate.py — AUROC, AUPRC (kèm baseline = prevalence), PPV/NPV tại ngưỡng cho Sensitivity 80%, Brier score, calibration slope + calibration plot.",
+      "done_when": "Một hàm evaluate(y, p, w) trả về đủ 6 chỉ số + vẽ được calibration plot.",
+      "est_hours": 5,
+      "status": "done",
+      "done_at": "2026-07-27",
+      "blocked_by": [
+        "T0.7"
+      ],
+      "note": "src/evaluate.py -> paper/table2.md + results/fig2_roc_pr_A.png + fig3_calibration_A.png. So trên TẬP CHUNG n=3.763/4.170 (nơi tính được cả FINDRISC lẫn ADA). Không trọng số: LR 0.765 · FINDRISC 0.751 · ADA 0.742 · LGBM 0.742. AUPRC thì FINDRISC CAO NHẤT (0.168 vs LR 0.141) — đổi thước là đổi người thắng, đây là C3+C5. PPV@Sn80 chỉ 8-10%. Có trọng số: LR 0.795 · ADA 0.770 · LGBM 0.765 · FINDRISC 0.760 (P1: +0.009..+0.029 AUROC). HAI LỖI TỰ BẮT VÀ ĐÃ SỬA: (1) bản đầu gán trung vị cho 9.8% người thiếu điểm FINDRISC -> FINDRISC tụt 0.751->0.695, tự tạo +0.07 lợi thế giả cho ML; sửa bằng --subset common. (2) Fig 3 vẽ thang điểm lên trục xác suất làm chúng trông hiệu chuẩn thảm hại dù chúng KHÔNG phải xác suất; sửa bằng cờ is_prob, Brier/calib của thang điểm in \"—\". CÒN NỢ: ngưỡng Sn=80% chọn trên chính tập out-of-fold (lạc quan nhẹ) - phải khai báo Methods.",
+      "links": []
+    },
+    {
+      "id": "T0.9",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Decision curve analysis (net benefit) — Fig 4",
+      "why": "VŨ KHÍ RIÊNG CỦA ANH. Trong 35 bài đã phân tích của anh, KHÔNG MỘT BÀI NÀO có cái này. Nó trả lời câu hỏi mà AUROC không trả lời được: dùng mô hình có lợi hơn không dùng không?",
+      "how": "src/dca.py — net benefit = (TP/n) − (FP/n)×(pt/(1−pt)) quét theo ngưỡng pt. Vẽ 3 đường: mô hình, 'sàng lọc tất cả', 'không sàng lọc ai'.",
+      "done_when": "Fig 4 vẽ được, và anh trả lời được: ở khoảng ngưỡng nào thì mô hình có net benefit dương.",
+      "est_hours": 4,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.8"
+      ],
+      "note": "",
+      "links": [
+        {
+          "label": "TO_DO §7.2 mục 6",
+          "href": "TO_DO.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.10",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "task",
+      "owner": "claude",
+      "critical": false,
+      "title": "Bootstrap CI 1000 lần + DeLong test",
+      "why": "Claim C5 cần p-value và khoảng tin cậy. Không có nó thì 'ML hơn score 0.02' chỉ là ý kiến, không phải kết quả.",
+      "how": "Bootstrap phân tầng 1000 lần cho mọi chỉ số; DeLong test so 2 AUC tương quan.",
+      "done_when": "Mọi số trong Table 2 và Table 5 đều có CI 95%; so ML vs FINDRISC có p-value.",
+      "est_hours": 3,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.8"
+      ],
+      "note": "Mẫu phương pháp: lai2019 dùng DeLong (CHEATSHEET §7).",
+      "links": []
+    },
+    {
+      "id": "T0.11",
+      "tier": 0,
+      "phase": "P2",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Ablation A — cấu hình ĐÚNG CHUẨN (mốc tham chiếu)",
+      "why": "Mọi dòng khác của Table 3 đều so với dòng này. Không có mốc thì không đo được độ phồng.",
+      "how": "Mọi bước trong fold, test chạm 1 lần, chọn model trên validation. Ghi lại seed + grid.",
+      "done_when": "Có AUROC/AUPRC ± SD trên ≥10 seed, tái lập được.",
+      "est_hours": 2,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.9"
+      ],
+      "note": "",
+      "links": []
+    },
+    {
+      "id": "T0.12",
+      "tier": 0,
+      "phase": "P2",
+      "kind": "task",
+      "owner": "claude",
+      "critical": false,
+      "title": "Ablation D — SMOTE/oversample TRUOC khi split (uu tien 5)",
+      "why": "HA UU TIEN 26/07 (Q009). Quet 35 bai: chi 10 bai dung oversampling sinh mau tong hop, va 5/10 trong so do NEU RO da lam DUNG. Chi 1 bai (kaliappan2024) nghi sai. Dong nay van nen chay vi re (2 gio) va de doi chieu, nhung KHONG phai dong phai giu bang moi gia.",
+      "how": "Cố ý oversample toàn bộ dữ liệu rồi mới chia. Giữ nguyên mọi thứ khác so với A.",
+      "done_when": "Có số, và chênh lệch so với A được ghi thành 'điểm AUC bị thổi'.",
+      "est_hours": 2,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.11"
+      ],
+      "note": "Truoc 26/07 task nay ghi 'ky vong phong MANH' va duoc xep critical. LEAKAGE_MAP.md §3.1 cho thay do la phong doan sai. Giu task, ha uu tien — khong xoa (AGENTS.md §13).",
+      "links": []
+    },
+    {
+      "id": "T0.13",
+      "tier": 0,
+      "phase": "P2",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Ablation E — chon model tren chinh test set (winner's curse) — UU TIEN 1",
+      "why": "Day chinh la cau hoi Q003 anh tung hoi. Gio anh DO no thay vi tranh luan. Quet 35 bai (Q009): E la vi pham PHO BIEN NHAT — 25/34 bai. Day la dong co suc thuyet phuc cao nhat.",
+      "how": "Thu N model, lay model tot nhat tren test roi bao cao luon so do. Chay voi N = 2, 5, 10, va **N = 35** — dung bang so classifier ma nipa2023 da quet tren 1 split co dinh. Ve duong cong 'do phong theo so model da thu'.",
+      "done_when": "Có đường cong 'độ phồng theo số model đã thử'.",
+      "est_hours": 3,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.11"
+      ],
+      "note": "Neo that: nipa2023 quet 35 classifier tren 1 split 80/20 va TU nhan trong bai 'no validation methods being used'. Duong cong cua anh se di qua dung diem N=35 do. Xem LEAKAGE_MAP.md §3.2.",
+      "links": [
+        {
+          "label": "QA_LOG Q003",
+          "href": "QA_LOG.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.14",
+      "tier": 0,
+      "phase": "P2",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Ablation F — them HbA1c vao feature (tai tao con so ~0.99) — UU TIEN 2",
+      "why": "KẾT QUẢ MẠNH NHẤT TRONG BÀI ANH. Nếu tái tạo được mức 0.99 chỉ bằng cách cố ý vi phạm MỘT quy tắc, anh giải thích được luôn vì sao olisah2022 ra 100%, naz2020 ra 98.07%, kaliappan2024 ra 0.990. Không ai cãi được. | BO SUNG 26/07 (Q009): F la vi pham pho bien thu hai (20/25 bai). PHAI tach lam 2 loai khi viet: 10 bai ro ri do LOI TAC GIA (olisah2022 relabel theo glucose, zou2018 glucose la root node, zhang2020 urine glucose...) va 10 bai dung PIMA ro ri theo CAU TRUC DATASET (cot Glucose = duong huyet 2h OGTT, ma nhan PIMA dinh nghia bang nguong OGTT 2h). Gop chung la vu oan hang loat.",
+      "how": "Đưa LBXGH (hoặc LBXGLU) — chính biến định nghĩa nhãn — vào feature. Chạy y hệt A về mọi mặt khác.",
+      "done_when": "AUROC ≥ 0.97. Nếu chưa tới, thử thêm cả FPG.",
+      "est_hours": 2,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.11"
+      ],
+      "note": "",
+      "links": [
+        {
+          "label": "CHEATSHEET §4 — số thổi phồng",
+          "href": "CHEATSHEET.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.20",
+      "tier": 0,
+      "phase": "P2",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Ablation C — feature selection tren TOAN BO data (uu tien 3)",
+      "why": "THEM MOI 26/07 (Q009). Truoc do khong co task rieng cho dong C du no la vi pham pho bien thu ba: 13/30 bai. Ca biet nguyen2019 chon feature bang khoang cach cosine GIUA COT FEATURE VA COT NHAN — tuc dung thang nhan de chon bien.",
+      "how": "Chay feature selection (vd mutual information hoac correlation filter) tren TOAN BO data truoc khi split, roi moi chia — giu nguyen moi thu khac so voi cau hinh A.",
+      "done_when": "Co so, va chenh lech so voi A duoc ghi thanh 'diem AUC bi thoi do chon bien tren toan data'.",
+      "est_hours": 2,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.11"
+      ],
+      "note": "Doi chieu duoc voi khanam2021 va kaliappan2024 trong LEAKAGE_MAP.md.",
+      "links": [
+        {
+          "label": "LEAKAGE_MAP.md §2",
+          "href": "LEAKAGE_MAP.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.15",
+      "tier": 0,
+      "phase": "P2",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "Table 3 hoàn chỉnh + hình phân rã độ phồng",
+      "why": "Đây là trái tim bài báo (mốc M2). Xong cái này là anh có đóng góp thật.",
+      "how": "Gop E/F/C (+ G/D/B neu kip) thanh 1 bang: cau hinh | AUROC | AUPRC | Delta so voi A | **tan suat trong 35 bai cua kho**. Kem hinh thanh ngang. Cot tan suat lay tu leakage_map.json.",
+      "done_when": "Anh trả lời được bằng số: 'mỗi kiểu rò rỉ thổi phồng bao nhiêu điểm AUC'.",
+      "est_hours": 3,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.13",
+        "T0.14",
+        "T0.20",
+        "T0.12"
+      ],
+      "note": "MOC M2 — han tuan 11. Tre thi cat B/D/G, GIU BANG MOI GIA E/F/C (doi 26/07 theo Q009 — xem LEAKAGE_MAP.md §3.1).",
+      "links": []
+    },
+    {
+      "id": "T0.16",
+      "tier": 0,
+      "phase": "P3",
+      "kind": "task",
+      "owner": "anh",
+      "critical": true,
+      "title": "Điền số thật vào outline — bắt đầu VIẾT",
+      "why": "Mốc M4, KHÔNG ĐƯỢC DỜI. Đến tuần 15 là viết, kể cả khi thí nghiệm chưa đẹp. Người chưa viết bài bao giờ luôn đánh giá thấp thời gian viết (thường 6–8 tuần).",
+      "how": "Thay số bịa trong outline.md bằng số thật. Viết Methods trước (dễ nhất), rồi Results, rồi Discussion, Introduction, cuối cùng mới Abstract.",
+      "done_when": "Có bản nháp đầy đủ, không còn ô trống nào.",
+      "est_hours": 25,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.15"
+      ],
+      "note": "Em viết được bản nháp Methods/Results cho anh, nhưng Discussion phải là ý của anh.",
+      "links": []
+    },
+    {
+      "id": "T0.17",
+      "tier": 0,
+      "phase": "P3",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Tick checklist TRIPOD+AI (27 mục) và nộp kèm",
+      "why": "Chỉ ~28% bài ML đạt TRIPOD+AI. Nộp kèm bản tick là tín hiệu chất lượng rẻ nhất anh có thể mua.",
+      "how": "Tải checklist TRIPOD+AI (BMJ 2024), tick từng mục, ghi số trang tương ứng trong bài.",
+      "done_when": "File checklist đã tick, mỗi mục có số trang hoặc lý do không áp dụng.",
+      "est_hours": 4,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.16"
+      ],
+      "note": "",
+      "links": []
+    },
+    {
+      "id": "T0.18",
+      "tier": 0,
+      "phase": "P3",
+      "kind": "task",
+      "owner": "anh",
+      "critical": true,
+      "title": "Tự phản biện — đóng vai 3 reviewer",
+      "why": "Đây là thứ biến bài 'nghe hay' thành bài 'phản biện được'. Reviewer gắt nhất không được tìm ra chỗ nào anh chưa tự nghĩ tới.",
+      "how": "R1 nhà thống kê y sinh · R2 kỹ sư ML · R3 bác sĩ lâm sàng. Mỗi vai viết review GẮT cho chính bài mình. Anh viết TRƯỚC, rồi mới nhờ em so.",
+      "done_when": "Có 3 bản review + danh sách sửa, và anh trả lời được cả 12 câu ở TO_DO §9.",
+      "est_hours": 6,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.16"
+      ],
+      "note": "Nếu để em làm hộ ngay, anh mất đúng kỹ năng mà NCKH sinh ra để dạy anh.",
+      "links": [
+        {
+          "label": "TO_DO §9 — 12 câu reviewer",
+          "href": "TO_DO.md"
+        }
+      ]
+    },
+    {
+      "id": "T0.19",
+      "tier": 0,
+      "phase": "P3",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Dọn repo công khai — README + environment + 1 lệnh chạy",
+      "why": "Trong 35 bài của anh chỉ 4 bài có code public. Đây là điểm rẻ nhất để nổi bật, và là câu trả lời cho phản biện #12.",
+      "how": "README (cách chạy), environment.yml, seed cố định, 1 script chạy ra toàn bộ bảng/hình.",
+      "done_when": "Người lạ clone về chạy 1 lệnh ra đúng số trong bài.",
+      "est_hours": 5,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.16"
+      ],
+      "note": "",
+      "links": []
+    },
+    {
+      "id": "T1.1",
+      "tier": 1,
+      "phase": "P4",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Đăng ký CHARLS (10 phút, chờ duyệt ~1 tuần)",
+      "why": "Miễn phí, chờ 1 tuần, không mất gì. Nộp SỚM để lúc cần là có — đừng đợi tới Phase 4 mới đăng ký.",
+      "how": "charls.pku.edu.cn/en → đăng ký → xin riêng cả bản gốc lẫn bản Harmonized.",
+      "done_when": "Có email duyệt và tải được ít nhất 1 wave.",
+      "est_hours": 0.5,
+      "status": "done",
+      "done_at": "2026-08-04",
+      "blocked_by": [],
+      "note": "Làm ngay tuần này dù Phase 4 còn xa — đây là việc chờ, không phải việc làm.",
+      "links": [
+        {
+          "label": "TO_DO §4.3",
+          "href": "TO_DO.md"
+        }
+      ]
+    },
+    {
+      "id": "T1.2",
+      "tier": 1,
+      "phase": "P4",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Tải KNHANES (ưu tiên 1 cho external)",
+      "why": "KNHANES là anh em sinh đôi thiết kế của NHANES → harmonize dễ nhất. Và anh đã có 2 bài neo (choi2014, sgchoi2023) dùng chính bộ này.",
+      "how": "knhanes.kdca.go.kr — site tiếng Hàn, dùng dịch trang. Không cần DUA.",
+      "done_when": "Tải được ≥1 năm dữ liệu và mở ra đọc được.",
+      "est_hours": 3,
+      "status": "doing",
+      "done_at": null,
+      "blocked_by": [],
+      "note": "",
+      "links": []
+    },
+    {
+      "id": "T1.3",
+      "tier": 1,
+      "phase": "P4",
+      "kind": "task",
+      "owner": "claude",
+      "critical": false,
+      "title": "Bảng harmonization NHANES ↔ KNHANES",
+      "why": "Phản biện #5 sẽ đánh thẳng vào đây: 'harmonize sai thì kết quả external vô nghĩa'. Phải công khai từng ánh xạ.",
+      "how": "Bảng: biến gốc mỗi cohort → biến chung → đơn vị → cách mã hoá → ghi chú khác biệt. Kèm Table 1 so đặc điểm 2 quần thể.",
+      "done_when": "Bảng đầy đủ, mọi biến no-lab đều có dòng, khác biệt được ghi rõ.",
+      "est_hours": 6,
+      "status": "done",
+      "done_at": "2026-08-04",
+      "blocked_by": [
+        "T1.2"
+      ],
+      "note": "Thuận lợi: BPXPLS có trong NHANES nên dựng được ĐÚNG cả 4 bộ feature của sgchoi2023.",
+      "links": [
+        {
+          "label": "CHEATSHEET §2",
+          "href": "CHEATSHEET.md"
+        }
+      ]
+    },
+    {
+      "id": "T1.4",
+      "tier": 1,
+      "phase": "P4",
+      "kind": "task",
+      "owner": "claude",
+      "critical": true,
+      "title": "External validation — áp mô hình ĐÃ KHOÁ, không train lại",
+      "why": "Claim C4. Mốc M3. Đây là thứ chỉ ~3/35 bài trong kho anh có.",
+      "how": "Khoá model từ NHANES, áp thẳng lên KNHANES. Báo CẢ discrimination LẪN calibration (calibration-in-the-large, slope).",
+      "done_when": "Table 4 có số. Tụt cũng được — tụt LÀ kết quả.",
+      "est_hours": 4,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T1.3"
+      ],
+      "note": "QUY TẮC CỨNG: không được nhìn/tune trên cohort external trước bước này. Lỡ nhìn phải khai báo trong bài.",
+      "links": []
+    },
+    {
+      "id": "T1.5",
+      "tier": 1,
+      "phase": "P4",
+      "kind": "task",
+      "owner": "claude",
+      "critical": false,
+      "title": "Recalibration — chỉ chỉnh intercept/slope, không train lại",
+      "why": "Trả lời câu hỏi có giá trị lâm sàng: mô hình chuyển được sang quần thể khác không, hay chỉ cần hiệu chỉnh lại?",
+      "how": "Platt scaling / logistic recalibration trên cohort đích. So trước–sau.",
+      "done_when": "Có số 'recalibration cứu lại được bao nhiêu'.",
+      "est_hours": 3,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T1.4"
+      ],
+      "note": "",
+      "links": []
+    },
+    {
+      "id": "T1.6",
+      "tier": 1,
+      "phase": "P4",
+      "kind": "task",
+      "owner": "claude",
+      "critical": false,
+      "title": "Table 6 — có vs không trọng số khảo sát (đóng góp P1)",
+      "why": "dinh2019 (434 cite) bỏ qua hoàn toàn; yu2010 chỉ áp cho baseline hồi quy, không áp cho SVM → so sánh bất đối xứng. Đây là đóng góp phụ mới, rẻ, khó cãi.",
+      "how": "Báo song song mọi chỉ số: không trọng số (cách cả lĩnh vực làm) vs có trọng số (ước lượng cho dân số thật).",
+      "done_when": "Table 6 có số. Bằng chứng đã có sẵn: prevalence 6.21% vs 3.91%.",
+      "est_hours": 3,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.15"
+      ],
+      "note": "PHẢI xong V1 và V2 trước khi viết claim về dinh2019/yu2010 vào bài.",
+      "links": []
+    },
+    {
+      "id": "T1.7",
+      "tier": 1,
+      "phase": "P4",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Nộp hội nghị trong nước (FAIR/NICS/KSE/RIVF)",
+      "why": "Vòng phản biện RẺ và NHANH đầu tiên. Anh chưa viết bài bao giờ — đừng để vòng đầu là tạp chí quốc tế 4 tháng rồi desk-reject.",
+      "how": "Chọn hội nghị có deadline gần, format theo template, nộp.",
+      "done_when": "Đã nộp.",
+      "est_hours": 6,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.18"
+      ],
+      "note": "Bản tạp chí sau phải có ≥30% nội dung mới + khai báo bản hội nghị, nếu không là self-plagiarism.",
+      "links": [
+        {
+          "label": "TO_DO §11 — chọn venue",
+          "href": "TO_DO.md"
+        }
+      ]
+    },
+    {
+      "id": "T2.1",
+      "tier": 2,
+      "phase": "P5",
+      "kind": "task",
+      "owner": "claude",
+      "critical": false,
+      "title": "TabPFN v2 làm baseline hiện đại",
+      "why": "Biến câu chuyện thành 'kể cả mô hình nền tabular mới nhất cũng không đổi kết luận C5'. Mạnh hơn nhiều so với chỉ so XGBoost. Đây là điểm 'hợp thời đại AI 2026'.",
+      "how": "Kaggle GPU T4 (free). ≤10k mẫu mỗi lần nên phải subsample. Đưa vào Table 5.",
+      "done_when": "TabPFN có 1 dòng trong Table 5.",
+      "est_hours": 5,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.15"
+      ],
+      "note": "CHỈ làm sau khi Table 3 và Table 4 xong. Không đảo thứ tự.",
+      "links": []
+    },
+    {
+      "id": "T2.2",
+      "tier": 2,
+      "phase": "P5",
+      "kind": "task",
+      "owner": "claude",
+      "critical": false,
+      "title": "SHAP — global + local",
+      "why": "Bổ trợ, không bắt buộc. Giúp bác sĩ tin mô hình, và là cầu nối sang Layer 4.",
+      "how": "SHAP cho model tốt nhất. Global summary + ≥3 ca local. Báo giá trị SỐ, không chỉ hình.",
+      "done_when": "Có hình + bảng giá trị Shapley.",
+      "est_hours": 4,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.15"
+      ],
+      "note": "Điểm vượt: hầu hết bài trong kho chỉ có SHAP định tính, không công bố giá trị số.",
+      "links": []
+    },
+    {
+      "id": "T2.3",
+      "tier": 2,
+      "phase": "P5",
+      "kind": "task",
+      "owner": "claude",
+      "critical": false,
+      "title": "Cohort external thứ 3 (CHARLS)",
+      "why": "3 quần thể mạnh hơn 2. Nhưng chỉ làm nếu Tầng 0 + Tầng 1 đã xong hẳn.",
+      "how": "Như T1.3–T1.4 nhưng cho CHARLS.",
+      "done_when": "Table 4 có thêm 1 cột.",
+      "est_hours": 8,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T1.4"
+      ],
+      "note": "",
+      "links": []
+    },
+    {
+      "id": "T2.4",
+      "tier": 2,
+      "phase": "P5",
+      "kind": "task",
+      "owner": "anh",
+      "critical": false,
+      "title": "Model card + 1 trang A4 để đi gặp bác sĩ",
+      "why": "Đây là cầu nối sang Tầng 3 (dữ liệu bệnh viện VN) — mục tiêu dài hạn anh đã đặt ra. Phải có sẵn để lúc gặp là đưa được luôn.",
+      "how": "Model card: dùng cho quần thể nào, ngưỡng nào, PPV kỳ vọng, KHÔNG dùng cho ai. Kèm 1 trang A4 tiếng Việt: mục tiêu, đã validate mấy quần thể, cần đúng những biến nào (≤15 biến), cam kết ẩn danh.",
+      "done_when": "Có 2 file PDF, đưa được cho bác sĩ đọc trong 5 phút.",
+      "est_hours": 4,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [
+        "T0.16"
+      ],
+      "note": "Hỏi bác sĩ về quy trình IRB SỚM — thường mất 1–3 tháng, là đường găng dài nhất cho bài thứ 2.",
+      "links": [
+        {
+          "label": "TO_DO §4.4",
+          "href": "TO_DO.md"
+        }
+      ]
+    },
+    {
+      "id": "V1",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "check",
+      "owner": "anh",
+      "critical": true,
+      "title": "Xác minh: dinh2019 thật sự KHÔNG dùng trọng số khảo sát?",
+      "why": "Đây là CLAIM VỀ NGƯỜI KHÁC. Sai một câu là mất uy tín cả bài. Em grep thấy 0 lần nhắc, nhưng grep có thể sót.",
+      "how": "Mở searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/source.pdf → phần Methods. Tìm 'weight', 'survey design', 'SUDAAN', 'complex sample'.",
+      "done_when": "Ghi lại: có/không, và SỐ TRANG làm bằng chứng.",
+      "est_hours": 0.5,
+      "status": "done",
+      "done_at": "2026-07-26",
+      "blocked_by": [],
+      "note": "",
+      "links": [
+        {
+          "label": "CHEATSHEET §6",
+          "href": "CHEATSHEET.md"
+        }
+      ]
+    },
+    {
+      "id": "V2",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "check",
+      "owner": "anh",
+      "critical": true,
+      "title": "Xác minh: yu2010 dùng SUDAAN chỉ cho hồi quy logistic, không cho SVM?",
+      "why": "Nền tảng của đóng góp phụ P1 (so sánh bất đối xứng). Phải có số trang.",
+      "how": "Mở source.pdf của yu2010 → Methods. Em đã thấy ở dòng 78 của extracted.md: 'performed with the training data set using SAS-callable SUDAAN' — nhưng chỉ nói về multiple logistic regression. Xác nhận phần SVM không có xử lý tương ứng.",
+      "done_when": "Ghi lại số trang + câu trích nguyên văn.",
+      "est_hours": 0.5,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [],
+      "note": "",
+      "links": []
+    },
+    {
+      "id": "V3",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "check",
+      "owner": "anh",
+      "critical": true,
+      "title": "Đếm TAY lại bảng gap trên 35 bài (calibration / PR-AUC / DCA / external)",
+      "why": "Số của em là kết quả grep tự động, CÓ SÓT (zhang2020 viết 'AUPR' chứ không phải 'AUPRC'). Và câu chữ phải là 'trong N bài chúng tôi khảo sát', KHÔNG phải 'trong y văn'.",
+      "how": "Mở summary.json / analysis.html từng bài, đếm tay, ghi vào bảng.",
+      "done_when": "Có bảng đếm tay + câu Introduction viết đúng phạm vi.",
+      "est_hours": 3,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [],
+      "note": "Con số đáng giá nhất — DCA 0/35 — cần chắc chắn tuyệt đối. | 26/07: LEAKAGE_MAP.md da dem lai 35 bai theo 6 cau hinh ro ri va ghi ro muc bang chung (17 o co trich nguyen van). Phan CON LAI cua V3 = dem tay calibration / PR-AUC / DCA / external.",
+      "links": [
+        {
+          "label": "TO_DO §3.2",
+          "href": "TO_DO.md"
+        }
+      ]
+    },
+    {
+      "id": "V4",
+      "tier": 0,
+      "phase": "P1",
+      "kind": "check",
+      "owner": "anh",
+      "critical": true,
+      "title": "Đọc đối thủ gần nhất — medRxiv 2025.09.05.25335151",
+      "why": "Q002 đã chốt: BẮT BUỘC đọc đối thủ gần nhất trước khi cắm cờ. Nó đã kết luận 'no-lab thì FINDRISC ngang hoặc hơn ML' — anh phải biết chính xác nó THIẾU gì.",
+      "how": "Mở trình duyệt vào medrxiv.org (em không tải tự động được — site chặn bot). Trả lời: nó dùng cohort nào? có net benefit không? có phân rã leakage không? có cross-population không?",
+      "done_when": "notes-competitor.md liệt kê rõ 3 thứ nó thiếu = 3 chỗ anh cắm cờ.",
+      "est_hours": 2,
+      "status": "todo",
+      "done_at": null,
+      "blocked_by": [],
+      "note": "",
+      "links": [
+        {
+          "label": "QA_LOG Q002",
+          "href": "QA_LOG.md"
+        }
+      ]
+    },
+    {
+      "id": "V5",
+      "tier": 0,
+      "phase": "P0",
+      "kind": "check",
+      "owner": "claude",
+      "critical": false,
+      "title": "Xác minh: NHANES có biến nhịp tim nghỉ để harmonize với sgchoi2023?",
+      "why": "sgchoi2023 dùng resting heart rate trong cả 4 bộ feature. Nếu NHANES không có thì không so trực tiếp được.",
+      "how": "Đọc cột của BPX_J.",
+      "done_when": "Có kết luận có/không.",
+      "est_hours": 0.25,
+      "status": "done",
+      "done_at": "2026-07-26",
+      "blocked_by": [],
+      "note": "CÓ. BPXPLS (mạch 60 giây), thiếu 4.4% trong mẫu phân tích. Đã thêm vào NOLAB_FEATURES. Hệ quả tốt: dựng lại được ĐÚNG cả 4 bộ feature của sgchoi2023 trên NHANES → so sánh trực tiếp chứ không phải xấp xỉ.",
+      "links": []
+    }
+  ]
+}

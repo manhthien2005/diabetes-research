@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "run_id": 12,
+  "query": "diabete prediction",
+  "origin": null,
+  "snowball": false,
+  "generated_at": "2026-06-11T04:49:14.475Z",
+  "kept": 3,
+  "papers": [
+    {
+      "source_id": "openalex",
+      "title": "Diabetic control and microvascular complications: The near-normoglycaemic experience",
+      "authors": [
+        "Kristian F. Hanssen",
+        "K. Dahl-J�rgensen",
+        "T. Lauritzen",
+        "Bo Feldt‐Rasmussen",
+        "O Brinchmann-Hansen",
+        "T. Deckert"
+      ],
+      "year": 1986,
+      "venue": "Diabetologia",
+      "doi": "https://doi.org/10.1007/bf00870275",
+      "arxiv": null,
+      "url": "https://doi.org/10.1007/bf00870275",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/BF00870275.pdf",
+      "citations": 200,
+      "abstract": null,
+      "code_url": null,
+      "datasets": [],
+      "dedup_key": "doi:10.1007/bf00870275",
+      "found_by": [
+        "openalex"
+      ]
+    },
+    {
+      "source_id": "openalex",
+      "title": "Successful Prospective Prediction of Type 1 Diabetes in Schoolchildren Through Multiple Defined Autoantibodies",
+      "authors": [
+        "James M. LaGasse",
+        "Michael S. Brantley",
+        "Nicola Leech",
+        "Rachel Rowe",
+        "Stephanie A. Monks",
+        "Jerry P. Palmer",
+        "Gerald T. Nepom",
+        "David K. McCulloch",
+        "William Hagopian"
+      ],
+      "year": 2002,
+      "venue": "Diabetes Care",
+      "doi": "https://doi.org/10.2337/diacare.25.3.505",
+      "arxiv": null,
+      "url": "https://doi.org/10.2337/diacare.25.3.505",
+      "pdf_url": "https://diabetesjournals.org/care/article-pdf/25/3/505/644385/dc0302000505.pdf",
+      "citations": 173,
+      "abstract": "OBJECTIVE: Almost 90% of type 1 diabetes appears in individuals without a close family history. We sought to evaluate the best current predictive strategy, multiple defined autoantibodies, in a long-term prospective study in the general population. RESEARCH DESIGN AND METHODS: Autoantibodies to pancreatic islets (islet cell antibodies [ICAs]) and defined autoantibodies (d-aab) to human GAD, IA2/ICA512, and insulin were tested in 4,505 Washington schoolchildren. Eight years later, 3,000 (67%) subjects were recontacted, including 97% of subjects with any test >99th percentile. RESULTS: Six subjects developed diabetes (median interval 2.8 years), all from among the 12 individuals with multiple d-aab, representing 50% positive predictive value (95% CI 25-75%) and 100% sensitivity (58-100%). Among the others, diabetes occurred in 0 of 6 with one d-aab plus ICA, 0 of 26 with ICA only, 0 of 7 with one d-aab equaling the 99th percentile and another d-aab equaling the 97.5th percentile, 0 of 86 with one d-aab, and 0 of 2,863 with no d-aab or ICA. Adjusted for verification bias, multiple d-aab were 99.9% specific (99.86-99.93%). At this age, new d-aab seldom appeared. Once present, d-aab usually persisted regardless of disease progression, although less so for insulin autoantibodies. Insulin secretion by sequential glucose tolerance testing remained normal in four multiple d-aab subjects not developing diabetes. Of children developing diabetes, five of six (83%) would be included if HLA-DQ genotyping preceded antibody testing, but HLA-DQ did not explain outcomes among high-risk subjects, even when considered along with other genetic markers. CONCLUSIONS: Multiple d-aab were established by age 14 years and prospectively identified all schoolchildren who developed type 1 diabetes within 8 years.",
+      "code_url": null,
+      "datasets": [],
+      "dedup_key": "doi:10.2337/diacare.25.3.505",
+      "found_by": [
+        "openalex"
+      ]
+    },
+    {
+      "source_id": "openalex",
+      "title": "Plasma Glucose Concentration and Prediction of Future Risk of Type 2 Diabetes",
+      "authors": [
+        "Muhammad Abdul‐Ghani",
+        "Ralph A. DeFronzo"
+      ],
+      "year": 2009,
+      "venue": "Diabetes Care",
+      "doi": "https://doi.org/10.2337/dc09-s309",
+      "arxiv": null,
+      "url": "https://doi.org/10.2337/dc09-s309",
+      "pdf_url": "https://diabetesjournals.org/care/article-pdf/32/suppl_2/S194/605813/zdc1110900s194.pdf",
+      "citations": 132,
+      "abstract": "The prevalence of type 2 diabetes has increased in recent decades to epidemic proportions. About 150 million individuals worldwide had type 2 diabetes in 2000, and this number is expected to increase to �300 million by the year 2025 (1). Because of the chronic course of type 2 diabetes and the significant morbidity and mortality associated with the vascular complications of the disease, type 2 diabetes has become not only a serious public health threat, but also a heavy economic burden on the health care system. The total annual cost of diabetes care in the U.S. was estimated to be $175 billion in the",
+      "code_url": null,
+      "datasets": [],
+      "dedup_key": "doi:10.2337/dc09-s309",
+      "found_by": [
+        "openalex"
+      ]
+    }
+  ]
+}

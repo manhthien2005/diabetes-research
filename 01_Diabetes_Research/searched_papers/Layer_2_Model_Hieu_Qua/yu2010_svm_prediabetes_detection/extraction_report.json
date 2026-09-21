@@ -1,0 +1,25 @@
+{
+  "paper": "yu2010_svm_prediabetes_detection",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 54.7,
+  "pages": 7,
+  "failed_pages": [],
+  "source_text_chars": 30781,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 9,
+  "qa": {
+    "out_chars": 31146,
+    "n_markdown_tables": 3,
+    "source_table_captions": 3,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 4,
+    "text_density": 1.012,
+    "score": 100,
+    "warnings": []
+  }
+}

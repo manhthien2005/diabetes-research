@@ -1,0 +1,25 @@
+{
+  "paper": "nipa2023_clinically_adaptable",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 86.7,
+  "pages": 11,
+  "failed_pages": [],
+  "source_text_chars": 58751,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 18,
+  "qa": {
+    "out_chars": 61062,
+    "n_markdown_tables": 3,
+    "source_table_captions": 3,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 1.039,
+    "score": 100,
+    "warnings": []
+  }
+}

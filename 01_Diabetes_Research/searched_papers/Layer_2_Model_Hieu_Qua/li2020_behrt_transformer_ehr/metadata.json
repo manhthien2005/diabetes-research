@@ -1,0 +1,68 @@
+{
+  "paper_id": "li2020_behrt_transformer_ehr",
+  "title": "BEHRT: Transformer for Electronic Health Records",
+  "authors": [
+    "Yikuan Li",
+    "Shishir Rao",
+    "José Roberto Ayala Solares",
+    "Abdelaali Hassaine",
+    "Rema Ramakrishnan",
+    "Dexter Canoy",
+    "Yajie Zhu",
+    "Kazem Rahimi"
+  ],
+  "year": 2020,
+  "venue": "Scientific Reports",
+  "doi": "10.1038/s41598-020-62922-y",
+  "arxiv": null,
+  "pubmed": "32269364",
+  "pmc": "PMC7142098",
+  "citations": 543,
+  "citations_secondary": 470,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://www.nature.com/articles/s41598-020-62922-y.pdf",
+  "license": "CC-BY",
+  "code_url": "https://github.com/deepmedicine/BEHRT",
+  "datasets_mentioned": [
+    "cprd-uk-ehr"
+  ],
+  "dataset_slugs": [
+    "cprd-uk-ehr"
+  ],
+  "method_slugs": [
+    "transformer",
+    "bert",
+    "deep-learning",
+    "ehr-representation-learning",
+    "multi-task-prediction"
+  ],
+  "layer": 2,
+  "layer_uncertain": true,
+  "prediction_horizon": "long_term_risk",
+  "horizon_uncertain": false,
+  "reproducibility": 4,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 12,
+  "pdf_status": "ok",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "analyzed_at": "2026-06-22",
+  "corrections": "Đọc full extracted.md KHÔNG thấy lệch so với metadata cũ: dataset = CPRD UK (linked HES, ~1.6M BN lọc từ 8M, 301 mã bệnh Caliber) khớp dataset_slugs=[cprd-uk-ehr]; method = Transformer/BERT + MLM pre-train + fine-tune multi-label khớp method_slugs; horizon = long_term_risk được XÁC NHẬN qua cách lập label (T2 = bệnh trong 6 tháng tới, T3 = 12 tháng tới → có khoảng cách thời gian feature→label). Lưu ý: code_url github.com/deepmedicine/BEHRT lấy từ metadata, KHÔNG xuất hiện trong text trích (mục Data availability chỉ nói về CPRD) — giữ nguyên, không kiểm chứng được từ extracted.md.",
+  "scope_note": "KIẾN TRÚC NỀN TẢNG CÓ CODE: BEHRT = Transformer/BERT cho chuỗi mã EHR (CPRD UK, ~1.6M bệnh nhân) dự đoán nguy cơ TƯƠNG LAI của >300 bệnh — đái tháo đường là MỘT trong các đích downstream (không phải bài chuyên ĐTĐ, nên layer_uncertain). Scientific Reports 2020, 526 cite (§7 đạt cực mạnh). CODE PUBLIC ĐÃ XÁC NHẬN: github.com/deepmedicine/BEHRT ⭐127 (+ mirror yikuanli/BEHRT ⭐12) → reproducibility cao, anh có thể tái dùng kiến trúc để train/so sánh trên dữ liệu chuỗi EHR. OA CC-BY, PDF Nature 12 trang. Giá trị thực tiễn: chuẩn 'foundation model trên EHR' — nền để mở rộng/đối chứng với pipeline tabular hiện có. Horizon = long_term_risk (dự đoán bệnh trong các lần khám tương lai).",
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "KHÔNG tái lập: CPRD cần giấy phép ISAC + compute ngoài tầm. Chỉ 1 câu Related Work (TO_DO §6 🅕).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2020-04-28",
+    "age_years": 6.2,
+    "citations": 543,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

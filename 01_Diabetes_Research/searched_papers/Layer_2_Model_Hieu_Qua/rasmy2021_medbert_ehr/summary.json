@@ -1,0 +1,24 @@
+{
+  "paper_id": "rasmy2021_medbert_ehr",
+  "layer": 2,
+  "prediction_horizon": "long_term_risk",
+  "contribution": "Med-BERT = BERT cho EHR có cấu trúc (structured EHR, diagnosis ICD-9/10): pretrain self-supervised trên 28.490.650 bệnh nhân Cerner (Masked LM + tác vụ chuyên ngành mới Prolonged LOS >7 ngày), fine-tune cho dự đoán bệnh tương lai. Pretrained embedding boost AUC 1.21–6.14% trên 2 tác vụ/2 database và đặc biệt mạnh khi training set nhỏ (boost >20% hoặc đạt AUC bằng model train trên dữ liệu lớn gấp 10 lần). PEER trực tiếp của BEHRT & G-BERT.",
+  "method": "Transformer encoder 2 chiều (L=6, H=192, A=6, FF=64, ~17M tham số, max seq 512) + 3 embedding (code/serialization/visit), bỏ [CLS]/[SEP] thay bằng FFL → pretrain Masked LM + Prolonged length-of-stay >7 ngày (cấp bệnh nhân) → convert TF→PyTorch (HuggingFace v2.3) → fine-tune với prediction head (FFL hoặc GRU/Bi-GRU/RETAIN trên đầu Med-BERT); AdamW lr 5e-5 (pretrain) / Adam lr 1e-5 (fine-tune); split 7:1:2, test loại BN đã pretrain; 10 run mean±std",
+  "best_metric": "AUC 85.39 (Bi-GRU+Med-BERT, DHF-Cerner — Table 4, số in đậm); PaCa-Cerner 82.23 & PaCa-Truven 80.57 (Bi-GRU+Med-BERT, Table 4). Boost vs SOTA 1.21–6.14% (Abstract). Metric chính = AUROC ×100, 10 run. DHF = suy tim ở BN ĐTĐ type II (không phải chẩn đoán ĐTĐ). Precision/Recall/F1 chỉ ở Supplementary → UNKNOWN trong bản chính.",
+  "datasets": [
+    "cerner-health-facts",
+    "truven-marketscan"
+  ],
+  "has_code": true,
+  "code_url": "https://github.com/ZhiGroup/Med-BERT",
+  "reproducible": "medium",
+  "vs_baseline": "PEER trực tiếp của li2020_behrt (BEHRT) & G-BERT: Table 1 trong paper tự so — Med-BERT vocab 82K (vs BEHRT 301, G-BERT <4K), pretrain 28M (vs 1.6M / 20K), có cross-test ngoài nguồn (Truven) mà 2 model kia không có. Trong paper, thêm Med-BERT thắng base GRU/Bi-GRU/RETAIN/L2LR/RF/t-W2V ở mọi cohort khi n>500 (Table 4); pretrain quan trọng hơn kiến trúc (untrained Med-BERT thua cả LR ở PaCa). KHÁC HỆ với baseline tabular cùng layer (hasan2020 AUC 0.950 PIMA 768 mẫu, khanam2021 NN 88.6% acc) — đó là cross-sectional binary trên PIMA; Med-BERT là sequential EHR long-term risk trên cohort phenotyped mất cân bằng → KHÔNG so trực tiếp con số.",
+  "gap": "Cerner & Truven gated (cần data use agreement) + compute lớn (28M BN, V100, ~1 tuần/>45M step) → không tái lập end-to-end; chỉ dùng diagnosis ICD (bỏ thuốc/lab/procedure/time-interval giữa visit); serialization theo code priority gain ≈ ngẫu nhiên; với n<500 Med-BERT vẫn thua baseline L2LR; KHÔNG có tác vụ dự đoán mắc ĐTĐ độc lập (ĐTĐ chỉ là điều kiện đầu vào cohort DHF); metric phụ (Precision/Recall/F1) chỉ ở Supplementary; có mâu thuẫn văn bản vs Table 4 ở best model PaCa-Truven (text nói GRU+Med-BERT, bảng in đậm Bi-GRU+Med-BERT 80.57).",
+  "verdict": "strong",
+  "verdict_reason": "Kiến trúc foundation-model trên structured EHR, code public thật (ZhiGroup/Med-BERT + pytorch_ehr), 845 cite, vượt SOTA rõ rệt + cross-test ngoài nguồn — nền tảng mạnh và PEER của BEHRT để mở rộng dự đoán nguy cơ ĐTĐ long-term, dù không tái lập y hệt do dữ liệu gated và compute lớn.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "KHÔNG tái lập: Cerner gated + compute ngoài tầm tuyệt đối. Chỉ 1 câu Related Work (TO_DO §6 🅕).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

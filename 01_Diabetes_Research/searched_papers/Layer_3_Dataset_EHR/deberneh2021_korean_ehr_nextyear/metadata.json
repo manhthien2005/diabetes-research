@@ -1,0 +1,68 @@
+{
+  "paper_id": "deberneh2021_korean_ehr_nextyear",
+  "title": "Prediction of Type 2 Diabetes Based on Machine Learning Algorithm",
+  "authors": [
+    "Henock M. Deberneh",
+    "Intaek Kim"
+  ],
+  "year": 2021,
+  "venue": "International Journal of Environmental Research and Public Health",
+  "doi": "10.3390/ijerph18063317",
+  "arxiv": null,
+  "pubmed": "33806973",
+  "pmc": "PMC8004981",
+  "citations": 247,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://europepmc.org/articles/PMC8004981?pdf=render",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "private-medical-institute-ehr-korea-2013-2018"
+  ],
+  "dataset_slugs": [
+    "korean-private-ehr"
+  ],
+  "method_slugs": [
+    "random-forest",
+    "xgboost",
+    "svm",
+    "logistic-regression",
+    "anova-feature-selection",
+    "rfe",
+    "ensemble-voting"
+  ],
+  "layer": 3,
+  "layer_uncertain": true,
+  "prediction_horizon": "long_term_risk",
+  "horizon_uncertain": false,
+  "reproducibility": 3,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 10,
+  "pdf_status": "ok",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "corrections": {
+    "method_slugs_incomplete": "method_slugs thiếu một số kỹ thuật đọc full thấy: chi-squared-feature-selection (chọn biến phân loại), smote + majority-under-sampling (cân bằng lớp), và tên cụ thể của ensemble: CIM (confusion-matrix-based classifier integration) + stacking-classifier + soft-voting (hiện chỉ ghi gộp 'ensemble-voting'). RF/XGBoost/SVM/LR/ANOVA/RFE đã đúng.",
+    "page_count_vs_extraction": "metadata.page_count = 10 (theo bản render Europe PMC) trong khi extraction_report.json ghi pages=14 (PDF gốc docling). Nội dung trích đầy đủ, score=100, không garbled — chênh lệch chỉ do nguồn PDF khác bản phân trang, không ảnh hưởng số liệu.",
+    "reproducible_scale": "metadata.reproducibility = 3 (thang số nội bộ) ánh xạ với summary.reproducible = 'low' do KHÔNG có code public và dataset EHR không công khai (chỉ cấp khi yêu cầu).",
+    "no_auc_reported": "Paper KHÔNG báo cáo AUC/ROC cho mô hình của họ (chỉ Accuracy/Precision/Recall/F1/MCC/KC) — best_metric vì vậy tính theo Accuracy, không dùng AUC."
+  },
+  "scope_note": "DATASET EHR THẬT (không PIMA) + ĐÚNG BÀI TOÁN DỰ ĐOÁN SỚM: dùng EHR thu thập tại một viện y tư nhân Hàn Quốc 2013–2018 để dự đoán KHẢ NĂNG MẮC T2D NĂM SAU (Y+1) từ biến năm hiện tại (Y) — early_detection thực thụ, hiếm trong kho. Feature selection bằng ANOVA/chi-squared/RFE rồi RF/XGB/SVM/LR + ensemble voting. IJERPH 2021, 241 cite (§7 đạt rất mạnh). Gold OA CC-BY, PDF 10 trang qua Europe PMC. Chạm Layer 2 (mô hình) → layer_uncertain. Không tìm thấy code public (dữ liệu EHR riêng tư). GIÁ TRỊ: bài nền tham chiếu mạnh cho thiết lập bài toán 'dự đoán onset năm kế tiếp' + pipeline feature-selection→ensemble.",
+  "label_type": "multiclass_staging",
+  "role": "related",
+  "role_note": "Nạn nhân rò rỉ (nhãn định nghĩa bằng FPG, FPG lại là feature #1) + data/code private. Related work.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2021-03-23",
+    "age_years": 5.3,
+    "citations": 247,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

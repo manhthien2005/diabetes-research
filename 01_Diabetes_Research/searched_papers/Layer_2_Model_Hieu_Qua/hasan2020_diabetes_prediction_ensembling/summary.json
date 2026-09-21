@@ -1,0 +1,23 @@
+{
+  "paper_id": "hasan2020_diabetes_prediction_ensembling",
+  "layer": 2,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Ensemble soft-voting với trọng số = AUC của AdaBoost + XGBoost (AB+XB); trọng số theo AUC (không thiên lệch class) thay accuracy, vượt mọi classifier đơn lẻ trên PIMA.",
+  "method": "IQR outlier rejection (P) → Mean imputation (Q) → Z-score standardization (R) → Correlation-based feature selection (giữ 6 feature) → Stratified 5-fold CV + Grid search → AUC-weighted soft voting (AB+XB)",
+  "best_metric": "AUC 0.950 ± 0.021 (AB+XB ensemble, PIMA, 5-fold stratified CV — Bảng 7 & 8) · Sn 0.789 · Sp 0.934 · FOR 0.092 · DOR 66.234; vượt SOTA [7] (AUC 0.930) 2.00% (Bảng 9)",
+  "datasets": [
+    "pima-indians-diabetes"
+  ],
+  "has_code": true,
+  "code_url": "https://github.com/kamruleee51/Diabetes-Prediction-Using-ML-Classifiers",
+  "reproducible": "high",
+  "vs_baseline": "Mạnh hơn khanam2021 (NN 88.6% acc nhưng K-fold tụt ~76%, không AUC, không code): AB+XB dùng metric không thiên lệch (AUC) + ensemble boosting có chiến lược + code public + CV chuẩn (mean±std). Khác hệ với li2020 BEHRT (EHR sequential, long-term, multi-label 301 bệnh) — không so trực tiếp số. Nâng cấp từ pipeline Layer 1 (gr2024 RF đơn) bằng boosting + ensemble.",
+  "gap": "Chỉ PIMA 768 mẫu, không external validation; ensemble hộp đen chưa có XAI; Sensitivity 0.789 còn thấp cho sàng lọc; paper không nói rõ preprocessing có fit trong từng CV fold không → tái lập phải đặt outlier/imputation/feature-selection trong fold kẻo leakage.",
+  "verdict": "strong",
+  "verdict_reason": "Code public + CV stratified chuẩn (mean±std) + metric AUC hợp lý cho imbalance, số đã đối chiếu source.pdf trùng khớp — baseline Layer 2 mạnh, user đã promote.",
+  "analyzed_at": "2026-06-22",
+  "role": "method",
+  "role_note": "Có code public — ĐỌC CODE để thấy pipeline sạch trông thế nào, không đọc bài.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

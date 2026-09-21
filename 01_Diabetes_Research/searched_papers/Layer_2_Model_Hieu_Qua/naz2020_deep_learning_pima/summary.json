@@ -1,0 +1,23 @@
+{
+  "paper_id": "naz2020_deep_learning_pima",
+  "layer": 2,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "So sánh 4 thuật toán (DL/ANN/DT/NB) trên PIMA bằng RapidMiner Studio 9.2 (GUI); claim DL đạt accuracy 98.07% — 'cao nhất tới nay', nhưng số liệu nghi vấn.",
+  "method": "RapidMiner Studio 9.2 (GUI, không code). DL = MLP feed-forward 4 lớp Input(8)→Rectifier(50)→Rectifier(50)→Softmax(2), SGD+backprop, L1=1e-5/L2=0, dropout 0%; split 80/20, stratified sampling, cross-validation (số fold không nêu). KHÔNG xử lý missing-as-zero, KHÔNG cân bằng lớp.",
+  "best_metric": "DL: Accuracy 98.07%, F-Measure 96.81% trên PIMA (Table 7 + Table 8). DT 96.62%, ANN 90.34%, NB 76.33% (Table 8). ⚠️ Không AUC, không K-fold mean±std.",
+  "datasets": [
+    "pima-indians-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "Accuracy 'đẹp' hơn khanam2021 (NN 88.6%) và hasan2020 (AUC 0.950) nhưng kém tin cậy hơn cả hai: hasan2020 có code public + 5-fold stratified CV mean±std + AUC; khanam2021 có bảng so sánh 7 model. Bài này chỉ hơn về con số accuracy điểm nhờ đổi sang tool GUI, không có bằng chứng tái lập.",
+  "gap": "Mọi confusion matrix (Tables 4–7) tổng 207 mẫu, không khớp split 80/20 (lẽ ra ~154); DT 96.62% bất thường (literature ~73–78%) → nghi leakage/overfit; missing-as-zero của PIMA không xử lý; không AUC, không CV mean±std; Table 8 nhãn Specificity/Sensitivity bị dùng lẫn so với Table 7; Table 3 nhắc SVM (không train) và nói 'DT cao nhất' mâu thuẫn với DL.",
+  "verdict": "weak",
+  "verdict_reason": "Số liệu không tái lập được (GUI-only, không seed/fold), nhiều dấu hiệu leakage và mâu thuẫn nội bộ; chỉ giữ làm ví dụ 'red flag' / cite trong related work, KHÔNG dùng làm benchmark để vượt.",
+  "analyzed_at": "2026-06-22",
+  "role": "inflation",
+  "role_note": "Lấy đúng 1 con số: DL 98.07% trên PIMA, không CV. Dẫn chứng thổi phồng.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

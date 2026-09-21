@@ -1,0 +1,73 @@
+{
+  "paper_id": "choi2014_prediabetes_screening",
+  "title": "Screening for Prediabetes Using Machine Learning Models",
+  "authors": [
+    "Soo Beom Choi",
+    "Won Jae Kim",
+    "Tae Keun Yoo",
+    "Jee Soo Park",
+    "Jai Won Chung",
+    "Yong-ho Lee",
+    "Eun Seok Kang",
+    "Deok Won Kim"
+  ],
+  "year": 2014,
+  "venue": "Computational and Mathematical Methods in Medicine",
+  "doi": "10.1155/2014/618976",
+  "arxiv": null,
+  "pubmed": "25165484",
+  "pmc": "PMC4140121",
+  "citations": 111,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 2,
+  "prediction_horizon": "early_detection",
+  "label_type": "binary",
+  "datasets_mentioned": [
+    "KNHANES 2010 (train)",
+    "KNHANES 2011 (external validation)"
+  ],
+  "dataset_slugs": [
+    "knhanes"
+  ],
+  "method_slugs": [
+    "artificial-neural-network",
+    "support-vector-machine",
+    "feature-selection",
+    "logistic-regression"
+  ],
+  "code_url": null,
+  "reproducibility": 2,
+  "source_pdf": "source.pdf",
+  "page_count": 8,
+  "open_access_pdf": "https://europepmc.org/articles/PMC4140121?pdf=render",
+  "license": "CC-BY-3.0",
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "2026-07-06: Hindawi downloads link 403 Forbidden; fallback Europe PMC (PMC4140121, pdf=render) thành công. Verify: %PDF-, 723.453 bytes, 8 trang.",
+  "download_link": null,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "found_by": "claude/paper-finder-workflow (Q006)",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-07-06T00:00:00+07:00",
+  "reject_reason": null,
+  "abstract": "Xây mô hình ML (ANN, SVM) sàng lọc tiền ĐTĐ (prediabetes/IFG) trên khảo sát quốc gia KNHANES 2010, external validation trên KNHANES 2011; so với screening score dựa hồi quy logistic. ANN vượt score truyền thống theo AUC/accuracy. Loại người đã ĐTĐ khỏi phân tích.",
+  "url": "https://doi.org/10.1155/2014/618976",
+  "scope_note": "Đề xuất & lưu ở Q006 (2026-07-06). ĐẠT §7: 111 citations (OpenAlex, >3 năm ≥100); KNHANES public + external validation; method ANN/SVM tái lập. Layer 2 (đóng góp = mô hình ML sàng lọc), horizon early_detection (sàng lọc TIỀN ĐTĐ). VAI TRÒ: neo prediabetes-screening + anchor leakage-safe (feature phi-glucose) cho cả đề tài 1 (phát hiện sớm) và đề tài 2 (glycemic staging leakage-safe). Bài chị em với yu2010 (SVM prediabetes NHANES). CHƯA deep-analyze.",
+  "corrections": "Sau khi đọc full 8 trang: (1) XÁC NHẬN layer=2 (đóng góp = so sánh/tuyển chọn ANN vs SVM vs screening score) & prediction_horizon=early_detection (sàng lọc tiền ĐTĐ) → gỡ layer_uncertain/horizon_uncertain. (2) Thêm label_type=\"binary\" (tiền ĐTĐ/IFG vs bình thường; loại toàn bộ ĐTĐ khỏi phân tích). (3) Làm rõ 7 đặc trưng no-lab (tuổi, giới, BMI, vòng eo, tăng huyết áp, rượu, tiền sử gia đình) chọn bằng backward logistic từ 9 biến; FPG chỉ định nghĩa nhãn, KHÔNG là feature → leakage-safe. (4) Best external model = SVM (AUC 0.731) chứ không phải ANN — ANN thắng internal (0.768) nhưng tụt còn 0.729 external; abstract nhấn SVM external. (5) LƯU Ý dữ liệu trích: Table 2 trong extracted.md có 1 dòng dán nhãn sai ('Internal validation set' cho dòng ANN 0.729/60.7/77.2/56.7 vốn là EXTERNAL ANN) — đã đối chiếu abstract (SVM external 0.731 > ANN 0.729 > score 0.712) để sửa. (6) reproducibility: SVM đủ (C=10,σ=10,Gaussian) nhưng ANN thiếu hyperparam cuối + phần mềm thương mại + không code → tổng thể medium.",
+  "horizon_uncertain": false,
+  "role": "design",
+  "role_note": "Khuôn mẫu external validation sạch (KNHANES 2010→2011) + bằng chứng 'ML chỉ hơn score ~0.02 AUC' cho claim C5.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2014-01-01",
+    "age_years": 12.6,
+    "citations": 111,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

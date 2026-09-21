@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  TEMPLATE phân tích bài báo — DÙNG CHO TẤT CẢ PAPER trong        ║
+  ║  searched_papers/Layer_<n>/<paper_id>/analysis.html              ║
+  ║                                                                  ║
+  ║  Placeholder format: {{field_name}}                              ║
+  ║  paper-analyzer skill render template này bằng cách thay         ║
+  ║  placeholder bằng nội dung thật từ extracted.md + metadata.json. ║
+  ║                                                                  ║
+  ║  Quy tắc cứng:                                                   ║
+  ║  - KHÔNG bịa số liệu — nếu paper không nêu → ghi "UNKNOWN"       ║
+  ║  - Tiếng Việt cho text, giữ thuật ngữ EN trong ngoặc khi cần     ║
+  ║  - Self-contained: KHÔNG dùng CDN, không external CSS/JS         ║
+  ║  - Cấu trúc 9 khối (Header → Compare Card → 7 Section)           ║
+  ║    BẮT BUỘC giữ nguyên thứ tự để so sánh chéo dễ                ║
+  ║  - Section 2 (Công nghệ) và Section 3 (Mô hình) TÁCH RIÊNG:      ║
+  ║    + Công nghệ = framework/lib/kỹ thuật phụ trợ (SMOTE, sklearn) ║
+  ║    + Mô hình   = các model ML/DL được train & so sánh            ║
+  ║    Models BẮT BUỘC sort giảm dần theo metric chính nếu paper     ║
+  ║    so sánh nhiều mô hình; model thắng đánh dấu ⭐                ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{paper_title}} — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  a.badge.yes:hover { background: #a7f3d0; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure (crop từ PDF, embed base64) ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>{{paper_title}}</h1>
+    <div class="meta">
+      <span>📅 <strong>{{year}}</strong></span>
+      <span>📰 {{venue}}</span>
+      <span>📚 <strong>{{citations}}</strong> citations <small style="opacity:0.7">({{citations_checked_at}})</small></span>
+      <span>🔗 <a href="{{doi_url}}" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <!-- Code badge:
+           - Nếu có code_url → <a class="badge yes" href="{{code_url}}" target="_blank">💻 Code: {{code_host}} ↗</a>
+             ({{code_host}} = "GitHub" / "GitLab" / "Zenodo"… suy từ domain. Anchor để click mở.)
+           - Nếu KHÔNG có code_url → <span class="badge no">💻 Code: Không</span> (giữ <span>, không link) -->
+      {{code_badge_html}}
+      <!-- Dataset: dựa trên dataset_slugs có rỗng không -->
+      <span class="badge {{dataset_badge_class}}">📊 Dataset: {{dataset_yes_no}}</span>
+    </div>
+    <!-- Nếu có dataset, render danh sách. Nếu không, bỏ <ul> này. -->
+    <ul class="dataset-list">
+      {{#each datasets}}
+      <li>🔹 <a href="{{url}}" target="_blank">{{name}}</a> — {{short_desc}}</li>
+      {{/each}}
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <!-- 4 field cố định cho MỌI paper. Không thêm/bớt field. -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">{{contribution}}</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">{{best_metric}}</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">{{primary_method}}</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">{{vs_baseline}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer {{layer_number}}
+    </h2>
+    <p class="lead">{{overview_paragraph}}</p>
+    <h3>Vì sao là Layer {{layer_number}} ({{layer_name}})?</h3>
+    <table>
+      {{#each layer_reasons}}
+      <tr><td>{{marker}} {{reason}}</td><td>{{explanation}}</td></tr>
+      {{/each}}
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <!-- Framework, library, kỹ thuật phụ trợ: SMOTE, scikit-learn, PCA, feature selection, ... -->
+  <!-- KHÔNG đưa các model ML/DL vào đây — model thuộc Section 3. -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        {{#each tech_stack}}
+        <tr><td><code>{{name}}</code></td><td>{{role}}</td><td>{{strength}}</td><td>{{weakness}}</td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <!-- Các model ML/DL được train & so sánh trong paper. -->
+  <!-- BẮT BUỘC sort GIẢM DẦN theo metric chính ({{model_sort_metric}}) khi paper so sánh ≥ 2 model. -->
+  <!-- Model thắng (top-1) đánh dấu is_winner=true để render ⭐. -->
+  <!-- Nếu paper chỉ dùng 1 model → vẫn dùng bảng này, bỏ cột # và score nếu không có. -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    {{#if models_sorted}}
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>{{model_sort_metric}}</strong>. ⭐ = model tốt nhất paper chọn.</p>
+    {{/if}}
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>{{model_sort_metric}}</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        {{#each models}}
+        <tr><td>{{rank}}</td><td><code>{{name}}</code>{{#if is_winner}} ⭐{{/if}}</td><td>{{role}}</td><td><strong>{{score}}</strong></td><td>{{strength}}</td><td>{{weakness}}</td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        {{#each datasets_detail}}
+        <tr><td><strong>{{name}}</strong></td><td>{{n_samples}}</td><td>{{n_features}}</td><td>{{description}}</td><td><a href="{{url}}" target="_blank">{{link_label}}</a></td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        {{#each pipeline_steps}}
+        <tr><td>{{step_no}}</td><td>{{step_name}}</td><td>{{technique}}</td><td>{{output}}</td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    {{#each formulas}}
+    <div class="formula">
+      <span class="label">{{label}}</span>
+      {{formula_body}}
+    </div>
+    {{/each}}
+
+    <h3>Hình ảnh từ paper</h3>
+    {{#each figures}}
+    <div class="figure">
+      <img src="data:image/png;base64,{{base64_data}}" alt="{{alt}}">
+      <span class="caption">{{caption}} — {{source_location}}</span>
+    </div>
+    {{/each}}
+    <!-- Nếu chưa crop được hình → render placeholder duy nhất:
+    <div class="figure">🖼️ Hình từ PDF chưa được crop. <span class="caption">[paper-analyzer sẽ tự crop và embed base64]</span></div>
+    -->
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <!-- Nếu paper KHÔNG nêu số liệu rõ ràng:
+    <p class="lead" style="color:var(--muted)">Paper không công bố số liệu cụ thể — chỉ mô tả định tính. Không bịa số.</p>
+    -->
+
+    <div class="metric-grid">
+      {{#each headline_metrics}}
+      <div class="metric"><span class="value">{{value}}</span><span class="label">{{caption}}</span></div>
+      {{/each}}
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        {{#each detailed_results}}
+        <tr><td>{{dataset}}</td><td>{{model}}</td><td>{{setting}}</td><td><strong>{{metric}}</strong></td><td>{{source}}</td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{#if results_notes}}
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">{{results_notes}}</p>
+    {{/if}}
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    {{#each callouts}}
+    <div class="callout">
+      <strong>{{emoji}} {{heading}}</strong>
+      <ul>
+        {{#each items}}
+        <li>{{.}}</li>
+        {{/each}}
+      </ul>
+    </div>
+    {{/each}}
+    <!-- Khuyến nghị 3 callout chuẩn: ⚠️ Rủi ro / 🎯 Giới hạn / 💡 Vai trò trong đề tài -->
+  </section>
+
+</div>
+</body>
+</html>

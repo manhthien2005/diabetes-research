@@ -1,0 +1,23 @@
+{
+  "paper_id": "sgchoi2023_undiagnosed_diabetes_ml_vs_stats",
+  "layer": 3,
+  "prediction_horizon": "early_detection",
+  "contribution": "So sánh 5 model ML với phương pháp thống kê truyền thống (risk score) để phát hiện ĐTĐ type 2 CHƯA được chẩn đoán trên KNHANES 2014-2020 (n≈32.827), dùng feature phi-glycemic (no-lab) + external TEMPORAL validation (train 2014-2018 → external 2019-2020) + SHAP; kết luận ML có AUC cao hơn TS ở cả 4 bộ feature nhưng biên độ khiêm tốn và LR bám sát boosting.",
+  "method": "Nhãn binary undiagnosed = FPG≥126 hoặc HbA1c≥6.5% & chưa chẩn đoán → tách theo thời gian (2014-2018 train+internal CV, 2019-2020 external) → 4 bộ feature (4/7/8/11), bộ 11 chọn bằng Shapley+RFECV+Permutation → 5 model (LR, RandomForest, LightGBM, XGBoost, AdaBoost) → Optuna tuning + stratified 5-fold CV → chọn model AUC internal cao nhất → validate external, so risk score tái lập (Park 2022, Lee 2012) bằng Hanley-McNeil test → SHAP top-3.",
+  "best_metric": "AUC 0.819 (LightGBM, 11 feature, external 2019-2020, Table 5; Youden 49.6, Sn 84.8/Sp 64.8) vs TS risk score 0.765, P=0.001. Bộ 4 feature: ML 0.788 (Random Forest, Table 2) vs TS 0.740, P=0.008. Trong nhóm ML 5 model chỉ chênh ~0.01 (LR 0.814 ≈ LightGBM 0.819).",
+  "datasets": [
+    "knhanes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Điểm phân biệt độc nhất trong kho: external TEMPORAL validation (train 2014-2018 → external 2019-2020) mà yu2010, dinh2019, deberneh2021 ĐỀU KHÔNG có. So yu2010 (L2, NHANES SVM vs LR, no external val): cùng thông điệp trung thực 'ML ≈ hồi quy logistic' (LR 0.814 ≈ LightGBM 0.819), cùng feature no-lab leakage-safe; sgchoi thêm external val + cohort lớn hơn. So dinh2019 (L3, NHANES ~3900 feature→24, no external val, nhánh có-lab AUC 0.96 nghi leakage, survey-only 0.86): sgchoi dùng ít feature (4-11) nhưng leakage-safe hoàn toàn (phi-glycemic) + có external val; AUC no-lab 0.82 tương đương survey-only 0.86 của dinh2019 nhưng ĐÃ external validated. So deberneh2021 (L3, EHR Hàn private, onset Y+1 THẬT, acc 0.73 không AUC, no external val): cả hai Hàn Quốc nhưng sgchoi là undiagnosed screening cross-sectional (không phải onset tương lai), bù lại public KNHANES + external temporal val + báo AUC đầy đủ. Điểm chung 3 baseline: KHÔNG bài nào có external validation.",
+  "gap": "Nhãn CROSS-SECTIONAL (tác giả tự nêu, không xác định onset/nhân quả) — undiagnosed screening chứ không dự đoán tương lai; 'ML>TS' thổi phồng nhẹ vì thắng chủ yếu từ refit dữ liệu cùng thời kỳ + thêm feature (LR ≈ boosting), và risk score TS là hệ số cố định từ dữ liệu cũ không được refit công bằng; footnote Table 2-5 mâu thuẫn về cách build/validate model TS (nói TS build 2019-2020 validate 2014-2018, ngược ML) — nghi lỗi biên tập; PPV rất thấp ~0.10-0.18 ở ngưỡng chọn, không PR-AUC/calibration (Brier) cho imbalance ~4-5%; không nêu rõ scaler/balance fit trước hay trong fold CV; không code repo + siêu tham số Optuna không báo; loại 40.163 mẫu listwise (selection bias); chỉ dữ liệu Hàn Quốc (external val là temporal, không phải geographic/đa sắc tộc). Cải tiến: thêm PR-AUC+calibration trên phân bố thật, external val đa nguồn, refit công bằng cả TS lẫn ML, đánh giá onset dọc.",
+  "verdict": "strong",
+  "verdict_reason": "Đạt §7 (41 cite OpenAlex, sát mép khung 1-3 năm; KNHANES public; method+feature+thuật toán mô tả rõ, tái lập medium) VÀ lấp một khoảng trống thật của kho: là bài DUY NHẤT trong nhóm baseline có external TEMPORAL validation + feature leakage-safe (phi-glycemic) trên cohort quốc gia lớn — neo methodology cho Layer 3, đồng thời cung cấp bằng chứng citable 'ML ≈ hồi quy logistic' củng cố mũi nhọn đánh giá trung thực; trừ điểm vì không code public, cross-sectional (không onset), Korean-only và biên độ ML>TS khiêm tốn nên nên promote như anchor methodology chứ không phải component xây model chính.",
+  "analyzed_at": "2026-07-06T00:00:00+07:00",
+  "role": "design",
+  "role_note": "Bài gần đề tài nhất: định nghĩa ĐTĐ chưa chẩn đoán + bộ feature no-lab; điểm anh vượt = external theo QUẦN THỂ chứ không chỉ theo thời gian.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

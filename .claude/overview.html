@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<!--
+  overview.html — BẢN RENDER tổng quan các paper ĐÃ CHỐT (chosed_papers/).
+  Sinh từ .claude/templates/overview-template.html. Cập nhật 2026-06-09.
+  Self-contained: inline CSS + inline SVG, KHÔNG CDN. Mở trực tiếp bằng trình duyệt.
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCKH — Tổng quan paper đã chốt</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --surface:#fff; --border:#e2e8f0; --text:#0f172a; --muted:#64748b;
+    --primary:#2563eb; --primary-soft:#dbeafe; --success:#047857; --success-soft:#d1fae5;
+    --danger:#b91c1c; --danger-soft:#fee2e2; --warning:#b45309; --warning-soft:#fef3c7;
+    --accent:#7c3aed; --accent-soft:#ede9fe; --code-bg:#0f172a; --code-text:#e2e8f0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px}
+  .wrap{max-width:1040px;margin:0 auto;padding:32px 24px 64px}
+
+  /* Header */
+  .header{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);color:#fff;border-radius:16px;padding:28px 32px;box-shadow:0 8px 24px rgba(37,99,235,.15);margin-bottom:20px}
+  .header h1{margin:0 0 6px;font-size:24px;font-weight:700}
+  .header .sub{font-size:14px;opacity:.92}
+  .stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .stat{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
+  .stat b{font-size:17px}
+
+  /* Legend */
+  .legend{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+  .legend .grp{display:flex;align-items:center;gap:8px}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+  .pill.ok{background:var(--success-soft);color:var(--success)}
+  .pill.warn{background:var(--warning-soft);color:var(--warning)}
+  .pill.no{background:var(--danger-soft);color:var(--danger)}
+
+  /* Layer block */
+  .layer{margin-bottom:26px}
+  .layer-head{display:flex;align-items:center;gap:14px;margin:0 0 14px;padding:14px 18px;border-radius:12px;color:#fff}
+  .layer-head .num{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0}
+  .layer-head .lh-title{font-size:16px;font-weight:700;line-height:1.25}
+  .layer-head .lh-focus{font-size:12.5px;opacity:.9;font-weight:500}
+  .L1 .layer-head{background:linear-gradient(135deg,#1e40af,#2563eb)}
+  .L2 .layer-head{background:linear-gradient(135deg,#6d28d9,#7c3aed)}
+  .L3 .layer-head{background:linear-gradient(135deg,#0e7490,#0891b2)}
+  .L4 .layer-head{background:linear-gradient(135deg,#047857,#059669)}
+
+  /* Paper card */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;box-shadow:0 2px 8px rgba(15,23,42,.04)}
+  .L1 .card{border-left:5px solid #2563eb}
+  .L2 .card{border-left:5px solid #7c3aed}
+  .L3 .card{border-left:5px solid #0891b2}
+  .L4 .card{border-left:5px solid #059669}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .pid{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;color:var(--muted);background:#f1f5f9;padding:2px 8px;border-radius:5px;display:inline-block;margin-bottom:6px}
+  .ctitle{font-size:17px;font-weight:700;margin:0;line-height:1.35;max-width:680px}
+  .verdict{flex-shrink:0;text-align:center;border-radius:12px;padding:10px 16px;min-width:140px}
+  .verdict .v-sym{font-size:22px;line-height:1}
+  .verdict .v-txt{font-size:12px;font-weight:800;letter-spacing:.4px;margin-top:3px;text-transform:uppercase}
+  .verdict.ok{background:var(--success-soft);color:var(--success)}
+  .verdict.no{background:var(--danger-soft);color:var(--danger)}
+
+  .meta-row{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0;font-size:13px;color:var(--muted)}
+  .meta-row span{display:inline-flex;align-items:center;gap:5px}
+  .meta-row a{color:var(--primary);text-decoration:none}
+  .meta-row a:hover{text-decoration:underline}
+
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;border:1px solid transparent}
+  .badge.yes{background:var(--success-soft);color:var(--success)}
+  .badge.no{background:var(--danger-soft);color:var(--danger)}
+  a.badge.yes:hover{background:#a7f3d0}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 22px;margin:4px 0 6px}
+  .field{display:flex;gap:10px;align-items:flex-start}
+  .field .ic{font-size:16px;flex-shrink:0;padding-top:1px}
+  .field .lab{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:block}
+  .field .val{font-size:13.5px;line-height:1.45;font-weight:500}
+  .field .val b{color:var(--primary)}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+
+  .callout{border-radius:9px;padding:10px 14px;margin-top:12px;font-size:13px;border-left:4px solid}
+  .callout.reason{background:#f0f9ff;border-color:#0284c7}
+  .callout.warn{background:var(--warning-soft);border-color:var(--warning)}
+  .callout.danger{background:var(--danger-soft);border-color:var(--danger)}
+  .callout b{display:inline-block;margin-right:4px}
+
+  .foot{margin-top:24px;font-size:12px;color:var(--muted);text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ── Header ───────────────────────────────────────── -->
+  <div class="header">
+    <h1>📊 Tổng quan paper đã chốt</h1>
+    <div class="sub">Dự đoán / chẩn đoán đái tháo đường (binary) · dữ liệu tabular &amp; EHR · ML &amp; DL</div>
+    <div class="stats">
+      <div class="stat"><b>4</b> paper đã chốt</div>
+      <div class="stat"><b>4</b> layer</div>
+      <div class="stat">✅ <b>3</b> đạt tiêu chí</div>
+      <div class="stat">❌ <b>1</b> không đạt</div>
+      <div class="stat">🗓️ cập nhật 09/06/2026</div>
+    </div>
+  </div>
+
+  <!-- ── Legend / tiêu chí ────────────────────────────── -->
+  <div class="legend">
+    <div class="grp"><b style="color:var(--text)">Tiêu chí chốt:</b> Code public <i>HOẶC</i> (dataset public + method tái lập được)</div>
+    <div class="grp"><span class="pill ok">✅ ĐẠT</span> dùng để code lại</div>
+    <div class="grp"><span class="pill no">❌ KHÔNG</span> chỉ dùng tham khảo</div>
+  </div>
+
+  <!-- ════════════════ LAYER 1 ════════════════ -->
+  <div class="layer L1">
+    <div class="layer-head">
+      <div class="num">1</div>
+      <div>
+        <div class="lh-title">Pipeline nền tảng</div>
+        <div class="lh-focus">Tiền xử lý · missing/outlier · oversampling (SMOTE) · feature selection · baseline ML</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <span class="pid">gr2024_random_oversampling_diabetes</span>
+          <h2 class="ctitle">Random Oversampling-Based Diabetes Classification via Machine Learning Algorithms</h2>
+        </div>
+        <div class="verdict ok"><div class="v-sym">✅</div><div class="v-txt">Đạt</div></div>
+      </div>
+      <div class="meta-row">
+        <span>📅 2024</span>
+        <span>📰 Int. J. Computational Intelligence Systems</span>
+        <span>📚 12 citations (05/2026)</span>
+        <span>🔗 <a href="https://doi.org/10.1007/s44196-024-00678-3">10.1007/s44196-024-00678-3</a></span>
+      </div>
+      <div class="badges">
+        <span class="badge no">💻 Code: Không</span>
+        <span class="badge yes">📊 Dataset public: Có (PIDD/PIMA + BRFSS)</span>
+        <span class="badge yes">🔁 Tái lập: method mô tả rõ</span>
+      </div>
+      <div class="grid">
+        <div class="field"><span class="ic">🎯</span><div><span class="lab">Đóng góp chính</span><span class="val">Pipeline sạch đầy đủ: imputation → IQR outlier → random oversampling → Boruta/PCA → ML</span></div></div>
+        <div class="field"><span class="ic">🏆</span><div><span class="lab">Best metric</span><span class="val"><b>94% acc</b> (PIDD, RF+Boruta, 10-fold 94.03%) · 92% (BRFSS)</span></div></div>
+        <div class="field"><span class="ic">🔧</span><div><span class="lab">Method chính</span><span class="val">Random Forest + Boruta (so với LightGBM, GB, DT)</span></div></div>
+        <div class="field"><span class="ic">🗄️</span><div><span class="lab">Dataset</span><span class="val">PIDD/PIMA (768) + BRFSS — đều public, dễ tải</span></div></div>
+      </div>
+      <div class="callout reason"><b>✅ Vì sao đạt:</b> Không có code nhưng pipeline mô tả từng bước rõ ràng + 2 dataset public → sinh viên tái lập được. Vai trò: <b>baseline nền móng</b> cho Layer 2-4.</div>
+      <div class="callout warn"><b>⚠️ Lưu ý:</b> PIDD chỉ 768 mẫu (dễ overfit). Phải làm oversampling + feature selection <i>sau</i> khi split, nếu không sẽ leakage làm metric ảo.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════ LAYER 2 ════════════════ -->
+  <div class="layer L2">
+    <div class="layer-head">
+      <div class="num">2</div>
+      <div>
+        <div class="lh-title">Model hiệu quả</div>
+        <div class="lh-focus">So sánh model · ensemble/stacking/boosting · deep tabular · tối ưu hyperparam</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <span class="pid">hasan2020_diabetes_prediction_ensembling</span>
+          <h2 class="ctitle">Diabetes Prediction Using Ensembling of Different Machine Learning Classifiers</h2>
+        </div>
+        <div class="verdict ok"><div class="v-sym">✅</div><div class="v-txt">Đạt</div></div>
+      </div>
+      <div class="meta-row">
+        <span>📅 2020</span>
+        <span>📰 IEEE Access</span>
+        <span>📚 433 citations (05/2026)</span>
+        <span>🔗 <a href="https://doi.org/10.1109/ACCESS.2020.2989857">10.1109/ACCESS.2020.2989857</a></span>
+      </div>
+      <div class="badges">
+        <a class="badge yes" href="https://github.com/kamruleee51/Diabetes-Prediction-Using-ML-Classifiers">💻 Code: Có (GitHub, README tốt) ↗</a>
+        <span class="badge yes">📊 Dataset public: Có (PIMA — tự tải)</span>
+        <span class="badge yes">🔁 Tái lập: được (có lưu ý)</span>
+      </div>
+      <div class="grid">
+        <div class="field"><span class="ic">🎯</span><div><span class="lab">Đóng góp chính</span><span class="val">Ensemble weighted soft-voting nâng AUC so với model đơn; pipeline preprocessing + correlation-based feature selection</span></div></div>
+        <div class="field"><span class="ic">🏆</span><div><span class="lab">Best metric</span><span class="val"><b>AUC 0.950</b> (ensemble AdaBoost+XGBoost) · XGBoost đơn AUC 0.946±0.02</span></div></div>
+        <div class="field"><span class="ic">🔧</span><div><span class="lab">Method chính</span><span class="val">AdaBoost + XGBoost soft-voting, weight theo AUC; K-fold CV</span></div></div>
+        <div class="field"><span class="ic">🗄️</span><div><span class="lab">Dataset</span><span class="val">PIMA (768) — không kèm trong repo, tải Kaggle/UCI</span></div></div>
+      </div>
+      <div class="callout reason"><b>✅ Vì sao đạt:</b> Có repo public (3 notebook, README pin version) + dataset chuẩn public. 433 cite — kim cương cứng của Layer 2.</div>
+      <div class="callout warn"><b>⚠️ Lưu ý khi code lại:</b> "Ensembling" trong code thực chất là <code>VotingClassifier(voting='soft')</code> — <b>KHÔNG phải stacking</b> meta-learner. Trọng số ensemble tính trên <b>TEST set</b> (rò rỉ nhẹ) → đừng bê nguyên cách tính weight.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════ LAYER 3 ════════════════ -->
+  <div class="layer L3">
+    <div class="layer-head">
+      <div class="num">3</div>
+      <div>
+        <div class="lh-title">Dataset thực tế / EHR</div>
+        <div class="lh-focus">EHR thật (NHANES, MIMIC, All-of-Us) · opportunistic screening · cohort thực · longitudinal</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <span class="pid">jin2025_opportunistic_screening_type</span>
+          <h2 class="ctitle">Opportunistic Screening of Type 2 Diabetes with Deep Metric Learning Using Electronic Health Records</h2>
+        </div>
+        <div class="verdict no"><div class="v-sym">❌</div><div class="v-txt">Không đạt</div></div>
+      </div>
+      <div class="meta-row">
+        <span>📅 2025 (25/11)</span>
+        <span>📰 Scientific Reports</span>
+        <span>📚 0 citations (quá mới)</span>
+        <span>🔗 <a href="https://doi.org/10.1038/s41598-025-25759-x">10.1038/s41598-025-25759-x</a></span>
+      </div>
+      <div class="badges">
+        <span class="badge no">💻 Code: Không (không có Code availability)</span>
+        <span class="badge no">📊 Dataset public: Không (AoU controlled + MGB private)</span>
+        <span class="badge no">🔁 Tái lập: cần IRB + EHR riêng</span>
+      </div>
+      <div class="grid">
+        <div class="field"><span class="ic">🎯</span><div><span class="lab">Đóng góp chính</span><span class="val">Deep Metric Learning học latent space EHR: vừa predict onset T2D trước chẩn đoán, vừa subtype (Green/Yellow/Red)</span></div></div>
+        <div class="field"><span class="ic">🏆</span><div><span class="lab">Best metric</span><span class="val"><b>AUROC 0.969</b> (2-year, All-of-Us) · 0.754 (7-year)</span></div></div>
+        <div class="field"><span class="ic">🔧</span><div><span class="lab">Method chính</span><span class="val">DML encoder (698 feature EHR) + LR head + KMeans subtyping</span></div></div>
+        <div class="field"><span class="ic">🗄️</span><div><span class="lab">Dataset</span><span class="val">All of Us (controlled-access, cần DUA) + MGB Biobank (<b>không public</b>)</span></div></div>
+      </div>
+      <div class="callout danger"><b>❌ Vì sao KHÔNG đạt:</b> (1) Không có code — paper không hề có mục "Code availability", profile GitHub tác giả 404. (2) Đóng góp độc đáo (subtyping, transfer) nằm trên <b>MGB private</b> — không lấy được; AoU thì controlled-access cần IRB. (3) Một undergrad không thể tái lập (cần IRB + EHR thật + DML). Synthetic cohort chỉ "hứa sau khi accepted", chưa thấy release.</div>
+      <div class="callout reason"><b>💡 Vẫn dùng được:</b> giữ làm <b>"ngôi sao Bắc Đẩu"</b> trích trong related work/motivation Layer 3 ("EHR thực tế trông như thế này"), <b>KHÔNG dùng làm bài để reimplement</b>. Ứng viên thay thế gợi ý: <code>dinh2019</code> (NHANES — public 100%, 374 cite).</div>
+    </div>
+  </div>
+
+  <!-- ════════════════ LAYER 4 ════════════════ -->
+  <div class="layer L4">
+    <div class="layer-head">
+      <div class="num">4</div>
+      <div>
+        <div class="lh-title">XAI / Triển khai</div>
+        <div class="lh-focus">Explainability (SHAP, LIME) · interpretability · deployment · clinical impact · trust</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <span class="pid">tasin2022_diabetes_prediction_explainable</span>
+          <h2 class="ctitle">Diabetes Prediction Using Machine Learning and Explainable AI Techniques</h2>
+        </div>
+        <div class="verdict ok"><div class="v-sym">✅</div><div class="v-txt">Đạt</div></div>
+      </div>
+      <div class="meta-row">
+        <span>📅 2022/2023</span>
+        <span>📰 Healthcare Technology Letters (IET/Wiley)</span>
+        <span>📚 266 citations (05/2026)</span>
+        <span>🔗 <a href="https://doi.org/10.1049/htl2.12039">10.1049/htl2.12039</a></span>
+      </div>
+      <div class="badges">
+        <a class="badge yes" href="https://github.com/tansin-nabil/Diabetes-Prediction-Using-Machine-Learning">💻 Code: Có (GitHub, 5 notebook) ↗</a>
+        <span class="badge yes">📊 Dataset public: Có (PIMA + RTML 203 mẫu trong repo)</span>
+        <span class="badge yes">🔁 Tái lập: được (cần sửa path)</span>
+      </div>
+      <div class="grid">
+        <div class="field"><span class="ic">🎯</span><div><span class="lab">Đóng góp chính</span><span class="val">Predict → giải thích (SHAP+LIME) → deploy (web + Android app). Merge PIMA + dataset thực địa Bangladesh</span></div></div>
+        <div class="field"><span class="ic">🏆</span><div><span class="lab">Best metric</span><span class="val"><b>Acc 81% · F1 0.81 · AUC 0.84</b> (XGBoost + ADASYN, merged dataset)</span></div></div>
+        <div class="field"><span class="ic">🔧</span><div><span class="lab">Method chính</span><span class="val">XGBoost + ADASYN; GridSearchCV; SHAP + LIME; insulin ước lượng bằng XGB regressor</span></div></div>
+        <div class="field"><span class="ic">🗄️</span><div><span class="lab">Dataset</span><span class="val">PIMA (768, tự tải) + RTML Bangladesh 203 mẫu (<b>có sẵn trong repo</b>)</span></div></div>
+      </div>
+      <div class="callout reason"><b>✅ Vì sao đạt:</b> Repo public 5 Colab notebook (sklearn/xgboost/imblearn/SHAP) + RTML 203 mẫu nằm ngay trong repo (khớp paper). 266 cite. Đầy đủ XAI + deployment cho Layer 4.</div>
+      <div class="callout warn"><b>⚠️ Lưu ý khi code lại:</b> README chỉ 434 byte (không hướng dẫn chạy), path hardcode <code>/content/...</code>, 1 tên file lệch, PIMA phải tự tải → tái lập được nhưng <b>phải sửa tay</b>, không plug-and-play.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Tiêu chí đánh giá theo AGENTS.md §7 · Số liệu trích từ <code>extracted.md</code>/<code>metadata.json</code> mỗi paper, GitHub repo verify trực tiếp 06/2026.<br>
+    Không bịa số liệu — thiếu thì ghi UNKNOWN. Trang này chỉ tổng quan; chi tiết xem <code>analysis.html</code> trong từng folder <code>searched_papers/</code>.
+  </div>
+
+</div>
+</body>
+</html>

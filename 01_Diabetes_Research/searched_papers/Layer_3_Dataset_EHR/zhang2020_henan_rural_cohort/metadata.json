@@ -1,0 +1,69 @@
+{
+  "paper_id": "zhang2020_henan_rural_cohort",
+  "title": "Machine learning for characterizing risk of type 2 diabetes mellitus in a rural Chinese population: the Henan Rural Cohort Study",
+  "authors": [
+    "Liying Zhang",
+    "Yikang Wang",
+    "Miaomiao Niu",
+    "Chongjian Wang",
+    "Zhenfei Wang"
+  ],
+  "year": 2020,
+  "venue": "Scientific Reports",
+  "doi": "10.1038/s41598-020-61123-x",
+  "arxiv": null,
+  "pubmed": "32157171",
+  "pmc": null,
+  "citations": 156,
+  "citations_secondary": 134,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://www.nature.com/articles/s41598-020-61123-x.pdf",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "henan-rural-cohort"
+  ],
+  "dataset_slugs": [
+    "henan-rural-cohort"
+  ],
+  "method_slugs": [
+    "gradient-boosting",
+    "random-forest",
+    "logistic-regression",
+    "machine-learning-ensemble"
+  ],
+  "layer": 3,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 3,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 10,
+  "pdf_status": "ok",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "scope_note": "DATASET DỊCH TỄ THẬT (không PIMA): Henan Rural Cohort — cohort nông thôn TQ quy mô lớn, đặc trưng nguy cơ T2DM bằng ML. Scientific Reports 2020, 155 cite (§7 đạt mạnh). OA CC-BY (PDF Nature có sẵn, 10 trang). Dữ liệu cohort xin theo yêu cầu; không code public → reproducibility trung bình. Bổ trợ Layer 3 với nguồn dữ liệu cộng đồng thực, khác hẳn EHR bệnh viện.",
+  "corrections": {
+    "prediction_horizon": "Xác nhận cross_sectional: paper tự nêu ở Discussion/limitations 'derived from a cross-sectional study without follow-up data; ... may not be able to determine the causal and temporal associations'. Nhãn T2DM đo cùng thời điểm feature → không phải onset/early_detection.",
+    "method_slugs_incomplete": "method_slugs cũ chỉ liệt kê gradient-boosting/random-forest/logistic-regression/machine-learning-ensemble; bản full so sánh ĐỦ 6 model: thêm artificial-neural-network (ANN), support-vector-machine (SVM), classification-and-regression-tree (CART). Cũng dùng SMOTE (cân bằng) và SHAP (variable importance).",
+    "n_samples": "36.652 mẫu phân tích (loại từ 39.259 tuyển ban đầu); ~60 feature (Section SVM); prevalence T2DM ~9,2% (3.356/36.652) — Table 1.",
+    "has_code_confirmed": "Xác nhận has_code=false, code_url=null: không có repo công khai; data sharing chỉ qua liên hệ Dr. Chongjian Wang (Section 'Data sharing statement'). reproducibility=medium do hyperparam chỉ ở Supplementary Table 2.",
+    "best_metric_confirmed": "AUC tốt nhất 0.872 (GBM có lab, Table 4), không phải số khác. Lưu ý lỗi bản gốc: text Figure 2 ghi 'CART AUC = 0.11' (sai) trong khi Table 4 ghi CART 0.811 (đúng)."
+  },
+  "label_type": "binary",
+  "role": "method",
+  "role_note": "No-lab GBM AUC 0.817 (mốc so sánh) + cách báo AUPR 0.546 và PPV 28.83% dưới prevalence thật.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2020-03-10",
+    "age_years": 6.4,
+    "citations": 156,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "paper_id": "yu2010_svm_prediabetes_detection",
+  "layer": 2,
+  "prediction_horizon": "early_detection",
+  "contribution": "Bài SVM-nền-tảng (524 cite) chứng minh có thể phát hiện người ĐTĐ/tiền ĐTĐ CHƯA được chẩn đoán chỉ bằng biến lâm sàng no-lab trên NHANES, và SVM đạt hiệu năng NGANG hồi quy logistic (không có 'phép màu ML'); kèm web tool Diabetes Classifier chỉnh ngưỡng Sn/Sp.",
+  "method": "LibSVM 4 kernel (linear/poly/RBF/sigmoid) + chọn biến tự động (Chen) → 8/10 biến no-lab → chuẩn hóa [-1,+1] → undersample non-cases cân bằng train → grid.py dò C/gamma 5-fold → so với MLR (SUDAAN) cùng biến; đánh giá test 20% + 10-fold CV, so AUC bằng DeLong.",
+  "best_metric": "AUC 0.8347 — Scheme I (SVM-RBF, test set, Table 3; Sn 0.7715/Sp 0.7503/PPV 0.4926/NPV 0.9127). Scheme II (undiagnosed+pre vs không): AUC 0.7318 (SVM-linear, test, Table 3).",
+  "datasets": [
+    "nhanes-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "SVM ≈ MLR hồi quy logistic (DeLong p=0.3672 Scheme I / 0.6718 Scheme II — không khác biệt thống kê). So hasan2020 (baseline Layer 2 chosen, PIMA, AUC-weighted ensemble AB+XB AUC 0.950, có code): yu2010 AUC thấp hơn nhiều & không code repo, NHƯNG dùng NHANES đại diện dân số + biến no-lab triển khai được + nhắm undiagnosed/pre (early_detection) thay vì PIMA chẩn đoán cắt ngang. Là tiền thân của dinh2019 (NHANES no-lab Case II).",
+  "gap": "Undersampling non-cases → Sn/Sp/PPV không phản ánh prevalence thật; nhãn dựa 1 lần FPG (không OGTT/HbA1c); SVM không cho xác suất → khó calibration; KHÔNG external validation (tác giả tự nêu); không code repo + web tool 2010 URL đã chết; C/gamma không báo; single SVM cũ chưa boosting/deep; AUC khiêm tốn.",
+  "verdict": "maybe",
+  "verdict_reason": "Đạt §7 rõ (524 cite, NHANES công khai, method tái lập medium) và có giá trị CHIẾN LƯỢC cao (neo early_detection/undiagnosed-screening + bằng chứng citable 'ML ≈ hồi quy logistic' củng cố mũi nhọn đánh giá trung thực); NHƯNG là anchor lịch sử/related-work chứ không phải component xây model chính (2010, single SVM, không code, AUC modest) — user quyết promote như một điểm neo tường thuật.",
+  "analyzed_at": "2026-07-06T00:00:00+07:00",
+  "role": "design",
+  "role_note": "Scheme I/II (2 cách định nghĩa ca bệnh) trên NHANES no-lab + nền bằng chứng P1 (SUDAAN chỉ cho LR, không cho SVM — CẦN XÁC MINH số trang).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

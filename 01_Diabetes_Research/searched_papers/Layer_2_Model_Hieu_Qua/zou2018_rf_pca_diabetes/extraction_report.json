@@ -1,0 +1,25 @@
+{
+  "paper": "zou2018_rf_pca_diabetes",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 40.5,
+  "pages": 10,
+  "failed_pages": [],
+  "source_text_chars": 44493,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 14,
+  "qa": {
+    "out_chars": 45631,
+    "n_markdown_tables": 8,
+    "source_table_captions": 8,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 1.026,
+    "score": 100,
+    "warnings": []
+  }
+}

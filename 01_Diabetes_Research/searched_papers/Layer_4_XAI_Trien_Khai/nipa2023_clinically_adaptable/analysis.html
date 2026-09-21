@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinically adaptable ML model to identify early appreciable features of diabetes — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────────────────────────────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Clinically adaptable machine learning model to identify early appreciable features of diabetes</h1>
+    <div class="meta">
+      <span>📅 <strong>2023</strong></span>
+      <span>📰 Intelligent Medicine (KeAi / Elsevier)</span>
+      <span>📚 <strong>32</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.imed.2023.01.003" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (1/3 public)</span>
+      <span class="badge horizon">⏱️ Horizon: Early detection</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset" target="_blank">SDHD — Sylhet Diabetes Hospital (UCI)</a> — 520 mẫu, 17 thuộc tính, dấu hiệu/triệu chứng bệnh nhân mới phát hiện (public)</li>
+      <li>🔹 PDD — Prediagnosis Diabetes (Bangladesh) — 558 mẫu, 19 thuộc tính, TỰ THU qua khảo sát (không public)</li>
+      <li>🔹 MDD — Merged dataset — gộp SDHD + PDD trên 14 thuộc tính chung (không public)</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Mô hình ML "thích ứng lâm sàng" nhận diện <strong>đặc trưng sớm (early appreciable features)</strong> của ĐTĐ; quét <strong>35 classifier</strong> trên 3 dataset (1 public + 1 tự thu PDD + 1 gộp), giải thích bằng <strong>SHAP</strong> để xếp hạng yếu tố nguy cơ.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>ET 97.11% accuracy</strong> trên SDHD (Table 2); MLP 96.42% trên PDD (Table 2); HGBC &amp; LGBM 94.90% trên MDD (Table 3).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Impute mean/mode → mã hóa categorical → IQR outlier + correlation/t-test → 35 classifier (sklearn) → split 80:20 → SHAP feature importance.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">vs <strong>tasin2022</strong> (baseline Layer 4): nipa accuracy cao hơn (97% vs 81%) nhưng <strong>KHÔNG K-fold CV, không deploy, không code</strong>, tự nhận overfit; tasin có XAI+deploy+code → nipa chỉ là <em>tham chiếu</em>, không thay baseline. vs <strong>ahmed2024</strong> (LR 86%, chỉ SHAP/LIME định tính): nipa nhiều model + dataset tự thu hơn, nhưng cùng điểm yếu không CV.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 4
+    </h2>
+    <p class="lead">
+      Bài đề xuất mô hình ML <strong>"thích ứng lâm sàng" (clinically adaptable)</strong> để phát hiện ĐTĐ <strong>ở giai đoạn sớm</strong>
+      dựa trên các <strong>dấu hiệu/triệu chứng (early appreciable features)</strong> chứ không cần xét nghiệm tốn kém (OGTT, HbA1c).
+      Nhóm tác giả thu thập 3 dataset — SDHD (520 mẫu từ UCI), PDD (558 mẫu <strong>tự thu qua khảo sát</strong> khắp Bangladesh
+      theo bộ câu hỏi tương tự SDHD), và MDD (gộp 14 thuộc tính chung) — rồi <strong>quét 35 classifier</strong> và dùng
+      <strong>SHAP</strong> để xếp hạng yếu tố nguy cơ. Mục tiêu "thích ứng đa dân số" (tự thu PDD để giảm overfit của SDHD)
+      và "giải thích đặc trưng lâm sàng" đặt bài vào Layer 4.
+    </p>
+    <h3>Vì sao là Layer 4 (XAI &amp; Triển khai lâm sàng)?</h3>
+    <table>
+      <tr><td>✔ XAI là trọng tâm</td><td>Dùng SHAP để diễn giải mô hình tốt nhất mỗi dataset, xếp hạng feature theo mức đóng góp (Section 2.4, 3.2, Fig. 6–8)</td></tr>
+      <tr><td>✔ Định hướng lâm sàng</td><td>Tự nhận là "clinically adaptable" — nhằm hỗ trợ bác sĩ phát hiện ĐTĐ ở vùng nông thôn không có thiết bị xét nghiệm</td></tr>
+      <tr><td>✔ Thích ứng đa dân số</td><td>Tự thu PDD ở Bangladesh để giảm overfit SDHD, hướng tới khái quát hóa lâm sàng</td></tr>
+      <tr><td>✘ Chưa triển khai thật</td><td>Web/app chỉ là kế hoạch tương lai ("we will design a web and mobile application"), CHƯA có sản phẩm</td></tr>
+      <tr><td>✘ XAI chỉ định tính</td><td>SHAP chỉ ở mức summary/beeswarm plot, không bảng giá trị Shapley số, không đo fidelity/stability</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>scikit-learn</code></td><td>Thư viện huấn luyện 35 classifier (Section 3.1)</td><td>Chuẩn, đầy đủ model</td><td>Không tự cài đặt model chuyên biệt</td></tr>
+        <tr><td><code>Google Colab</code></td><td>Môi trường chạy thí nghiệm (Section 3.1)</td><td>Miễn phí, dễ tái lập môi trường</td><td>Không nêu seed / phiên bản lib</td></tr>
+        <tr><td><code>Mean / mode imputation</code></td><td>Bù missing: 1 giá trị age (mean), 5 giá trị smoking (mode 'No') trong PDD (Section 2.2)</td><td>Đơn giản, ít mất dữ liệu</td><td>Có thể gây bias nhẹ</td></tr>
+        <tr><td><code>Categorical → numeric</code></td><td>Mã hóa weight + thuộc tính nominal về số (Section 2.2)</td><td>Cần thiết cho model số</td><td>Không nêu rõ scheme (label vs one-hot)</td></tr>
+        <tr><td><code>IQR</code></td><td>Phát hiện outlier (Section 2.2)</td><td>Robust, kinh điển</td><td>Không nêu có loại bỏ hay chỉ kiểm tra</td></tr>
+        <tr><td><code>Correlation + t-test</code></td><td>Phân tích tương quan, bỏ feature trùng (Section 2.2)</td><td>Giảm dư thừa feature</td><td>Không công bố ngưỡng / feature nào bị bỏ</td></tr>
+        <tr><td><code>SHAP</code></td><td>Giải thích model tốt nhất mỗi dataset, xếp hạng feature (Section 2.4, 3.2)</td><td>Lý thuyết game vững, global + local</td><td>Chỉ định tính (plot), không bảng số, không fidelity</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Bài quét <strong>35 classifier</strong>; bảng dưới chỉ liệt kê các model dẫn đầu/đáng chú ý, sắp xếp theo <strong>accuracy của dataset model đó thắng</strong>. ⭐ = model tốt nhất của từng dataset. Số đầy đủ ở Section 7 (Kết quả).</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>Accuracy (dataset)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>Extra Tree (ET)</code> ⭐</td><td>Tốt nhất trên SDHD</td><td><strong>97.11% (SDHD, Table 2)</strong></td><td>Ensemble giảm bias+variance, split ngẫu nhiên nhanh</td><td>Số cao nghi overfit SDHD (bài tự nhận)</td></tr>
+        <tr><td>2</td><td><code>MLP</code> ⭐</td><td>Tốt nhất (accuracy) trên PDD</td><td><strong>96.42% (PDD, Table 2)</strong></td><td>Bắt quan hệ phi tuyến qua FFNN + backprop</td><td>Cần nhiều dữ liệu, không nêu kiến trúc lớp ẩn</td></tr>
+        <tr><td>3</td><td><code>HGBC</code> ⭐</td><td>Tốt nhất trên MDD (đồng hạng)</td><td><strong>94.90% (MDD, Table 3)</strong></td><td>Boosting nhanh cho lượng mẫu lớn</td><td>Cần tuning (không tuning trong bài)</td></tr>
+        <tr><td>4</td><td><code>LGBM</code> ⭐</td><td>Tốt nhất trên MDD (đồng hạng)</td><td><strong>94.90% (MDD, Table 3)</strong></td><td>GOSS+EFB, leaf-wise hiệu quả</td><td>AUROC MDD 94.54% (thấp hơn HGBC 94.92%)</td></tr>
+        <tr><td>5</td><td><code>Stacking</code></td><td>AUROC tốt nhất trên MDD</td><td>93.51% acc · <strong>AUROC 95.47% (MDD, Table 3)</strong></td><td>Meta-learner kết hợp đa base learner</td><td>Phức tạp, khó giải thích</td></tr>
+        <tr><td>6</td><td><code>RF</code></td><td>Ổn định cả 3 dataset</td><td>96.15% (SDHD) · 96.40% (PDD) · 92.10% (MDD)</td><td>Bagging mạnh với tabular, ổn định</td><td>Không thắng dataset nào (metadata cũ ghi nhầm là model dẫn đầu)</td></tr>
+        <tr><td>7</td><td><code>GBC</code></td><td>Ổn định, nhóm tốt</td><td>95.20% (SDHD) · 94.64% (PDD) · 91.66% (MDD)</td><td>Giảm loss qua từng iteration</td><td>Chậm hơn HGBC/LGBM</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Bài kết luận nhóm <strong>LGBM, Stacking, HGBC, RF, ET, Bagging, GBC</strong> cho kết quả ổn định trên cả 3 dataset (Conclusion + Section 3.1). Các model như SVC, Perceptron, NC, LSVC, SGD kém (đặc biệt trên MDD).</p>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>SDHD</strong><br><span style="color:var(--muted);font-size:12px">Sylhet Diabetes Hospital</span></td>
+          <td>520<br><span style="color:var(--muted);font-size:12px">320 ĐTĐ / 200 thường</span></td>
+          <td>17 thuộc tính</td>
+          <td>Bộ "early-stage diabetes risk prediction" từ UCI; bệnh nhân mới phát hiện có dấu hiệu/triệu chứng. Age 20–65, nam:nữ = 63%:37%. Tất cả nominal trừ age (Section 2.1, Table 1)</td>
+          <td><a href="https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset" target="_blank">UCI</a></td>
+        </tr>
+        <tr>
+          <td><strong>PDD</strong><br><span style="color:var(--muted);font-size:12px">Prediagnosis Diabetes</span></td>
+          <td>558<br><span style="color:var(--muted);font-size:12px">191 ĐTĐ / 367 thường</span></td>
+          <td>19 thuộc tính</td>
+          <td>TỰ THU qua khảo sát khắp Bangladesh theo bộ câu hỏi tương tự SDHD (được hội đồng NSTU duyệt). Age 10–90 (Section 2.1, Table 1)</td>
+          <td><span style="color:var(--muted)">Không public</span></td>
+        </tr>
+        <tr>
+          <td><strong>MDD</strong><br><span style="color:var(--muted);font-size:12px">Merged dataset</span></td>
+          <td>UNKNOWN<br><span style="color:var(--muted);font-size:12px">(bài chỉ nói "almost balanced", không nêu tổng mẫu)</span></td>
+          <td>14 thuộc tính chung</td>
+          <td>Gộp SDHD + PDD trên 14 thuộc tính chung giữa hai bộ (Section 2.1, Table 1). Dùng để tăng tính ổn định, giảm overfit</td>
+          <td><span style="color:var(--muted)">Không public</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Lưu ý suy luận: SDHD 520 + PDD 558 = 1078, nhưng MDD chỉ gộp 14 feature chung và tổng mẫu MDD <strong>không được nêu rõ</strong> trong bài → UNKNOWN, không bịa.</p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Thu thập dữ liệu</td><td>SDHD từ UCI; PDD tự thu qua khảo sát; gộp thành MDD (14 feature chung)</td><td>3 dataset</td></tr>
+        <tr><td>2</td><td>Bù missing</td><td>Age = mean (1 giá trị); smoking = mode 'No' (5 giá trị) — chỉ PDD</td><td>Dữ liệu đủ giá trị</td></tr>
+        <tr><td>3</td><td>Mã hóa</td><td>Chuyển weight + các thuộc tính categorical về số</td><td>Dữ liệu số</td></tr>
+        <tr><td>4</td><td>Kiểm tra outlier</td><td>IQR</td><td>Dữ liệu kiểm tra outlier</td></tr>
+        <tr><td>5</td><td>Lọc feature</td><td>Correlation analysis + t-test (bỏ feature tương quan cao)</td><td>Feature set gọn</td></tr>
+        <tr><td>6</td><td>Train/test split</td><td>80:20 (Section 3.1) — KHÔNG K-fold CV</td><td>Train + Test</td></tr>
+        <tr><td>7</td><td>Huấn luyện</td><td>35 classifier (sklearn trên Colab)</td><td>35 model × 3 dataset</td></tr>
+        <tr><td>8</td><td>Đánh giá</td><td>Accuracy, Precision, Recall, F1, AUROC (confusion matrix)</td><td>Bảng metric (Table 2–3)</td></tr>
+        <tr><td>9</td><td>Giải thích</td><td>SHAP cho model tốt nhất từng dataset</td><td>Xếp hạng feature (Fig. 6–8)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">SHAP — additive feature attribution (Equation 1–2, Section 2.4)</span>
+      f(M) ≈ φ₀ + Σ φₐ · y′ₐ&nbsp;&nbsp;&nbsp;(y′ ∈ {0,1}ᴾ, φₐ ∈ ℝ)<br>
+      φₐ = đóng góp biên của feature a; y′ₐ = 1 nếu feature có mặt, 0 nếu không<br>
+      <span style="color:#94a3b8">(Bài viết dạng ký hiệu, không nêu hằng số cụ thể)</span>
+    </div>
+
+    <div class="formula">
+      <span class="label">Metrics (Equations 3–6, Section 2.5)</span>
+      Accuracy  = (TP + TN) / (TP + TN + FP + FN)<br>
+      Precision = TP / (TP + FP)<br>
+      Recall    = TP / (TP + FN)<br>
+      F1        = 2 · Precision · Recall / (Precision + Recall)<br>
+      AUROC     = diện tích dưới đường cong (FPR vs TPR)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Workflow (Fig. 1), Confusion matrix (Fig. 2), SHAP plots MLP/PDD (Fig. 6), ET/SDHD (Fig. 7), HGBC/MDD (Fig. 8) — chưa crop.
+      <span class="caption">Embed base64 là tùy chọn; số đã lấy đầy đủ từ Table 2–3 nên bỏ qua crop hình.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">97.11%</span><span class="label">SDHD — ET accuracy (Table 2)</span></div>
+      <div class="metric"><span class="value">96.42%</span><span class="label">PDD — MLP accuracy (Table 2)</span></div>
+      <div class="metric"><span class="value">94.90%</span><span class="label">MDD — HGBC/LGBM accuracy (Table 3)</span></div>
+      <div class="metric"><span class="value">95.47%</span><span class="label">MDD — Stacking AUROC (Table 3)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>SDHD</td><td>ET ⭐</td><td>split 80:20</td><td><strong>Acc 97.11% · Prec 98.52% · Rec 97.10% · F1 98.10% · AUROC 96.67%</strong></td><td>Table 2 (Section 3.1)</td></tr>
+        <tr><td>SDHD</td><td>GBC</td><td>split 80:20</td><td>Acc 95.20% · Prec 97.05% · Rec 95.65% · F1 96.35% · AUROC 95.82%</td><td>Table 2</td></tr>
+        <tr><td>SDHD</td><td>RF / LGBM / Stacking</td><td>split 80:20</td><td>Acc 96.15% (cả 3)</td><td>Table 2</td></tr>
+        <tr><td>PDD</td><td>MLP ⭐</td><td>split 80:20</td><td><strong>Acc 96.42% · Prec 92.50% · Rec 97.37% · F1 94.87% · AUROC 92.18%</strong></td><td>Table 2 (Section 3.1)</td></tr>
+        <tr><td>PDD</td><td>RF / XGBoost</td><td>split 80:20</td><td>Acc 96.40% (cả 2)</td><td>Table 2</td></tr>
+        <tr><td>PDD</td><td>ET / LRCV</td><td>split 80:20</td><td>AUROC cao nhất 94.53%</td><td>Table 2 (Section 3.1)</td></tr>
+        <tr><td>MDD</td><td>HGBC ⭐</td><td>split 80:20</td><td><strong>Acc 94.90% · Prec 95.87% · Rec 93.00% · F1 94.41% · AUROC 94.92%</strong></td><td>Table 3 (Section 3.1)</td></tr>
+        <tr><td>MDD</td><td>LGBM ⭐</td><td>split 80:20</td><td>Acc 94.90% · Prec 95.87% · Rec 93.00% · F1 94.41% · AUROC 94.54%</td><td>Table 3</td></tr>
+        <tr><td>MDD</td><td>Stacking</td><td>split 80:20</td><td>Acc 93.51% · AUROC 95.47% (cao nhất MDD)</td><td>Table 3 (Section 3.1)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>SHAP — feature quan trọng (định tính)</h3>
+    <table>
+      <thead><tr><th>Dataset / Model</th><th>Feature ảnh hưởng nhất (giảm dần)</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>PDD / MLP</td><td>age → delayed healing → polyphagia → polyuria → irritability</td><td>Fig. 6 (Section 3.2)</td></tr>
+        <tr><td>SDHD / ET</td><td>polyuria → polydipsia → gender → itching → sudden weight loss</td><td>Fig. 7 (Section 3.2)</td></tr>
+        <tr><td>MDD / HGBC</td><td>age → polyuria → delayed healing → polyphagia</td><td>Fig. 8 (Section 3.2)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Tổng hợp (Discussion): <strong>age, polyuria, polyphagia, delayed healing, irritability</strong> = yếu tố nguy cơ cao nhất;
+      gender, itching, alopecia, weakness = nguy cơ thấp. SHAP chỉ là <strong>giá trị Shapley định tính trên plot</strong>, KHÔNG có bảng số → giá trị SHAP cụ thể = UNKNOWN.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro tái lập &amp; phương pháp luận</strong>
+      <ul>
+        <li><strong>KHÔNG K-fold cross-validation</strong> — chỉ một lần split 80:20 → accuracy phương sai cao, dễ lạc quan (bài tự nhận "no validation methods being used", Discussion)</li>
+        <li>Bài <strong>tự thừa nhận overfit SDHD</strong> ("different classifiers provided some overfitted results for SDHD") → 97.11% của ET trên SDHD cần đọc dè dặt</li>
+        <li>Không tuning hyperparameter, không nêu seed / phiên bản lib → khó tái lập chính xác</li>
+        <li><strong>Không có code public</strong> (không repo GitHub/GitLab nào trong bài) → reproducible = low</li>
+        <li>Không external validation; PDD &amp; MDD <strong>không public</strong> → chỉ SDHD (UCI) có thể tái dùng</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li>Số mẫu nhỏ (520 / 558) — bài tự nhận "number of data samples being low"</li>
+        <li>Thiếu đo lường lâm sàng thật (glucose, HbA1c…); chỉ dựa dấu hiệu/triệu chứng tự khai</li>
+        <li>XAI chỉ định tính: SHAP summary/beeswarm plot, không bảng Shapley số, không đo fidelity/stability</li>
+        <li>Tổng mẫu MDD không nêu → UNKNOWN</li>
+        <li>"Clinically adaptable" / web-app mới chỉ là kế hoạch tương lai, CHƯA triển khai thật</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là <strong>tham chiếu</strong> (không phải baseline) cho Layer 4: góc "thích ứng lâm sàng + đặc trưng sớm" bổ sung cho góc deploy/XAI của tasin2022</li>
+        <li>Giá trị nhất: <strong>ý tưởng tự thu dataset thứ 2 (PDD) để giảm overfit</strong> dataset gốc → bài học chống overfit cho đề tài</li>
+        <li>Danh sách feature nguy cơ (age, polyuria, polyphagia, delayed healing) hữu ích cho phần diễn giải lâm sàng của symptom-based dataset (Sylhet)</li>
+        <li>Cảnh báo lặp lại: kết quả 94–97% chỉ là <strong>sàng lọc trên dataset triệu chứng nhỏ</strong>, KHÔNG thay chẩn đoán; cần K-fold CV + external validation khi tái lập</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

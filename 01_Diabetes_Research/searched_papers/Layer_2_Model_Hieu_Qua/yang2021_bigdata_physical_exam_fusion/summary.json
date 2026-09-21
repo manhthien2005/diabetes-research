@@ -1,0 +1,23 @@
+{
+  "paper_id": "yang2021_bigdata_physical_exam_fusion",
+  "layer": 2,
+  "prediction_horizon": "early_detection",
+  "contribution": "Fusion 3 nhóm chỉ số khám sức khỏe (demographics + vital signs + lab values) trên ~1.5 triệu bản ghi EMR thực tế (Luzhou, TQ), chọn 6 feature tối ưu bằng IFS, xây hệ thống cascade screening 3 module (XGBoost model + WoE scorecard + follow-up satisfaction).",
+  "method": "Lọc >10% missing → 5 chỉ số dẫn xuất (WHtR/MSP/MDP/SPD/DPD, Eq.3-6) → MI/ANOVA/GI rank + IFS (16→6 feature: FBG,MSP,age,WHtR,BMI,UGLU) → XGBoost (class-weight) thắng LR/RF → WoE/IV binning + LR scorecard (KS curve đặt ngưỡng). 70/30 holdout + 5-fold CV + independent test.",
+  "best_metric": "AUC 0.8763 (Test) / 0.8713 (5-fold CV) — XGBoost, 6 feature trên EMR Luzhou ~1.5M mẫu (Table 4, §3.2). Abstract ghi 0.8768; Table 7 làm tròn 0.881. Acc 0.7274, Recall 0.7383, Specificity 0.8473 (Table 4). Scorecard AUC 0.8681; follow-up XGBoost(giữ FBG) AUC 0.9632.",
+  "datasets": [
+    "physical-examination-bigdata-luzhou-emr"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "Cùng Layer 2 nhưng KHÁC HẲN baseline PIMA: hasan2020 (ensemble AB+XB, PIMA 768, AUC 0.950) và khanam2021 (NN 88.6% acc, PIMA) dùng dataset benchmark nhỏ + tái lập được; yang2021 dùng EMR private ~2000x lớn hơn → AUC thấp hơn hasan2020 (0.876 vs 0.950) vì noise thật, nhưng vượt ở quy mô + fusion đa nguồn feature + horizon screening + scorecard triển khai online. Metric là AUC (như hasan2020) chứ không phải accuracy (như khanam2021). Trong nội bài, vượt SOTA non-lab Gao 0.635 / Zhou 0.748 (Table 7). Bổ sung bằng chứng scale chứ không thay thế hasan2020 (kém ở tái lập: private + no code).",
+  "gap": "Dataset PRIVATE (xin tác giả TQ) + KHÔNG code repo (chỉ web tool DRSC) → không tái lập trực tiếp; chỉ 1 vùng (Luzhou), không external validation; FBG gần là thành phần chẩn đoán nên có label-leakage nhẹ (FBG đơn biến đã AUC 0.8307, Table 1); recall chỉ 0.7383 (bỏ sót ~26% ca dương, đáng kể cho screening); chỉ single XGBoost, không thử ensemble/stacking/deep tabular; horizon bản chất cross-sectional (feature & nhãn OGTT cùng lần khám) dù bài định khung early detection; interpretability mới ở mức GI importance, chưa SHAP/LIME.",
+  "verdict": "maybe",
+  "verdict_reason": "Highly-cited (191, venue Information Fusion IF cao) + dataset nâng cao quy mô triệu mẫu + chiến lược fusion/IFS/scorecard đáng học, ĐÚNG scope dự đoán ĐTĐ binary trên EHR; nhưng tái lập thấp (private data + no code) nên dùng làm tham chiếu phương pháp/bằng chứng scale, không phải baseline chạy lại.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

@@ -1,0 +1,23 @@
+{
+  "paper_id": "dinh2019_data_driven_nhanes",
+  "layer": 3,
+  "prediction_horizon": "early_detection",
+  "contribution": "Tìm kiếm vét cạn (exhaustive) toàn bộ ~3.900 biến NHANES 1999-2014 (thay vì ~14 biến truyền thống) để phát hiện sớm tiểu đường (Case I đã chẩn đoán + Case II tiền/chưa chẩn đoán) và bệnh tim mạch (CVD); xây Weighted Ensemble Model (WEM) trọng-số-theo-AUC; tách rõ kịch bản có-lab vs chỉ-survey để chứng minh sàng lọc bằng khảo sát khả thi; liệt kê top-24 feature theo information gain cho từng bệnh.",
+  "method": "Lọc biến liên tục mọi cycle (189) -> drop >50% missing (->123, hoặc 168/131 theo timeframe) -> z-score chuẩn hoá + encode categorical -> downsampling cân bằng + split 80/20 -> grid-search song song + 10-fold CV cho LR/SVM/RandomForest/XGBoost -> WEM (trung bình xác suất có trọng số theo AUC) -> feature importance bằng information gain (error-rate) của XGBoost, cắt top-24 khi tụt >2% AUC.",
+  "best_metric": "AUC 0.962 (XGBoost, Diabetes Case I, CÓ lab, 2003-2014, Table 5) — cao nhất bài; AUC 0.957 (XGBoost, Case I, có lab, 1999-2014, Table 5); survey-only Case I tốt nhất XGBoost 0.862 (Table 5); pre-diabetes Case II no-lab WEM 0.737, có-lab XGBoost max 0.834 (Table 5); CVD survey-only WEM 0.831, có-lab WEM 0.839 (Table 6).",
+  "datasets": [
+    "nhanes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Cùng Layer 3 NHANES. Vượt agliata2023 (ANN nông + ensemble, AUC 0.934, 13.687 mẫu hợp nhất NHANES+MIMIC) ở AUC lab-case (0.957-0.962) và quy mô mẫu (~21k), nhưng agliata có calibration + Brier score mà bài này thiếu. Khác deberneh2021 (EHR Hàn Quốc, dự đoán onset Y+1 thật, acc 0.73, không AUC): dinh2019 nhãn đo CÙNG kỳ với feature nên là early-detection kiểu sàng lọc cross-sectional, không phải onset tương lai; bù lại quy mô lớn hơn + báo AUC đầy đủ + survey-only mạnh. Tự báo vượt Yu et al. 2010 (SVM) ~+3% Case I / +0.4% Case II (Conclusion).",
+  "gap": "Nhãn Case I dùng glucose>=126 vừa gán nhãn vừa là biến lab -> nhánh có-lab dễ leakage (giải thích cú nhảy 0.86->0.96); không nêu rõ fit scaler/cân bằng trước hay sau split, CV bao quanh hay trong tiền xử lý; downsampling 50/50 + test cân bằng -> accuracy/F1 không phản ánh prevalence thật (~12% ĐTĐ, ~17% CVD); thiếu calibration/Brier + AUC-PR cho dữ liệu mất cân bằng; chỉ information gain toàn cục, không SHAP/LIME; không code public, không liệt kê lưới hyperparameter; không external validation; lệch số abstract<->Table 5 (84.4% pre-diab không khớp cell nào, max 0.834).",
+  "verdict": "strong",
+  "verdict_reason": "Đạt §7 (447 cite, NHANES public, method + pipeline mô tả đủ chi tiết để tái lập ý tưởng); là baseline NHANES neo của Layer 3 với quy mô ~21k mẫu, survey-only mạnh (AUC 0.862) và nhiều gap rõ (leakage glucose, thiếu calibration/SHAP, downsampling) làm điểm cải tiến trực tiếp cho đề tài; trừ điểm vì không code public và rủi ro leakage nhánh lab chưa kiểm soát.",
+  "analyzed_at": "2026-06-22",
+  "role": "design",
+  "role_note": "Mốc 'bỏ lab thì tụt bao nhiêu' (AUC 0.957 có-lab → 0.737 no-lab) + bằng chứng P1 (không nhắc trọng số khảo sát lần nào).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

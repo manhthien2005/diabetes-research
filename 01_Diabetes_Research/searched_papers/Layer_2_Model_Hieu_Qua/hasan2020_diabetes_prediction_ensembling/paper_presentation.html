@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hasan 2020 — Tóm gọn</title>
+<style>
+  :root {
+    --bg:#f8fafc; --s:#fff; --b:#e2e8f0; --t:#0f172a; --m:#64748b;
+    --p:#2563eb; --ps:#dbeafe; --g:#059669; --gs:#d1fae5;
+    --y:#d97706; --ys:#fef3c7; --r:#dc2626; --rs:#fee2e2;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--t); font-size:13px; line-height:1.45; }
+
+  .page { max-width:1300px; margin:0 auto; padding:14px 16px; }
+
+  /* === TOP BAR === */
+  .topbar {
+    background:linear-gradient(135deg,#1e40af,#3b82f6); color:#fff;
+    border-radius:12px; padding:16px 22px; margin-bottom:12px;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1 { font-size:18px; }
+  .topbar .meta { font-size:11px; opacity:.85; }
+
+  /* === 3-COLUMN DASHBOARD === */
+  .dashboard { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px; }
+  @media (max-width:960px) { .dashboard { grid-template-columns:1fr; } }
+
+  .card {
+    background:var(--s); border:1px solid var(--b); border-radius:10px; padding:14px 16px;
+  }
+  .card h2 { font-size:13px; color:var(--p); border-bottom:2px solid var(--ps); padding-bottom:5px; margin-bottom:8px; }
+  .card h3 { font-size:12px; color:#1e40af; margin:8px 0 4px; }
+
+  table { width:100%; border-collapse:collapse; }
+  th,td { text-align:left; padding:4px 6px; border-bottom:1px solid var(--b); font-size:11.5px; vertical-align:top; }
+  th { background:#f1f5f9; font-weight:600; font-size:10px; color:var(--m); text-transform:uppercase; }
+  td code { background:#f1f5f9; padding:1px 4px; border-radius:3px; font-size:11px; color:var(--p); }
+
+  .tag { display:inline-block; padding:1px 7px; border-radius:3px; font-size:10px; font-weight:700; }
+  .tag-yes { background:var(--gs); color:var(--g); }
+  .tag-no  { background:var(--rs); color:var(--r); }
+  .tag-warn{ background:var(--ys); color:var(--y); }
+
+  .kpi-row { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0; }
+  .kpi { background:var(--ps); border-left:3px solid var(--p); padding:6px 10px; border-radius:5px; flex:1; min-width:80px; }
+  .kpi .v { font-size:18px; font-weight:800; color:var(--p); }
+  .kpi .l { font-size:10px; color:var(--m); }
+  .kpi.gold { background:var(--ys); border-left-color:var(--y); }
+  .kpi.gold .v { color:var(--y); }
+
+  .flow { display:flex; flex-wrap:wrap; gap:4px; align-items:center; font-size:11px; margin:6px 0; }
+  .flow-b { background:var(--ps); padding:3px 8px; border-radius:4px; font-weight:600; color:var(--p); white-space:nowrap; }
+  .flow-b.hl { background:var(--ys); color:#92400e; }
+
+  .highlight { background:var(--gs); border-left:3px solid var(--g); padding:6px 10px; border-radius:4px; font-size:12px; margin:6px 0; }
+  .warn { background:var(--ys); border-left:3px solid var(--y); padding:6px 10px; border-radius:4px; font-size:12px; margin:6px 0; }
+
+  /* === BOTTOM: 2-COL === */
+  .bot { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+  @media (max-width:960px) { .bot { grid-template-columns:1fr; } }
+
+  /* === FULL-WIDTH CARD === */
+  .full-card {
+    background:var(--s); border:1px solid var(--b); border-radius:10px; padding:14px 16px; margin-bottom:10px;
+  }
+  .full-card h2 { font-size:14px; color:var(--p); border-bottom:2px solid var(--ps); padding-bottom:5px; margin-bottom:8px; }
+
+  ul { font-size:12px; padding-left:18px; }
+  li { margin:2px 0; }
+
+  .script { background:#fffbeb; border:1px dashed #fbbf24; border-radius:8px; padding:10px 14px; font-size:12px; }
+  .script h3 { color:#92400e; margin-bottom:4px; }
+  .script p { margin:3px 0; }
+
+  .qna td:first-child { font-weight:600; color:var(--r); width:35%; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div>
+    <h1>Diabetes Prediction Using Ensembling of Different ML Classifiers</h1>
+    <div class="meta">Hasan MK et al. · IEEE Access 2020 · 433 citations · DOI: 10.1109/ACCESS.2020.2989857</div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <span class="tag tag-yes" style="font-size:11px">📊 AUC 0.950</span>
+    <span class="tag tag-warn" style="font-size:11px">🔗 <a href="https://github.com/kamruleee51/Diabetes-Prediction-Using-ML-Classifiers" target="_blank" style="color:#92400e">Code GitHub</a></span>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD 3 CỘT ===== -->
+<div class="dashboard">
+
+  <!-- CỘT 1: TỔNG QUAN + DATASET -->
+  <div class="card">
+    <h2>📋 1. Bài toán</h2>
+    <table>
+      <tr><td>Bài toán</td><td>Binary classification: dự đoán có/không đái tháo đường</td></tr>
+      <tr><td>Dataset</td><td>PIMA Indians Diabetes — 768 nữ, 8 feature, 268 diabetic / 500 non-diabetic</td></tr>
+      <tr><td>Thách thức</td><td>Ít mẫu, nhiều outlier & missing, class imbalance, feature không linearly separable</td></tr>
+      <tr><td>Mục tiêu</td><td>Xây ensemble ML vượt trội hơn model đơn lẻ, dùng AUC làm metric chính</td></tr>
+      <tr><td>Đóng góp</td><td>AUC-weighted soft voting giữa AdaBoost + XGBoost</td></tr>
+    </table>
+
+    <h3>8 Feature của PIMA</h3>
+    <table>
+      <tr><th>Feature</th><th>Ý nghĩa</th><th>Paper giữ?</th></tr>
+      <tr><td>F1 Pregnancies</td><td>Số lần mang thai</td><td><span class="tag tag-yes">✅</span></td></tr>
+      <tr><td>F2 Glucose</td><td>Đường huyết sau 2h</td><td><span class="tag tag-yes">✅</span></td></tr>
+      <tr><td>F3 BloodPressure</td><td>Huyết áp tâm trương</td><td><span class="tag tag-no">❌ Bỏ</span></td></tr>
+      <tr><td>F4 SkinThickness</td><td>Độ dày da</td><td><span class="tag tag-yes">✅</span></td></tr>
+      <tr><td>F5 Insulin</td><td>Insulin sau 2h</td><td><span class="tag tag-yes">✅</span></td></tr>
+      <tr><td>F6 BMI</td><td>Chỉ số khối</td><td><span class="tag tag-yes">✅</span></td></tr>
+      <tr><td>F7 Pedigree</td><td>Yếu tố di truyền</td><td><span class="tag tag-no">❌ Bỏ</span></td></tr>
+      <tr><td>F8 Age</td><td>Tuổi</td><td><span class="tag tag-yes">✅</span></td></tr>
+    </table>
+  </div>
+
+  <!-- CỘT 2: PIPELINE + MODEL -->
+  <div class="card">
+    <h2>🔧 2. Pipeline & Model</h2>
+    <div class="flow" style="font-size:10px">
+      <span class="flow-b">① P: IQR Outlier</span>→
+      <span class="flow-b">② Q: Mean Imputation</span>→
+      <span class="flow-b">③ Corr FS (6 feat)</span>→
+      <span class="flow-b">④ 5-fold CV</span>→
+      <span class="flow-b">⑤ GridSearch (AUC)</span>→
+      <span class="flow-b hl">⑥ Ensemble AB+XB</span>
+    </div>
+
+    <table>
+      <tr><th>Bước</th><th>Kỹ thuật</th><th>Chi tiết</th></tr>
+      <tr><td>P</td><td>IQR Outlier Rejection</td><td>Xóa dòng ngoài [Q1−1.5IQR, Q3+1.5IQR] → 768→636 dòng</td></tr>
+      <tr><td>Q</td><td>Mean Imputation</td><td>Điền giá trị 0 = mean THEO CLASS (diabetic/non-diabetic riêng)</td></tr>
+      <tr><td>FS</td><td>Correlation-based</td><td>Chọn 6 feature tương quan cao nhất với Outcome (bỏ F3, F7)</td></tr>
+      <tr><td>CV</td><td>Stratified 5-fold</td><td>Giữ tỷ lệ class mỗi fold ≈ 35% diabetic</td></tr>
+      <tr><td>Tune</td><td>GridSearchCV</td><td>scoring='roc_auc', inner CV=5, n_jobs=-1</td></tr>
+      <tr><td>Ens</td><td>AUC-weighted Soft Voting</td><td>Trọng số mỗi model = AUC của model đó</td></tr>
+    </table>
+
+    <h3>7 Model đã thử</h3>
+    <table>
+      <tr><th>Model</th><th>AUC</th><th>Vai trò</th></tr>
+      <tr style="background:var(--gs)"><td><strong>AB + XB Ensemble</strong></td><td><strong>0.950</strong></td><td>⭐ BEST — sequential + gradient boosting</td></tr>
+      <tr><td>XGBoost</td><td>0.946 ± .020</td><td>Best SINGLE model</td></tr>
+      <tr><td>MLP (64→16→64→64)</td><td>0.902 ± .020</td><td>Deep baseline — kém vì data nhỏ</td></tr>
+      <tr><td>RF / AB / DT / NB / k-NN</td><td>< 0.94</td><td>Các model còn lại — thấp hơn XGBoost</td></tr>
+    </table>
+
+    <div class="highlight">
+      <strong>Phát hiện chính:</strong> Ensemble 2 model (AB+XB) > ensemble 6 model. Thêm model bagging/probabilistic vào làm "loãng" tín hiệu boosting.
+    </div>
+  </div>
+
+  <!-- CỘT 3: KẾT QUẢ + SO SÁNH -->
+  <div class="card">
+    <h2>🏆 3. Kết quả chính</h2>
+    <div class="kpi-row">
+      <div class="kpi"><span class="v">0.950</span><span class="l">AUC</span></div>
+      <div class="kpi"><span class="v">0.789</span><span class="l">Sensitivity</span></div>
+      <div class="kpi"><span class="v">0.934</span><span class="l">Specificity</span></div>
+      <div class="kpi gold"><span class="v">0.092</span><span class="l">FOR</span></div>
+      <div class="kpi gold"><span class="v">66.23</span><span class="l">DOR</span></div>
+      <div class="kpi"><span class="v">84.2%</span><span class="l">Precision</span></div>
+    </div>
+
+    <table>
+      <tr><th>Metric</th><th>Ý nghĩa</th><th>Giá trị</th></tr>
+      <tr><td>AUC</td><td>Khả năng xếp hạng (metric chính)</td><td><strong>0.950</strong></td></tr>
+      <tr><td>Sensitivity</td><td>Phát hiện đúng người bệnh</td><td>0.789</td></tr>
+      <tr><td>Specificity</td><td>Không báo động giả</td><td>0.934</td></tr>
+      <tr><td>FOR</td><td>Tỷ lệ âm tính giả</td><td>0.092 (thấp = an toàn)</td></tr>
+      <tr><td>DOR</td><td>Hiệu quả chẩn đoán tổng hợp</td><td>66.23 (>20 = very good test)</td></tr>
+    </table>
+
+    <h3>So với SOTA (cùng PIMA)</h3>
+    <table>
+      <tr><th>Paper</th><th>Method</th><th>AUC</th></tr>
+      <tr style="background:var(--gs)"><td><strong>Hasan 2020</strong></td><td><strong>AB+XB AUC-weighted Ensemble</strong></td><td><strong>0.950</strong></td></tr>
+      <tr><td>Maniruzzaman 2018</td><td>LDA/QDA/SVM + outlier</td><td>0.930</td></tr>
+      <tr><td>Sisodia 2018</td><td>DT/SVM/NB</td><td>—</td></tr>
+      <tr><td>Wang 2019</td><td>DMP_MI (missing imputation)</td><td>—</td></tr>
+    </table>
+
+    <div class="warn">
+      <strong>Vượt SOTA +2% AUC</strong> (0.930 → 0.950). Nhưng chỉ trên PIMA, chưa external validation.
+    </div>
+  </div>
+</div>
+
+<!-- ===== DÒNG 2: 2 CỘT ===== -->
+<div class="bot">
+  <!-- ĐIỂM MẠNH / YẾU -->
+  <div class="card">
+    <h2>👍👎 4. Điểm mạnh & Yếu</h2>
+    <table>
+      <tr><th style="width:5%">#</th><th style="width:45%">Điểm mạnh</th><th style="width:45%">Điểm yếu</th></tr>
+      <tr>
+        <td>1</td><td><strong>AUC-weighted ensemble có nguyên lý</strong><br>Trọng số dựa trên hiệu năng thực tế</td>
+        <td><strong>Chỉ 1 dataset PIMA (768 mẫu)</strong><br>Không biết hiệu quả trên dân số khác</td>
+      </tr>
+      <tr>
+        <td>2</td><td><strong>So sánh toàn diện</strong><br>6 preprocessing × 3 FS × 7 model</td>
+        <td><strong>Preprocessing TRƯỚC CV → leakage risk</strong><br>Nên đưa vào trong CV loop</td>
+      </tr>
+      <tr>
+        <td>3</td><td><strong>Dùng AUC làm metric chính</strong><br>Phù hợp imbalanced data</td>
+        <td><strong>Không xử lý class imbalance</strong><br>Không có SMOTE/ADASYN</td>
+      </tr>
+      <tr>
+        <td>4</td><td><strong>5 metric y khoa đầy đủ</strong><br>Sn, Sp, FOR, DOR, AUC</td>
+        <td><strong>Không có XAI</strong><br>Bác sĩ không hiểu vì sao model quyết định</td>
+      </tr>
+      <tr>
+        <td>5</td><td><strong>Code public + 433 citations</strong><br>Tái lập được, cộng đồng công nhận</td>
+        <td><strong>Chưa deployment lâm sàng</strong><br>Mới chỉ là notebook nghiên cứu</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- VAI TRÒ NCKH + SCRIPT -->
+  <div class="card">
+    <h2>🎯 5. Vai trò trong NCKH của mình</h2>
+    <table style="margin-bottom:8px">
+      <tr><th>Layer</th><th>Nhiệm vụ</th><th>Học được gì từ Hasan 2020?</th></tr>
+      <tr><td>1 — Pipeline</td><td>Xây pipeline cơ bản</td><td>Preprocessing P+Q là chuẩn, correlation FS > PCA</td></tr>
+      <tr style="background:var(--ps)"><td><strong>2 — Model</strong></td><td><strong>⭐ Paper này</strong></td><td><strong>AB+XB ensemble + AUC-weighted voting + GridSearchCV</strong></td></tr>
+      <tr><td>3 — EHR</td><td>Mở rộng dataset</td><td>PIMA không đủ → cần NHANES/MIMIC, external validation</td></tr>
+      <tr><td>4 — XAI</td><td>Giải thích + deploy</td><td>Thiếu XAI → bổ sung SHAP/LIME. Cần web app</td></tr>
+    </table>
+
+    <div class="highlight">
+      <strong>Hướng đóng góp mới:</strong> Kết hợp AB+XB (Hasan) + ADASYN (tasin2022) + SHAP (tasin2022) + NHANES dataset = pipeline vượt trội hơn từng paper riêng lẻ.
+    </div>
+
+    <div class="script">
+      <h3>🎤 Script 3 phút cho thầy</h3>
+      <p><strong>0:00</strong> — "Em trình bày paper Hasan 2020 trên IEEE Access về dự đoán đái tháo đường bằng ensemble ML."</p>
+      <p><strong>0:30</strong> — "Bài toán: dự đoán diabetes trên PIMA — 768 mẫu, 8 feature, bị outlier và missing value. Mục tiêu: ensemble vượt trội model đơn."</p>
+      <p><strong>1:00</strong> — "Pipeline 5 bước: IQR outlier → mean imputation theo class → correlation FS → 5-fold CV + grid search AUC → AUC-weighted soft voting AB+XB."</p>
+      <p><strong>1:45</strong> — "Điểm mới: trọng số ensemble = AUC từng model, khắc phục accuracy không tin cậy với imbalanced data. Ensemble 2 boosting model > 6 model."</p>
+      <p><strong>2:15</strong> — "Kết quả: AUC 0.950, Sn 0.789, Sp 0.934, DOR 66.23 — vượt SOTA 2% AUC. Code public."</p>
+      <p><strong>2:45</strong> — "Trong đề tài em, paper này thuộc Layer 2. Em sẽ kết hợp với ADASYN + SHAP, mở rộng sang dataset lớn hơn."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DÒNG 3: Q&A ===== -->
+<div class="full-card">
+  <h2>❓ 6. Câu hỏi thầy có thể hỏi & Cách trả lời</h2>
+  <table class="qna">
+    <tr><td>"Vì sao AUC mà không phải accuracy?"</td><td>PIMA imbalance (268/500), accuracy cao nhưng sensitivity thấp — model đoán tất cả là non-diabetic vẫn đạt 65% accuracy. AUC đánh giá khả năng xếp hạng, không phụ thuộc threshold.</td></tr>
+    <tr><td>"Vì sao AB+XB tốt hơn cả 6 model?"</td><td>AdaBoost tập trung vào mẫu khó (sequential), XGBoost tối ưu loss mạnh (gradient). Hai cơ chế bổ sung nhau. Thêm model bagging/probabilistic gây nhiễu.</td></tr>
+    <tr><td>"PIMA nhỏ quá, kết quả có tin được không?"</td><td>Đây là hạn chế chính. Paper báo std ±0.020 cho thấy độ dao động thấp. Nhưng cần external validation — đó là việc em làm ở Layer 3 với NHANES.</td></tr>
+    <tr><td>"Vì sao correlation FS tốt hơn PCA?"</td><td>PCA là unsupervised — giữ component có variance cao, nhưng variance không đảm bảo phân biệt class. Correlation dùng trực tiếp tương quan với label.</td></tr>
+    <tr><td>"Preprocessing có bị leakage không?"</td><td>Code gốc làm preprocessing TRƯỚC CV — có thể leakage. Em sẽ sửa: đưa vào trong CV loop khi tái lập.</td></tr>
+    <tr><td>"MLP kém XGBoost, vậy deep learning có cần?"</td><td>Với data nhỏ như PIMA thì không. Nhưng với dataset lớn ở Layer 3 (NHANES hàng nghìn mẫu), deep learning phát huy. Bài học: chọn model theo data size.</td></tr>
+  </table>
+</div>
+
+</div>
+</body>
+</html>

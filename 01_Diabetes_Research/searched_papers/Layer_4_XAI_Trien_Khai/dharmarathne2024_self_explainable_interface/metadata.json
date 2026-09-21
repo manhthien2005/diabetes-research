@@ -1,0 +1,69 @@
+{
+  "paper_id": "dharmarathne2024_self_explainable_interface",
+  "title": "A novel machine learning approach for diagnosing diabetes with a self-explainable interface",
+  "authors": [
+    "Gangani Dharmarathne",
+    "Thilini N. Jayasinghe",
+    "Madhusha Bogahawaththa",
+    "D.P.P. Meddage",
+    "Upaka Rathnayake"
+  ],
+  "year": 2024,
+  "venue": "Healthcare Analytics",
+  "doi": "10.1016/j.health.2024.100301",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 91,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://doi.org/10.1016/j.health.2024.100301",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "pima-indians-diabetes"
+  ],
+  "dataset_slugs": [
+    "pima-indians-diabetes"
+  ],
+  "method_slugs": [
+    "shap",
+    "self-explainable-interface",
+    "tkinter-gui",
+    "decision-tree",
+    "knn",
+    "svc",
+    "xgboost",
+    "explainable-ai",
+    "local-explanation"
+  ],
+  "layer": 4,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 2,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 13,
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "2026-06-20: Unpaywall/S2/OpenAlex/CORE/EuropePMC đều chỉ trỏ về DOI landing (gold OA nhưng không có PDF trực tiếp/repository). ScienceDirect pdfft bị Akamai chặn 403. Không có trên PMC. → Anh đã tải tay source.pdf (13 trang), đã trích extracted.md và phân tích xong.",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "scope_note": "LÀM GIÀU LAYER 4 (XAI/triển khai): giao diện 'self-explainable' đầu tiên cho chẩn đoán ĐTĐ — gắn SHAP vào DT/KNN/SVC/XGB rồi nhúng XGB + SHAP local explainer vào app desktop Tkinter để người dùng cuối tự nhập chỉ số, nhận chẩn đoán kèm giải thích trực quan (thanh đỏ/xanh). Đúng trọng tâm Trien_Khai (đưa giải thích tới bác sĩ/bệnh nhân). Healthcare Analytics 2024, 89 cite — RẤT CAO cho 2024 (rising-star). Cùng tasin2022 là 2 bài Layer 4 thực sự triển khai giải thích tới end-user.",
+  "corrections": "(1) Dataset: metadata cũ ghi 'public-diabetes-dataset' / dataset_slugs 'uncertain' → XÁC NHẬN là PIMA Indians Diabetes Database (768 mẫu, 8 feature, link Kaggle mathchi/diabetes-data-set trong Section 1, Table 1). Sửa datasets_mentioned + dataset_slugs thành 'pima-indians-diabetes'. (2) Interface: gợi ý ban đầu nghi web/Streamlit → THỰC TẾ là app DESKTOP Tkinter (Section 5.3, ref [77]) — đã thêm method_slug 'tkinter-gui', bỏ ý web. (3) horizon_uncertain: true → false; horizon = cross_sectional (PIMA chẩn đoán tại-thời-điểm, không follow-up, nhãn Outcome đồng thời feature). (4) code: KHÔNG có repo public; 'Data will be made available on request' → code_available=false, code_url=null (giữ). (5) pdf_status/source_pdf/page_count cập nhật sau khi tải tay source.pdf (13 trang). (6) reproducibility hạ 3→2: không code, không K-fold, thiếu chi tiết tiền xử lý + không gian random search → tái lập low. (7) [2026-06-22 re-analyze] Headline metric XGB acc 0.80 train / 0.77 test, AUC 0.856 train / 0.82 test ĐÃ ĐỐI CHIẾU TRỰC TIẾP source.pdf (dòng XGB Table 2 + câu 'AUC of 0.856 for training and 0.82 for testing' Section 4.1) — khớp extracted.md, KHÔNG lệch OCR; 4 model acc test sít sao 0.76–0.77, XGB thắng nhờ AUC cao nhất + FN thấp nhất (13 test/41 train) chứ không phải chênh accuracy.",
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2024-01-21",
+    "age_years": 2.5,
+    "citations": 91,
+    "threshold": ">=30 (bài 1-3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

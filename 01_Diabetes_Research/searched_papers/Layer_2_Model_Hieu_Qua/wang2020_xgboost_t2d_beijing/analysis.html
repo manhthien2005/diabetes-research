@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction of Type 2 Diabetes Risk Based on the XGBoost Model — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 28px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid var(--accent-soft); border-left: 5px solid var(--accent); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(124,58,237,0.06); }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+  .winner-row td { background: var(--success-soft); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Prediction of Type 2 Diabetes Risk and Its Effect Evaluation Based on the XGBoost Model</h1>
+    <div class="meta">
+      <span>📅 <strong>2020</strong></span>
+      <span>📰 Healthcare (MDPI)</span>
+      <span>📚 <strong>140</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.3390/healthcare8030247" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (khảo sát riêng)</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 Beijing Xicheng Health Survey — khảo sát questionnaire riêng (n=368 hợp lệ), <strong>không public</strong>, không có link tải</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Đưa <strong>XGBoost</strong> (boosting) vào dự đoán nguy cơ T2D trên dữ liệu khảo sát lối sống thực địa Bắc Kinh, vượt SVM/RF/KNN cả Accuracy lẫn AUC.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>AUC 0.9182 · Accuracy 0.8909</strong> (XGBoost, 10-fold CV, Table 6).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Questionnaire → mã hóa nhị phân (binary feature vector) → <strong>XGBoost</strong> tuning bằng GridSearchCV → 10-fold CV; so với SVM/RF/KNN.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Khác <code>hasan2020</code> &amp; <code>khanam2021</code> (đều PIMA): bài này dùng <strong>dữ liệu khảo sát thật</strong> chứ không phải benchmark, nhưng <strong>nhỏ (n=368)</strong>, <strong>không code</strong>, không báo mean±std rõ ràng cho từng fold.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 2
+    </h2>
+    <p class="lead">
+      Nhóm tác giả (China Agricultural University) khảo sát <strong>380 người trung niên &amp; cao tuổi</strong> ở quận Xicheng, Bắc Kinh
+      (giữ lại <strong>368 phiếu hợp lệ</strong> sau làm sạch — Section 2.1, 3.1), thu thập thông tin cá nhân, thói quen ăn uống,
+      vận động và tiền sử gia đình. Nhãn bệnh xác định theo chuẩn WHO: <strong>FPG ≥ 7.0 mmol/L</strong> là đái tháo đường (Section 2.1).
+      Toàn bộ câu trả lời được <strong>mã hóa thành vector nhị phân</strong> (binary feature vector), rồi đưa vào <strong>XGBoost</strong>
+      và so sánh với SVM, Random Forest, KNN bằng 10-fold cross-validation. Kết luận: XGBoost cho
+      <strong>AUC 0.9182 · Accuracy 0.8909</strong> — tốt nhất trong 4 mô hình (Table 6, Section 3.3).
+    </p>
+    <h3>Vì sao là Layer 2 (Model hiệu quả)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm là MODEL</td><td>Mục tiêu chính là chứng minh XGBoost (boosting) vượt các classifier cổ điển — đúng tinh thần Layer 2</td></tr>
+      <tr><td>✔ So sánh nhiều mô hình</td><td>XGBoost vs SVM / RF / KNN, có bảng metric đầy đủ (Table 6)</td></tr>
+      <tr><td>✔ Có tuning &amp; CV</td><td>GridSearchCV cho 4 model (Tables 1–4) + 10-fold CV — quy trình đánh giá chuẩn</td></tr>
+      <tr><td>✘ Chưa phải Layer 1</td><td>Không phải pipeline benchmark PIMA chuẩn; tiền xử lý mỏng (chỉ mã hóa nhị phân, không cân bằng lớp)</td></tr>
+      <tr><td>✘ Chưa phải Layer 3</td><td>Dữ liệu cross-sectional 1 thời điểm, KHÔNG follow-up/longitudinal/EHR</td></tr>
+      <tr><td>✘ Chưa phải Layer 4</td><td>Không XAI (tác giả thừa nhận tính "black box"), không deployment</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>Python 3.8</code></td><td>Ngôn ngữ triển khai (Section 2.3)</td><td>Hệ sinh thái ML đầy đủ</td><td>—</td></tr>
+        <tr><td><code>scikit-learn</code></td><td>Thư viện hiện thực XGBoost + baseline (Section 2.3)</td><td>API thống nhất, dễ tune</td><td>XGBoost qua sklearn-wrapper hạn chế vài tham số gốc</td></tr>
+        <tr><td><code>GridSearchCV</code></td><td>Tự dò siêu tham số cho cả 4 model (Section 2.5, Tables 1–4)</td><td>Tìm tham số tối ưu tự động</td><td>Tác giả tự nhận chỉ hợp dataset nhỏ; chậm khi data lớn</td></tr>
+        <tr><td><code>Binary coding (one-hot)</code></td><td>Biến câu hỏi questionnaire thành feature vector (Section 2.2)</td><td>Đơn giản, hợp dữ liệu phân loại</td><td>Mất thông tin thứ tự tần suất; vector thưa, chiều cao</td></tr>
+        <tr><td><code>10-fold CV</code></td><td>Đánh giá hiệu năng, lặp 10 lần lấy mean + 95% CI (Section 2, 3.2)</td><td>Tận dụng tối đa dữ liệu nhỏ</td><td>Không nêu rõ encoding/tiền xử lý có nằm trong fold không</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Lưu ý: bài <strong>không</strong> dùng kỹ thuật cân bằng lớp (SMOTE/oversampling) dù dữ liệu mất cân bằng 108 dương / 260 âm (Section 3.2).</p>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUC</strong> (Table 6). ⭐ = model tốt nhất paper chọn.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUC</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr class="winner-row"><td>1</td><td><code>XGBoost</code> ⭐</td><td>Model đề xuất (boosting CART)</td><td><strong>0.9182</strong></td><td>Acc &amp; AUC cao nhất; regularization chống overfit với mẫu nhỏ; xử lý missing/sparse tốt</td><td>"Black box"; pre-sorting chậm khi data lớn; không code công bố</td></tr>
+        <tr><td>2</td><td><code>SVM</code> (RBF)</td><td>Baseline cổ điển</td><td>0.8550</td><td>Tốt nhất nhóm baseline (Acc 0.8158, MCC 0.5410, Prec 0.8571 — cao nhất toàn bảng)</td><td>Thua XGBoost mọi mặt trừ Precision</td></tr>
+        <tr><td>3</td><td><code>Random Forest</code></td><td>Baseline bagging ensemble</td><td>0.7167</td><td>Ensemble, ổn định</td><td>n_tree=20 quá ít; Spec thấp 0.4545; kém với data nhỏ/ít chiều</td></tr>
+        <tr><td>4</td><td><code>KNN</code> (K=5)</td><td>Baseline khoảng cách</td><td>0.6397</td><td>Sens cao nhất 0.9630 (do thiên về đoán dương)</td><td>Spec sụp đổ 0.1818; bất lực với lớp thiểu số mất cân bằng</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Beijing Xicheng Health Survey</strong><br><span style="color:var(--muted);font-size:12px">(khảo sát riêng của tác giả)</span></td>
+          <td>380 phát ra → <strong>368 hợp lệ</strong><br><span style="color:var(--muted);font-size:12px">108 dương / 260 âm (mất cân bằng)</span></td>
+          <td>UNKNOWN<br><span style="color:var(--muted);font-size:12px">(paper không nêu tổng số chiều vector nhị phân cuối)</span></td>
+          <td>Questionnaire convenient + snowball sampling, người 45+ tuổi; 4 nhóm: thông tin cá nhân, thói quen ăn uống, vận động, tiền sử gia đình. Nhãn: FPG ≥ 7.0 mmol/L (chuẩn WHO)</td>
+          <td>Không public (dữ liệu khảo sát riêng, không link)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Nguồn số mẫu: Section 2.1 &amp; 3.1 (368 hợp lệ); phân bố lớp: Section 3.2. Bảng 5 (Table 5) liệt kê chi tiết phân bố từng câu hỏi nhưng <strong>không</strong> tổng hợp ra số chiều feature cuối.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Thu thập dữ liệu</td><td>Questionnaire convenient + snowball sampling, Xicheng (Section 2.1)</td><td>380 phiếu</td></tr>
+        <tr><td>2</td><td>Làm sạch</td><td>Loại 12 phiếu thiếu/mâu thuẫn rõ ràng (Section 3.1)</td><td>368 phiếu hợp lệ</td></tr>
+        <tr><td>3</td><td>Gán nhãn</td><td>FPG ≥ 7.0 mmol/L = dương tính, chuẩn WHO (Section 2.1)</td><td>108 dương / 260 âm</td></tr>
+        <tr><td>4</td><td>Feature encoding</td><td>Mã hóa nhị phân: yes/no → 1/0; câu 7 lựa chọn → one-hot (Section 2.2)</td><td>Vector nhị phân</td></tr>
+        <tr><td>5</td><td>Tuning</td><td>GridSearchCV cho XGBoost/SVM/RF/KNN (Section 2.5, Tables 1–4)</td><td>Bộ siêu tham số tối ưu</td></tr>
+        <tr><td>6</td><td>Train + đánh giá</td><td>10-fold CV, lặp lại 10 lần, lấy mean + 95% CI (Section 3.2)</td><td>Acc/Sens/Spec/Prec/MCC/AUC</td></tr>
+        <tr><td>7</td><td>Chọn model + xuất xác suất</td><td>XGBoost cho ra disease risk index từng mẫu (Section 3.4)</td><td>Xác suất nguy cơ</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Siêu tham số chính (Table 1 — XGBoost)</h3>
+    <div class="formula">
+      <span class="label">XGBoost — Table 1 (chép nguyên văn)</span>
+      gamma = 0.1 &nbsp;|&nbsp; max_depth = 0.5 (⚠ giá trị bất thường, xem mục Lưu ý) &nbsp;|&nbsp; lambda = 3.0<br>
+      subsample = 0.7 &nbsp;|&nbsp; silent = 1 &nbsp;|&nbsp; eta = 0.1 &nbsp;|&nbsp; seed = 1000
+    </div>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">XGBoost — mô hình cộng (additive, Section 2.3)</span>
+      ŷ_i = Σ_{t=1..K} f_t(x_i),&nbsp; f_t ∈ F (không gian cây hồi quy CART)<br>
+      <span style="color:#94a3b8">Mỗi cây mới fit phần dư (residual) của cây trước.</span>
+    </div>
+    <div class="formula">
+      <span class="label">Hàm mục tiêu (Section 2.3)</span>
+      Obj = Σ l(y_i, ŷ_i) + Σ Ω(f_t)<br>
+      <span style="color:#94a3b8">l = loss; Ω = regularization (chống overfit). Khai triển Taylor bậc 2 dùng g_i (đạo hàm 1), h_i (đạo hàm 2).</span>
+    </div>
+    <div class="formula">
+      <span class="label">Chỉ số đánh giá (Section 2.6)</span>
+      Acc = (TP+TN)/(TP+TN+FP+FN)<br>
+      Sens = TP/(TP+FN) &nbsp;|&nbsp; Spec = TN/(TN+FP) &nbsp;|&nbsp; Prec = TP/(TP+FP)<br>
+      MCC = (TP·TN − FP·FN) / √((TP+FP)(TP+FN)(TN+FP)(TN+FN))
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Figure 1 (workflow toàn bài) &amp; Figure 2 (ROC curves XGBoost/SVM/RF/KNN, panel A–D) trong PDF gốc.
+      <span class="caption">Chưa crop embed base64 — ưu tiên số liệu chính xác từ Table 6. Xem trực tiếp source.pdf Figure 2 cho ROC.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.9182</span><span class="label">XGBoost AUC (Table 6)</span></div>
+      <div class="metric"><span class="value">0.8909</span><span class="label">XGBoost Accuracy (Table 6)</span></div>
+      <div class="metric"><span class="value">0.9388</span><span class="label">XGBoost Sensitivity (Table 6)</span></div>
+      <div class="metric"><span class="value">0.6589</span><span class="label">XGBoost MCC (Table 6)</span></div>
+      <div class="metric"><span class="value">0.9492</span><span class="label">XGBoost training Acc (Section 3.3.1)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>Beijing Xicheng</td><td><strong>XGBoost</strong></td><td>10-fold CV (test)</td><td><strong>Acc 0.8909 · Sens 0.9388 · Spec 0.7571 · Prec 0.7944 · MCC 0.6589 · AUC 0.9182</strong></td><td>Table 6</td></tr>
+        <tr><td>Beijing Xicheng</td><td>SVM (RBF)</td><td>10-fold CV (test)</td><td>Acc 0.8158 · Sens 0.8889 · Spec 0.6364 · Prec 0.8571 · MCC 0.5410 · AUC 0.8550</td><td>Table 6</td></tr>
+        <tr><td>Beijing Xicheng</td><td>Random Forest</td><td>10-fold CV (test)</td><td>Acc 0.7895 · Sens 0.9259 · Spec 0.4545 · Prec 0.8065 · MCC 0.4451 · AUC 0.7167</td><td>Table 6</td></tr>
+        <tr><td>Beijing Xicheng</td><td>KNN (K=5)</td><td>10-fold CV (test)</td><td>Acc 0.7368 · Sens 0.9630 · Spec 0.1818 · Prec 0.7429 · MCC 0.2548 · AUC 0.6397</td><td>Table 6</td></tr>
+        <tr><td>Beijing Xicheng</td><td>XGBoost</td><td>Training set</td><td>Accuracy 0.9492</td><td>Section 3.3.1</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Table 6 ghi mỗi ô dạng "giá trị trung bình ± khoảng tin cậy 95%" (ví dụ XGBoost AUC = 0.9182 ± 0.0130). ROC curve 4 model: Figure 2 (A–D). Tác giả nhấn mạnh XGBoost cao nhất cả Accuracy lẫn AUC; KNN có Sens cao nhất (0.9630) nhưng Spec sụp đổ 0.1818 do dữ liệu mất cân bằng (Section 4).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro &amp; điểm khó tái lập</strong>
+      <ul>
+        <li><strong>Không có code công bố</strong> (metadata <code>code_url = null</code>) → phải dựng lại từ mô tả.</li>
+        <li><strong>Table 1 ghi <code>max_depth = 0.5</code></strong> — bất thường cho XGBoost (max_depth phải là số nguyên ≥1). Có thể lỗi in/đánh máy của paper; chép nguyên văn, KHÔNG sửa, nhưng cần đối chiếu source.pdf khi tái lập.</li>
+        <li>Dữ liệu <strong>mất cân bằng 108/260</strong> nhưng KHÔNG dùng cân bằng lớp → Accuracy lạc quan; MCC (0.6589) phản ánh trung thực hơn.</li>
+        <li>Không nêu rõ feature encoding/tiền xử lý có nằm trong từng CV fold hay không → rủi ro leakage nhẹ khi tái lập.</li>
+        <li>Abstract nhắc "380" còn thân bài chốt "368 hợp lệ" — dùng <strong>368</strong> làm số mẫu phân tích.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper</strong>
+      <ul>
+        <li><strong>Mẫu rất nhỏ (n=368)</strong>, một quận của Bắc Kinh, người 45+ → khó khái quát; tác giả tự nhận cần mở rộng cỡ mẫu.</li>
+        <li>Feature là <strong>questionnaire lối sống tự khai</strong> (recall bias), không có chỉ số sinh hóa ngoài FPG dùng làm nhãn.</li>
+        <li>Cross-sectional 1 thời điểm — tác giả thừa nhận "cross-sectional data has inherent defects", cần nghiên cứu tiến cứu/hồi cứu tương lai (Section 4).</li>
+        <li>Không XAI (thừa nhận "black box"); không deployment; không external validation.</li>
+        <li>Dữ liệu không public → không thể chạy lại trên đúng tập gốc.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Là bằng chứng Layer 2 rằng <strong>boosting (XGBoost) &gt; SVM/RF/KNN</strong> ngay cả trên dữ liệu nhỏ, mất cân bằng — bổ sung cho <code>hasan2020</code>, <code>khanam2021</code> (vốn chỉ trên PIMA).</li>
+        <li>Điểm khác biệt giá trị: dùng <strong>dữ liệu khảo sát lối sống thật của Trung Quốc</strong>, không phải benchmark — mở hướng feature lifestyle.</li>
+        <li>Gap để cải tiến cho đề tài: thêm <strong>cân bằng lớp</strong> (SMOTE), <strong>XAI (SHAP)</strong>, báo cáo <strong>mean±std từng fold</strong> rõ ràng, và external validation.</li>
+        <li>Con số AUC 0.9182 chỉ là sàng lọc trên mẫu nhỏ — KHÔNG dùng để khẳng định vượt trội tổng quát so với các paper PIMA (khác dataset, khác độ khó).</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

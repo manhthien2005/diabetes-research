@@ -1,0 +1,23 @@
+{
+  "paper_id": "dharmarathne2024_self_explainable_interface",
+  "layer": 4,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Xây giao diện tự-giải-thích (self-explainable interface) ĐẦU TIÊN cho chẩn đoán ĐTĐ: train DT/KNN/SVC/XGB trên PIMA, chọn XGB, rồi nhúng XGB + SHAP local explainer vào app desktop Tkinter để người dùng cuối tự nhập chỉ số, nhận chẩn đoán kèm giải thích trực quan (thanh đỏ tăng / xanh giảm nguy cơ).",
+  "method": "Tiền xử lý PIMA → split 70/30 (KHÔNG K-fold) → Random Search tuning → train DT/KNN/SVC/XGB (scikit-learn) → chọn XGB (Acc/AUC/FN tốt nhất) → SHAP global (summary/average/dependence/segment) + local (force plot 4 ca) → đóng gói XGB + SHAP local vào giao diện Tkinter.",
+  "best_metric": "XGB trên PIMA: Accuracy 0.80 train / 0.77 test, AUC 0.856 train / 0.82 test, Recall 0.76/0.73, F1 0.68/0.65, FPR 0.20 (Table 2 + Section 4.1, Fig. 3; đã đối chiếu source.pdf — khớp, không lệch OCR); FN ít nhất 41 train / 13 test.",
+  "datasets": [
+    "pima-indians-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "vs tasin2022 (baseline Layer 4 đã chọn, Acc 81%/AUC 0.84, web+Android, code public): dharmarathne accuracy THẤP HƠN (77 vs 81 test) và KHÔNG code public, nhưng đóng góp riêng là interface tự-giải-thích nhúng SHAP LOCAL tới người dùng cuối (tasin chỉ deploy form dự đoán, SHAP/LIME phân tích offline). vs ahmed2024 (LR 86% nhưng chỉ so sánh LIME/SHAP định tính, không deploy, không CV): dharmarathne mô hình nhỉnh hơn về thiết kế (XGB tuned, AUC báo cáo, có sản phẩm) dù acc thấp hơn. Cùng tasin2022 là 2 bài Layer 4 thực sự triển khai giải thích tới end-user — bù nhau về 'cách đưa XAI vào sản phẩm'.",
+  "gap": "Dataset cơ bản PIMA (768 mẫu, cross-sectional, nhiều giá trị 0 nghi missing, đang hạ ưu tiên); accuracy XGB 77% khiêm tốn (thấp hơn nhiều bài PIMA 78–86% và baseline tasin 81%); KHÔNG K-fold CV (chỉ split 70/30); không xử lý/đo class imbalance; interface chỉ là app desktop Tkinter cục bộ (không web), chưa kiểm thử người dùng thực; không code public; SHAP local chỉ định tính 4 ca, không bảng giá trị Shapley & không đo fidelity/stability; chi tiết tiền xử lý + không gian random search thiếu.",
+  "verdict": "maybe",
+  "verdict_reason": "Mẫu thiết kế triển khai giá trị (interface tự-giải-thích đầu tiên nhúng SHAP local tới end-user, 91 cite/2024 rất cao, đúng trọng tâm Layer 4) nhưng modeling mỏng (XGB 77% PIMA, không CV, không code, app Tkinter cục bộ, SHAP local định tính) → giữ làm tham chiếu thiết kế triển khai XAI, KHÔNG dùng làm baseline mô hình/dataset.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

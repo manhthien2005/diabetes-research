@@ -1,0 +1,24 @@
+{
+  "paper_id": "tasin2022_diabetes_prediction_explainable",
+  "layer": 4,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Hệ thống dự đoán ĐTĐ end-to-end: tự thu thập dataset RTML mới (203 nữ Bangladesh), bù feature insulin còn thiếu bằng XGB regressor bán giám sát học từ PIMA, gộp PIMA+RTML (877 mẫu, bỏ Diabetes Pedigree Function theo Mutual Information), cân bằng SMOTE/ADASYN, so 9 classifier, giải thích bằng SHAP+LIME, rồi deploy thật ra website + app Android. Code + dataset public.",
+  "method": "Mean impute → Mutual Information feature selection (bỏ DPF) → semi-supervised XGB regressor bù insulin (RMSE 0.36, Table 3) → merge → holdout 80/20 stratified → SMOTE & ADASYN (chỉ train) → Min-Max → GridSearchCV cho 9 model (DT, LR, KNN, RF, SVM, AdaBoost, XGBoost, Voting, Bagging) → chọn XGBoost+ADASYN → domain adaptation PIMA→RTML → SHAP (global) + LIME (local) → deploy web (HTML/CSS+Spyder) + Android (Java+Heroku+pickle).",
+  "best_metric": "XGBoost+ADASYN trên merged dataset: Accuracy 81%, Precision/Recall/F1 0.81, AUC 0.84 (Table 5, Fig. 7-8; nhất quán với abstract+conclusion). Domain adaptation train PIMA→test RTML: Acc 96%, F1 0.95 (Table 6). LƯU Ý: Table 10 in 88.5% cho 'This work' — lệch nội tại trong bài (đã đối chiếu source.pdf, không phải lỗi OCR); dùng 81% làm headline.",
+  "datasets": [
+    "pima-indians-diabetes",
+    "rtml-bangladesh"
+  ],
+  "has_code": true,
+  "code_url": "https://github.com/tansin-nabil/Diabetes-Prediction-Using-Machine-Learning",
+  "reproducible": "medium",
+  "vs_baseline": "Bao trùm hơn các peer cùng Layer 4: là bài DUY NHẤT có đủ dataset mới + XAI (SHAP+LIME) + deploy web/Android + code public. vs kaliappan2024 (đa-dataset acc 0.99 nghi augment, không CV, không deploy, không code) và xu2025 (XAI label-noise, không báo acc/AUC, không code): tasin thấp về acc nhưng vững hơn về tính sản phẩm + AUC + code. vs dharmarathne2024 (interface tự-giải-thích Tkinter cục bộ, XGB 77% PIMA, không code): tasin cao hơn (81% vs 77%), có web/Android thực và code public. So với hasan2020 (AUC 0.95 trên PIMA thuần): AUC 0.84 thấp hơn nhưng đo trên dataset gộp lớn hơn + có XAI/deploy mà hasan thiếu.",
+  "gap": "Chỉ holdout 80/20, KHÔNG K-fold CV → ước lượng acc/AUC phương sai cao; Mutual Information chấm trên toàn dataset → rò rỉ nhẹ; insulin RTML là giá trị suy ra (không đo thật, sai số tự thừa nhận ~1.33-2.33% acc); domain adaptation 96% trên test RTML rất nhỏ → dễ lạc quan; SHAP/LIME chỉ định tính (Fig. 9-10), không bảng Shapley số, không đo fidelity/stability; số mẫu gộp lệch (877 vs 971) và acc lệch (81% vs 88.5% ở Table 10) không được giải thích; Heroku free đã ngừng → app deploy có thể chết.",
+  "verdict": "strong",
+  "verdict_reason": "Baseline gốc của Layer 4 (320 cite): bài duy nhất có đủ dataset mới + XAI (SHAP+LIME) + deploy web/Android + code public, đúng trọng tâm layer; điểm yếu chính là không K-fold CV, XAI định tính và vài số liệu lệch nội tại — nhưng vẫn xứng đáng làm chuẩn so chiếu.",
+  "analyzed_at": "2026-06-22",
+  "role": "later",
+  "role_note": "Khuôn mẫu code + SHAP + LIME + deploy — chỉ dùng nếu Tầng 2 (web demo cho bác sĩ) được làm.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

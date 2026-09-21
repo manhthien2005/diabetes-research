@@ -1,0 +1,69 @@
+{
+  "paper_id": "olisah2022_preprocessing_ml_perspective",
+  "title": "Diabetes mellitus prediction and diagnosis from a data preprocessing and machine learning perspective",
+  "authors": [
+    "Chollette C. Olisah",
+    "Lyndon Smith",
+    "Melvyn Smith"
+  ],
+  "year": 2022,
+  "venue": "Computer Methods and Programs in Biomedicine",
+  "doi": "10.1016/j.cmpb.2022.106773",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 243,
+  "citations_secondary": 209,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": null,
+  "license": null,
+  "code_url": "https://github.com/chollette/2GDNN-for-Diabetes-Prediction-and-Diagnosis",
+  "datasets_mentioned": [
+    "pima",
+    "laboratory-medical-city-hospital"
+  ],
+  "dataset_slugs": [
+    "pima-indians-diabetes",
+    "lmch-medical-city-hospital"
+  ],
+  "method_slugs": [
+    "data-preprocessing",
+    "spearman-correlation",
+    "polynomial-regression-imputation",
+    "random-forest",
+    "svm",
+    "deep-neural-network",
+    "2gdnn",
+    "grid-search"
+  ],
+  "layer": 1,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 3,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 13,
+  "pdf_status": "downloaded",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "scope_note": "FLAGSHIP CÓ CODE: repo public chollette/2GDNN-for-Diabetes-Prediction-and-Diagnosis (⭐9, MIT, Jupyter 100%, có folder data + notebooks đầy đủ relabel→FS→PR→RF/SVM/2GDNN). CMPB top venue, 240 cite (§7 đạt). Trọng tâm Layer 1: tiền xử lý phi tuyến — Spearman correlation (feature selection) + polynomial regression bậc 7 (imputation), KHÔNG phải genetic algorithm như metadata cũ ghi. Dataset PIMA (768) + LMCH bệnh viện Iraq (1000). Cảnh báo: ORF đạt 100% mọi metric trên PIMA (Table 7) + relabel theo glucose → nghi vấn leakage/circularity, con số có thể bị thổi phồng. Horizon chẩn đoán cross-sectional (đã xác nhận: nhãn theo ngưỡng glucose tại thời điểm đo, không follow-up).",
+  "corrections": "(1) method_slugs cũ ghi 'genetic-algorithm' SAI — paper thực dùng Spearman correlation + polynomial regression imputation, không có GA (cũng KHÔNG dùng SMOTE/oversampling). Đã sửa method_slugs. (2) dataset_slug cũ chỉ có 'pima'; đã thêm 'lmch-medical-city-hospital' (1000 bệnh nhân Iraq, nguồn Mendeley doi:10.17632/wj9rwkp9c2.1). (3) horizon_uncertain hạ false (xác nhận cross_sectional sau khi đọc full: relabel theo ngưỡng glucose tại thời điểm đo, không follow-up). (4) reproducibility legacy 4→3 (thang mới 1=low/2=med/3=high; code public đủ notebook nhưng README thiếu dependency → high). (5) PDF nay đã có (user tải tay), không còn paywalled. (6) ĐỌC FULL XÁC NHẬN nghi vấn leakage/circularity: ORF=100% mọi metric trên PIMA (Table 7, gap train-test 0%) + relabel theo glucose rồi đưa chính glucose vào 4 feature được chọn (Table 3) → model học lại quy tắc gán nhãn, accuracy bị thổi phồng có hệ thống; paper không nêu rõ FS/PR fit trong CV-fold hay toàn bộ. Số đáng tin hơn: RF test-acc 97.931% (Table 7), O2GDNN 97.248% PIMA / 97.333% LMCH (Table 9). (7) PIMA có 768 mẫu gốc nhưng còn 728 sau MVI (train 582/test 146, Table 4); LMCH train 700/test 150.",
+  "download_link": "https://www.sciencedirect.com/science/article/pii/S0169260722001596",
+  "pdf_fetch_attempts": "2026-06-20: Không có bản OA (Unpaywall/S2/OpenAlex/CORE/EuropePMC đều âm). Computer Methods and Programs in Biomedicine (Elsevier) — CLOSED. Mở link đăng nhập trường → Download PDF → lưu source.pdf vào folder này. | 2026-06-21: user tải tay qua quyền trường (closed access), verified DOI khớp",
+  "label_type": "binary",
+  "role": "inflation",
+  "role_note": "Lấy đúng 1 con số: ORF 100% + relabel theo glucose. Dùng cho câu Introduction về accuracy 0.98–1.00.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2022-03-31",
+    "age_years": 4.3,
+    "citations": 243,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

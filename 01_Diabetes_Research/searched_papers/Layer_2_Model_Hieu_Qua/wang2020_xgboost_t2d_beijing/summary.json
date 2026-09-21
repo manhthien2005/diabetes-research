@@ -1,0 +1,23 @@
+{
+  "paper_id": "wang2020_xgboost_t2d_beijing",
+  "layer": 2,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Áp dụng XGBoost (boosting ensemble) đánh giá nguy cơ T2D từ phiếu khảo sát lối sống + tiền sử gia đình, so sánh trực diện với SVM/RF/KNN trên dữ liệu khảo sát thực địa Bắc Kinh (Xicheng, n=368) bằng 10-fold CV; minh chứng boosting thắng classifier cổ điển ngoài bối cảnh benchmark PIMA.",
+  "method": "Binary one-hot encode phiếu khảo sát (yes/no + 7 mức tần suất, §2.2) → XGBoost (CART base, regularization L2 lambda=3.0) tinh chỉnh GridSearchCV (Bảng 1) → đánh giá 10-fold CV lặp 10 lần, lấy mean ± 95% CI (§3.2). Nhãn: FPG ≥ 7.0 mmol/L chuẩn WHO. Baseline: SVM(RBF), RF(n_tree=20), KNN(K=5).",
+  "best_metric": "XGBoost: AUC 0.9182 ± 0.0130, Acc 0.8909 ± 0.0177 (Beijing Xicheng survey, 10-fold CV — Table 6 + §3.3.1)",
+  "datasets": [
+    "beijing-xicheng-survey"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Khác hẳn baseline cùng Layer (hasan2020 + khanam2021 đều PIMA n=768): đây là khảo sát thực địa n=368 do tác giả tự thu thập, label = T2D hiện tại (FPG ≥ 7.0). AUC 0.9182 thấp hơn ensemble PIMA của hasan2020 (AUC 0.950) nhưng cùng triết lý 'boosting thắng classifier đơn'. Ổn định hơn con số đỉnh của khanam2021 (NN 88.6% nhưng K-fold tụt ~76%) nhờ báo cáo mean ± 95% CI trên 10-fold lặp 10 lần. Yếu hơn hasan2020 ở chỗ KHÔNG public code và dữ liệu không tải được.",
+  "gap": "Mẫu rất nhỏ + mất cân bằng (108 dương / 260 âm), ~37 mẫu/test fold → phương sai lớn; không có held-out test ngoài CV; GridSearchCV/encoding không nêu rõ lồng trong từng CV fold → leakage nhẹ có thể; dữ liệu + code không public (chỉ tái lập phương pháp); không cân bằng lớp; không XAI; không external validation; mất thông tin ordinal khi one-hot 7 mức tần suất; tổng số feature UNKNOWN; Table 1 ghi max_depth=0.5 (bất thường, nghi lỗi in).",
+  "verdict": "maybe",
+  "verdict_reason": "Phương pháp đánh giá chuẩn (10-fold CV, mean ± 95% CI) và là minh chứng boosting-thắng trên dữ liệu thật ngoài PIMA, nhưng n=368 quá nhỏ, không code/dataset public và không thể tái lập trên cùng dữ liệu.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

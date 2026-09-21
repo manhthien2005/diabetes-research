@@ -1,0 +1,68 @@
+{
+  "paper_id": "lu2021_patient_network_t2dm",
+  "title": "A patient network-based machine learning model for disease prediction: The case of type 2 diabetes mellitus",
+  "authors": [
+    "Haohui Lu",
+    "Shahadat Uddin",
+    "Farshid Hajati",
+    "Mohammad Ali Moni",
+    "Matloob Khushi"
+  ],
+  "year": 2021,
+  "venue": "Applied Intelligence",
+  "doi": "10.1007/s10489-021-02533-w",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 137,
+  "citations_secondary": 122,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": null,
+  "license": null,
+  "code_url": null,
+  "datasets_mentioned": [
+    "CBHS health funds administrative claim (Australia)"
+  ],
+  "dataset_slugs": [
+    "cbhs-administrative-claim-australia",
+    "patient-network"
+  ],
+  "method_slugs": [
+    "graph-machine-learning",
+    "patient-network",
+    "random-forest",
+    "complex-network"
+  ],
+  "layer": 2,
+  "layer_uncertain": true,
+  "prediction_horizon": "early_detection",
+  "horizon_uncertain": true,
+  "reproducibility": 1,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 13,
+  "pdf_status": "downloaded",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-06-21T00:00:00+07:00",
+  "scope_note": "PHƯƠNG PHÁP MỚI LẠ: mô hình ML dựa trên patient-network (đồ thị bệnh nhân) cho T2DM — đa dạng hoá kho khỏi tabular thuần. Applied Intelligence 2021, 137 cite (§7 đạt). Có thể chạm Layer 1 (biểu diễn đặc trưng mạng) → layer_uncertain. Không có code public + dataset claim CBHS riêng tư → reproducible=low. Giá trị: ý tưởng kiến trúc graph (centrality làm feature ẩn) để tham khảo/so sánh, KHÔNG dùng làm benchmark tái lập.",
+  "corrections": "Sau khi đọc full text: (1) Dataset = CBHS health funds (Australia) administrative claim — ~18.7M admission/~124k patient, cohort dùng 1.028 T2DM + 1.028 non-T2DM = 2.056 (cân bằng 1:1); RIÊNG TƯ, không public (sửa datasets_mentioned/dataset_slugs). (2) code_url = null xác nhận (không repo). (3) Best metric: RF AUC 0.91, Acc 84.95% (Table 2 + Discussion §4); XGBoost AUC 0.8950; dải AUC 0.79–0.91. (4) reproducibility hạ 2→1 (low): dataset gated + không code + nguy cơ leakage graph. (5) Horizon giữ early_detection (paper tự gọi 'early detection of at-risk patients'/'predict risk') nhưng horizon_uncertain=true vì nhãn thực chất là trạng thái chẩn đoán T2DM hiện tại rút từ claim, không có cửa sổ thời gian feature→label. (6) method_slugs nên thêm 'bipartite-projection','centrality-features','xgboost','ann' (đã có graph-machine-learning/patient-network/random-forest/complex-network). (7) Mâu thuẫn nhỏ trong bài: số community 37 (Table 1) vs 38 (text §3.1).",
+  "reject_reason": null,
+  "download_link": "https://link.springer.com/article/10.1007/s10489-021-02533-w",
+  "pdf_fetch_attempts": "2026-06-20: Không có bản OA (Unpaywall/S2/OpenAlex/CORE/EuropePMC đều âm). Applied Intelligence (Springer) — CLOSED. Mở link đăng nhập trường → Download PDF → lưu source.pdf vào folder này. | 2026-06-21: user tải tay qua quyền trường (closed access), verified DOI khớp",
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2021-06-10",
+    "age_years": 5.1,
+    "citations": 137,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

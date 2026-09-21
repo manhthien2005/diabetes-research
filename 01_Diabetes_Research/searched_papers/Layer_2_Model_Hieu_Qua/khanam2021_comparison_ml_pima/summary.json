@@ -1,0 +1,23 @@
+{
+  "paper_id": "khanam2021_comparison_ml_pima",
+  "layer": 2,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "So sánh hệ thống 7 thuật toán ML cổ điển (DT, KNN, RF, NB, AB, LR, SVM) cộng 3 biến thể Neural Network trên PIMA; dùng Pearson correlation (cutoff 0.2) chọn 5 feature, kết luận NN 2 lớp ẩn đạt accuracy cao nhất.",
+  "method": "Mean imputation -> IQR outlier removal (768->699 mau) -> Pearson feature selection (cutoff 0.2, giu 5 feature: Glucose/BMI/Insulin/Preg/Age) -> chuan hoa min-max [0,1] -> danh gia bang K-fold (10-fold) VA train/test split 85/15 (chay rieng); ML chay tren Weka, NN tren Keras/TensorFlow voi SGD (lr=0.01), RELU+sigmoid.",
+  "best_metric": "Accuracy 88.6% — NN 2 lop an, 400 epoch, lr=0.01 (train/test split 85/15, Bang 8); ML tot nhat: KNN & AdaBoost 79.42% (split, Bang 6). Luu y: NN 2HL o 10-fold CV chi ~76% (Muc 4.2); KHONG cong bo AUC dang so (chi co ROC o Fig.11).",
+  "datasets": [
+    "pima-indians-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Don gian hon hasan2020 (ensemble AUC-weighted AB+XB, AUC 0.950, CV phan tang, code public): bai nay khong ensemble, khong AUC dang so, khong xu ly imbalance, khong code. NN dat 88.6% acc nhung chi 1 lan split — K-fold tut con ~76%, kem on dinh hon AUC 0.950 cua hasan2020. Khac he hoan toan voi li2020_behrt (Transformer EHR long-term, multi-label 301 benh) — khong so truc tiep duoc.",
+  "gap": "Imputation + Pearson feature selection + normalize fit tren TOAN dataset truoc khi split (leakage nhe ~1-2%); khong xu ly mat can bang lop ~2:1; khong bao cao AUC/sensitivity/specificity; con so dinh 88.6% chi tu 1 lan split nen khong on dinh; khong seed + khong code public -> kho tai lap.",
+  "verdict": "maybe",
+  "verdict_reason": "Gia tri chinh la bang so sanh 7 ML + 3 NN tren PIMA (483 cite) dung lam reference; nhung con so best khong on dinh (88.6% split vs ~76% K-fold), thieu AUC, co leakage nhe va khong co code -> chua du manh de promote.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

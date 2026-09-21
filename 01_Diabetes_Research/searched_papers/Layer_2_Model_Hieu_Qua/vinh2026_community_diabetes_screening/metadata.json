@@ -1,0 +1,82 @@
+{
+  "paper_id": "vinh2026_community_diabetes_screening",
+  "title": "Ứng dụng kỹ thuật học máy trong tầm soát sớm bệnh lý đái tháo đường và tăng huyết áp cho người cao tuổi trong cộng đồng",
+  "authors": [
+    "Mã Trường Vinh"
+  ],
+  "year": 2026,
+  "venue": "Đồ án thạc sĩ, Trường Đại học Tư thục Quốc tế Sài Gòn",
+  "doi": null,
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": null,
+  "citations_secondary": null,
+  "citations_checked_at": null,
+  "citations_source": null,
+  "layer": 2,
+  "layer_uncertain": false,
+  "prediction_horizon": "early_detection",
+  "horizon_uncertain": false,
+  "datasets_mentioned": [
+    "BRFSS 2023"
+  ],
+  "dataset_slugs": [
+    "brfss-2023"
+  ],
+  "method_slugs": [
+    "missing-value-filtering",
+    "feature-selection",
+    "standardization",
+    "smote",
+    "logistic-regression",
+    "decision-tree",
+    "random-forest",
+    "xgboost",
+    "lightgbm",
+    "multilayer-perceptron",
+    "hyperparameter-tuning",
+    "threshold-tuning"
+  ],
+  "code_url": null,
+  "reproducibility": 2,
+  "source_pdf": "source.pdf",
+  "page_count": 100,
+  "open_access_pdf": null,
+  "pdf_url": null,
+  "license": null,
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "PDF do user cung cấp trực tiếp.",
+  "download_link": null,
+  "is_seed": false,
+  "lookup_status": "user_provided",
+  "found_by": "teacher_provided",
+  "status": "chosen",
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-07-01T00:00:00+07:00",
+  "chosen_at": "2026-06-29T00:00:00+07:00",
+  "reject_reason": null,
+  "scope_note": "Luận văn có hai bài toán độc lập ĐTĐ và tăng huyết áp; kho chỉ dùng nhánh ĐTĐ nhị phân làm tài liệu tham khảo. User chủ động chọn theo khuyến nghị của giảng viên, nên đây là ngoại lệ tuyển chọn chuyên gia chứ không phải paper do finder phát hiện.",
+  "corrections": {
+    "scope": "Luận văn có nhánh THA; analysis/summary trong kho chỉ đánh giá nhánh ĐTĐ để không drift khỏi scope.",
+    "prediction_horizon": "Giữ early_detection theo framing tầm soát; nhãn gộp prediabetes+diabetes tự khai báo cùng thời điểm, không phải incident diabetes.",
+    "leakage_positive": "StandardScaler fit trên train; SMOTE chỉ áp dụng train sau split; test giữ phân bố gốc.",
+    "validation_risk": "Threshold 0.20 được chọn bằng cách quét trực tiếp trên test rồi metric cuối cũng báo trên test; sampling strategy và base model cũng được so sánh trên cùng test. Cần validation riêng/nested CV.",
+    "population_mismatch": "Tiêu đề nói người cao tuổi nhưng phương pháp không mô tả lọc tuổi ≥60/65; Age chỉ là feature nhóm tuổi.",
+    "best_metric_verified": "XGBoost tuned threshold 0.20: Recall 0.8254, FNR 0.1746, AUROC 0.8057, Balanced Accuracy 0.7305, AP 0.4544 (Tables 3.6–3.8).",
+    "extraction_qa": "docling, 100/100 trang, 34 bảng, không bảng vỡ, score 100."
+  },
+  "label_type": "binary",
+  "role": "later",
+  "role_note": "Đồ án VN đi trước (16 lần nhắc calibration) — xem người đi trước trình bày thế nào.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": null,
+    "age_years": null,
+    "citations": null,
+    "threshold": "khong ap dung (khong DOI)",
+    "pass": true,
+    "note": "Đồ án tốt nghiệp VN, không có DOI/citation — user chủ động promote."
+  }
+}

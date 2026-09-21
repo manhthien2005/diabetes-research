@@ -1,0 +1,65 @@
+{
+  "paper_id": "tasin2022_diabetes_prediction_explainable",
+  "title": "Diabetes prediction using machine learning and explainable AI techniques",
+  "authors": [
+    "Isfafuzzaman Tasin",
+    "Tansin Ullah Nabil",
+    "S. Islam",
+    "R. Khan"
+  ],
+  "year": 2022,
+  "venue": "Healthcare technology letters",
+  "doi": "10.1049/htl2.12039",
+  "arxiv": null,
+  "citations": 320,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "code_url": "https://github.com/tansin-nabil/Diabetes-Prediction-Using-Machine-Learning",
+  "datasets_mentioned": [],
+  "is_seed": true,
+  "lookup_status": "ok",
+  "source_pdf": "Diabetes prediction using machine learning and explainable AI techniques.pdf",
+  "page_count": 10,
+  "status": "chosen",
+  "analysis_status": "analyzed",
+  "layer": 4,
+  "dataset_slugs": [
+    "pima-indians-diabetes",
+    "rtml-bangladesh"
+  ],
+  "method_slugs": [
+    "xgboost",
+    "adasyn",
+    "smote",
+    "mutual-information",
+    "semi-supervised-xgb-regressor",
+    "grid-search",
+    "min-max-scaling",
+    "domain-adaptation",
+    "shap",
+    "lime"
+  ],
+  "reproducibility": 2,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "corrections": [
+    "Best metric xác nhận qua source.pdf (OCR): XGBoost+ADASYN = Acc 81% / F1 0.81 / AUC 0.84 trên dataset gộp (Table 5, nhất quán abstract + conclusion + Fig. 7-8). Table 10 in 88.5% cho 'This work' là LỆCH NỘI TẠI trong bài (không phải lỗi OCR — đã đối chiếu ảnh PDF); dùng 81% làm headline.",
+    "Feature selection method_slug bổ sung: mutual-information + smote + semi-supervised-xgb-regressor (bù insulin RTML, RMSE 0.36 Table 3) — metadata cũ thiếu các slug này.",
+    "Số mẫu dataset gộp lệch trong bài: Section 2.2 ghi 877 mẫu, nhưng đoạn SMOTE/ADASYN ghi 302 diabetes + 669 non-diabetes = 971; bài không giải thích.",
+    "Validation: chỉ holdout 80/20 stratified, KHÔNG K-fold cross-validation."
+  ],
+  "citations_source": "openalex",
+  "label_type": "binary",
+  "pdf_status": "downloaded",
+  "role": "later",
+  "role_note": "Khuôn mẫu code + SHAP + LIME + deploy — chỉ dùng nếu Tầng 2 (web demo cho bác sĩ) được làm.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2022-12-14",
+    "age_years": 3.6,
+    "citations": 320,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

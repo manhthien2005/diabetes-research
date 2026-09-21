@@ -1,0 +1,67 @@
+{
+  "paper_id": "nguyen2019_wide_deep_onset",
+  "title": "Predicting the onset of type 2 diabetes using wide and deep learning with electronic health records",
+  "authors": [
+    "Binh P. Nguyen",
+    "Hung N. Pham",
+    "Hop Tran",
+    "Nhung Nghiem",
+    "Quang H. Nguyen",
+    "Trang T. T.",
+    "Cao Truong Tran",
+    "Colin R. Simpson"
+  ],
+  "year": 2019,
+  "venue": "Computer Methods and Programs in Biomedicine",
+  "doi": "10.1016/j.cmpb.2019.105055",
+  "arxiv": null,
+  "pubmed": "31505379",
+  "pmc": null,
+  "citations": 161,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": null,
+  "license": null,
+  "code_url": null,
+  "datasets_mentioned": [
+    "practice-fusion"
+  ],
+  "dataset_slugs": [
+    "practice-fusion"
+  ],
+  "method_slugs": [
+    "wide-and-deep",
+    "deep-learning",
+    "logistic-regression"
+  ],
+  "layer": 3,
+  "layer_uncertain": true,
+  "prediction_horizon": "long_term_risk",
+  "horizon_uncertain": true,
+  "reproducibility": 1,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "pdf_status": "downloaded",
+  "page_count": 10,
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-06-22T00:00:00+07:00",
+  "corrections": "Đọc full extracted.md (9 trang, QA score 100, 4/4 bảng sạch, không OCR): (1) Dataset = Practice Fusion EHR competition 2012 (9948 BN, 1904≈19% T2DM 2009-2012; lưu ý Section 2.2 cuối ghi 1890≈19% do bước làm sạch — chênh nhỏ); KHÔNG có link tải trong paper, là bộ cuộc thi đã đóng. (2) Horizon = long_term_risk (incident/onset) — XÁC NHẬN lại từ cách lập label: feature 2009-2011 → nhãn onset 2012 (forward prediction, Abstract+Section 2.1); nhưng cửa sổ chỉ ~1 năm và không định lượng N năm → giữ horizon_uncertain=true. (3) Method = Wide&Deep NN: deep = 3 embedding ICD-9(151)/thuốc(134)/lab(80)→16-d + 2 hidden 256/128 ReLU, nối thành 1439-d→128→1 sigmoid; wide = GLM trên crossed features (27 diag × 33 med); feature selection bằng cosine-distance; SGD+BCE; 70/30 split + 10-fold CV ensemble + SMOTE 150/300%. (4) Code = null (không repo, chỉ supplementary qua DOI). (5) reproducible=low: dataset competition đóng + không code + feature-engineering 1312 feature, ngưỡng histogram thủ công. (6) Best metric = AUC 84.13%/Acc 84.28%/Sens 31.17%/Spec 96.85% ensemble no-SMOTE (Table 3). Vượt nhẹ baseline Pimentel [17] cùng dataset (Table 4): no-SMOTE AUC 84.01% vs 83.19%, Sens 29.12% vs 16.07%; nhưng có SMOTE thì RF [17] AUC cao hơn. (7) Verdict = maybe (AUC khiêm tốn, sensitivity thấp, tái lập thấp dù highly-cited + đúng scope).",
+  "scope_note": "Dự đoán ONSET/incidence T2DM (Practice Fusion EHR thật) bằng Wide&Deep — đúng scope binary EHR, horizon long_term_risk (forward-prediction feature năm trước → onset năm sau). Đóng góp deep tabular + so sánh baseline cùng dataset. Hạn chế: AUC khiêm tốn (84%), sensitivity thấp (31%), SMOTE không cứu AUC, không code, dataset cuộc thi đã đóng → tái lập thấp.",
+  "download_link": "https://www.sciencedirect.com/science/article/pii/S016926071930327X",
+  "pdf_fetch_attempts": "2026-06-20: Không có bản OA (Unpaywall/S2/OpenAlex/CORE/EuropePMC đều âm). Computer Methods and Programs in Biomedicine (Elsevier) — CLOSED. Mở link đăng nhập trường → Download PDF → lưu source.pdf vào folder này. | 2026-06-21: user tải tay qua quyền trường (closed access), verified DOI khớp",
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2019-08-27",
+    "age_years": 6.9,
+    "citations": 161,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

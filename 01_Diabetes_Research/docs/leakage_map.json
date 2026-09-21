@@ -1,0 +1,1712 @@
+{
+ "_meta": {
+  "purpose": "Ban do vi pham: 35 paper da deep-analyze x 6 cau hinh ablation B-G cua TO_DO §7.2. Nguon cho Table 3 va cho cau Introduction 'trong N bai chung toi khao sat'.",
+  "created_at": "2026-07-26",
+  "n_papers": 35,
+  "states": {
+   "violation": "van ban cua chinh bai mo ta thu tu ro ri, hoac bai tu bao so o muc ro ri",
+   "clean": "bai neu ro thu tu an toan (train-only / within-fold)",
+   "unknown": "bai KHONG NEU -> khong kiem chung duoc (ban than la mot phat hien ve minh bach bao cao)",
+   "na": "bai khong dung ky thuat do"
+  },
+  "evidence_levels": {
+   "quote": "trich nguyen van tu extracted.md co so dong",
+   "analysis": "tu summary.json (deep-analyze phien truoc)",
+   "structural": "suy tu cach dung dataset, khong tu van ban bai"
+  },
+  "configs": {
+   "B": "Impute/scale tren toan bo data truoc khi split",
+   "C": "Feature selection tren toan bo data",
+   "D": "SMOTE/oversample truoc khi split (sinh mau tong hop vuot rao)",
+   "E": "Chon model tren chinh test set (winner's curse)",
+   "F": "Bien dinh nghia nhan nam trong feature (circularity)",
+   "G": "Ep can bang 50/50 roi doc accuracy o prevalence gia"
+  },
+  "WARNING": "Moi o co evidence_level='analysis' hoac 'structural' PHAI mo source.pdf xac minh truoc khi viet vao bai. Day la claim ve nguoi khac."
+ },
+ "counts": {
+  "B": {
+   "violation": 4,
+   "clean": 3,
+   "unknown": 26,
+   "na": 2
+  },
+  "C": {
+   "violation": 13,
+   "clean": 1,
+   "unknown": 16,
+   "na": 5
+  },
+  "D": {
+   "violation": 1,
+   "clean": 5,
+   "unknown": 4,
+   "na": 25
+  },
+  "E": {
+   "violation": 25,
+   "clean": 1,
+   "unknown": 8,
+   "na": 1
+  },
+  "F": {
+   "violation": 20,
+   "clean": 3,
+   "unknown": 2,
+   "na": 10
+  },
+  "G": {
+   "violation": 12,
+   "clean": 0,
+   "unknown": 0,
+   "na": 23
+  }
+ },
+ "papers": [
+  {
+   "paper_id": "abnoosian2023_ensemble_multiclassifier",
+   "layer": 1,
+   "dataset": "IPDD",
+   "headline_metric": "Acc 0.9887 (Table 10)",
+   "validation": "nested 5-fold CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "Abstract+§Method liet ke pipeline theo thu tu: '...missing value imputation, data normalization and standardization, feature selection, and k-fold cross-validation' — CV dat SAU tien xu ly",
+     "locator": "extracted.md L19, L37"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "Cung cau tren: feature selection dung TRUOC k-fold CV",
+     "locator": "extracted.md L19, L37"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong dung SMOTE (tac gia neu ro)",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "'the use of I+N pre-processing 10 features obtained the highest AAC value ... and was chosen as the optimal classifier in this experiment'",
+     "locator": "extracted.md L306"
+    },
+    "F": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Nhan 3 lop tren IPDD; bai khong neu tieu chi dinh nghia nhan -> khong xac minh duoc HbA1c/glucose co trong feature khong. CAN MO source.pdf",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Giu du lieu mat can bang, khong ep 50/50",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "alghamdi2017_smote_fit_project",
+   "layer": 1,
+   "dataset": "FIT (Henry Ford)",
+   "headline_metric": "Acc 84.3% (RF, G1)",
+   "validation": "10-fold CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Khong neu discretization/chuan hoa fit trong fold hay tren toan bo",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Information Gain ranking tren toan bo? Bai khong noi ro",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "SMOTE 100/200/300% — KHONG neu ro nam trong tung training fold hay ap truoc 10-fold CV",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "Bao cao 'best performance' theo tung metric tren cung ket qua CV",
+     "locator": "extracted.md L162-164"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Nhan = incident diabetes tu registry; feature la cardiorespiratory fitness — khong chua bien dinh nghia nhan",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "Random Under-Sampling 'until both classes are equally balanced', distribution spread 1.0/1.5/2.5",
+     "locator": "extracted.md L128"
+    }
+   }
+  },
+  {
+   "paper_id": "gr2024_random_oversampling_diabetes",
+   "layer": 1,
+   "dataset": "PIDD + BRFSS",
+   "headline_metric": "Acc 94% PIDD / 92% BRFSS",
+   "validation": "10-fold CV sau split 80:20",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Mean imputation + IQR: khong khang dinh chi fit tren train",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Boruta/PCA: khong khang dinh chi chay tren train",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Random oversampling mo ta TRUOC split trong so do pipeline, nhung bai khong khang dinh chi lam tren train -> khong ket luan duoc, CHI ghi nhan la khong the kiem chung",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "'the random forest algorithm outperforms all the remaining classifiers, with the greatest accuracy of 92% ... and 94%'",
+     "locator": "extracted.md L13"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIDD/PIMA: cot Glucose = duong huyet 2h OGTT, ma nhan PIMA dinh nghia bang nguong OGTT 2h >= 200 mg/dL -> circularity theo CAU TRUC dataset",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Oversampling (khong phai undersampling ve 50/50 roi bao accuracy)",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "hennebelle2023_mlops_iot_diabetes",
+   "layer": 1,
+   "dataset": "PIMA + Sylhet + MIMIC-III",
+   "headline_metric": "Acc 0.9723 (Sylhet)",
+   "validation": "stratified 10-fold CV x10 lan",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Khong neu scaler fit o dau",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "RFECV: khong neu chay trong fold hay tren toan bo train",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "clean",
+     "evidence_level": "quote",
+     "note": "'SMOTE is only applied on the training/validation split (70%) of the data samples ... and the test split (30%) is not modified'",
+     "locator": "extracted.md L333"
+    },
+    "E": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Bao 'best accuracy for LR/RF' nhung co grid search + 10-fold, khong ro chon tren test hay validation",
+     "locator": "extracted.md L431"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "Nhanh PIMA: Glucose = OGTT 2h, trung tieu chi nhan",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong ep 50/50 tren test",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "nnamoko2020_outliers_imbalance",
+   "layer": 1,
+   "dataset": "PIMA",
+   "headline_metric": "Acc 89.5% (C4.5)",
+   "validation": "stratified 10-fold CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "Fold tao tu data GOC roi moi tien xu ly (protocol chong ro ri mau muc)",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong dung feature selection",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "clean",
+     "evidence_level": "quote",
+     "note": "'SMOTE was used to balance the TRAINING data'; 'we search for outliers in the original TRAINING data'",
+     "locator": "extracted.md L33, L110"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "'C4.5 (IQRd+SMOTEd) is our best performing model' — chon tren cung ket qua bao cao, NHUNG co McNemar test lam giam nhe",
+     "locator": "extracted.md L176"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIMA: Glucose = OGTT 2h, trung tieu chi nhan",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Can bang chi tren train fold",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "olisah2022_preprocessing_ml_perspective",
+   "layer": 1,
+   "dataset": "PIMA + LMCH",
+   "headline_metric": "ORF 100% / RF 97.93% (PIMA)",
+   "validation": "repeated stratified 10-fold x3",
+   "external_validation": false,
+   "code_public": true,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Polynomial-regression imputation: khong neu ro fit trong CV-fold hay toan bo",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Spearman correlation FS: khong neu ro trong fold hay toan bo",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong dung resampling",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Bao ORF 100% test accuracy lam ket qua chinh",
+     "locator": "summary.json / extracted.md Table 7"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "RELABEL du lieu theo nguong glucose ROI dua chinh glucose vao feature -> circularity tuong minh. Day la bai sinh ra con so ORF 100%",
+     "locator": "summary.json (TO_DO §6 nhom D)"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "choi2014_prediabetes_screening",
+   "layer": 2,
+   "dataset": "KNHANES 2010/2011",
+   "headline_metric": "AUC 0.731 external (SVM)",
+   "validation": "10-fold CV + external KNHANES 2011",
+   "external_validation": true,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Khong neu chuan hoa fit o dau",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Backward logistic chon 7/9 bien — khong neu chay trong fold hay toan bo",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong resampling",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "So ANN vs SVM vs score tren ca internal lan external",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "Nhan = FPG; feature la 7 bien NO-LAB -> tach bach by design",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "hasan2020_diabetes_prediction_ensembling",
+   "layer": 2,
+   "dataset": "PIMA",
+   "headline_metric": "AUC 0.950",
+   "validation": "stratified 5-fold CV",
+   "external_validation": false,
+   "code_public": true,
+   "configs": {
+    "B": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "'...outlier rejection, filling the missing values, data standardization, feature selection, K-fold cross-validation, and different ML classifiers' — CV liet ke SAU chuan hoa",
+     "locator": "extracted.md L21, L39"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "Cung cau: correlation-based feature selection dung TRUOC K-fold CV",
+     "locator": "extracted.md L21, L39"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong resampling",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Chon ensemble AB+XB vi AUC cao nhat tren chinh ket qua bao cao",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIMA: Glucose = OGTT 2h, trung tieu chi nhan",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "khanam2021_comparison_ml_pima",
+   "layer": 2,
+   "dataset": "PIMA",
+   "headline_metric": "Acc 88.6% (NN, 1 split)",
+   "validation": "10-fold CV VA split 85/15 chay rieng",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Mean imputation + min-max normalize fit tren TOAN dataset truoc khi split",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Pearson correlation FS (cutoff 0.2) chay tren TOAN dataset truoc khi split",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong xu ly mat can bang",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Bao con so dinh 88.6% tu 1 lan split 85/15",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIMA: Glucose = OGTT 2h, trung tieu chi nhan",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "li2020_behrt_transformer_ehr",
+   "layer": 2,
+   "dataset": "CPRD",
+   "headline_metric": "AUROC 0.958 / APS 0.525",
+   "validation": "train/val/test split",
+   "external_validation": false,
+   "code_public": true,
+   "configs": {
+    "B": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Chuoi ma benh, khong impute/scale kieu tabular",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong feature selection",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Nhan = ma benh lan kham tuong lai, tach thoi gian",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "lu2021_patient_network_t2dm",
+   "layer": 2,
+   "dataset": "CBHS claim (private)",
+   "headline_metric": "AUC 0.91 / Acc 84.95%",
+   "validation": "80/20 + 10-fold CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Patient network + centrality dung tren TOAN cohort truoc split -> feature cua node test phu thuoc ca train. Bai khong noi dung mang rieng moi fold",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "RF thang tren cung ket qua bao cao; LR/SVM/DT/NB de default khong tuning -> so sanh khong doi xung",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Nhan ICD E11, feature la comorbidity + centrality",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Ep can bang 1:1 (1.028 + 1.028) truoc khi split -> accuracy 84.95% khong phan anh prevalence that",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "naz2020_deep_learning_pima",
+   "layer": 2,
+   "dataset": "PIMA",
+   "headline_metric": "Acc 98.07% (DL)",
+   "validation": "split 80/20 + CV (so fold khong neu)",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "KHONG xu ly missing-as-zero cua PIMA",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Khong neu",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong can bang lop",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Bao DL 98.07% lam ket qua chinh; DT 96.62% bat thuong so voi y van 73-78% -> nghi leakage/overfit",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIMA: Glucose = OGTT 2h, trung tieu chi nhan",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "phan2025_remed_t2d_ensemble",
+   "layer": 2,
+   "dataset": "PIMA + RTML1/2 + Pabna",
+   "headline_metric": "ACC ~0.90 (Ensemble1)",
+   "validation": "randomized 10-fold CV",
+   "external_validation": true,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Median imputation: khong neu fit o dau",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Ensemble feature importance: chua ro hoan toan out-of-fold",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Dung UNDER-sampling (khong sinh mau tong hop) -> khong ro ri kieu SMOTE",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "'we investigated various computational strategies to SELECT THE OPTIMAL MODEL' tren 100 baseline model (20 classifier x 5 dataset)",
+     "locator": "extracted.md L23, L183"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIMA lam tap huan luyen chinh: Glucose = OGTT 2h",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "'we employed an under-sampling technique to create five BALANCED datasets' (222 vs 222) roi danh gia tren do -> prevalence nhan tao 50/50",
+     "locator": "extracted.md L108"
+    }
+   }
+  },
+  {
+   "paper_id": "rasmy2021_medbert_ehr",
+   "layer": 2,
+   "dataset": "Cerner + Truven",
+   "headline_metric": "AUC 85.39 (DHF-Cerner)",
+   "validation": "split 7:1:2, 10 run mean+-std",
+   "external_validation": true,
+   "code_public": true,
+   "configs": {
+    "B": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "DTD la dieu kien dau vao cohort, khong phai nhan",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "vinh2026_community_diabetes_screening",
+   "layer": 2,
+   "dataset": "BRFSS",
+   "headline_metric": "AUROC 0.806",
+   "validation": "stratified 80/20 + GridSearchCV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "StandardScaler fit tren train sau khi stratified 80/20",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong feature selection",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "SMOTE chi tren train (bang 3.3 ghi ro 'tap train truoc va sau SMOTE')",
+     "locator": "summary.json / extracted.md L1308"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Threshold + sampling strategy + model deu chon tu CUNG test set -> metric cuoi optimistic (tac gia khong khai bao)",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "BRFSS self-report, khong co bien xet nghiem",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Danh gia o prevalence that",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "wang2020_xgboost_t2d_beijing",
+   "layer": 2,
+   "dataset": "Beijing Xicheng survey",
+   "headline_metric": "AUC 0.9182",
+   "validation": "10-fold CV lap 10 lan",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "One-hot encoding: khong neu long trong fold",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong can bang lop",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "GridSearchCV khong neu ro long trong tung CV fold -> tuning va danh gia tren cung du lieu",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Nhan FPG >= 7.0; feature la phieu khao sat loi song -> tach bach",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "yang2021_bigdata_physical_exam_fusion",
+   "layer": 2,
+   "dataset": "EHR Luzhou 1.5M",
+   "headline_metric": "AUC 0.8763",
+   "validation": "70/30 holdout + 5-fold CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "MI/ANOVA/GI rank + IFS chon 16->6 feature; khong neu chay trong fold",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Dung class-weight",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "FBG vua la feature #1 (don bien da AUC 0.8307, Table 1) vua gan tieu chi chan doan -> label leakage",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "yu2010_svm_prediabetes_detection",
+   "layer": 2,
+   "dataset": "NHANES 1999-2004",
+   "headline_metric": "AUC 0.83 (Scheme II)",
+   "validation": "test 20% + 10-fold CV, DeLong",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Chuan hoa [-1,+1]: khong neu fit o dau",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Chon bien tu dong theo Chen — khong neu trong fold",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Undersample non-cases CHI tren train",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Grid search C/gamma bang 5-fold tren train",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "Nhan = FPG; 8/10 bien la NO-LAB -> tach bach by design",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Undersample non-cases can bang train -> Sn/Sp/PPV khong phan anh prevalence that (tac gia khong hieu chinh lai)",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "zou2018_rf_pca_diabetes",
+   "layer": 2,
+   "dataset": "Luzhou + PIMA",
+   "headline_metric": "Acc 0.8084 (RF)",
+   "validation": "5-fold CV + holdout 13.700",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "mRMR / PCA (qua SPSS) chay tren toan bo truoc khi CV",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Undersampling (khong sinh mau)",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Bao ket qua tot nhat tren nhieu nhanh giam chieu; independent test 0.8963 > CV 0.8084 bat thuong",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Fasting glucose vua la feature vua la tieu chi chan doan — la ROOT NODE cua cay (Fig 2/3). Bo glucose: ACC 0.8084 -> 0.7104; NN chi-glucose 0.5010",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Random undersample 68.994/lop -> train can bang 50/50 nhan tao, bao ACC (khong bao AUC)",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "agliata2023_nhanes_mimic_ann",
+   "layer": 3,
+   "dataset": "NHANES + MIMIC-III/IV",
+   "headline_metric": "AUC 0.934 / Acc ~86% / Brier 0.101",
+   "validation": "k-fold k=9 x11",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Khong neu ro thu tu fit scaler / can bang / chia tap",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Under-sampling",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Chon optimizer bang k-fold CV roi bao ket qua tren cung khung",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Glucose nam trong 9 feature trong khi nhan T2D dinh nghia gan voi nguong glucose",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "'obtaining a final dataset of 13,687 individuals, i.e., with a SIMILAR NUMBER of individuals with and without T2DM ... we obtained a balanced dataset' -> accuracy ~86% doc o 50/50 chu khong phai prevalence that ~13%",
+     "locator": "extracted.md L259"
+    }
+   }
+  },
+  {
+   "paper_id": "deberneh2021_korean_ehr_nextyear",
+   "layer": 3,
+   "dataset": "Hanaro EHR (private)",
+   "headline_metric": "Acc 0.73 / F1 0.74 (KHONG bao AUC)",
+   "validation": "10-fold grid-search CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Listwise deletion; khong neu chuan hoa",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "ANOVA + chi-squared + RFE chon 12 feature — khong neu chay trong fold",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Under-sampling + SMOTE: KHONG neu ro thu tu so voi split",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "10-fold grid-search CV (general -> finer)",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Nhan 3 lop dinh nghia CHI bang FPG, ma FPG cung la feature quan trong nhat -> circularity",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Test set 200 mau/lop (can bang nhan tao) trong khi prevalence that diabetes 4.3% -> Acc 0.73 khong the doc nhu hieu nang thuc te",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "dinh2019_data_driven_nhanes",
+   "layer": 3,
+   "dataset": "NHANES 1999-2014",
+   "headline_metric": "AUC 0.957 (co lab) / 0.737 (no-lab Case II)",
+   "validation": "80/20 + 10-fold CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Khong neu ro fit scaler truoc hay sau split; CV bao quanh hay trong tien xu ly",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Information gain xep hang bien tren mo hinh da train — khong neu trong fold",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Downsampling (khong sinh mau)",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "WEM trong so theo AUC; chon top model tren chinh ket qua bao cao",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Case I: nhan dung glucose >= 126 trong khi glucose cung la bien lab trong feature -> giai thich cu nhay AUC 0.86 -> 0.96 giua nhanh no-lab va co-lab",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Downsampling 50/50 VA test can bang -> accuracy/F1 khong phan anh prevalence that ~12%",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "fazakis2021_longterm_t2d_risk",
+   "layer": 3,
+   "dataset": "ELSA",
+   "headline_metric": "AUC 0.884 inductive / 0.888 transductive",
+   "validation": "khong neu ro fold",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Drop missing thay vi impute",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Greedy Stepwise Backward-NaiveBayes chon 35 feature — khong neu trong fold",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Random undersampling",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Trong so ensemble toi uu bang NSGA-II TREN chinh muc tieu AUC/Sensitivity dang bao cao; transductive 0.888 khai thac chinh tap test",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Feature gom fglu / hba1c / everHighGlu — gan co che chan doan",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Random undersampling theo prevalence tuoi -> phan bo danh gia khong phai prevalence that",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "jin2025_opportunistic_screening_type",
+   "layer": 3,
+   "dataset": "MGB (private)",
+   "headline_metric": "AUROC cao (so screening that UNKNOWN)",
+   "validation": "3-fold CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "698-d feature, khong neu chon trong fold",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "kNN-match PopControl",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Chon latent dim / loss theo val AUROC roi bao AUROC",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Nhan HbA1c > 6.5 + censor >= 2 nam truoc chan doan; van con 21 bien lab trong feature -> tac gia khong kiem chung ro",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "AUROC do tren PopControl GHEP CAP chu khong phai prevalence that cua GenControl",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "lai2019_predictive_models_diabetes",
+   "layer": 3,
+   "dataset": "CPCSSN",
+   "headline_metric": "AROC 84.7% (GBM)",
+   "validation": "80/20 + 10-fold CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Listwise deletion; khong neu chuan hoa",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Dung class-weight + adjusted threshold thay vi resampling",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "Dung DeLong test de so AROC thay vi chi lay best — mau muc",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "FBS vua la feature quan trong nhat (odds ratio 7.122, Table 2) vua gan dinh nghia nhan",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Danh gia o prevalence that 20.9%",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "lugner2024_top_ten_predictors",
+   "layer": 3,
+   "dataset": "UK Biobank 448k",
+   "headline_metric": "ROC-AUC 0.903 / Acc 0.92 / PR-AUC 0.29",
+   "validation": "80:20 + 5-fold CV + bootstrap 1000",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "One-hot + loc low-variance; downsampling CHI tren train (tac gia neu ro)",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "SHAP tinh sau khi train, khong dung de chon bien truoc split",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Downsampling 1:3 chi tren train",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Tuning Latin Hypercube + 5-fold CV toi uu ROC-AUC",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "HbA1c + glucose dung dau top-10 predictor, gan nguong tien-DTD -> ro ri mem (tac gia khong tach ra)",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Downsampling 1:3 -> Accuracy 0.92 gay ao giac trong khi PR-AUC chi 0.29, Sensitivity 0.62",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "nguyen2019_wide_deep_onset",
+   "layer": 3,
+   "dataset": "Practice Fusion",
+   "headline_metric": "AUC 84.13% / Sensitivity 31.17%",
+   "validation": "70/30 + 10-fold stratified CV",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Feature selection bang cosine-distance GIUA COT FEATURE VA COT NHAN tren 1312 feature -> dung nhan de chon bien",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "clean",
+     "evidence_level": "quote",
+     "note": "'SMOTE ... was used in each CV TRAINING FOLD'",
+     "locator": "extracted.md L51, L173"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Chon ensemble cuoi tu 10 phan hoach test",
+     "locator": "summary.json / extracted.md L192"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Feature 2009-2011 -> nhan onset 2012, tach thoi gian",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "sgchoi2023_undiagnosed_diabetes_ml_vs_stats",
+   "layer": 3,
+   "dataset": "KNHANES 2014-2020",
+   "headline_metric": "AUC 0.819 (vs score 0.765)",
+   "validation": "stratified 5-fold CV + external temporal",
+   "external_validation": true,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Khong neu ro scaler/balance fit truoc hay trong fold CV",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Shapley + RFECV + Permutation chon bo 11 feature — khong neu chay trong fold; bo feature nay sau do dung cho ca so sanh",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "quote",
+     "note": "'chon model AUC internal cao nhat' roi moi validate external — dung quy trinh, NHUNG risk score TS khong duoc refit cong bang",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "clean",
+     "evidence_level": "analysis",
+     "note": "Nhan = FPG>=126 hoac HbA1c>=6.5 & chua chan doan; feature NO-LAB -> tach bach by design",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Danh gia o prevalence that ~4-5% (PPV 0.10-0.18)",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "zhang2020_henan_rural_cohort",
+   "layer": 3,
+   "dataset": "Henan Rural Cohort 36.652",
+   "headline_metric": "AUC 0.872 lab / 0.817 no-lab",
+   "validation": "10-fold CV lap 100 lan",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Quet so bien dong 5/10/15... tren toan bo",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "SMOTE can bang nhan ~9%: THU TU so voi tach CV KHONG duoc neu",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "GBM thang tren chinh ket qua bao cao",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Nhan dinh nghia mot phan bang FPG >= 7.0 mmol/L, con URINE GLUCOSE (he qua tang duong huyet) la bien quan trong #1 moi model (Table 2)",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Bao PPV 28.83% + AUPR 0.546 o prevalence that — trung thuc hon phan lon kho",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "ahmed2024_lime_shap_comparison",
+   "layer": 4,
+   "dataset": "BRFSS 2015",
+   "headline_metric": "Acc 86% / Recall lop DTD 0.15",
+   "validation": "KHONG CV — chi split 80/20",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Standardization/min-max: khong neu fit o dau",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "KHONG can bang lop du lech 84:16",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Chi train 1 model (LR) -> khong co winner's curse",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "BRFSS self-report",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Bao Accuracy 86% ~ dung bang majority baseline trong khi Recall lop DTD chi 0.15 -> accuracy che giau mo hinh gan vo dung",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "dharmarathne2024_self_explainable_interface",
+   "layer": 4,
+   "dataset": "PIMA",
+   "headline_metric": "Acc 0.77 test / AUC 0.82",
+   "validation": "KHONG CV — chi split 70/30",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong xu ly imbalance",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "'chon XGB (Acc/AUC/FN tot nhat)' tren chinh ket qua test bao cao",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIMA: Glucose = OGTT 2h, trung tieu chi nhan",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "kaliappan2024_featsel_diverse_datasets",
+   "layer": 4,
+   "dataset": "4 dataset (gom PIMA)",
+   "headline_metric": "Acc 0.990 (RF)",
+   "validation": "KHONG CV — 1 split co dinh ~80/20",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Feature importance (filter + wrapper) cham tren TOAN dataset roi moi chia train/test",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Dataset-4 bao ~2768 mau trong khi PIMA goc 768 -> augment/oversample khong mo ta; neu truoc split thi test leakage",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Bao RF 0.990 tu 1 split co dinh, khong CV",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIMA trong 4 dataset: Glucose = OGTT 2h",
+     "locator": "PIMA/NIDDK data dictionary"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "KHONG can bang lop (F1 Dataset-2 chi ~0.79 du acc 0.94)",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "nipa2023_clinically_adaptable",
+   "layer": 4,
+   "dataset": "SDHD + PDD + MDD",
+   "headline_metric": "Acc 97.11% (ET, SDHD)",
+   "validation": "KHONG CV — 1 split 80/20; tac gia TU nhan 'no validation methods being used'",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Impute mean/mode + IQR: khong neu fit o dau",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Correlation + t-test bo feature trung — cham tren toan dataset",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Khong can bang SDHD (320/200)",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Quet 35 classifier roi bao classifier tot nhat moi dataset tren CUNG 1 split -> winner's curse manh nhat kho (N=35)",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Feature la trieu chung tu khai",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "tasin2022_diabetes_prediction_explainable",
+   "layer": 4,
+   "dataset": "PIMA + RTML (private)",
+   "headline_metric": "Acc 81% / AUC 0.84",
+   "validation": "KHONG K-fold — chi holdout 80/20",
+   "external_validation": false,
+   "code_public": true,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "Min-Max sau SMOTE/ADASYN; khong neu fit o dau",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Mutual Information cham tren TOAN dataset truoc khi split",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "clean",
+     "evidence_level": "quote",
+     "note": "'the SMOTE and ADASYN techniques have been applied to the TRAINING dataset, leaving the testing data unaffected'",
+     "locator": "extracted.md L119"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "GridSearchCV 9 model roi chon XGBoost+ADASYN tren chinh ket qua holdout",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "violation",
+     "evidence_level": "structural",
+     "note": "PIMA: Glucose = OGTT 2h; hon nua Insulin duoc SUY RA bang XGB regressor tu chinh cac bien con lai",
+     "locator": "PIMA/NIDDK + summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  },
+  {
+   "paper_id": "xu2025_label_noise_local_explanation",
+   "layer": 4,
+   "dataset": "4 dataset (D3/D4 an danh)",
+   "headline_metric": "Chi bao explanation-difference d, KHONG bao acc/AUC",
+   "validation": "5-fold CV lap 5 lan",
+   "external_validation": false,
+   "code_public": false,
+   "configs": {
+    "B": {
+     "state": "unknown",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "C": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "D": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    },
+    "E": {
+     "state": "violation",
+     "evidence_level": "analysis",
+     "note": "Loi the chi ton tai voi XGBoost/AdaBoost, 'that bai' khi doi GB/RF/NN/SVM (§4.4) -> ket qua chinh la san pham cua viec chon black-box",
+     "locator": "summary.json"
+    },
+    "F": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "Nhan nhieu TIEM NHAN TAO, khong phai nhan that",
+     "locator": "summary.json"
+    },
+    "G": {
+     "state": "na",
+     "evidence_level": "analysis",
+     "note": "",
+     "locator": "summary.json"
+    }
+   }
+  }
+ ]
+}

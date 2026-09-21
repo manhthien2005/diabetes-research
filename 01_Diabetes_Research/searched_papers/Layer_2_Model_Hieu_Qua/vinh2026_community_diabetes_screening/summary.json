@@ -1,0 +1,23 @@
+{
+  "paper_id": "vinh2026_community_diabetes_screening",
+  "layer": 2,
+  "prediction_horizon": "early_detection",
+  "contribution": "Benchmark thực dụng trên BRFSS 2023: so sánh imbalance strategies và sáu model, tuning boosting rồi chọn threshold theo mục tiêu tăng Recall cho tầm soát cộng đồng.",
+  "method": "BRFSS cleaning → nhãn gộp prediabetes+diabetes → stratified 80/20 → StandardScaler fit train → SMOTE train-only → LR/DT/RF/XGBoost/LightGBM/MLP → GridSearchCV → threshold sweep 0.50–0.05",
+  "best_metric": "XGBoost tuned tại threshold 0.20: Recall 0.8254, FNR 0.1746, AUROC 0.8057, Balanced Accuracy 0.7305, AP 0.4544 (Tables 3.6–3.8)",
+  "datasets": [
+    "brfss-2023"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Thực tế hơn hasan2020_diabetes_prediction_ensembling về quy mô, prevalence, AP/Brier/calibration và threshold trade-off; yếu hơn vì không code, không CV uncertainty/external validation và dùng test để chọn threshold.",
+  "gap": "Threshold, sampling strategy và model được chọn từ cùng test set nên metric cuối optimistic; nhãn self-reported current status không phải incident/undiagnosed diabetes; tiêu đề nói người cao tuổi nhưng không mô tả age filter; chỉ một năm BRFSS Hoa Kỳ.",
+  "verdict": "strong",
+  "verdict_reason": "Đáng follow như blueprint screening và đánh giá theo Recall/calibration, nhưng phải sửa test-set hygiene trước khi dùng làm protocol nghiên cứu hoặc claim tổng quát hóa.",
+  "analyzed_at": "2026-07-01T00:00:00+07:00",
+  "role": "later",
+  "role_note": "Đồ án VN đi trước (16 lần nhắc calibration) — xem người đi trước trình bày thế nào.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

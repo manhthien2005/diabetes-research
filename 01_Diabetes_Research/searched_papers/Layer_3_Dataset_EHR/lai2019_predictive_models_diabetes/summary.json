@@ -1,0 +1,24 @@
+{
+  "paper_id": "lai2019_predictive_models_diabetes",
+  "layer": 3,
+  "prediction_horizon": "early_detection",
+  "contribution": "Xây 2 mô hình ML (GBM & Logistic Regression) dự đoán nguy cơ ĐTĐ riêng cho dân số Canada từ EHR sơ cấp CPCSSN (13.309 BN, 8 predictor), tập trung xử lý mất cân bằng lớp (20.9% DM) bằng misclassification-cost matrix (FN:FP=3:1) + class-weight để nâng sensitivity; nhãn lập từ bản ghi 'trước onset' DM → forward-prediction (early_detection).",
+  "method": "GBM (Bernoulli loss, tree-based; n.trees=257, interaction.depth=2, n.minobsinnode=75, shrinkage=0.126) + Logistic Regression bằng package MLR trong R; ghép bản ghi EHR theo cửa sổ thời gian (BMI/HDL/LDL/TG ±1 năm, FBS ±1 tháng, HbA1c ±3 tháng); listwise deletion missing; loại BN insulin/corticosteroid; lấy lần khám cuối/BN; 80/20 split + 10-fold CV; cân bằng lớp bằng adjusted-threshold (0.24) + class-weight (GBM=3, LR=3.5); so sánh Random Forest & Rpart; DeLong test so AROC; kiểm chứng chéo trên PIMA.",
+  "best_metric": "GBM AROC 84.7% trên test set CPCSSN (sensitivity 71.6% · specificity 83.7% · misclassification 18.9%, ngưỡng 0.24 — Section Results + Table 3). LR AROC 84.0% (sensitivity 73.4%, cao nhất). Xếp hạng: GBM 84.7% > LR 84.0% > RF 83.4% > Rpart 78.2% (Table 3). DeLong: GBM vượt RF (p=5.13e-05) & Rpart (p=2.20e-16) nhưng KHÔNG khác LR (p=0.081, Table 6). CV GBM trung bình 83.6% (81.6-85.0%). Kiểm chứng chéo PIMA (test): LR 88.0% > RF 87.1% > GBM 84.7% > Rpart 77.0% (Table S8). Paper báo AROC, KHÔNG báo accuracy cho mô hình chính.",
+  "datasets": [
+    "cpcssn",
+    "pima-indians-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Cùng Layer 3 với dinh2019 (NHANES ~21k, XGBoost AUC 0.957 lab / 0.862 survey-only): bài này AROC thấp hơn (84.7%) nhưng nhãn lập 'trước onset' tránh được rò rỉ kiểu cross-sectional của dinh2019. vs agliata2023 (NHANES+MIMIC hợp nhất 13.687 mẫu, ANN ensemble ROC AUC 0.934, cross_sectional, có calibration/Brier): cỡ mẫu tương đương nhưng lai2019 là EHR đơn nguồn Canada thực + forward-prediction; agliata cao hơn về AUC và có calibration mà lai2019 thiếu. Điểm riêng của lai2019: dùng cost-sensitive threshold (FN:FP=3:1) + báo cáo sensitivity minh bạch thay vì under/down-sampling. Cả 3 đều KHÔNG public code.",
+  "gap": "FBS vừa là feature quan trọng nhất (information gain, Fig. 1; odds ratio 7.122, Table 2) vừa gần định nghĩa nhãn → rủi ro label-feature leakage một phần dù đã bỏ 'năm cuối trước onset'; chỉ giữ LẦN KHÁM CUỐI mỗi BN → vứt bỏ động học longitudinal của EHR (biến thành một-dòng/BN); thiếu biến parental history (tự nêu) làm LR thua model Wilson; tỉ lệ chi phí FN:FP=3:1 và ngưỡng 0.24 đặt chủ quan, không phân tích độ nhạy; không external validation (PIMA chỉ kiểm chứng phương pháp chạy được); không báo PR-AUC/calibration/PPV theo phân bố thật; chỉ information gain, không SHAP/LIME; horizon 'trước onset' không định lượng N năm; dataset + code không public. Cải tiến cho đề tài: giữ longitudinal, thêm PR-AUC+calibration+PPV thật, SHAP, external validation đa nguồn, tách nhãn khỏi FBS.",
+  "verdict": "strong",
+  "verdict_reason": "Đạt §7 (296 cite, BMC Endocrine Disorders 2019; hyperparam GBM + pipeline mô tả đủ chi tiết để tái lập ý tưởng), neo Layer 3 bằng EHR sơ cấp Canada (CPCSSN) với horizon early_detection 'trước onset' khác hẳn các bài cross-sectional cùng layer; nhiều gap rõ (leakage FBS, mất longitudinal, không external validation, chỉ AROC) làm điểm cải tiến cho đề tài; trừ điểm vì dataset+code không public và lấy lần khám cuối làm mất động học EHR.",
+  "analyzed_at": "2026-06-22",
+  "role": "method",
+  "role_note": "DeLong test so 2 AUC (cho C5) + cost-sensitive FN:FP + chọn ngưỡng theo mục tiêu lâm sàng.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

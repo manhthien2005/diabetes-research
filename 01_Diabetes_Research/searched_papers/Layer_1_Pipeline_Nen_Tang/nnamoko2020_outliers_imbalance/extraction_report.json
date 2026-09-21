@@ -1,0 +1,25 @@
+{
+  "paper": "nnamoko2020_outliers_imbalance",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 75.0,
+  "pages": 12,
+  "failed_pages": [],
+  "source_text_chars": 69609,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 7,
+  "qa": {
+    "out_chars": 95337,
+    "n_markdown_tables": 16,
+    "source_table_captions": 10,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 1,
+    "text_density": 1.37,
+    "score": 100,
+    "warnings": []
+  }
+}

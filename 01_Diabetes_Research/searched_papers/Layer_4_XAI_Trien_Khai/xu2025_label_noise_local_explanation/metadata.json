@@ -1,0 +1,73 @@
+{
+  "paper_id": "xu2025_label_noise_local_explanation",
+  "title": "Improving the local diagnostic explanations of diabetes mellitus with the ensemble of label noise filters",
+  "authors": [
+    "Che Xu",
+    "Peng Zhu",
+    "Jiacun Wang",
+    "Giancarlo Fortino"
+  ],
+  "year": 2025,
+  "venue": "Information Fusion",
+  "doi": "10.1016/j.inffus.2025.102928",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 27,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": null,
+  "license": null,
+  "code_url": null,
+  "datasets_mentioned": [
+    "D1 (520/16, ~early-stage diabetes risk prediction)",
+    "D2 (768/8, PIMA)",
+    "D3 (1000/7, Kaggle, tên UNKNOWN)",
+    "D4 (4303/17, Kaggle, tên UNKNOWN)"
+  ],
+  "dataset_slugs": [
+    "early-stage-diabetes-risk-prediction",
+    "pima-indians-diabetes",
+    "uci-kaggle-dm-d3-unknown",
+    "uci-kaggle-dm-d4-unknown"
+  ],
+  "method_slugs": [
+    "local-explanation",
+    "label-noise-filter",
+    "ensemble",
+    "explainable-ai",
+    "data-quality"
+  ],
+  "layer": 4,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 2,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 19,
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "2026-06-20: Không có bản OA (Unpaywall/S2/OpenAlex/CORE/EuropePMC đều âm). Information Fusion (Elsevier) — CLOSED. Mở link đăng nhập trường → Download PDF → lưu source.pdf vào folder này. | 2026-06-21: user tải tay qua quyền trường (closed access), verified DOI khớp",
+  "status": "rejected",
+  "analysis_status": "analyzed",
+  "analysis_status_at": "2026-06-22T00:00:00+07:00",
+  "scope_note": "LÀM GIÀU LAYER 4 (XAI nâng cao) + VENUE ĐỈNH: cải thiện ĐỘ TIN CẬY/ổn định của giải thích cục bộ (LIME) cho chẩn đoán ĐTĐ bằng ensemble bộ lọc nhãn nhiễu (label-noise filters) — kết hợp data-quality với XAI, hướng mới lạ (first work label-noise × local-explanation). Information Fusion 2025 (IF rất cao), Giancarlo Fortino. GIÁ TRỊ: kỹ thuật trung bình hệ số explanation (Eq.7) để ổn định LIME dễ áp dụng. HẠN CHẾ: không code, dataset D3/D4 không nêu tên (data on request), không báo acc/AUC nên khó làm baseline số, lợi thế giảm khi nhiễu cao.",
+  "corrections": "2026-06-21 đọc full PDF: (1) DATASET — không phải 'pending-pdf'; thực tế 4 dataset DM (Table 2): D1 520/16 (~early-stage diabetes risk), D2 768/8 (PIMA), D3 1000/7 (Kaggle, tên UNKNOWN), D4 4303/17 (Kaggle, tên UNKNOWN). Paper chỉ ghi 'UCI and Kaggle', data 'available on request'. (2) CODE — xác nhận KHÔNG có repo, chỉ pseudocode Algorithm 1-4 + cấu hình scikit-learn/xgboost (Table 3,6); code_url=null đúng. (3) HORIZON — cross_sectional (đặt horizon_uncertain=false): nhãn nhị phân từ feature cùng thời điểm, không follow-up. (4) METRIC — KHÔNG phải acc/AUC; là explanation difference d=||delta_g-delta||_2 (Eq.14, nhỏ=tốt); PMSL/PMDL tốt nhất (Table 4,5,9). (5) CITATIONS/§7 — 27 cite, bài <1.5 năm => ~1.9 cite/tháng, DƯỚI mốc rising-star 5/tháng => §7 CHƯA đạt (scope_note cũ ghi 'rising-star đạt' là SAI). (6) METHOD — Layer 4 đúng, đóng góp chính là ổn định XAI dưới nhãn nhiễu. (7) 2026-06-22 re-analyze: STATUS đổi 'rejected' -> 'kept' cho khớp verdict='maybe' (giữ làm nguồn ý tưởng/phương pháp ổn định LIME, KHÔNG promote, KHÔNG reject) — nhất quán với scope_note 'làm giàu Layer 4'. Xác nhận dataset (Table 2), method (Algorithm 1-4 + LIME), code=null, horizon=cross_sectional; không phát sinh corrections mới về dataset/method/code so với lần đọc full 2026-06-21.",
+  "download_link": "https://www.sciencedirect.com/science/article/pii/S1566253525000016",
+  "label_type": "binary",
+  "reject_reason": "Không đạt §7: 27 citations (OpenAlex, kiểm lại 26/07/2026), xuất bản 2025-01-02 → khung 1–3 năm cần ≥30. Không code public, không báo acc/AUC. Khớp rejected.json.",
+  "role": "related",
+  "role_note": "ĐÃ LOẠI theo §7 (27 cite, cần ≥30 — kiểm lại 26/07/2026 vẫn 27). Chỉ trích dẫn.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2025-01-02",
+    "age_years": 1.6,
+    "citations": 27,
+    "threshold": ">=30 (bài 1-3 năm)",
+    "pass": false,
+    "note": "Cổng §7 là cổng NHẬN VÀO lúc tìm được, KHÔNG phải cổng duy trì — bài không bị loại chỉ vì già đi qua mốc 3 năm. Ghi lại để phiên sau khỏi tranh luận."
+  }
+}

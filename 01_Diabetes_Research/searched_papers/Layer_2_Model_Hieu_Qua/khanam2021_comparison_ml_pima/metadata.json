@@ -1,0 +1,59 @@
+{
+  "paper_id": "khanam2021_comparison_ml_pima",
+  "title": "A comparison of machine learning algorithms for diabetes prediction",
+  "authors": [
+    "Jobeda Jamal Khanam",
+    "Simon Y. Foo"
+  ],
+  "year": 2021,
+  "venue": "ICT Express",
+  "doi": "10.1016/j.icte.2021.02.004",
+  "arxiv": null,
+  "url": "https://doi.org/10.1016/j.icte.2021.02.004",
+  "citations": 483,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 2,
+  "layer_uncertain": false,
+  "dataset_slugs": [
+    "pima-indians-diabetes"
+  ],
+  "method_slugs": [
+    "logistic-regression",
+    "support-vector-machine",
+    "neural-network",
+    "random-forest",
+    "decision-tree",
+    "naive-bayes",
+    "k-nearest-neighbors",
+    "adaboost"
+  ],
+  "code_url": null,
+  "reproducibility": 1,
+  "status": "analyzed",
+  "reject_reason": null,
+  "notes": "Kim cuong cu (gem) - paper so sanh ML tren PIMA duoc cite nhat trong thoi ky 2021. 7 ML algorithms + NN. Best: NN 2HL 400 epoch lr=0.01 acc 88.6% (test split 85/15, KHONG K-fold). LR/SVM ~77-78% K-fold. Khong xu ly imbalance, khong AUC, khong code public. Tot de cite trong related work.",
+  "analysis_status": "analyzed",
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "corrections": [
+    "dataset/method/code khop voi full text: PIMA (PIDD), 7 ML + 3 NN, code null - khong can sua slug.",
+    "Best ML accuracy (train/test split) thuc te la KNN va AdaBoost 79.42% (Bang 6), cao hon LR 78.85%; note cu nhan manh LR/SVM la theo loi van tac giả khen 'works well' nhung khong phai diem accuracy cao nhat.",
+    "Xac nhan 88.6% (NN 2 lop an, 400 epoch) chi tu train/test split 85/15; o 10-fold CV NN 2HL chi ~76% (Muc 4.2). Paper KHONG cong bo AUC dang so (chi ROC Fig.11)."
+  ],
+  "label_type": "binary",
+  "pdf_status": "downloaded",
+  "source_pdf": "source.pdf",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2021-02-21",
+    "age_years": 5.4,
+    "citations": 483,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

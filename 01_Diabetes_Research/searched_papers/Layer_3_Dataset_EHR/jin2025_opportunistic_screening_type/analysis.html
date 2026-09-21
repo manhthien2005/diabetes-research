@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opportunistic screening of T2D with deep metric learning — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card (standardized cho mọi paper) ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout (lưu ý) ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Opportunistic screening of type 2 diabetes with deep metric learning using electronic health records</h1>
+    <div class="meta">
+      <span>📅 <strong>2025</strong></span>
+      <span>📰 Scientific Reports</span>
+      <span>📚 <strong>0</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1038/s41598-025-25759-x" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (registered/private)</span>
+      <span class="badge horizon">⏱️ Horizon: Long-term risk (2–7 năm)</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://www.researchallofus.org/" target="_blank">All of Us (AoU) Research Program</a> — EHR + gene, &gt;400k người, &gt;340 trung tâm Mỹ; T2D n=7567 (eMERGE). Controlled Tier v6, cần đăng ký DUA.</li>
+      <li>🔹 <a href="https://doi.org/10.1038/s41598-025-25759-x" target="_blank">Mass General Brigham (MGB) Biobank</a> — EHR + gene, &gt;1.5 triệu BN/năm; T2D n=3298 (PheCAP). PRIVATE, không công khai.</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD (standardized) ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Khung <strong>Deep Metric Learning (DML)</strong> hợp NHẤT 2 việc trong 1 không gian latent: vừa <strong>dự đoán onset T2D</strong> trước 2–7 năm, vừa <strong>phân nhóm (subtyping)</strong> ra 3 subtype Green/Yellow/Red — chỉ dùng feature EHR thường quy.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value"><strong>AUROC 0.969</strong> dự đoán onset 2 năm (DML, AoU PopControl, Fig 2b); <strong>0.754</strong> ở mốc 7 năm trước chẩn đoán (Fig 2a / abstract).</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">DML encoder (3–4 lớp FC, triplet/N-pair/Lifted/ProxyNCA loss) → latent 32/64-d; LR tuyến tính trên latent để dự đoán; KMeans (k=3) trên latent để subtyping.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Cùng Layer 3: AUROC cao hơn nguyen2019 Wide&amp;Deep (0.841) và deberneh2021 (acc 0.73); nhưng số AUROC ấn tượng đến từ PopControl (control ghép cặp) chứ không phải prevalence thật như dinh2019 (NHANES 0.957 nhưng cross-sectional). Điểm vượt trội: latent THỐNG NHẤT cho cả predict + subtype.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan &amp; vì sao thuộc Layer 3
+    </h2>
+    <p class="lead">
+      Bài đề xuất một mô hình <strong>Deep Metric Learning (DML)</strong> dùng dữ liệu <strong>EHR thường quy</strong> để
+      <strong>sàng lọc cơ hội (opportunistic screening)</strong> đái tháo đường type 2 (T2D). Khác biệt cốt lõi: cùng MỘT không gian
+      latent (học bằng metric loss để người giống nhau ở gần nhau) phục vụ ĐỒNG THỜI hai việc mà trước đây làm tách rời —
+      (1) <strong>dự đoán onset</strong> T2D trong tương lai và (2) <strong>phân nhóm (subtyping)</strong> bệnh nhân.
+      Mô hình dự đoán onset T2D <strong>7 năm sau với AUC 0.754</strong>, vượt logistic regression (0.706), mô hình yếu tố
+      nguy cơ lâm sàng Wilson (0.693) và mô hình glycemic (0.632) (abstract, Fig 2a). Subtyping cho ra 3 nhóm Green/Yellow/Red
+      khác nhau về tỷ lệ béo phì, tim mạch và sức khoẻ tâm thần; nhóm Green (ít bệnh đồng mắc) khởi trị metformin sớm hơn và
+      giảm HbA1c nhiều hơn. Validate trên 2 cohort lớn (AoU + MGB) để chứng minh tính chuyển giao (transferability).
+    </p>
+    <h3>Vì sao là Layer 3 (Dataset / EHR)?</h3>
+    <table>
+      <tr><td>✔ Dùng EHR longitudinal thật</td><td>All of Us (&gt;400k người, &gt;340 trung tâm) + MGB Biobank (&gt;1.5 triệu BN/năm) — không phải tabular benchmark nhỏ như PIMA</td></tr>
+      <tr><td>✔ Có yếu tố thời gian</td><td>Feature lấy trước censor date ≥2 năm so với chẩn đoán; dự đoán onset 2–10 năm về tương lai (Methods, Section "Data preprocessing")</td></tr>
+      <tr><td>✔ Genetic / multi-modal</td><td>Có PRS, partitioned polygenic scores (pPS) để enrichment/validate (Section "Genetic contribution")</td></tr>
+      <tr><td>✘ Không phải Layer 1/2</td><td>Không phải pipeline tabular nền tảng; method là deep representation learning</td></tr>
+      <tr><td>✘ Không phải Layer 4</td><td>Có feature-importance nhưng không phải XAI sâu (SHAP/LIME) hay deployment thực địa</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>eMERGE algorithm</code></td><td>Định danh ca T2D trên AoU (n=7567)</td><td>Phenotype chuẩn (ICD + thuốc + HbA1c&gt;6.5), loại T1D</td><td>Phụ thuộc chất lượng mã hoá EHR</td></tr>
+        <tr><td><code>PheCAP</code></td><td>Định danh ca T2D trên MGB (n=3298)</td><td>ML semi-supervised, PPV 95%, dùng cả note tự do</td><td>Custom của MGB, khó tái lập ngoài hệ thống</td></tr>
+        <tr><td><code>kNN matching</code></td><td>Chọn PopControl 1:1 (tuổi, giới, healthcare utilization)</td><td>Buộc model học khác biệt tinh vi, chống shortcut</td><td>AUROC trên PopControl lạc quan hơn prevalence thật</td></tr>
+        <tr><td><code>Triplet / N-pair / Lifted / ProxyNCA loss</code></td><td>Hàm mất mát metric learning</td><td>Định hình latent quanh outcome; class-aware</td><td>Nhạy chiến lược chọn cặp/triplet, cần tuning</td></tr>
+        <tr><td><code>KMeans (k=3)</code></td><td>Phân nhóm trên latent ca T2D</td><td>Đơn giản; subtype theo khoảng cách tới control</td><td>k=3 chọn theo Supp Fig 10; latent là continuum chứ không cụm rõ</td></tr>
+        <tr><td><code>UMAP</code></td><td>Trực quan hoá latent (Fig 2d) + baseline giảm chiều</td><td>Giữ cấu trúc cục bộ</td><td>Không dùng nhãn → latent kém phân biệt hơn DML</td></tr>
+        <tr><td><code>PRS-CS</code></td><td>Tính polygenic risk score (post-hoc)</td><td>Bayesian shrinkage chuẩn</td><td>Chỉ enrichment, không vào train; lệch về tổ tiên châu Âu</td></tr>
+        <tr><td><code>scikit-learn / PyTorch</code></td><td>LR baseline + train DML (Adam, lr 1e-4, 50 epoch)</td><td>Phổ biến, dễ tái lập về công cụ</td><td>Không công bố code thực tế</td></tr>
+        <tr><td><code>Bootstrap CI (500 iters)</code></td><td>Khoảng tin cậy 95% cho AUROC</td><td>Định lượng độ bất định</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">Sắp xếp giảm dần theo <strong>AUROC onset 2 năm (AoU PopControl, Fig 2b)</strong>. ⭐ = model tác giả chọn.</p>
+    <table>
+      <thead><tr><th>#</th><th>Mô hình</th><th>Vai trò</th><th>AUROC (2y, Fig 2b)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>DML</code> ⭐</td><td>Encoder metric learning + LR trên latent</td><td><strong>0.969</strong></td><td>Latent thống nhất cho predict + subtype; latent phân biệt nhất</td><td>Cần PopControl ghép cặp; latent là continuum</td></tr>
+        <tr><td>2</td><td><code>LR (full EHR)</code></td><td>Baseline mạnh trên 698 feature thô</td><td>0.954</td><td>Đơn giản, mạnh khi đủ feature</td><td>Tuyến tính, không cho latent subtype</td></tr>
+        <tr><td>3</td><td><code>SCARF</code></td><td>DL baseline (self-supervised contrastive)</td><td>0.918</td><td>Học không nhãn</td><td>Không dùng outcome → latent kém phân biệt</td></tr>
+        <tr><td>4</td><td><code>TabTransformer</code></td><td>DL baseline (transformer tabular)</td><td>0.909</td><td>Outcome-informed</td><td>Không ép cấu trúc latent</td></tr>
+        <tr><td>5</td><td><code>PCA</code></td><td>Giảm chiều baseline</td><td>0.816</td><td>Nhanh, đơn giản</td><td>Không dùng nhãn</td></tr>
+        <tr><td>6</td><td><code>Risk-Factors (Wilson)</code></td><td>Mô hình lâm sàng validated</td><td>0.802</td><td>Diễn giải lâm sàng tốt</td><td>Thiếu feature trong EHR thụ động</td></tr>
+        <tr><td>7</td><td><code>CVAE</code></td><td>DL baseline (variational)</td><td>0.795</td><td>Có cấu trúc latent</td><td>Supervision yếu qua classifier</td></tr>
+        <tr><td>8</td><td><code>UMAP</code></td><td>Giảm chiều baseline</td><td>0.790</td><td>Giữ cấu trúc cục bộ</td><td>Không dùng nhãn</td></tr>
+        <tr><td>9</td><td><code>Glycemic</code></td><td>Chuẩn chẩn đoán hiện hành (HbA1c, glucose)</td><td>0.773</td><td>Phản ánh tiêu chuẩn ADA</td><td>Yếu khi dự đoán xa onset</td></tr>
+        <tr><td>10</td><td><code>ConvAE (Landi)</code></td><td>DL baseline (conv autoencoder)</td><td>0.571</td><td>Bắt chuỗi thời gian EHR</td><td>Không phụ thuộc outcome → kém nhất</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu (cohort)</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>All of Us (AoU)</strong></td>
+          <td>T2D n=7567 (eMERGE)<br>PopControl n=7567<br>GenControl n=77,567</td>
+          <td>698-d<br><span style="color:var(--muted);font-size:12px">(conditions 71, meds 89, vitals 6, labs 21, demo)</span></td>
+          <td>EHR longitudinal + gene, &gt;400k người, &gt;340 trung tâm Mỹ, nhấn nhóm thiểu số. Controlled Tier v6, dữ liệu tới 01/2022 (Methods nêu cả 01/13/2023).</td>
+          <td><a href="https://www.researchallofus.org/" target="_blank">researchallofus.org</a></td>
+        </tr>
+        <tr>
+          <td><strong>MGB Biobank</strong></td>
+          <td>T2D n=3298 (PheCAP, PPV 95%)<br>PopControl n=3298<br>GenControl n=81,787</td>
+          <td>698-d (tương tự AoU)</td>
+          <td>EHR + gene hệ thống y tế Massachusetts, &gt;1.5 triệu BN/năm; biobank trích 10/12/2022 (109,768 cá nhân). PRIVATE — không công khai; tác giả hứa phát hành cohort synthetic khi paper được chấp nhận.</td>
+          <td><a href="https://doi.org/10.1038/s41598-025-25759-x" target="_blank">DOI (mô tả)</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Phân nhóm subtype (Table 1): AoU Green n=172 / Yellow n=833 / Red n=496; MGB Green n=408 / Yellow n=631 / Red n=131.
+      Số ca subtype AoU (172+833+496=1501) nhỏ hơn tổng T2D n=7567 — chênh lệch không được giải thích trong phần text trích (có thể do giới hạn dữ liệu gene/HbA1c cần cho phân tích post-hoc).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Định danh ca T2D</td><td>eMERGE (AoU) / PheCAP (MGB); ngày chẩn đoán = sớm nhất trong {ICD T2D, thuốc T2D, HbA1c&gt;6.5}</td><td>Case AoU 7567 / MGB 3298</td></tr>
+        <tr><td>2</td><td>Chọn control</td><td>PopControl: kNN match 1:1 (tuổi, giới, healthcare utilization) cho TRAIN; GenControl ở prevalence thật cho TEST</td><td>Control train + control test</td></tr>
+        <tr><td>3</td><td>Đặt censor date (chống leakage)</td><td>Censor ≥2 năm trước chẩn đoán, tối đa 10 năm; loại proxy T2D (vd "biến chứng do T2D")</td><td>Cửa sổ feature an toàn</td></tr>
+        <tr><td>4</td><td>Trích feature</td><td>Conditions 71, meds 89, vitals 6, labs 21 + tuổi/giới; mean/min/max trên 3 cửa sổ (6 tháng, 2 năm, toàn lịch sử); impute bằng population mean</td><td>Vector 698-d</td></tr>
+        <tr><td>5</td><td>Chia dữ liệu</td><td>Train 70% / Val 10% / Test 20%, không trùng bệnh nhân; val để tuning, báo cáo trên test hold-out</td><td>3 tập độc lập</td></tr>
+        <tr><td>6</td><td>Train DML encoder</td><td>3–4 lớp FC + ReLU + dropout 0.2; loss ∈ {triplet, N-pair, Lifted, ProxyNCA}; d∈{32,64}; Adam lr 1e-4, 50 epoch; chọn theo val AUROC</td><td>Projection φ → latent</td></tr>
+        <tr><td>7</td><td>Dự đoán onset</td><td>LR tuyến tính trên latent (3-fold CV) → onset 2 năm tương lai; so với LR/Risk-Factors/Glycemic/SCARF/TabTransformer/CVAE/ConvAE/PCA/UMAP</td><td>AUROC + 95% CI (500 bootstrap)</td></tr>
+        <tr><td>8</td><td>Subtyping</td><td>KMeans (k=3) CHỈ trên latent của ca T2D → Green/Yellow/Red theo khoảng cách tới control</td><td>3 subtype</td></tr>
+        <tr><td>9</td><td>Phân tích hậu kiểm</td><td>So bệnh đồng mắc (binomial test + Bonferroni 0.05/50), đáp ứng thuốc (ANOVA), PRS/pPS (Tukey)</td><td>Đặc trưng lâm sàng subtype</td></tr>
+        <tr><td>10</td><td>Đánh giá chuyển giao</td><td>Train trên MGB → áp lên AoU (và ngược); feature importance bằng LR coef + permutation</td><td>Transfer AUROC</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+    <div class="formula">
+      <span class="label">Triplet DML loss (Methods, ref 52)</span>
+      L = max( 0 , ‖φ(x) − φ(x_p)‖ − ‖φ(x) − φ(x_n)‖ + m )<br>
+      với x = query, x_p = positive (cùng T2D status), x_n = negative, m = margin (hyperparameter)
+    </div>
+    <div class="formula">
+      <span class="label">Mục tiêu projection</span>
+      φ : χ → Φ  sao cho d(φ(x₁), φ(x₂)) phản ánh độ tương đồng lâm sàng<br>
+      (người cùng T2D status ở GẦN nhau, khác status ở XA nhau)
+    </div>
+    <div class="formula">
+      <span class="label">Đánh giá</span>
+      Onset: AUROC + 95% CI qua 500 bootstrap iterations<br>
+      Subtype: binomial proportion test; Bonferroni 0.05 / 50 = 0.001 (50 test)
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">🖼️ Fig 2 (hiệu năng dự đoán onset: a temporal, b bar 2 năm, c transfer, d latent UMAP) &amp; Fig 3 (thời điểm dùng thuốc + đáp ứng HbA1c) chưa được crop. <span class="caption">[tuỳ chọn — ưu tiên số đúng từ bảng; xem source.pdf]</span></div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.969</span><span class="label">DML onset 2 năm — AoU (Fig 2b)</span></div>
+      <div class="metric"><span class="value">0.754</span><span class="label">DML onset 7 năm — AoU (Fig 2a)</span></div>
+      <div class="metric"><span class="value">0.908</span><span class="label">DML 2 năm — MGB (Section transfer)</span></div>
+      <div class="metric"><span class="value">0.829</span><span class="label">MGB→AoU transfer (DML)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Model</th><th>Setting</th><th>Metric</th><th>Nguồn (Table/Fig)</th></tr></thead>
+      <tbody>
+        <tr><td>AoU PopControl</td><td>DML ⭐</td><td>Onset 7 năm trước chẩn đoán</td><td><strong>AUROC 0.754</strong></td><td>Abstract / Fig 2a</td></tr>
+        <tr><td>AoU PopControl</td><td>LR (full EHR)</td><td>Onset 7 năm</td><td>0.706</td><td>Abstract / Fig 2a</td></tr>
+        <tr><td>AoU PopControl</td><td>Risk-Factors (Wilson)</td><td>Onset 7 năm</td><td>0.693</td><td>Abstract / Fig 2a</td></tr>
+        <tr><td>AoU PopControl</td><td>Glycemic</td><td>Onset 7 năm</td><td>0.632</td><td>Abstract / Fig 2a</td></tr>
+        <tr><td>AoU PopControl</td><td>DML ⭐</td><td>Onset 2 năm</td><td><strong>AUROC 0.969</strong></td><td>Fig 2b / Section "DML prediction"</td></tr>
+        <tr><td>AoU PopControl</td><td>LR (full EHR)</td><td>Onset 2 năm</td><td>0.954</td><td>Fig 2b</td></tr>
+        <tr><td>AoU PopControl</td><td>SCARF / TabTransformer</td><td>Onset 2 năm</td><td>0.918 / 0.909</td><td>Fig 2b</td></tr>
+        <tr><td>AoU PopControl</td><td>PCA / UMAP</td><td>Onset 2 năm</td><td>0.816 / 0.790</td><td>Fig 2b</td></tr>
+        <tr><td>AoU PopControl</td><td>Risk-Factors / Glycemic</td><td>Onset 2 năm</td><td>0.802 / 0.773</td><td>Fig 2b</td></tr>
+        <tr><td>AoU PopControl</td><td>CVAE / ConvAE</td><td>Onset 2 năm</td><td>0.795 / 0.571</td><td>Fig 2b</td></tr>
+        <tr><td>MGB</td><td>DML / LR</td><td>Onset 2 năm (train MGB)</td><td>0.908 / 0.898</td><td>Section transfer / Supp Table 4</td></tr>
+        <tr><td>MGB→AoU</td><td>DML / LR</td><td>Transfer (train MGB, test AoU)</td><td>0.829 / 0.861</td><td>Fig 2c / Supp Table 4</td></tr>
+        <tr><td>AoU PopControl</td><td>PRS-based</td><td>Onset (so sánh gene)</td><td>0.642–0.745</td><td>Section "Genetic" (kém hơn DML 0.969)</td></tr>
+        <tr><td>AoU / MGB</td><td>—</td><td>Obesity: Green vs Red</td><td>54.6%→71.1% (p=7.26e-05**) / 71.3%→93.1% (p=2.88e-07**)</td><td>Table 2</td></tr>
+        <tr><td>AoU / MGB</td><td>—</td><td>Depression: Green vs Red</td><td>44.8%→60.9% (p=2.36e-04**) / 31.4%→54.2% (p=2.47e-06*)</td><td>Table 2</td></tr>
+        <tr><td>AoU</td><td>—</td><td>Giảm HbA1c sau metformin (Green vs Red)</td><td>−0.64 vs −0.27 (p=4.0e-03, ANOVA)</td><td>Section "Medication" / Fig 3d</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Lưu ý đọc số: AUROC onset cao (0.969 / 0.754) đo trên <strong>PopControl</strong> (control ghép cặp 1:1), KHÔNG phải prevalence thật của GenControl;
+      các chỉ số trên GenControl ở prevalence tự nhiên không được trích chi tiết trong text (UNKNOWN — xem Supp). Khác biệt nhân khẩu giữa subtype KHÔNG có ý nghĩa thống kê (Supp Table 5), nên Table 1 chỉ mô tả, không phải kết quả phân biệt.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro khi đọc / tái lập</strong>
+      <ul>
+        <li>AUROC 0.969 (2 năm) đo trên <strong>PopControl ghép cặp</strong> → lạc quan so với deployment ở prevalence thật; số "screening thật" trên GenControl không trích rõ trong text.</li>
+        <li><strong>Không có code public</strong> (code_url = null) và MGB Biobank PRIVATE → tái lập chính xác bất khả; AoU cần DUA Controlled Tier.</li>
+        <li>Ngày chẩn đoán T2D định nghĩa một phần bằng HbA1c&gt;6.5, mà DML lại ưu tiên feature cân nặng (BMI) còn LR dựa glycemic → cần kiểm rủi ro leakage dù tác giả đã loại proxy code và censor ≥2 năm.</li>
+        <li>k=3 subtype chỉ biện minh bằng Supp Fig 10; tác giả thừa nhận latent là <strong>continuum mượt</strong>, không cụm rõ ràng → ranh giới subtype có phần tuỳ ý.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn của paper (tác giả tự nêu + quan sát)</strong>
+      <ul>
+        <li>Thiếu dữ liệu tiền sử gia đình → hạn chế năng lực dự đoán.</li>
+        <li>Bias nghiên cứu hồi cứu bệnh viện: thiên về người có healthcare utilization cao.</li>
+        <li>PRS/pPS lệch về tổ tiên châu Âu; subtype không khác biệt về gene (chỉ khác control).</li>
+        <li>Cohort subtype nhỏ (AoU 1501/7567) so với tổng ca, không giải thích chênh lệch trong text trích.</li>
+        <li>Báo cáo chủ yếu AUROC; thiếu PR-AUC / calibration / sensitivity-specificity ở prevalence thật.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li>Đây là tham chiếu Layer 3 mạnh về <strong>khung thống nhất predict + subtype</strong> trên EHR thật — ý tưởng "một latent, hai nhiệm vụ" đáng học.</li>
+        <li>Horizon <strong>long-term risk (2–7 năm)</strong>: bổ sung cho dinh2019 (cross-sectional) và deberneh2021/lai2019 (early_detection ~1 năm); cùng hướng forward-prediction với nguyen2019 nhưng AUROC cao hơn nhiều.</li>
+        <li><strong>Khoảng trống làm điểm cải tiến</strong>: (1) báo metric ở prevalence thật + calibration; (2) thay metric-learning + KMeans bằng phương pháp subtype giải thích được (SHAP trên latent); (3) thêm tiền sử gia đình; (4) phát hành code/synthetic để tái lập.</li>
+        <li>CẢNH BÁO promote: 0 citations (mới 11/2025), code null, MGB private → metadata hiện đang <code>status: rejected</code> theo §7; phân tích này phục vụ tham khảo phương pháp, không nhất thiết đưa vào chosen.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

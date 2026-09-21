@@ -1,0 +1,25 @@
+{
+  "paper": "alghamdi2017_smote_fit_project",
+  "status": "OK",
+  "engine": "pymupdf4llm",
+  "ocr_used": false,
+  "secs": 98.6,
+  "pages": 15,
+  "failed_pages": [],
+  "source_text_chars": 47908,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 60,
+  "qa": {
+    "out_chars": 50433,
+    "n_markdown_tables": 7,
+    "source_table_captions": 6,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 1.053,
+    "score": 100,
+    "warnings": []
+  }
+}

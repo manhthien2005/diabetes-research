@@ -1,0 +1,70 @@
+{
+  "paper_id": "chowdhury2023_brfss_augmentation",
+  "title": "An investigation of machine learning algorithms and data augmentation techniques for diabetes diagnosis using class imbalanced BRFSS dataset",
+  "authors": [
+    "Mohammad Mihrab Chowdhury",
+    "Ragib Shahariar Ayon",
+    "Md Sakhawat Hossain"
+  ],
+  "year": 2023,
+  "venue": "Healthcare Analytics",
+  "doi": "10.1016/j.health.2023.100297",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 56,
+  "citations_secondary": 42,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 1,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "datasets_mentioned": [
+    "BRFSS diabetes dataset"
+  ],
+  "dataset_slugs": [
+    "brfss-diabetes-health-indicators"
+  ],
+  "method_slugs": [
+    "class-imbalance",
+    "data-augmentation",
+    "oversampling",
+    "machine-learning-baselines",
+    "brfss"
+  ],
+  "code_url": null,
+  "reproducibility": 2,
+  "source_pdf": "source.pdf",
+  "page_count": 11,
+  "open_access_pdf": "https://ttu-ir.tdl.org/bitstreams/019c2bee-e086-4220-8066-0ef95d0887db/download",
+  "pdf_url": "https://doi.org/10.1016/j.health.2023.100297",
+  "license": "cc-by-nc-nd",
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "2026-07-01: DOI/ScienceDirect direct route first returned non-PDF HTML and was removed; Unpaywall found repository PDF at Texas Tech; downloaded source.pdf from https://ttu-ir.tdl.org/bitstreams/019c2bee-e086-4220-8066-0ef95d0887db/download; verified %PDF- and ~11 pages.",
+  "download_link": null,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "found_by": "codex-paper-finder",
+  "url": "https://doi.org/10.1016/j.health.2023.100297",
+  "abstract": "Investigates machine-learning algorithms and data augmentation techniques for diabetes diagnosis on a class-imbalanced BRFSS dataset; useful as a Layer 1 comparator for imbalance handling and oversampling/data-augmentation pipelines.",
+  "status": "searched",
+  "analysis_status": "none",
+  "analysis_status_at": "2026-07-01T16:38:41Z",
+  "reject_reason": null,
+  "scope_note": "Đúng scope diabetes prediction tabular; đạt citation gate cho 2023, dùng BRFSS public và tập trung trực tiếp vào class imbalance/data augmentation — bổ sung tốt cho Layer 1.",
+  "corrections": null,
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Chưa phân tích — không cần cho đề tài đã chốt. Related work.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2023-12-30",
+    "age_years": 2.6,
+    "citations": 56,
+    "threshold": ">=30 (bài 1-3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

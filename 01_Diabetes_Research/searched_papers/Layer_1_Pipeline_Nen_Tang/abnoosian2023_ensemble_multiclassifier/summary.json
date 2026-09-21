@@ -1,0 +1,23 @@
+{
+  "paper_id": "abnoosian2023_ensemble_multiclassifier",
+  "layer": 1,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Khung pipeline đa-lớp (diabetic/non-diabetic/pre-diabetic) cho dữ liệu lệch lớp nặng: tiền xử lý đầy đủ (loại trùng → k-NN imputation → min-max/Z-score → MRMR/PCA/ICA) + ensemble bỏ phiếu có trọng số = AUC One-Vs-One (thay accuracy) để chống mất cân bằng.",
+  "method": "k-NN imputation → normalization(min-max)+standardization(Z) → feature selection MRMR / giảm chiều PCA,ICA → 6 base MLM (k-NN, multi-SVM, DT, RF, AdaBoost.MH, GNB) tune bằng grid search + Bayesian opt trong nested 5-fold CV → weighted voting ensemble (trọng số AUC theo cách One-Vs-One). KHÔNG dùng SMOTE, KHÔNG dùng stacking.",
+  "best_metric": "Ensemble K-NN+AdaBoost+DT+RF (tiền xử lý I) trên IPDD: Accuracy 0.9887 / Precision 0.9861 / Recall 0.9792 / F1 0.9851 / AUC 0.999 (Abstract; Table 9 cột tối ưu khớp; Table 10 ghi 99.87% ACC), micro-avg 5-fold CV. Base model tốt nhất: RF AAC 0.988±0.003 (Table 4).",
+  "datasets": [
+    "iraqi-society-diabetes"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Cùng Layer 1 với gr2024_random_oversampling (Boruta+RF+RandomOverSampling, 94% PIDD/92% BRFSS), nnamoko2020 (SMOTE+outlier, 89.5% PIMA) và olisah2022 (Spearman+PR, 97.93% RF PIMA). Khác cốt lõi: cân bằng lớp bằng TRỌNG SỐ AUC One-Vs-One trong voting chứ KHÔNG oversampling. Acc danh nghĩa cao nhất (98.87%) nhưng micro-avg trên 1 dataset 3 lớp lệch nặng (IPDD 993 mẫu), không external validation → con số không so trực tiếp được với các bài binary. Cùng horizon cross_sectional.",
+  "gap": "Không public code (Additional file 1 chỉ pseudo-code); chỉ 1 dataset IPDD không external validation (tác giả tự thừa nhận thiên lệch); mô tả mơ hồ về việc impute/normalize/feature-select có fit chỉ trên train fold hay không → rủi ro leakage; accuracy multi-class micro-avg ~0.99 dễ thổi phồng (lớp Y=837 áp đảo), nên báo cáo per-class/macro recall-F1; lớp pre P chỉ 53 mẫu → CV variance cao; chưa benchmark với GB/LGBM/XGBoost; không XAI. CẢNH BÁO bản trích: Table 5–8 (ma trận AAC) vỡ cấu trúc — số trong ô không tin được, phải đối chiếu source.pdf.",
+  "verdict": "maybe",
+  "verdict_reason": "Pipeline tiền xử lý + chiến lược cân bằng bằng trọng số AUC đáng tham chiếu và highly-cited (127, BMC Bioinformatics), nhưng đơn-dataset, accuracy micro-avg bão hoà nghi quá lạc quan và rủi ro leakage chưa loại trừ nên chỉ dùng làm ĐỐI CHỨNG, không phải nền tảng chính.",
+  "analyzed_at": "2026-06-22",
+  "role": "inflation",
+  "role_note": "Lấy đúng 1 con số: 0.9887 micro-avg 3 lớp trên IPDD. Dẫn chứng thổi phồng.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

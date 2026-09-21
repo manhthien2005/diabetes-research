@@ -1,0 +1,62 @@
+{
+  "paper_id": "lugner2024_top_ten_predictors",
+  "title": "Identifying top ten predictors of type 2 diabetes through machine learning analysis of UK Biobank data",
+  "authors": [
+    "Moa Lugner",
+    "Araz Rawshani",
+    "Edvin Helleryd",
+    "Björn Eliasson"
+  ],
+  "year": 2024,
+  "venue": "Scientific Reports",
+  "doi": "10.1038/s41598-024-52023-5",
+  "arxiv": null,
+  "pubmed": "38267466",
+  "pmc": null,
+  "citations": 64,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://www.nature.com/articles/s41598-024-52023-5.pdf",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "uk-biobank"
+  ],
+  "dataset_slugs": [
+    "uk-biobank"
+  ],
+  "method_slugs": [
+    "xgboost",
+    "shap",
+    "downsampling",
+    "one-hot-encoding",
+    "latin-hypercube-sampling",
+    "5-fold-cv"
+  ],
+  "layer": 3,
+  "layer_uncertain": false,
+  "prediction_horizon": "long_term_risk",
+  "horizon_uncertain": false,
+  "reproducibility": 2,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 9,
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "corrections": "Không có sai lệch sau khi đọc full text. Xác nhận: dataset = UK Biobank (project ID 70236); method = XGBoost (main 419 feature + reduced top-10) + SHAP global + downsampling 1:3 + Latin hypercube + 5-fold CV; code_url = null (không công bố code); prediction_horizon = long_term_risk (nhãn = incidence ICD-10 E11 trong 10 năm/3650 ngày sau baseline, đã loại người ĐTĐ tại baseline).",
+  "label_type": "binary",
+  "pdf_status": "downloaded",
+  "role": "design",
+  "role_note": "Hình mẫu BẢNG KẾT QUẢ trung thực: Acc 0.92 nhưng PR-AUC 0.29, Sens 0.62 — bắt chước cách báo cáo này.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2024-01-24",
+    "age_years": 2.5,
+    "citations": 64,
+    "threshold": ">=30 (bài 1-3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

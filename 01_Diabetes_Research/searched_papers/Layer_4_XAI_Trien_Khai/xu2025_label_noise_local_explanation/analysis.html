@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Improving the local diagnostic explanations of DM with the ensemble of label noise filters — Phân tích</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --success: #047857;
+    --success-soft: #d1fae5;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --warning: #b45309;
+    --warning-soft: #fef3c7;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    margin-bottom: 22px;
+  }
+  .header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  .header .meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; opacity: 0.92; }
+  .header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28); text-decoration: none; }
+  .badge.yes { background: var(--success-soft); color: var(--success); border-color: transparent; }
+  .badge.no  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+  .badge.horizon { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .dataset-list { margin: 14px 0 0; padding: 14px 18px; background: rgba(255,255,255,0.12); border-radius: 10px; list-style: none; }
+  .dataset-list li { padding: 4px 0; font-size: 14px; }
+  .dataset-list a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.5); }
+  .dataset-list a:hover { text-decoration-color: #fff; }
+
+  /* ── Compare Card ── */
+  .compare-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid var(--accent-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+  }
+  .compare-card .title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+  .compare-row { display: flex; gap: 12px; align-items: flex-start; }
+  .compare-row .icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .compare-row .body { flex: 1; min-width: 0; }
+  .compare-row .label { display: block; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+  .compare-row .value { display: block; font-size: 14px; color: var(--text); line-height: 1.45; font-weight: 500; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* ── Section card ─────────────────────────────── */
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 8px; }
+  section h2 svg { flex-shrink: 0; }
+  section h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  section p  { margin: 0 0 10px; }
+  .lead { font-size: 15px; }
+  .lead strong { color: var(--primary); }
+
+  /* ── Tables ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:last-child td { border-bottom: none; }
+  td code, p code, li code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary); }
+
+  /* ── Formula block ──────────────────────────────── */
+  .formula { background: var(--code-bg); color: var(--code-text); padding: 14px 18px; border-radius: 10px; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 14px; margin: 12px 0; overflow-x: auto; }
+  .formula .label { display: block; color: #94a3b8; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Figure ─────────── */
+  .figure { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--muted); background: #fafbfd; font-size: 13px; margin: 12px 0; }
+  .figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  .figure .caption { display: block; margin-top: 8px; font-style: italic; }
+
+  /* ── Result highlight ───────────────────────────── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+  .metric { background: var(--primary-soft); border-left: 4px solid var(--primary); padding: 12px 14px; border-radius: 8px; }
+  .metric .value { display: block; font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .metric .label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Callout ────────────────────────────── */
+  .callout { background: var(--warning-soft); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
+  .callout strong { color: var(--warning); }
+  .callout ul { margin: 6px 0 0; padding-left: 22px; }
+  .callout li { margin: 4px 0; }
+
+  a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <h1>Improving the local diagnostic explanations of diabetes mellitus with the ensemble of label noise filters</h1>
+    <div class="meta">
+      <span>📅 <strong>2025</strong></span>
+      <span>📰 Information Fusion (Elsevier)</span>
+      <span>📚 <strong>27</strong> citations <small style="opacity:0.7">(2026-07-26)</small></span>
+      <span>🔗 <a href="https://doi.org/10.1016/j.inffus.2025.102928" style="color:#fff">DOI</a></span>
+    </div>
+    <div class="badges">
+      <span class="badge no">💻 Code: Không</span>
+      <span class="badge yes">📊 Dataset: Có (4 bộ DM)</span>
+      <span class="badge horizon">⏱️ Horizon: Cross-sectional</span>
+    </div>
+    <ul class="dataset-list">
+      <li>🔹 <a href="https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset" target="_blank">D1 — Early-stage diabetes risk (UCI)</a> — 520 mẫu, 16 feature, tỉ lệ ~8:5 (Table 2)</li>
+      <li>🔹 <a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">D2 — PIMA Indians Diabetes</a> — 768 mẫu, 8 feature, tỉ lệ ~2:1 (Table 2)</li>
+      <li>🔹 <span style="opacity:0.85">D3 — UCI/Kaggle (tên UNKNOWN)</span> — 1000 mẫu, 7 feature, tỉ lệ ~2.3:1 (Table 2)</li>
+      <li>🔹 <span style="opacity:0.85">D4 — UCI/Kaggle (tên UNKNOWN)</span> — 4303 mẫu, 17 feature, tỉ lệ ~3:1 (Table 2)</li>
+    </ul>
+  </header>
+
+  <!-- ═══════════════ COMPARE CARD ═══════════════ -->
+  <div class="compare-card">
+    <div class="title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5l4-7v6h4l-4 7v-6zM19 11h-4l4-7v6h-2"/></svg>
+      Compare Card &mdash; tóm tắt để so sánh chéo
+    </div>
+    <div class="compare-grid">
+      <div class="compare-row">
+        <span class="icon">🎯</span>
+        <div class="body">
+          <span class="label">Đóng góp chính</span>
+          <span class="value">Lần đầu khảo sát ảnh hưởng của <strong>nhãn nhiễu (label noise)</strong> lên <strong>giải thích cục bộ (LIME)</strong> trong chẩn đoán ĐTĐ, và đề xuất khung <strong>ensemble bộ lọc nhãn nhiễu (LNF)</strong> với 4 chiến lược để ổn định giải thích.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🏆</span>
+        <div class="body">
+          <span class="label">Best metric</span>
+          <span class="value">Không báo acc/AUC. Metric là <strong>explanation difference d</strong> (Eq.14, càng nhỏ càng tốt). <strong>PMSL</strong> nhỏ nhất hầu hết case — ví dụ D2 nl=0.1: <strong>0.1718</strong> (PMSL) vs 0.2277 (benchmark) — Table 4.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔧</span>
+        <div class="body">
+          <span class="label">Method chính</span>
+          <span class="value">Sinh pool 24 LNF → lọc dữ liệu → LIME giải thích cục bộ trên model black-box (XGBoost) → ensemble theo <strong>noise detection (PMSN/PMDN)</strong> hoặc <strong>local explanation (PMSL/PMDL)</strong>, tĩnh & động.</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="icon">🔄</span>
+        <div class="body">
+          <span class="label">So với baseline / paper khác</span>
+          <span class="value">Khác hẳn <code>tasin2022</code> (baseline Layer 4: pipeline + deploy + code) và <code>ahmed2024</code> (so sánh LIME vs SHAP). Bài này <strong>không báo acc/AUC, không code</strong> nhưng mở góc mới: <strong>data-quality × XAI stability</strong>.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 1. TỔNG QUAN ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Tổng quan & vì sao thuộc Layer 4
+    </h2>
+    <p class="lead">
+      Bài đặt một câu hỏi mới: <strong>nhãn nhiễu (label noise)</strong> trong dữ liệu chẩn đoán ĐTĐ không chỉ làm sai dự đoán, mà còn
+      làm <strong>méo giải thích cục bộ</strong> do LIME sinh ra. Các bộ lọc nhãn nhiễu (LNF) trước nay chỉ tối ưu độ chính xác dự đoán;
+      tác động của chúng lên <em>chất lượng giải thích</em> thì chưa ai khảo sát (Section 1). Nhóm đề xuất một <strong>khung ensemble của LNF</strong>
+      gồm 3 giai đoạn: (1) sinh pool LNF đa dạng, (2) dùng LIME giải thích cục bộ cho model black-box, (3) hợp nhất theo 4 chiến lược
+      (tĩnh/động × noise-detection/local-explanation). Kết luận chốt: gộp LNF dựa trên <strong>giải thích cục bộ (PMSL, PMDL)</strong> ổn định hơn
+      gộp dựa trên <strong>phát hiện nhiễu (PMSN, PMDN)</strong>, và tốt hơn bộ lọc đơn tốt nhất (BILNF) — xác nhận bằng paired t-test (Table 9).
+    </p>
+    <p>
+      Đây <strong>không</strong> phải bài "đẩy accuracy". Thước đo duy nhất là <strong>khoảng chênh giải thích</strong> giữa dữ liệu sạch và dữ liệu nhiễu
+      (Eq.14). Vì vậy giá trị của bài nằm ở <em>độ tin cậy/ổn định của XAI</em>, đúng tinh thần Layer 4.
+    </p>
+    <h3>Vì sao là Layer 4 (XAI & Triển khai)?</h3>
+    <table>
+      <tr><td>✔ Trọng tâm XAI</td><td>Toàn bộ bài xoay quanh LIME — giải thích cục bộ (local explanation) cho chẩn đoán ĐTĐ (Section 3.2)</td></tr>
+      <tr><td>✔ Góc mới về độ tin cậy</td><td>First work nối <strong>data-quality (label noise)</strong> với <strong>tính ổn định của giải thích</strong> (Section 1, contribution)</td></tr>
+      <tr><td>✔ Model-agnostic</td><td>Thử 6 model black-box (XGB, GB, AB, RF, NN, SVM) làm nền cho LIME (Table 6–8)</td></tr>
+      <tr><td>✘ Không phải Layer 1</td><td>Không phải pipeline phân loại nền tảng — coi accuracy là cho trước, không báo cáo</td></tr>
+      <tr><td>✘ Không deploy thật</td><td>Không web/app như tasin2022; chỉ pseudocode + cấu hình thư viện (Table 3, 6)</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 2. CÔNG NGHỆ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-2.6 2.4-2.4"/></svg>
+      Công nghệ sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Công nghệ</th><th>Vai trò</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td><code>LIME</code></td><td>Sinh giải thích cục bộ (hệ số α_e) cho từng bệnh nhân (Section 3.2)</td><td>Model-agnostic, giải thích từng ca</td><td>Bất ổn định trước nhãn nhiễu — đúng vấn đề bài giải</td></tr>
+        <tr><td><code>Label Noise Filter (LNF)</code></td><td>Lọc/xóa mẫu gán nhãn sai trước khi train (Fig. 1)</td><td>Model-agnostic, nâng chất lượng dữ liệu</td><td>Data-dependent: không LNF nào tốt mọi lúc (no free lunch)</td></tr>
+        <tr><td><code>Ensemble of LNFs</code></td><td>Hợp nhất 24 LNF qua 4 chiến lược (Section 3.3–3.4)</td><td>Giảm lỗi phát hiện theo định lý nhị thức (Section 3.5)</td><td>Lợi thế giảm khi nhiễu cao; bản noise-detection yếu</td></tr>
+        <tr><td><code>Min-Max normalization</code></td><td>Chuẩn hóa feature về [0,1] (Section 4.1)</td><td>Đồng nhất thang đo cho KNN/LIME</td><td>Nhạy outlier</td></tr>
+        <tr><td><code>5-fold CV ×5</code></td><td>Chia dữ liệu, lặp 5 lần, lấy trung bình (Section 4.1)</td><td>Ước lượng ổn định, công bằng giữa method</td><td>Tốn tính toán</td></tr>
+        <tr><td><code>scikit-learn / xgboost</code></td><td>Hiện thực LNF & model black-box (Table 3, 6)</td><td>Tái lập được cấu hình thư viện</td><td>Chỉ có cấu hình, không có repo công khai</td></tr>
+        <tr><td><code>KNN (similar region)</code></td><td>Ước lượng năng lực LNF trong ensemble động (Section 3.4)</td><td>Chọn LNF phù hợp từng ca</td><td>Tiêu chí động không cải thiện kết quả (Section 5)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 3. MÔ HÌNH ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      Mô hình sử dụng
+    </h2>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 10px">
+      "Mô hình" ở đây có 2 lớp: <strong>(a) 4 chiến lược ensemble LNF</strong> (sắp theo <em>explanation difference</em> trung bình, càng nhỏ càng tốt — ⭐ tốt nhất),
+      và <strong>(b) 6 model black-box</strong> làm nền cho LIME. XGBoost (XB) là model nền chính của toàn bộ thí nghiệm (Section 4.2).
+    </p>
+    <h3>(a) 4 chiến lược ensemble LNF</h3>
+    <table>
+      <thead><tr><th>#</th><th>Chiến lược</th><th>Vai trò</th><th>Xếp hạng (explanation diff)</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>PMSL</code> ⭐</td><td>Static ensemble theo <em>local explanation</em> (trung bình hệ số α, Eq.7)</td><td><strong>Tốt nhất</strong> — số win cao nhất (Fig. 7); khác PMDL có ý nghĩa thống kê (p=0.0023, Table 9)</td><td>Ổn định giải thích nhất, vượt BILNF & benchmark</td><td>Lợi thế giảm khi nhiễu ↑</td></tr>
+        <tr><td>2</td><td><code>PMDL</code></td><td>Dynamic ensemble theo <em>local explanation</em></td><td><strong>Thứ 2</strong> — cũng vượt BILNF/benchmark (Table 9)</td><td>Chọn LNF năng lực theo từng ca</td><td>Tiêu chí động không vượt PMSL</td></tr>
+        <tr><td>3</td><td><code>PMSN</code></td><td>Static ensemble theo <em>noise detection</em> (Algorithm 1)</td><td>Kém — tương đương BILNF, thua benchmark (Table 9)</td><td>Đơn giản, ngưỡng θ=M/2</td><td>Không giảm méo giải thích đáng kể</td></tr>
+        <tr><td>4</td><td><code>PMDN</code></td><td>Dynamic ensemble theo <em>noise detection</em></td><td>Kém nhất — KHÔNG khác benchmark (p=0.0632, Table 9)</td><td>—</td><td>Gộp theo phát hiện nhiễu không hiệu quả cho XAI</td></tr>
+      </tbody>
+    </table>
+    <h3>(b) 6 model black-box nền cho LIME</h3>
+    <table>
+      <thead><tr><th>Model</th><th>Vai trò</th><th>Ghi chú từ paper</th></tr></thead>
+      <tbody>
+        <tr><td><code>XGBoost (XB)</code> ⭐</td><td>Model nền chính (n_estimators=10, Table 6)</td><td>Dùng cho Table 4–5; khung hoạt động tốt nhất với XB (Section 5)</td></tr>
+        <tr><td><code>AdaBoost (AB)</code></td><td>Model nền thay thế</td><td>Với AB, nhãn nhiễu ít ảnh hưởng giải thích → có khi không cần lọc (D1,D2 — Section 4.4)</td></tr>
+        <tr><td><code>Gradient Boosting (GB)</code></td><td>Model nền thay thế</td><td>Khung "có vẻ thất bại" khi đổi từ XB sang GB/RF/NN/SVM (Section 4.4)</td></tr>
+        <tr><td><code>Random Forest (RF)</code></td><td>Model nền thay thế</td><td>Nhiễu ảnh hưởng giải thích rõ hơn (Table 7–8)</td></tr>
+        <tr><td><code>Neural Network (NN, MLP)</code></td><td>Model nền thay thế</td><td>hidden_layer_sizes=(10,) (Table 6)</td></tr>
+        <tr><td><code>SVM (rbf)</code></td><td>Model nền thay thế</td><td>kernel='rbf', probability=True (Table 6)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 4. DATASET ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
+      Dataset sử dụng
+    </h2>
+    <table>
+      <thead><tr><th>Tên</th><th>Mẫu</th><th>Feature</th><th>Mô tả ngắn</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>D1</strong></td><td>520</td><td>16</td>
+          <td>Tỉ lệ lớp ~8:5 (0:1). Khớp đặc trưng bộ "Early-stage diabetes risk prediction" (UCI) — nhãn từ triệu chứng cùng thời điểm</td>
+          <td><a href="https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset" target="_blank">UCI</a></td>
+        </tr>
+        <tr>
+          <td><strong>D2 / PIMA</strong></td><td>768</td><td>8</td>
+          <td>Tỉ lệ ~2:1. PIMA Indians Diabetes — benchmark kinh điển, chỉ nữ PIMA Indian</td>
+          <td><a href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank">Kaggle</a></td>
+        </tr>
+        <tr>
+          <td><strong>D3</strong></td>
+          <td>1000</td><td>7</td>
+          <td>Tỉ lệ ~2.3:1. Nguồn UCI/Kaggle — <strong>tên cụ thể UNKNOWN</strong> (paper chỉ ghi "UCI and Kaggle")</td>
+          <td><span style="color:var(--muted)">UNKNOWN</span></td>
+        </tr>
+        <tr>
+          <td><strong>D4</strong></td>
+          <td>4303</td><td>17</td>
+          <td>Tỉ lệ ~3:1. Nguồn UCI/Kaggle — <strong>tên cụ thể UNKNOWN</strong>. Bộ lớn nhất; feature chung Age/BMI/Blood Pressure</td>
+          <td><span style="color:var(--muted)">UNKNOWN</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Nguồn: Table 2 + Section 4.1. Dữ liệu gốc có mẫu thiếu → đã loại trước thí nghiệm; chuẩn hóa Min-Max [0,1]. Data "available on request" (Data availability). Tên D3/D4 không được nêu → UNKNOWN, không suy đoán.
+    </p>
+  </section>
+
+  <!-- ═══════════════ 5. CÁCH TRIỂN KHAI ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Cách triển khai
+    </h2>
+
+    <h3>Pipeline các bước</h3>
+    <table>
+      <thead><tr><th>#</th><th>Bước</th><th>Kỹ thuật</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Tiền xử lý</td><td>Loại mẫu thiếu + Min-Max [0,1] (Section 4.1)</td><td>Dữ liệu sạch chuẩn hóa</td></tr>
+        <tr><td>2</td><td>Chia dữ liệu</td><td>5-fold CV, lặp 5 lần, lấy trung bình (Section 4.1)</td><td>Train Tr + test (mẫu a)</td></tr>
+        <tr><td>3</td><td>Tiêm nhãn nhiễu</td><td>LNS1 pairwise (Algorithm 3) & LNS2 uniform (Algorithm 4); 5 mức 10–50%</td><td>Dữ liệu nhiễu CTr</td></tr>
+        <tr><td>4</td><td>Sinh pool LNF</td><td>24 biến thể: AKNNF/ENNF/MKNNF/CF/MVEF/CEF/ELF/NCNF/CMNNF/CNDCF (Table 3)</td><td>Vector phát hiện nhiễu I_m / dữ liệu lọc Tr_m</td></tr>
+        <tr><td>5</td><td>Train black-box</td><td>XGBoost (n_estimators=10) — và GB/AB/RF/NN/SVM ở phần thảo luận (Table 6)</td><td>Model F(·)</td></tr>
+        <tr><td>6</td><td>Giải thích cục bộ</td><td>LIME: dựng surrogate tuyến tính G(·), giải Eq.3 → hệ số α_e</td><td>Local explanation α</td></tr>
+        <tr><td>7a</td><td>Ensemble — noise detection</td><td>Gộp I_m, ngưỡng θ=M/2 (PMSN tĩnh / PMDN động)</td><td>1 dataset lọc → 1 bộ α</td></tr>
+        <tr><td>7b</td><td>Ensemble — local explanation</td><td>Trung bình hệ số α qua M LNF, Eq.7 (PMSL tĩnh / PMDL động)</td><td>α hợp nhất ổn định</td></tr>
+        <tr><td>8</td><td>Đánh giá</td><td>So α (từ CTr) với α_g (từ Tr sạch) qua explanation difference Eq.14</td><td>d nhỏ = tốt; t-test (Table 9)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Công thức quan trọng</h3>
+
+    <div class="formula">
+      <span class="label">Explanation difference — thước đo chính (Eq.14, Section 4.2)</span>
+      d = || α_g − α ||₂<br>
+      α_g = giải thích cục bộ từ dữ liệu SẠCH (Tr)<br>
+      α   = giải thích cục bộ từ dữ liệu NHIỄU (CTr) sau khi lọc<br>
+      → d càng NHỎ ⇒ giải thích càng gần chuẩn ⇒ càng TỐT
+    </div>
+
+    <div class="formula">
+      <span class="label">Ensemble theo local explanation — PMSL/PMDL (Eq.7, Section 3.3.2)</span>
+      α_e = (1/M) · Σ_{m=1..M} α_{m,e}<br>
+      (trung bình hệ số feature e qua M bộ lọc)
+    </div>
+
+    <div class="formula">
+      <span class="label">Ngưỡng ensemble theo noise detection (Section 3.3.1)</span>
+      Loại mẫu x_n nếu  Σ_{m=1..M} I_{m,n} > θ ,  với θ = M/2<br>
+      (mẫu bị phần lớn LNF gắn cờ nhiễu thì bỏ)
+    </div>
+
+    <div class="formula">
+      <span class="label">Tiêm nhiễu (Section 4.1)</span>
+      LNS1 (pairwise): chỉ đổi nhãn mẫu thuộc lớp ĐA SỐ (Algorithm 3)<br>
+      LNS2 (uniform): mọi mẫu có xác suất bị đổi nhãn như nhau (Algorithm 4)<br>
+      Mức nhiễu nl ∈ {10%, 20%, 30%, 40%, 50%}
+    </div>
+
+    <h3>Hình ảnh từ paper</h3>
+    <div class="figure">
+      🖼️ Fig. 2 — Flowchart khung đề xuất (static ensemble (a) & dynamic ensemble (b)). Fig. 3–6 — kết quả 24 LNF trên D1–D4. Fig. 7–8 — win/tie/loss của PMSL & PMDL.
+      <span class="caption">Chưa crop base64 (tùy chọn). Ưu tiên số liệu từ bảng + formula block ở trên.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6. KẾT QUẢ ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      Kết quả paper báo cáo
+    </h2>
+
+    <p class="lead" style="color:var(--muted)">
+      ⚠️ Paper <strong>KHÔNG báo cáo accuracy/AUC/F1</strong>. Thước đo duy nhất là <strong>explanation difference d</strong> (Eq.14, càng nhỏ càng tốt).
+      Mọi số dưới đây là d trung bình; "Benchmark difference" = d giữa giải thích từ dữ liệu sạch và dữ liệu nhiễu (chưa lọc) — đường chuẩn cần vượt.
+    </p>
+
+    <div class="metric-grid">
+      <div class="metric"><span class="value">0.1718</span><span class="label">PMSL · D2 · nl=0.1 · LNS1 (vs 0.2277 benchmark) — Table 4</span></div>
+      <div class="metric"><span class="value">0.0939</span><span class="label">PMSL · D3 · nl=0.1 · LNS1 (vs 0.1282 benchmark) — Table 4</span></div>
+      <div class="metric"><span class="value">p=2.13E-11</span><span class="label">PMSN vs PMSL có ý nghĩa — Table 9</span></div>
+      <div class="metric"><span class="value">48×</span><span class="label">PMSL/PMDL thắng phần lớn so sánh — Fig. 7–8</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Dataset</th><th>Setting</th><th>Method</th><th>Metric (d, nhỏ=tốt)</th><th>Nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>D1</td><td>LNS1, nl=0.1, nền XB</td><td>PMSL ⭐</td><td><strong>0.2025</strong> (benchmark 0.2756)</td><td>Table 4</td></tr>
+        <tr><td>D2</td><td>LNS1, nl=0.1, nền XB</td><td>PMSL ⭐</td><td><strong>0.1718</strong> (benchmark 0.2277; BILNF 0.2272)</td><td>Table 4</td></tr>
+        <tr><td>D3</td><td>LNS1, nl=0.1, nền XB</td><td>PMSL ⭐</td><td><strong>0.0939</strong> (benchmark 0.1282; BILNF 0.1125)</td><td>Table 4</td></tr>
+        <tr><td>D4</td><td>LNS1, nl=0.1, nền XB</td><td>PMSL ⭐</td><td><strong>0.2646</strong> (benchmark 0.3466; BILNF 0.3279)</td><td>Table 4</td></tr>
+        <tr><td>D2</td><td>LNS2, nl=0.5, nền XB</td><td>PMSL</td><td>0.2193 (benchmark 0.2445) — lợi thế thu hẹp khi nhiễu cao</td><td>Table 5</td></tr>
+        <tr><td>D3</td><td>LNS1, nl=0.5, nền SVM</td><td>PMDL</td><td>0.0137 (nhỏ nhất hàng; benchmark 0.017)</td><td>Table 7</td></tr>
+        <tr><td>Tổng</td><td>t-test PMSL vs PMSN</td><td>—</td><td>statistic 8.729, p=2.13E-11, Significant</td><td>Table 9</td></tr>
+        <tr><td>Tổng</td><td>t-test PMSL vs PMDL</td><td>—</td><td>statistic 3.228, p=0.0023, Significant (PMSL > PMDL)</td><td>Table 9</td></tr>
+        <tr><td>Tổng</td><td>t-test PMDN vs Benchmark</td><td>—</td><td>statistic 1.903, p=0.0632, <strong>NOT</strong> significant</td><td>Table 9</td></tr>
+        <tr><td>—</td><td>Accuracy / AUC / F1</td><td>—</td><td><strong>UNKNOWN — paper không báo cáo</strong></td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">
+      Đọc bảng: PMSL/PMDL (gộp theo local explanation) cho d nhỏ nhất, vượt BILNF và benchmark; PMSN/PMDN (gộp theo noise detection) chỉ ngang BILNF, riêng PMDN không khác benchmark (Table 9). Lợi thế của khung <strong>giảm khi mức nhiễu tăng</strong> và <strong>phụ thuộc model nền</strong> (với AB gần như không cần lọc; đổi sang GB/RF/NN/SVM khung "có vẻ thất bại" — Section 4.4). Full bảng: Table 4 (LNS1), Table 5 (LNS2), Table 7–8 (5 model nền khác).
+    </p>
+  </section>
+
+  <!-- ═══════════════ 7. LƯU Ý QUAN TRỌNG ═══════════════ -->
+  <section>
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Lưu ý quan trọng
+    </h2>
+
+    <div class="callout">
+      <strong>⚠️ Rủi ro / hạn chế khi tái lập</strong>
+      <ul>
+        <li><strong>Không có code public</strong> (Data availability "on request") — chỉ pseudocode Algorithm 1–4 + cấu hình sklearn/xgboost (Table 3, 6). Tái lập = <em>medium</em>: method mô tả khá đủ nhưng phải tự code 24 LNF + 4 ensemble.</li>
+        <li><strong>D3/D4 không nêu tên</strong> → không tải đúng bộ, khó tái lập số chính xác.</li>
+        <li><strong>Không acc/AUC/F1</strong> → không thể dùng làm baseline số cho mô hình phân loại; chỉ dùng làm tham chiếu phương pháp ổn định XAI.</li>
+        <li>Eq.7 là <em>trung bình cộng</em> hệ số α — đơn giản, dễ áp dụng, nhưng không trọng số theo độ tin cậy từng LNF.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>🎯 Giới hạn nội tại tác giả thừa nhận</strong>
+      <ul>
+        <li>Lợi thế của khung <strong>giảm dần khi mức nhiễu tăng</strong>; nhiễu cực cao thì khung "thất bại" (Section 4.3, 4.4, Conclusion).</li>
+        <li>Hiệu quả <strong>phụ thuộc model nền</strong>: tốt với XGBoost/AdaBoost, "có vẻ thất bại" khi đổi GB/RF/NN/SVM (Section 4.4).</li>
+        <li><strong>Ensemble động không giúp gì</strong>: tiêu chí chọn LNF theo consistency lân cận không cải thiện (PMDN còn không khác benchmark — Table 9).</li>
+        <li>Gộp theo <strong>noise detection (PMSN/PMDN) không hiệu quả</strong> cho XAI; chỉ local-explanation (PMSL/PMDL) mới có giá trị.</li>
+        <li>Chưa xử lý dữ liệu nhiều chiều / chưa tích hợp feature selection (Future work).</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Vai trò trong đề tài</strong>
+      <ul>
+        <li><strong>Layer 4 — góc XAI nâng cao</strong>: bổ sung trục mới <em>data-quality × độ ổn định giải thích</em> mà tasin2022 / ahmed2024 chưa chạm.</li>
+        <li>Ý tưởng dễ tái dụng: <strong>trung bình hệ số LIME qua nhiều dataset lọc (Eq.7)</strong> để ổn định giải thích — có thể ghép vào pipeline Layer 1–2.</li>
+        <li>Venue đỉnh (Information Fusion) + tính mới (first work) là điểm cộng; nhưng <strong>thiếu acc/AUC + thiếu code</strong> khiến nó là <em>tham chiếu phương pháp</em>, không phải baseline mô hình.</li>
+        <li>Mật độ trích dẫn ~1.9 cite/tháng (27 cite, &lt;1.5 năm) — <strong>dưới mốc "rising-star" 5 cite/tháng</strong>; không nên thổi phồng.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

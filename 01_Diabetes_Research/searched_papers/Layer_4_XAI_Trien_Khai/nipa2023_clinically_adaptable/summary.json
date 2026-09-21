@@ -1,0 +1,25 @@
+{
+  "paper_id": "nipa2023_clinically_adaptable",
+  "layer": 4,
+  "prediction_horizon": "early_detection",
+  "contribution": "Benchmark 35 classifier trên 3 dataset triệu chứng ĐTĐ (SDHD công khai + PDD tự thu qua khảo sát ở Bangladesh + MDD gộp 14 feature chung) rồi dùng SHAP nhận diện 'early appreciable features' (triệu chứng sớm) của ĐTĐ; 'clinically adaptable' = tự thu thêm dữ liệu cùng bộ câu hỏi để thích ứng/giảm overfit mô hình SDHD sang dân số mới.",
+  "method": "Tiền xử lý (impute mean/mode, IQR kiểm outlier, correlation+t-test bỏ feature trùng) → encode nominal về số → 35 classifier (Scikit-learn/Google Colab) → split 80:20 KHÔNG K-fold → 5 metric (Acc/Prec/Rec/F1/AUROC, confusion matrix) → SHAP diễn giải feature cho model tốt nhất mỗi dataset; không tuning hyperparameter công bố.",
+  "best_metric": "SDHD (520 mẫu): ET Acc 97.11% / Prec 98.52% / Recall 97.10% / F1 98.10% / AUROC 96.67% (Table 2). PDD (558 mẫu): MLP Acc 96.42% / Prec 92.50% / Rec 97.37% / F1 94.87% / AUROC 92.18% (Table 2). MDD: HGBC & LGBM Acc 94.90% / Prec 95.87% / Recall 93.00% / F1 94.41%, AUROC 94.92% (HGBC) & 94.54% (LGBM); Stacking AUROC cao nhất 95.47% (Table 3). SHAP định tính: age/polyuria/polyphagia/delayed healing/irritability mạnh nhất (Fig. 6-8, Section 3.2).",
+  "datasets": [
+    "early-diabetes-classification-sylhet",
+    "prediagnosis-diabetes-bangladesh",
+    "merged-sylhet-pdd"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "vs tasin2022 (baseline Layer 4 đã chọn, Acc 81% / AUC 0.84, có ADASYN + web/Android deploy + code public): nipa2023 báo accuracy cao hơn nhiều (97.11% SDHD, 96.42% PDD, 94.90% MDD) nhưng dataset triệu chứng nhị phân dễ phân + KHÔNG có CV + chính paper thừa nhận overfit SDHD → KHÔNG so trực tiếp được; nipa thiếu deploy thật & code. Điểm vượt riêng: tự thu dataset mới (PDD 558 mẫu) để kiểm tính thích ứng đa dân số — góc lâm sàng mà tasin không có. So với ahmed2024 (LR 86% trên BRFSS, SHAP/LIME định tính, không CV, không code): nipa nhiều model + dataset tự thu hơn nhưng tương đương về điểm yếu reproducibility (cùng thiếu CV, code).",
+  "gap": "Không K-fold/nested CV (chỉ 1 split 80/20 cố định) → acc 94-97% lạc quan; paper TỰ thừa nhận overfit SDHD + 'no validation methods being used' + không validate external; không tuning hyperparameter công bố; SHAP chỉ định tính (không bảng giá trị Shapley số, không đo fidelity/stability); không xử lý mất cân bằng SDHD (320/200); tổng mẫu MDD không nêu (UNKNOWN); PDD/MDD không public + không code → phần 'thích ứng' khó tái lập; 'clinically adaptable' mới dừng ở thu+gộp data, chưa có domain adaptation/transfer thực thụ, web-app mới chỉ là kế hoạch.",
+  "verdict": "maybe",
+  "verdict_reason": "Đúng trọng tâm Layer 4 (SHAP early-detection + góc 'thích ứng lâm sàng' tự thu dataset mới, đồng tác giả Moni, 32 cite đạt §7) nhưng modeling/validation yếu (không CV, tự nhận overfit SDHD, không tuning, SHAP định tính, không code, dataset PDD/MDD không public) → giữ làm tham chiếu góc feature/thích ứng lâm sàng, KHÔNG dùng làm baseline số liệu.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Related work: chỉ trích dẫn 1 câu, KHÔNG đọc sâu (TO_DO §6 🅕 / CHEATSHEET §7).",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

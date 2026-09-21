@@ -1,0 +1,23 @@
+{
+  "paper_id": "zhang2020_henan_rural_cohort",
+  "layer": 3,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Nghiên cứu ML đặc trưng hoá nguy cơ T2DM trên cohort dịch tễ NÔNG THÔN Trung Quốc quy mô lớn THẬT (Henan Rural Cohort, 36.652 người): so sánh 6 thuật toán (LR/CART/ANN/SVM/RF/GBM) ở 2 kịch bản có/không dữ liệu xét nghiệm, xếp hạng biến quan trọng bằng SHAP và phát hiện yếu tố nguy cơ MỚI (chỉ số nước tiểu, sweet flavor) không có trong các risk score thống kê truyền thống.",
+  "method": "GBM thắng; so sánh RF/GBM (ensemble) + ANN/SVM/CART/LR (sklearn 0.21.3, Python 3.7); SMOTE cân bằng nhãn ~9%; 10-fold CV lặp 100 lần + grid search trên train; quét số biến động (5/10/15… biến, plateau ~30); variable importance từng classifier + hợp nhất bằng SHAP.",
+  "best_metric": "AUC 0.872 (95% CI 0.858-0.886) — GBM có lab, Henan Rural Cohort (Table 4). No-lab: GBM AUC 0.817 (0.801-0.833) (Table 4). RF Accuracy 85.90% & NPV 97.52% cao nhất (Table 4). GBM Specificity 81.71%, PPV 28.83%, AUPR 0.546 (Table 4). F1-score: UNKNOWN (Table 4 không báo cáo).",
+  "datasets": [
+    "henan-rural-cohort"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Vượt New Chinese Diabetes Risk Score (AUC 0.728 non-lab) — GBM no-lab 0.817, p<0.05 (Text Results + Suppl Fig 1). Trong Layer 3: dinh2019 NHANES (~21k, XGBoost AUC 0.957 có lab) và agliata2023 (NHANES+MIMIC, ANN ensemble AUC 0.934) cao hơn về CON SỐ; nhưng zhang2020 là cohort cộng đồng nông thôn châu Á thật, dùng SMOTE (dinh/agliata down-sampling vứt mẫu) và CÓ SHAP + phân tích plateau số-biến mà cả 2 baseline đều thiếu. Cùng cross_sectional với agliata2023; lớn hơn xa PIMA ~768.",
+  "gap": "Cross-sectional, không follow-up & không external validation (tác giả tự nêu) → không suy nhân-quả/onset. Rủi ro label leakage: nhãn định nghĩa một phần bằng FPG>=7.0 mmol/L còn urine glucose (hệ quả tăng đường huyết, dương 23,54% ở T2DM vs 0,38% Non-T2DM, Table 1) lại là biến quan trọng #1 mọi model (Table 2) → AUC lab dễ thổi phồng. Thứ tự áp SMOTE so với tách CV không nêu rõ → rủi ro rò rỉ. PPV <=28.83% thấp ở prevalence ~9% → giá trị mass screening hạn chế. SHAP chỉ global, không local. Không code public, hyperparam chỉ ở Suppl Table 2, dữ liệu xin theo yêu cầu.",
+  "verdict": "strong",
+  "verdict_reason": "Đạt §7 (156 cite, Scientific Reports 2020, cohort thật accessible qua liên hệ, method mô tả đủ tái lập), neo Layer 3 bằng cohort cộng đồng nông thôn châu Á khác hẳn NHANES/MIMIC, và nhiều gap rõ (leakage qua urine glucose, PPV thấp, không external validation, SMOTE thứ tự không rõ) làm điểm cải tiến cho đề tài.",
+  "analyzed_at": "2026-06-22",
+  "role": "method",
+  "role_note": "No-lab GBM AUC 0.817 (mốc so sánh) + cách báo AUPR 0.546 và PPV 28.83% dưới prevalence thật.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

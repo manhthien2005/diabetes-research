@@ -1,0 +1,75 @@
+{
+  "paper_id": "fazakis2021_longterm_t2d_risk",
+  "title": "Machine Learning Tools for Long-Term Type 2 Diabetes Risk Prediction",
+  "authors": [
+    "Nikos Fazakis",
+    "Otilia Kocsis",
+    "Elias Dritsas",
+    "Sotiris Alexiou",
+    "Nikos Fakotakis",
+    "Konstantinos Moustakas"
+  ],
+  "year": 2021,
+  "venue": "IEEE Access",
+  "doi": "10.1109/ACCESS.2021.3098691",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 150,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://ieeexplore.ieee.org/ielx7/6287639/9312710/09491154.pdf",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "elsa-english-longitudinal-study-of-ageing"
+  ],
+  "dataset_slugs": [
+    "elsa-english-longitudinal-study-of-ageing"
+  ],
+  "method_slugs": [
+    "weighted-voting",
+    "ensemble",
+    "logistic-regression",
+    "random-forest",
+    "nsga-ii",
+    "feature-selection",
+    "lasso",
+    "transductive-self-training"
+  ],
+  "layer": 3,
+  "layer_uncertain": false,
+  "prediction_horizon": "long_term_risk",
+  "horizon_uncertain": false,
+  "reproducibility": 2,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "pdf_status": "downloaded",
+  "page_count": 21,
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "corrections": {
+    "page_count": "Sửa 6 -> 21: extraction_report.json ghi pages=21 (bài IEEE Access đầy đủ, không phải 6 trang).",
+    "prediction_horizon": "Giữ nguyên long_term_risk — XÁC NHẬN lại từ cách lập nhãn: chọn người KHÔNG diabetic ở reference waves 2/4/6, gán nhãn theo follow-up 2 năm (waves 3/5/7), loại người đã diabetic ở baseline (extracted.md dòng 47, 246) -> dự báo onset tương lai.",
+    "best_metric": "XÁC NHẬN AUC_inductive 0.884 (WeightedVotingLRRFs) ở Table 5 = extracted.md dòng 360 (KHÔNG phải 'line 900' như scope_note cũ ghi nhầm); AUC_transductive 0.888 ở Table 8 = dòng 412. Đối chiếu chéo Abstract (dòng 15) + Conclusion (dòng 467). Bài qua OCR nhưng extraction QA score 100/100, 0 bảng lỗi nên số tin cậy.",
+    "datasets": "Giữ nguyên ELSA (English Longitudinal Study of Ageing). Tập dựng: 2.009 mẫu cân bằng (Table 3, dòng 267-276); 35 feature theo GSW-NB (dòng 414; lưu ý dòng 204 đếm '34 feature + class').",
+    "code": "Giữ nguyên code_url=null / has_code=false: bài chỉ nêu dùng thư viện Weka (Java) + Statsmodels (Python), KHÔNG có repo mã nguồn (dòng 289). Link smartworkproject.eu [80] là web project, không phải code.",
+    "scope_note_line_refs": "scope_note cũ tham chiếu số dòng sai (line 900/475-476/614) do extracted.md đã được trích lại; số dòng đúng đã ghi trong analysis.html Section 6."
+  },
+  "scope_note": "Tiêu đề 'long-term T2D risk' đã XÁC NHẬN: nhãn dựng bằng theo dõi 2 năm (baseline waves 2/4/6 -> follow-up waves 3/5/7), loại người đã diabetic ở baseline -> dự báo onset tương lai = long_term_risk. Dataset đã XÁC NHẬN là ELSA (English Longitudinal Study of Ageing, SN:5050), tập dựng 2.009 mẫu / 35 feature (Table 3, line 475-476, 614). KHÔNG có code public (chỉ Java Weka + Python Statsmodels, không repo). Best: AUC_inductive 0.884 (WeightedVotingLRRFs, Table 5/line 900), AUC_transductive 0.888.",
+  "citations_secondary": 126,
+  "label_type": "binary",
+  "role": "related",
+  "role_note": "Nạn nhân rò rỉ/mẫu nhỏ (ELSA n=2.009). Related work.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2021-01-01",
+    "age_years": 5.6,
+    "citations": 150,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "paper_id": "nnamoko2020_outliers_imbalance",
+  "title": "Efficient treatment of outliers and class imbalance for diabetes prediction",
+  "authors": [
+    "Nonso Nnamoko",
+    "Ioannis Korkontzelos"
+  ],
+  "year": 2020,
+  "venue": "Artificial Intelligence in Medicine",
+  "doi": "10.1016/j.artmed.2020.101815",
+  "arxiv": null,
+  "pubmed": null,
+  "pmc": null,
+  "citations": 154,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://research.edgehill.ac.uk/ws/files/23081319/1_s2.0_S093336571830681X_main.pdf",
+  "license": null,
+  "code_url": null,
+  "datasets_mentioned": [
+    "pima",
+    "german-credit-statlog",
+    "qsar-biodegradation",
+    "breast-cancer-wisconsin"
+  ],
+  "dataset_slugs": [
+    "pima",
+    "german-credit-statlog",
+    "qsar-biodegradation",
+    "breast-cancer-wisconsin"
+  ],
+  "method_slugs": [
+    "iqr-outlier-detection",
+    "outlier-oversampling",
+    "smote",
+    "class-imbalance",
+    "data-preprocessing",
+    "c4.5",
+    "mcnemar-test",
+    "stratified-kfold-cv"
+  ],
+  "layer": 1,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "reproducibility": 2,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 12,
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "2026-06-20: Unpaywall báo hybrid OA — CÓ bản author-copy (submittedVersion) tại repository Edge Hill: https://research.edgehill.ac.uk/ws/files/23081319/1_s2.0_S093336571830681X_main.pdf . Nhưng Edge Hill chặn hotlink tự động (403 mọi route: curl referer, CORE download endpoint). → CẦN ANH TẢI TAY: mở link trên trong trình duyệt → lưu vào folder này tên source.pdf, rồi báo em phân tích. (Bản này là submittedVersion/preprint — nội dung gần như giống bản xuất bản, vẫn dùng tốt để phân tích.)",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "corrections": "Đã xác minh từ full text (extracted.md): (1) Dataset chính = PIMA Indians Diabetes 768 mẫu (500 âm/268 dương), 8 feature+label (Section 3.1, Table 1-2) — XÁC NHẬN. (2) datasets_mentioned cũ chỉ ['pima'] → BỔ SUNG German Credit (Appendix A), QSAR Biodegradation (Appendix B) dùng validate ngoài y tế, và Breast Cancer Wisconsin (Table 9, chỉ so F-score). (3) Kỹ thuật outlier: KHÔNG loại bỏ mà GIỮ + oversample có hoàn lại 500% (irrespective of class) rồi nhúng vào tập SMOTE — đã thêm method_slugs iqr-outlier-detection, outlier-oversampling. (4) SMOTE variant = SMOTE GỐC (Chawla, k=5, Euclidean), không phải biến thể Borderline/ADASYN. (5) Best = C4.5 (IQRd+SMOTEd) 89.5% acc (Table 4). (6) CÓ stratified 10-fold CV + McNemar's test (Section 3.2). (7) horizon_uncertain: true→false (cross_sectional xác nhận: PIMA đo feature và label cùng đợt khám sức khoẻ, không follow-up). (8) Không thấy code public (xác nhận code_available=false). (9) pdf_status green_oa_manual_needed→downloaded, source.pdf, page_count=12.",
+  "scope_note": "Layer 1 lõi: xử lý outliers + mất cân bằng lớp. ĐIỂM ĐẶC TRƯNG (đã verify): GIỮ và khuếch đại outlier (IQR oversample có hoàn lại 500% bất kể lớp) rồi nhúng tri thức outlier vào tập SMOTE sinh ra — ĐỐI LẬP với gr2024 (loại outlier). Best C4.5 IQRd+SMOTEd 89.5% acc PIMA (Table 4), AUC 94.6%/G-mean 88.8% (Table 8), stratified 10-fold CV + McNemar p<0.0001. Artificial Intelligence in Medicine — venue top, 154 cite (§7 đạt). Protocol chống leakage mẫu mực (fold tạo từ data gốc). Peer trực tiếp của gr2024 ở Layer 1 — dùng làm ablation cách xử lý outlier. Không có code public.",
+  "label_type": "binary",
+  "role": "method",
+  "role_note": "Protocol chống rò rỉ mẫu mực: chia fold từ data GỐC rồi mới xử lý + McNemar test. Chép nguyên.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2020-02-10",
+    "age_years": 6.5,
+    "citations": 154,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}

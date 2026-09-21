@@ -14,24 +14,38 @@ __pycache__/
 .ruff_cache/
 .ipynb_checkpoints/
 
-# --- Node / Codex CLI cache ---
+# --- Node / Webapp cache ---
 node_modules/
+**/node_modules/
+**/.next/
+web/out/
+web/data/
+*.tsbuildinfo
+**/*.tsbuildinfo
+next-env.d.ts
+**/next-env.d.ts
 
-# --- Research Hub webapp (Next.js local) ---
-webapp/node_modules/
-webapp/.next/
-webapp/out/
-webapp/data/
-webapp/*.tsbuildinfo
-webapp/next-env.d.ts
-
-# --- Data (KHÔNG commit data thật) ---
-data/
-!data/.gitkeep
+# --- Data & Weights (KHÔNG commit data thật) ---
+*.xpt
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.npz
+*.npy
+**/data/**/*.csv
+**/data/*.csv
+**/data/raw/*
+!**/data/**/
+!**/.gitkeep
 
 # --- Reproduce runs (code clone + weights, giữ lại metadata) ---
 runs/*/code/
+02_Implementation/runs/*/code/
 runs/*/checkpoints/
+02_Implementation/runs/*/checkpoints/
 runs/*/.venv/
 runs/*/data/
 runs/*/wandb/
@@ -44,9 +58,14 @@ logs/
 .idea/
 *.swp
 
-# --- OS ---
+# --- OS & Backup ---
 Thumbs.db
 .DS_Store
+*.bak
+*.bak*
+*.tmp
+*.temp
+*~
 
 # --- PDF: chỉ giữ seed papers ---
 *.pdf

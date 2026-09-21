@@ -1,0 +1,24 @@
+{
+  "paper_id": "gr2024_random_oversampling_diabetes",
+  "layer": 1,
+  "prediction_horizon": "cross_sectional",
+  "contribution": "Pipeline ML thuần đầy đủ cho ĐTĐ tabular trên IoMT; xác lập tổ hợp Random Oversampling → Boruta → Random Forest là đường đi tốt nhất, kiểm chứng đồng thời trên 2 dataset PIDD và BRFSS.",
+  "method": "Mean imputation → IQR outlier removal → Random Oversampling → feature selection PCA/Boruta → so sánh 4 model (RF, GBC, LightGBM, DT) với split 80:20 hoặc 70:30 → validate 10-fold CV. Đường thắng: Boruta + Random Forest.",
+  "best_metric": "RF + Boruta, 20% test: Acc 94 / Pre 92 / Recall 95 / F1 94 trên PIDD (Table 6); Acc 92 / Pre 88 / Recall 98 / F1 93 trên BRFSS (Table 6). 10-fold CV xác nhận PIDD Acc 94.03 (Table 7), BRFSS Acc 92.00 (Table 8). AUC-ROC nêu là metric nhưng không có số (UNKNOWN).",
+  "datasets": [
+    "pima-indians-diabetes",
+    "brfss"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Baseline pipeline thuần ML của Layer 1. Acc PIDD 94% cao hơn nhiều hennebelle2023_mlops_iot (PIMA RF+FS 0.78, vì tối ưu vận hành); thấp hơn abnoosian2023_ensemble (98.87%) nhưng abnoosian chỉ 1 dataset IPDD 3-lớp, không external validation. Bài này là bài duy nhất trong layer cân bằng lớp bằng random oversampling và validate trên 2 dataset nhị phân. Cùng horizon cross_sectional với cả 2 baseline.",
+  "gap": "Không công bố code, không nêu hyperparam/seed → tái lập con số chính xác khó. Rủi ro data leakage: oversampling mô tả trước split, không khẳng định chỉ làm trên train; imputation/IQR/Boruta cũng không nói fit chỉ trên train; CV không rõ chạy trên dữ liệu đã oversample chưa → Recall 95–98% có thể thổi phồng. Không external validation, chưa XAI, chưa triển khai IoMT thật, BRFSS không nêu số mẫu, AUC-ROC không có số, biên tập số liệu related work có lỗi (CN2 ghi 8.7%/80.7%).",
+  "verdict": "strong",
+  "verdict_reason": "Pipeline chuẩn, số liệu có nguồn bảng rõ (Tables 5–9 đã đối chiếu source.pdf), validate 2 dataset + 10-fold CV, đúng vai trò baseline Layer 1 — user đã promote (status=chosen). Trừ điểm vì rủi ro leakage và không có code.",
+  "analyzed_at": "2026-06-22",
+  "role": "related",
+  "role_note": "Đã promote: pipeline Layer 1 mẫu; chỉ 11 cite (chưa đạt §7). Related work.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

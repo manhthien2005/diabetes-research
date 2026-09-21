@@ -1,0 +1,23 @@
+{
+  "paper_id": "lugner2024_top_ten_predictors",
+  "layer": 3,
+  "prediction_horizon": "long_term_risk",
+  "contribution": "Khai thác agnostic 419 biến baseline UK Biobank (448.277 người, 12.148 mắc T2D) để dự đoán incidence T2D trong 10 năm; dùng SHAP xếp hạng top-10 predictor và chứng minh chỉ 10 yếu tố sinh học dễ đo (HbA1c, BMI, vòng eo, blood glucose, tiền sử gia đình, GGT, waist-hip ratio, HDL, tuổi, urate) đã giữ gần trọn độ chính xác.",
+  "method": "XGBoost (main 419 feature + reduced top-10); split 80:20 stratified; downsampling lớp đa số về 1:3 (chỉ train); one-hot + lọc low-variance; tuning Latin Hypercube Sampling + 5-fold CV tối ưu ROC-AUC; SHAP global cho feature importance + dependency plots; 2 model sex-specific; bootstrap 1000 lần cho 95% CI; R/Tidymodels.",
+  "best_metric": "ROC-AUC 0.903 (95% CI 0.900-0.909) trên UK Biobank validation, XGBoost main 419-feature (Table 3); model reduced top-10 đạt 0.881 (0.875-0.888); Accuracy 0.924/0.921; nhưng Sensitivity chỉ 0.623/0.569 và PR-AUC 0.291/0.255, Precision 0.207/0.192 do imbalance nặng (Table 3); confusion matrix Table 2.",
+  "datasets": [
+    "uk-biobank"
+  ],
+  "has_code": false,
+  "code_url": null,
+  "reproducible": "medium",
+  "vs_baseline": "Là bài DUY NHẤT thật sự long_term_risk trong Layer 3 (incidence 10 năm prospective), khác dinh2019 (NHANES early_detection, nhãn gần-trùng feature) và agliata2023 (cross_sectional NHANES+MIMIC). Mẫu 448k gấp ~20x dinh2019 (~21k) và ~33x agliata (13.687). Cùng dùng XGBoost như dinh2019 nhưng thêm SHAP (dinh chỉ information gain); AUC 0.903 thấp hơn AUC lab-case 0.957 của dinh2019 và 0.934 của agliata, nhưng đó là so long-term vs nhãn gần-trùng-feature. Thiếu calibration/Brier mà agliata có.",
+  "gap": "Imbalance xử lý yếu (downsampling 1:3 vứt mẫu, không SMOTE/cost-sensitive/calibration) → Sensitivity 0.62, PR-AUC 0.29 thấp trong khi Accuracy 0.92 gây ảo giác. HbA1c/glucose đứng đầu gần ngưỡng tiền-ĐTĐ → rò rỉ mềm. Không code public. Healthy-volunteer bias + cohort chủ yếu da trắng UK → generalizability hạn chế. Chỉ SHAP global chưa local; thiếu C-peptide/kháng thể; không external validation; không công bố ROC-AUC cho model sex-specific.",
+  "verdict": "strong",
+  "verdict_reason": "Đạt §7 (64 cite/2024, UK Biobank accessible qua DUA, method + hyperparam mô tả đủ chi tiết); là ứng viên neo DUY NHẤT lấp horizon long_term_risk đang trống với dataset lớn nhất Layer 3 + SHAP; nhiều gap rõ (imbalance, calibration, local XAI, external validation) làm điểm cải tiến cho đề tài.",
+  "analyzed_at": "2026-06-22",
+  "role": "design",
+  "role_note": "Hình mẫu BẢNG KẾT QUẢ trung thực: Acc 0.92 nhưng PR-AUC 0.29, Sens 0.62 — bắt chước cách báo cáo này.",
+  "verdict_checked_at": "2026-07-26T00:00:00+07:00",
+  "verdict_basis": "de-tai-chot-Q007 (undiagnosed diabetes, no-lab, NHANES)"
+}

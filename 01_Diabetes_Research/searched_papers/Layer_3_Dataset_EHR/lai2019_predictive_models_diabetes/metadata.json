@@ -1,0 +1,64 @@
+{
+  "paper_id": "lai2019_predictive_models_diabetes",
+  "title": "Predictive models for diabetes mellitus using machine learning techniques",
+  "authors": [
+    "Hang Lai",
+    "Huaxiong Huang",
+    "Karim Keshavjee",
+    "Aziz Guergachi",
+    "Xin Gao"
+  ],
+  "year": 2019,
+  "venue": "BMC Endocrine Disorders",
+  "doi": "10.1186/s12902-019-0436-6",
+  "arxiv": null,
+  "pubmed": "31615566",
+  "pmc": null,
+  "citations": 296,
+  "citations_checked_at": "2026-07-26T00:00:00+07:00",
+  "citations_source": "openalex",
+  "open_access_pdf": "https://bmcendocrdisord.biomedcentral.com/track/pdf/10.1186/s12902-019-0436-6",
+  "license": "CC-BY",
+  "code_url": null,
+  "datasets_mentioned": [
+    "cpcssn",
+    "pima-indians-diabetes"
+  ],
+  "dataset_slugs": [
+    "cpcssn",
+    "pima-indians-diabetes"
+  ],
+  "method_slugs": [
+    "gradient-boosting",
+    "logistic-regression",
+    "random-forest",
+    "rpart-decision-tree"
+  ],
+  "layer": 3,
+  "layer_uncertain": false,
+  "prediction_horizon": "early_detection",
+  "horizon_uncertain": false,
+  "reproducibility": 2,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "source_pdf": "source.pdf",
+  "page_count": 9,
+  "pdf_status": "downloaded",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "scope_note": "Thuần dự đoán ĐTĐ trên EHR sơ cấp Canada (CPCSSN, 13.309 BN, train 10.647 / test 2.662, 8 predictor, 20.9% DM). §7 mạnh (294 cite). Không thấy code public; dataset CPCSSN cấp theo license (không public). Horizon = early_detection (chốt): nhãn lập từ bản ghi 'preceded the onset of DM' + bỏ năm cuối trước onset → forward-prediction, không phải cross-sectional. Best: GBM AROC 84.7% (Section Results line 76 + Table 3), sensitivity 71.6% / specificity 83.7% @ ngưỡng 0.24.",
+  "corrections": "datasets_mentioned/dataset_slugs: thêm 'pima-indians-diabetes' (metadata cũ chỉ liệt kê cpcssn, nhưng paper dùng PIMA công khai để kiểm chứng chéo phương pháp — lines 156-180, Table 7 & S8). horizon_uncertain: true -> false (deep-analyze chốt early_detection từ cách lập nhãn 'preceded the onset of DM' + bỏ năm cuối trước onset, lines 45-47 & Conclusion 'future occurrence of diabetes'). code_url giữ null (đúng: dữ liệu CPCSSN cấp theo license/permission, không public, không có repo code — line 257). status & analysis_status -> analyzed. KHÔNG có lệch method so metadata (method_slugs gradient-boosting/logistic-regression/random-forest/rpart khớp đúng 4 model trong Table 3). Lưu ý: paper báo AROC, KHÔNG báo accuracy cho mô hình chính; con số tuyệt đối TP/TN/FP/FN nằm ở Additional file 1 (Tables S2-S5), không có trong text chính -> UNKNOWN.",
+  "label_type": "binary",
+  "role": "method",
+  "role_note": "DeLong test so 2 AUC (cho C5) + cost-sensitive FN:FP + chọn ngưỡng theo mục tiêu lâm sàng.",
+  "role_at": "2026-07-26T00:00:00+07:00",
+  "s7_recheck": {
+    "at": "2026-07-26T00:00:00+07:00",
+    "publication_date": "2019-10-15",
+    "age_years": 6.8,
+    "citations": 296,
+    "threshold": ">=100 (bài >3 năm)",
+    "pass": true,
+    "note": null
+  }
+}
