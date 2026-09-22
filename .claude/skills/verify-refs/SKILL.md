@@ -255,8 +255,8 @@ source-identity limitations, and the difference between recorded and verified.
 - If evidence is unavailable, mark `UNVERIFIED` and keep it visible.
 
 
-## Changelog cục bộ
+## Local Changelog
 
-| Ngày | Thay đổi | Người thực hiện |
-|------|---------|----------------|
-| 2026-09-21 | Copy từ medsci-skills commit d7df514 (MIT). Thêm Changelog. KHÔNG sửa logic upstream. | agent (chore/skills-upgrade) |
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-09-21 | Copied from medsci-skills commit d7df514 (MIT). Added Changelog. Did NOT modify upstream logic. | agent (chore/skills-upgrade) |

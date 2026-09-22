@@ -500,24 +500,24 @@ need, that is a bug — please open an issue, because the instruction belongs he
 
 ---
 
-## ⚠️ Phạm vi sử dụng trong repo NCKH (Chỉnh sửa cục bộ)
+## ⚠️ Scope of Use in NCKH Repository (Local Modification)
 
-Trong repo `NCKH — Diabetes Prediction & Staging`, skill này được dùng **CHỦ YẾU** cho:
+In the `NCKH — Diabetes Prediction & Staging` repository, this skill is used **PRIMARILY** for:
 
-1. **RoB mini-audit khi đọc paper trong kho** (`paper-analyzer` sẽ gọi probe này):
-   - Chỉ dùng probe: **CP1–CP6** (clinical prediction model) và **O11** (complex survey/NHANES weighting)
-   - Không dùng toàn bộ Phase 1–3 (không nhận review invitation từ tạp chí)
-   - Không dùng Phase 1.5 (PDF injection scan) với paper đã download sẵn
+1. **RoB mini-audit when reading repository papers** (`paper-analyzer` invokes this probe):
+   - Use only probes: **CP1–CP6** (clinical prediction model) and **O11** (complex survey/NHANES weighting)
+   - Do not use full Phase 1–3 (not handling review invitations from journals)
+   - Do not use Phase 1.5 (PDF injection scan) for papers that are already downloaded
 
-2. **Self-review bản thảo Paper_01** → dùng skill `self-review` thay thế khi là bài tự viết
+2. **Self-review of Paper_01 manuscript draft** → use the `self-review` skill instead when reviewing self-authored papers
 
-3. **Equity probe EQ0–EQ6**: dùng khi Paper có subgroup/deployment claim
+3. **Equity probe EQ0–EQ6**: used when a paper contains subgroup/deployment claims
 
-> AGENTS.md > SKILL.md. Verdict/gate của skill chỉ là gợi ý, quyết định promote/reject là của user.
+> AGENTS.md > SKILL.md. Skill verdicts/gates are recommendations only; promote/reject decisions remain with the user.
 
-## Changelog cục bộ
+## Local Changelog
 
-| Ngày | Thay đổi | Người thực hiện |
-|------|---------|----------------|
-| 2026-09-21 | Copy từ medsci-skills commit d7df514 (MIT). Thêm §NCKH scope + Changelog. KHÔNG sửa logic upstream. | agent (chore/skills-upgrade) |
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-09-21 | Copied from medsci-skills commit d7df514 (MIT). Added §NCKH scope + Changelog. Did NOT modify upstream logic. | agent (chore/skills-upgrade) |
 
