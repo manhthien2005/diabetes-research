@@ -129,9 +129,10 @@ def check(d):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--root", default="01_Diabetes_Research/searched_papers")
     ap.add_argument("--only", default="")
     a = ap.parse_args()
-    dirs = sorted(p.parent for p in Path("searched_papers").glob("Layer_*/*/extracted.md"))
+    dirs = sorted(p.parent for p in Path(a.root).glob("Layer_*/*/extracted.md"))
     if a.only:
         dirs = [d for d in dirs if a.only in d.name]
 

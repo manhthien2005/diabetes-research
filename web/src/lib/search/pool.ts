@@ -3,7 +3,7 @@ import path from 'node:path';
 import { NCKH_ROOT } from '../paths';
 import type { MergedPaper } from './orchestrator';
 
-// Persist pool kết quả search ra D:\NCKH\search_pool.json để Claude (agent CLI)
+// Persist pool kết quả search ra 01_Diabetes_Research/search_pool.json để Claude (agent CLI)
 // đọc được khi triage (Bước 2 vòng lặp). Trước đây pool chỉ sống trong browser
 // memory → agent không có đường dữ liệu để sàng lọc.
 // Mỗi run GHI ĐÈ file (chỉ giữ pool mới nhất — pool cũ đã được triage xong).

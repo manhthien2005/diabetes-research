@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p .claude/skills .claude/prompts .claude/templates/layer-templates && mkdir -p 01_Diabetes_Research/chosed_papers/Layer_1_Pipeline_Nen_Tang 01_Diabetes_Research/chosed_papers/Layer_2_Model_Hieu_Qua 01_Diabetes_Research/chosed_papers/Layer_3_Dataset_EHR 01_Diabetes_Research/chosed_papers/Layer_4_XAI_Trien_Khai && mkdir -p 01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang 01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua 01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR 01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai && echo \"OK structure created\" && ls -la)",
+      "Bash(mv skills/* .claude/skills/)",
+      "Bash(mv prompts/* .claude/prompts/)",
+      "Bash(cp diabetes-ml-research/Layer_1_Pipeline_Nen_Tang/architecture.md .claude/templates/layer-templates/)",
+      "Bash(cp diabetes-ml-research/Layer_1_Pipeline_Nen_Tang/deploy.md .claude/templates/layer-templates/)",
+      "Bash(cp diabetes-ml-research/Layer_1_Pipeline_Nen_Tang/overview.md .claude/templates/layer-templates/)",
+      "Bash(rm -rf .claude/skills/daily-digest .claude/skills/experiment-agent .claude/skills/kb-builder .claude/skills/paper-reviewer .claude/skills/deep-research .claude/skills/pdf-extract)",
+      "Bash(mkdir -p .claude/skills/paper-finder .claude/skills/paper-analyzer .claude/skills/paper-comparator .claude/skills/pdf-extract)",
+      "Bash(rm -rf .claude/prompts && ls .claude/)",
+      "WebSearch",
+      "Bash(python -c ' *)",
+      "Bash(pdftotext -layout __TRACKED_VAR__/source.pdf __TRACKED_VAR__/_raw.txt)",
+      "Bash(echo \"exit=$?\")",
+      "Bash",
+      "Bash(grep -n -i -E 'data availab|code availab|github|supplement|R with RStudio|tidymodels|application|access' __TRACKED_VAR__/_raw.txt)",
+      "WebFetch(domain:www.nature.com)",
+      "WebFetch(domain:www.semanticscholar.org)",
+      "WebFetch(domain:bmcmedicine.biomedcentral.com)",
+      "WebFetch(domain:bmcpublichealth.biomedcentral.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:pmc.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:journals.plos.org)",
+      "WebFetch(domain:link.springer.com)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:www.mdpi.com)",
+      "WebFetch(domain:www.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:www.sciencedirect.com)",
+      "WebFetch(domain:ieeexplore.ieee.org)",
+      "WebFetch(domain:doi.org)",
+      "WebFetch(domain:api.semanticscholar.org)",
+      "WebFetch(domain:onlinelibrary.wiley.com)",
+      "WebFetch(domain:dx.plos.org)",
+      "WebFetch(domain:www.jmir.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:www.thelancet.com)",
+      "WebFetch(domain:www.frontiersin.org)",
+      "WebFetch(domain:pubmed.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:www.tripod-statement.org)",
+      "mcp__ide__getDiagnostics",
+      "WebFetch(domain:www.journalmetrics.org)",
+      "WebFetch(domain:www.cell.com)",
+      "WebFetch(domain:www.liebertpub.com)"
+    ],
+    "additionalDirectories": [
+      ".claude",
+      ".claude/prompts"
+    ]
+  }
+}

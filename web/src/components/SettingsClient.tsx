@@ -285,7 +285,7 @@ export function SettingsClient() {
         </table>
       </div>
       <p className="faint" style={{ fontSize: 11.5, marginTop: 8 }}>
-        Đọc server-side từ <code>D:\NCKH\.env</code> · value luôn che · sửa bằng cách edit file rồi bấm “Kiểm tra lại”.
+        Đọc server-side từ <code>.env</code> ở thư mục gốc · value luôn che · sửa bằng cách edit file rồi bấm “Kiểm tra lại”.
       </p>
 
       {/* Tham số */}

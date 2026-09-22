@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { ENV_FILE } from './paths';
 
-// CHỈ chạy server-side. Đọc .env ở D:\NCKH, parse key=value.
+// CHỈ chạy server-side. Đọc .env ở thư mục gốc repository, parse key=value.
 // KHÔNG bao giờ trả value thô ra client — chỉ trả trạng thái có/không + masked.
 
 export interface EnvKeyStatus {

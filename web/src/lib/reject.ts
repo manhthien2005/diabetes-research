@@ -3,7 +3,7 @@ import path from 'node:path';
 import { NCKH_ROOT } from './paths';
 import { makeDedupKey, normalizeTitle } from './search/types';
 
-// Reject list: D:\NCKH\rejected.json — paper đã loại để KHÔNG tìm lại nữa.
+// Reject list: 01_Diabetes_Research/rejected.json — paper đã loại để KHÔNG tìm lại nữa.
 // Dùng chung cho cả webapp lẫn agent CLI (Claude tự ghi khi phân tích thấy dở).
 
 export const REJECT_FILE = path.join(NCKH_ROOT, 'rejected.json');

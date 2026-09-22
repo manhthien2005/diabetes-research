@@ -21,7 +21,7 @@ export function BriefButton() {
     <button
       onClick={gen}
       disabled={state === 'busy'}
-      data-tip="Ghi RESEARCH_BRIEF.md ra D:\NCKH — Claude đọc đầu mỗi phiên để định hướng nhanh"
+      data-tip="Ghi RESEARCH_BRIEF.md ra 01_Diabetes_Research/docs/ — Claude đọc đầu mỗi phiên để định hướng nhanh"
     >
       {state === 'busy' ? (
         <>

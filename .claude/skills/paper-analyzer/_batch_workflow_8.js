@@ -19,95 +19,95 @@ const RET = {
   },
 }
 
-const EXAMPLE = 'searched_papers/Layer_1_Pipeline_Nen_Tang/gr2024_random_oversampling_diabetes/analysis.prev.html'
+const EXAMPLE = '01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/gr2024_random_oversampling_diabetes/analysis.prev.html'
 const TEMPLATE = '.claude/templates/analysis-template.html'
 
 const PAPERS = [
   {
     "id": "naz2020_deep_learning_pima",
-    "dir": "searched_papers/Layer_2_Model_Hieu_Qua/naz2020_deep_learning_pima",
+    "dir": "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/naz2020_deep_learning_pima",
     "layer": 2,
     "pages": 13,
     "baselines": [
-      "searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
-      "searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
+      "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
+      "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
     "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
   },
   {
     "id": "rasmy2021_medbert_ehr",
-    "dir": "searched_papers/Layer_2_Model_Hieu_Qua/rasmy2021_medbert_ehr",
+    "dir": "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/rasmy2021_medbert_ehr",
     "layer": 2,
     "pages": 13,
     "baselines": [
-      "searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
-      "searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
+      "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
+      "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
     "hint": "prediction_horizon đã có = long_term_risk (xác nhận lại từ cách lập label)."
   },
   {
     "id": "wang2020_xgboost_t2d_beijing",
-    "dir": "searched_papers/Layer_2_Model_Hieu_Qua/wang2020_xgboost_t2d_beijing",
+    "dir": "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/wang2020_xgboost_t2d_beijing",
     "layer": 2,
     "pages": 12,
     "baselines": [
-      "searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
-      "searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
+      "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
+      "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
     "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
   },
   {
     "id": "yang2021_bigdata_physical_exam_fusion",
-    "dir": "searched_papers/Layer_2_Model_Hieu_Qua/yang2021_bigdata_physical_exam_fusion",
+    "dir": "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/yang2021_bigdata_physical_exam_fusion",
     "layer": 2,
     "pages": 11,
     "baselines": [
-      "searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
-      "searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
+      "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
+      "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
     "hint": "prediction_horizon đã có = early_detection (xác nhận lại từ cách lập label)."
   },
   {
     "id": "agliata2023_nhanes_mimic_ann",
-    "dir": "searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann",
+    "dir": "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann",
     "layer": 3,
     "pages": 10,
     "baselines": [
-      "searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
-      "searched_papers/Layer_3_Dataset_EHR/deberneh2021_korean_ehr_nextyear/summary.prev.json"
+      "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
+      "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/deberneh2021_korean_ehr_nextyear/summary.prev.json"
     ],
     "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
   },
   {
     "id": "dinh2019_data_driven_nhanes",
-    "dir": "searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes",
+    "dir": "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes",
     "layer": 3,
     "pages": 15,
     "baselines": [
-      "searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json",
-      "searched_papers/Layer_3_Dataset_EHR/deberneh2021_korean_ehr_nextyear/summary.prev.json"
+      "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json",
+      "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/deberneh2021_korean_ehr_nextyear/summary.prev.json"
     ],
     "hint": "prediction_horizon đã có = early_detection (xác nhận lại từ cách lập label)."
   },
   {
     "id": "fazakis2021_longterm_t2d_risk",
-    "dir": "searched_papers/Layer_3_Dataset_EHR/fazakis2021_longterm_t2d_risk",
+    "dir": "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/fazakis2021_longterm_t2d_risk",
     "layer": 3,
     "pages": 6,
     "baselines": [
-      "searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
-      "searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json"
+      "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
+      "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json"
     ],
     "hint": "prediction_horizon đã có = long_term_risk (xác nhận lại từ cách lập label). Text từ OCR — METRIC CHÍNH phải đối chiếu source.pdf trước khi ghi."
   },
   {
     "id": "ahmed2024_lime_shap_comparison",
-    "dir": "searched_papers/Layer_4_XAI_Trien_Khai/ahmed2024_lime_shap_comparison",
+    "dir": "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/ahmed2024_lime_shap_comparison",
     "layer": 4,
     "pages": 6,
     "baselines": [
-      "searched_papers/Layer_4_XAI_Trien_Khai/tasin2022_diabetes_prediction_explainable/summary.json",
-      "searched_papers/Layer_4_XAI_Trien_Khai/dharmarathne2024_self_explainable_interface/summary.prev.json"
+      "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/tasin2022_diabetes_prediction_explainable/summary.json",
+      "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/dharmarathne2024_self_explainable_interface/summary.prev.json"
     ],
     "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label). Text từ OCR — METRIC CHÍNH phải đối chiếu source.pdf trước khi ghi."
   }
@@ -153,7 +153,7 @@ A. ${p.dir}/analysis.html - DUNG 8 KHOI A6 theo template, dung thu tu, Compare C
 B. ${p.dir}/summary.json - dung schema 15 key cua SKILL (paper_id, layer, prediction_horizon, contribution, method, best_metric, datasets, has_code, code_url, reproducible, vs_baseline, gap, verdict, verdict_reason, analyzed_at). analyzed_at de chuoi ISO "2026-06-22".
 C. ${p.dir}/metadata.json - cap nhat: analysis_status="analyzed", status giu/dat phu hop, dien prediction_horizon, va neu doc full thay lech dataset/method/code so voi metadata cu thi ghi vao field "corrections".
 
-RANG BUOC: KHONG dung chosed_papers/. KHONG bia so. Doc so truc tiep tu extracted.md (doi chieu source.pdf khi bai la OCR hoac bang garbled).
+RANG BUOC: KHONG dung 01_Diabetes_Research/chosed_papers/. KHONG bia so. Doc so truc tiep tu extracted.md (doi chieu source.pdf khi bai la OCR hoac bang garbled).
 Tra ve JSON theo schema (best_metric kem dataset+nguon; caveats = ghi chu quan trong neu co).`,
   { label: `analyze:${p.id}`, schema: RET },
 )))
