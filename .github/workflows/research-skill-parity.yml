@@ -1,0 +1,36 @@
+name: Research Skill Parity Gate
+
+on:
+  push:
+    paths:
+      - '.agents/skills/**'
+      - '.claude/skills/**'
+      - 'scripts/skills/**'
+      - 'AGENTS.md'
+      - '.github/workflows/research-skill-parity.yml'
+  pull_request:
+    paths:
+      - '.agents/skills/**'
+      - '.claude/skills/**'
+      - 'scripts/skills/**'
+      - 'AGENTS.md'
+      - '.github/workflows/research-skill-parity.yml'
+
+jobs:
+  check-parity:
+    name: Verify Research Skill Parity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run research skill mirror parity check
+        run: python scripts/skills/research_skill_mirror.py --check --verbose
+
+      - name: Run research skill mirror unit tests
+        run: python -m unittest discover -s scripts/skills -p "test_*.py"

@@ -13,7 +13,7 @@ Bài OCR (theo extraction_report.json ocr_used=True) được hạ FAIL->WARN �
 số (OCR có thể nhiễu chữ-số; agent đã đối chiếu source.pdf).
 
 Dùng:
-  python .claude/skills/pdf-extract/translate_check.py [--root 01_Diabetes_Research/searched_papers] [--only <substr>]
+  python .agents/skills/pdf-extract/translate_check.py [--root 01_Diabetes_Research/searched_papers] [--only <substr>]
 Exit 0 nếu không có FAIL, 1 nếu có.
 """
 import sys, re, json, argparse

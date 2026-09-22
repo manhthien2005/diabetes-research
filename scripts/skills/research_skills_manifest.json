@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "canonical_root": ".agents/skills",
+  "mirror_root": ".claude/skills",
+  "managed_skills": [
+    "analyze-stats",
+    "check-reporting",
+    "design-study",
+    "paper-analyzer",
+    "paper-comparator",
+    "paper-finder",
+    "pdf-extract",
+    "pdf-fetch",
+    "peer-review",
+    "polish-language",
+    "radiomics-ml",
+    "self-review",
+    "verify-refs"
+  ],
+  "unmanaged_mirror_policy": "preserve"
+}

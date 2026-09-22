@@ -33,19 +33,19 @@ python -m pip install pymupdf4llm pdfplumber docling rapidocr-onnxruntime onnxru
 ## Cách chạy
 1 bài:
 ```
-python .claude/skills/pdf-extract/extract.py 01_Diabetes_Research/searched_papers/Layer_X/<paper_id> --force
+python .agents/skills/pdf-extract/extract.py 01_Diabetes_Research/searched_papers/Layer_X/<paper_id> --force
 ```
 Toàn bộ (mỗi bài 1 subprocess → reset RAM, chống OOM tích lũy):
 ```
-python .claude/skills/pdf-extract/run_all.py            # chạy hết, ghi extraction_summary.json
-python .claude/skills/pdf-extract/run_all.py --min-skip 95   # bỏ qua bài đã đạt ≥95
-python .claude/skills/pdf-extract/run_all.py --only tasin    # chỉ bài khớp tên
+python .agents/skills/pdf-extract/run_all.py            # chạy hết, ghi extraction_summary.json
+python .agents/skills/pdf-extract/run_all.py --min-skip 95   # bỏ qua bài đã đạt ≥95
+python .agents/skills/pdf-extract/run_all.py --only tasin    # chỉ bài khớp tên
 ```
 Cờ `extract.py`: `--engine auto|docling|pymupdf`, `--ocr auto|on|off`, `--chunk 6`, `--force`.
 
 Chỉ tính lại QA (sửa công thức chấm điểm) — KHÔNG chạy lại docling:
 ```
-python .claude/skills/pdf-extract/recompute_qa.py      # re-probe + re-clean + re-score
+python .agents/skills/pdf-extract/recompute_qa.py      # re-probe + re-clean + re-score
 ```
 Vì output docling là tất định và đã lưu trên đĩa, khi đổi *cách chấm điểm* hay
 *bộ dọn* thì chỉ cần re-score lại `extracted.md` (re-probe bằng pymupdf, vài giây/bài),

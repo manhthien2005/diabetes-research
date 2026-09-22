@@ -8,7 +8,7 @@ fully released between papers (prevents cumulative std::bad_alloc on long runs).
 Writes extraction_summary.json at the project root and prints a score table.
 
 Usage:
-  python .claude/skills/pdf-extract/run_all.py [--root 01_Diabetes_Research/searched_papers]
+  python .agents/skills/pdf-extract/run_all.py [--root 01_Diabetes_Research/searched_papers]
                                                [--only <substr>] [--min-skip 95]
 """
 import sys, json, time, subprocess, argparse

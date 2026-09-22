@@ -9,7 +9,7 @@ pymupdf only), re-scores the saved markdown body, and refreshes the header line
 in extracted.md plus the qa block in extraction_report.json.
 
 Usage:
-  python .claude/skills/pdf-extract/recompute_qa.py [--root 01_Diabetes_Research/searched_papers] [--only <substr>]
+  python .agents/skills/pdf-extract/recompute_qa.py [--root 01_Diabetes_Research/searched_papers] [--only <substr>]
 """
 import sys, json, argparse, re
 from pathlib import Path

@@ -453,4 +453,15 @@ Mọi metric, thống kê, kết quả mà skill tự tính (design-study, radio
 **(5) Skill KHÔNG được ghi vào `01_Diabetes_Research/chosed_papers/`**
 Skill bên thứ ba không có quyền move, copy hay tạo file trong `01_Diabetes_Research/chosed_papers/`. Chỉ user mới promote. (Kế thừa AGENTS.md §4.)
 
-**(6) Danh sách skill đã cài và trạng thái: xem `.claude/skills/SKILLS_LOCK.md`**
+**(6) Danh sách skill đã cài và khoá phiên bản (lock file)**
+Nguồn chân lý xác thực về nguồn gốc, phiên bản và thay đổi cục bộ nằm tại `.agents/skills/SKILLS_LOCK.md`. File `.claude/skills/SKILLS_LOCK.md` chỉ là con trỏ tương thích (pointer).
+
+**(7) Nguồn chân lý skill nghiên cứu và cơ chế đồng bộ (Skill Parity)**
+- `.agents/skills` là nguồn chân lý duy nhất (canonical source) cho mọi research skill được quản lý.
+- KHÔNG chỉnh sửa trực tiếp các thư mục research skills trong `.claude/skills` (đây là generated compatibility mirrors).
+- Sau khi chỉnh sửa một canonical research skill trong `.agents/skills`, BẮT BUỘC chạy:
+  `python scripts/skills/research_skill_mirror.py --sync`
+- Trước khi commit, BẮT BUỘC kiểm tra tính toàn vẹn và đồng bộ:
+  `python scripts/skills/research_skill_mirror.py --check`
+- Các frontend/design skills chỉ có trong Claude (`banner-design`, `ui-ux-pro-max`, v.v.) không thuộc phạm vi quản lý của mirror research skills và được duy trì độc lập trong `.claude/skills`.
+- `.agents/skills/SKILLS_LOCK.md` là file khoá phiên bản có thẩm quyền (authoritative research skill provenance lock file).
