@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Batch-run pdf-extract over every paper under searched_papers/.
+Batch-run pdf-extract over every paper under 01_Diabetes_Research/searched_papers/.
 
 Each paper is processed in a SEPARATE subprocess so docling/torch C++ memory is
 fully released between papers (prevents cumulative std::bad_alloc on long runs).
@@ -8,7 +8,7 @@ fully released between papers (prevents cumulative std::bad_alloc on long runs).
 Writes extraction_summary.json at the project root and prints a score table.
 
 Usage:
-  python .claude/skills/pdf-extract/run_all.py [--root searched_papers]
+  python .agents/skills/pdf-extract/run_all.py [--root 01_Diabetes_Research/searched_papers]
                                                [--only <substr>] [--min-skip 95]
 """
 import sys, json, time, subprocess, argparse
@@ -18,7 +18,7 @@ EXTRACT = Path(__file__).parent / "extract.py"
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--root", default="searched_papers")
+    ap.add_argument("--root", default="01_Diabetes_Research/searched_papers")
     ap.add_argument("--only", default="", help="only papers whose path contains this substring")
     ap.add_argument("--min-skip", type=int, default=-1,
                     help="skip papers whose existing report score >= this")

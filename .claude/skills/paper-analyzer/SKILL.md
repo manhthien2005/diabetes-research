@@ -1,30 +1,30 @@
 ---
 name: paper-analyzer
 description: |
-  Phân tích SÂU một bài báo trong `searched_papers/Layer_X/<paper_id>/`,
+  Phân tích SÂU một bài báo trong `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`,
   xuất ra `analysis.html` (tiếng Việt, 8 khối theo AGENTS.md §6) VÀ
   `summary.json` (máy đọc được, để sinh research brief). Mục tiêu: user
   quyết promote/loại mà không cần mở PDF.
 inputs:
-  - searched_papers/Layer_<n>/<paper_id>/extracted.md
-  - searched_papers/Layer_<n>/<paper_id>/source.pdf
-  - searched_papers/Layer_<n>/<paper_id>/metadata.json
-  - chosed_papers/Layer_<n>/
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/extracted.md
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/source.pdf
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/metadata.json
+  - 01_Diabetes_Research/chosed_papers/Layer_<n>/
 outputs:
-  - searched_papers/Layer_<n>/<paper_id>/analysis.html
-  - searched_papers/Layer_<n>/<paper_id>/summary.json
-  - searched_papers/Layer_<n>/<paper_id>/rob_audit.json
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/analysis.html
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/summary.json
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/rob_audit.json
 ---
 
 # paper-analyzer
 
 ## Mục đích
 Biến 1 PDF khoa học thành phân tích tiếng Việt SÂU + một bản tóm tắt máy
-đọc được, để user quyết "promote lên `chosed_papers/` hay loại".
+đọc được, để user quyết "promote lên `01_Diabetes_Research/chosed_papers/` hay loại".
 
 ## Quy trình
 1. **Đọc full text**: ưu tiên `extracted.md`. Nếu chưa có → chạy `pdf-extract`.
-2. Đọc `metadata.json` + đọc paper trong `chosed_papers/Layer_<n>/` cùng layer.
+2. Đọc `metadata.json` + đọc paper trong `01_Diabetes_Research/chosed_papers/Layer_<n>/` cùng layer.
 3. Render `analysis.html` theo **8 khối** (AGENTS.md §6). KHÔNG đổi cấu trúc.
 4. Ghi `summary.json` (schema dưới) — bao gồm key `rob_audit` mới.
 5. Ghi `rob_audit.json` (bản riêng cho QC).
@@ -55,7 +55,7 @@ Sau khi phân tích pipeline, chạy **6 probe CP + 1 probe O11** (từ skill pe
 ### Probe O11 (Complex Survey / NHANES)
 - **O11**: Nếu dùng NHANES/BRFSS/KNHANES: có áp survey weights? Có báo prevalence có trọng số?
 
-### Taxonomy rò rỉ (LEAKAGE_MAP.md §2)
+### Taxonomy rò rỉ (01_Diabetes_Research/docs/LEAKAGE_MAP.md §2)
 Đối chiếu với 6 dạng vi phạm:
 - **B**: Impute/scale trên toàn bộ data trước split
 - **C**: Feature selection trên toàn bộ data
@@ -135,7 +135,7 @@ Ghi vào `leakage_types[]` mỗi loại vi phạm tìm thấy (ký hiệu "B"...
 ---
 
 ## Tự reject khi bài dở (user đã uỷ quyền — AGENTS.md §11)
-Nếu phân tích thấy bài KHÔNG đạt → thêm vào `rejected.json` kèm lý do cụ thể, `by: "Codex"`, set `status: "rejected"`. KHÔNG xoá folder.
+Nếu phân tích thấy bài KHÔNG đạt → thêm vào `01_Diabetes_Research/rejected.json` kèm lý do cụ thể, `by: "Codex"`, set `status: "rejected"`. KHÔNG xoá folder.
 
 ## Ràng buộc
 - `analysis.html` độc lập (inline CSS, không CDN), tiếng Việt, giữ thuật ngữ EN.
@@ -143,7 +143,7 @@ Nếu phân tích thấy bài KHÔNG đạt → thêm vào `rejected.json` kèm 
 - **8 KHỐI HTML KHÔNG ĐỔI** — rob_audit KHÔNG xuất hiện trong analysis.html.
 - KHÔNG bịa số. Thiếu → UNKNOWN.
 - KHÔNG ghi đè `analysis.html` đã có → tạo `analysis.v2.html`.
-- KHÔNG tự đụng `chosed_papers/`.
+- KHÔNG tự đụng `01_Diabetes_Research/chosed_papers/`.
 
 ## Orchestration
 - **Tải PDF**: MAIN LOOP (skill pdf-fetch). Subagent bị 403 với HTTP ngoài.

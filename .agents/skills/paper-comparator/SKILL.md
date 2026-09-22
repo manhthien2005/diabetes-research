@@ -1,17 +1,17 @@
 ---
 name: paper-comparator
 description: |
-  So sánh chi tiết một bài báo trong `searched_papers/` với các bài
-  báo còn lại trong CÙNG LAYER (và optionally với `chosed_papers/`
+  So sánh chi tiết một bài báo trong `01_Diabetes_Research/searched_papers/` với các bài
+  báo còn lại trong CÙNG LAYER (và optionally với `01_Diabetes_Research/chosed_papers/`
   cùng layer) — tìm điểm trùng, điểm khác biệt, điểm vượt trội, gap.
 inputs:
-  - searched_papers/Layer_<n>/<target_paper_id>/analysis.html
-  - searched_papers/Layer_<n>/<target_paper_id>/summary.json   # rob_audit nếu có
-  - searched_papers/Layer_<n>/*/analysis.html
-  - searched_papers/Layer_<n>/*/summary.json
-  - chosed_papers/Layer_<n>/*/analysis.html  (optional)
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<target_paper_id>/analysis.html
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<target_paper_id>/summary.json   # rob_audit nếu có
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/*/analysis.html
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/*/summary.json
+  - 01_Diabetes_Research/chosed_papers/Layer_<n>/*/analysis.html  (optional)
 outputs:
-  - searched_papers/Layer_<n>/<target_paper_id>/comparison.md   # hoặc comparison.v2.md nếu đã có
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<target_paper_id>/comparison.md   # hoặc comparison.v2.md nếu đã có
 ---
 
 # paper-comparator
@@ -19,7 +19,7 @@ outputs:
 ## Mục đích
 Trả lời 1 câu hỏi: "Paper này có gì NEW / BETTER / OVERLAP so với
 những paper khác trong layer?" — để user nhanh chóng quyết định loại
-bỏ paper trùng và promote paper nổi bật lên `chosed_papers/`.
+bỏ paper trùng và promote paper nổi bật lên `01_Diabetes_Research/chosed_papers/`.
 
 ## Quy trình
 1. Lấy `analysis.html` + `summary.json` của paper target + tất cả paper khác cùng layer.
@@ -95,7 +95,7 @@ Thì thêm mục:
 ## Ràng buộc
 - So sánh metric chỉ hợp lệ khi **cùng `prediction_horizon` + cùng dataset**; khác horizon thì so phương pháp.
 - **Nếu comparison.md đã có → ghi `comparison.v2.md`**, ghi chú ở đầu file "Phiên bản 2 - có thêm bảng claim-evidence + mục thổi phồng".
-- KHÔNG tự move paper sang `chosed_papers/`. Chỉ gợi ý verdict.
+- KHÔNG tự move paper sang `01_Diabetes_Research/chosed_papers/`. Chỉ gợi ý verdict.
 - So sánh PHẢI dựa trên `analysis.html` + `summary.json` đã có, không tự đọc lại PDF.
 - Nếu paper khác thiếu analysis.html → bỏ qua, note rõ trong comparison.md.
 

@@ -6,11 +6,11 @@ description: |
   paper-comparator đọc hiểu >90% bài mà không cần mở PDF. KHÔNG tóm tắt — việc
   diễn giải là của analyzer.
 inputs:
-  - searched_papers/Layer_<n>/<paper_id>/source.pdf
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/source.pdf
 outputs:
-  - searched_papers/Layer_<n>/<paper_id>/extracted.md           # markdown trung thực
-  - searched_papers/Layer_<n>/<paper_id>/extraction_report.json # điểm QA + cảnh báo
-  - searched_papers/Layer_<n>/<paper_id>/extracted.prev.md      # backup bản cũ (1 lần)
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/extracted.md           # markdown trung thực
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/extraction_report.json # điểm QA + cảnh báo
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/extracted.prev.md      # backup bản cũ (1 lần)
 ---
 
 # pdf-extract
@@ -33,7 +33,7 @@ python -m pip install pymupdf4llm pdfplumber docling rapidocr-onnxruntime onnxru
 ## Cách chạy
 1 bài:
 ```
-python .claude/skills/pdf-extract/extract.py searched_papers/Layer_X/<paper_id> --force
+python .claude/skills/pdf-extract/extract.py 01_Diabetes_Research/searched_papers/Layer_X/<paper_id> --force
 ```
 Toàn bộ (mỗi bài 1 subprocess → reset RAM, chống OOM tích lũy):
 ```

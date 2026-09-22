@@ -1,13 +1,13 @@
 ---
 name: pdf-fetch
 description: |
-  Tải `source.pdf` cho một paper trong `searched_papers/Layer_X/<paper_id>/`.
+  Tải `source.pdf` cho một paper trong `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`.
   Ghi lại PLAYBOOK các route tải PDF đã kiểm chứng (IEEE staging, Europe PMC
   render, ScienceDirect/Akamai chặn, Unpaywall repository, closed-access).
 inputs:
-  - searched_papers/Layer_<n>/<paper_id>/metadata.json   # doi, open_access_pdf, pdf_url
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/metadata.json   # doi, open_access_pdf, pdf_url
 outputs:
-  - searched_papers/Layer_<n>/<paper_id>/source.pdf
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/source.pdf
   - cập nhật metadata: source_pdf, page_count, pdf_status, pdf_fetch_attempts, download_link
 ---
 
@@ -81,7 +81,7 @@ curl -s "https://api.crossref.org/works/<DOI>" | python -c "import sys,json;prin
 # → https://www.sciencedirect.com/science/article/pii/<PII>
 # Springer: https://link.springer.com/article/<DOI>
 ```
-Ghi `download_link` vào metadata + thêm vào `PENDING_DOWNLOADS.md`. Đặt
+Ghi `download_link` vào metadata + thêm vào `01_Diabetes_Research/docs/PENDING_DOWNLOADS.md`. Đặt
 `pdf_status:"pending_closed_access"`, `analysis_status:"none"`.
 
 ## Sau khi có source.pdf — cập nhật metadata

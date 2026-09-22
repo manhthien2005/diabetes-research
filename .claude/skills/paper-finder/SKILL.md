@@ -3,19 +3,19 @@ name: paper-finder
 description: |
   Tìm bài báo mới về DỰ ĐOÁN đái tháo đường (diabetes prediction, binary
   classification, tabular & EHR), gán đúng Layer 1-4 + prediction_horizon,
-  đặt vào `searched_papers/Layer_X/<paper_id>/` để đợi phân tích.
+  đặt vào `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/` để đợi phân tích.
 inputs:
-  - chosed_papers/Layer_<1..4>/        # nền tảng để so chiếu chủ đề
+  - 01_Diabetes_Research/chosed_papers/Layer_<1..4>/        # nền tảng để so chiếu chủ đề
   - AGENTS.md                          # §1 scope, §3 Layer, §3b prediction_horizon
 outputs:
-  - searched_papers/Layer_<1..4>/<paper_id>/source.pdf
-  - searched_papers/Layer_<1..4>/<paper_id>/metadata.json  # gồm cả field integrity mới
+  - 01_Diabetes_Research/searched_papers/Layer_<1..4>/<paper_id>/source.pdf
+  - 01_Diabetes_Research/searched_papers/Layer_<1..4>/<paper_id>/metadata.json  # gồm cả field integrity mới
 ---
 
 # paper-finder
 
 ## Mục đích
-Mở rộng kho `searched_papers/` bằng các bài báo **dự đoán đái tháo đường**, phân
+Mở rộng kho `01_Diabetes_Research/searched_papers/` bằng các bài báo **dự đoán đái tháo đường**, phân
 ngay vào Layer phù hợp + gán `prediction_horizon`, dựa trên chủ đề chính:
 
 | Layer | Trọng tâm |
@@ -41,7 +41,7 @@ ngay vào Layer phù hợp + gán `prediction_horizon`, dựa trên chủ đề 
 
 ## Cổng toàn vẹn (thêm 2026-09-21) — TRƯỚC khi tạo folder
 
-Trước khi tạo `searched_papers/Layer_X/<paper_id>/`, PHẢI chạy đủ 3 kiểm tra:
+Trước khi tạo `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`, PHẢI chạy đủ 3 kiểm tra:
 
 ### Kiểm tra 1: DOI phân giải qua CrossRef
 ```bash
@@ -75,7 +75,7 @@ print('has_correction:', bool(corr))
 print('type:', m.get('type'))
 "
 ```
-- Nếu có `is-retraction-of` → KHÔNG tạo folder, ghi vào `rejected.json` với `reason: retracted`.
+- Nếu có `is-retraction-of` → KHÔNG tạo folder, ghi vào `01_Diabetes_Research/rejected.json` với `reason: retracted`.
 - Nếu có correction → tạo folder nhưng ghi `integrity.has_correction: true`.
 
 ### Ghi vào metadata.json: field `integrity` (mới)
@@ -96,7 +96,7 @@ print('type:', m.get('type'))
 ---
 
 ## Quy trình
-1. Đọc 4 layer trong `chosed_papers/` để biết đang có gì → tránh trùng lặp.
+1. Đọc 4 layer trong `01_Diabetes_Research/chosed_papers/` để biết đang có gì → tránh trùng lặp.
 2. Đề xuất ≤ 5 paper mới mỗi lần, mỗi paper kèm:
    - `paper_id` theo format `<lastname><year>_<3-word-slug>`
    - Layer được gán + lý do (1 câu)

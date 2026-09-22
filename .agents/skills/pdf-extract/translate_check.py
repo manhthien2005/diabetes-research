@@ -13,7 +13,7 @@ Bài OCR (theo extraction_report.json ocr_used=True) được hạ FAIL->WARN �
 số (OCR có thể nhiễu chữ-số; agent đã đối chiếu source.pdf).
 
 Dùng:
-  python .claude/skills/pdf-extract/translate_check.py [--only <substr>]
+  python .agents/skills/pdf-extract/translate_check.py [--root 01_Diabetes_Research/searched_papers] [--only <substr>]
 Exit 0 nếu không có FAIL, 1 nếu có.
 """
 import sys, re, json, argparse
@@ -99,9 +99,10 @@ def _jload(p):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--root", default="01_Diabetes_Research/searched_papers")
     ap.add_argument("--only", default="")
     a = ap.parse_args()
-    dirs = sorted(p.parent for p in Path("searched_papers").glob("Layer_*/*/extracted.md"))
+    dirs = sorted(p.parent for p in Path(a.root).glob("Layer_*/*/extracted.md"))
     if a.only:
         dirs = [d for d in dirs if a.only in d.name]
 
