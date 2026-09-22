@@ -1,10 +1,10 @@
 ---
 name: paper-analyzer
 description: |
-  Phan tich SAU mot bai bao trong `searched_papers/Layer_X/<paper_id>/`,
-  xuat ra `analysis.html` (tieng Viet, 8 khoi theo AGENTS.md §6) VA
-  `summary.json` (may doc duoc, de sinh research brief). Muc tieu: user
-  quyet promote/loai ma khong can mo PDF.
+  Phân tích SÂU một bài báo trong `searched_papers/Layer_X/<paper_id>/`,
+  xuất ra `analysis.html` (tiếng Việt, 8 khối theo AGENTS.md §6) VÀ
+  `summary.json` (máy đọc được, để sinh research brief). Mục tiêu: user
+  quyết promote/loại mà không cần mở PDF.
 inputs:
   - searched_papers/Layer_<n>/<paper_id>/extracted.md
   - searched_papers/Layer_<n>/<paper_id>/source.pdf
@@ -18,53 +18,53 @@ outputs:
 
 # paper-analyzer
 
-## Muc dich
-Bien 1 PDF khoa hoc thanh phan tich tieng Viet SAU + mot ban tom tat may
-doc duoc, de user quyet "promote len `chosed_papers/` hay loai".
+## Mục đích
+Biến 1 PDF khoa học thành phân tích tiếng Việt SÂU + một bản tóm tắt máy
+đọc được, để user quyết "promote lên `chosed_papers/` hay loại".
 
-## Quy trinh
-1. **Doc full text**: uu tien `extracted.md`. Neu chua co → chay `pdf-extract`.
-2. Doc `metadata.json` + doc paper trong `chosed_papers/Layer_<n>/` cung layer.
-3. Render `analysis.html` theo **8 khoi** (AGENTS.md §6). KHONG doi cau truc.
-4. Ghi `summary.json` (schema duoi) — bao gom key `rob_audit` moi.
-5. Ghi `rob_audit.json` (ban rieng cho QC).
-6. Set `analysis_status: "analyzed"` + xac nhan `prediction_horizon` trong metadata.
+## Quy trình
+1. **Đọc full text**: ưu tiên `extracted.md`. Nếu chưa có → chạy `pdf-extract`.
+2. Đọc `metadata.json` + đọc paper trong `chosed_papers/Layer_<n>/` cùng layer.
+3. Render `analysis.html` theo **8 khối** (AGENTS.md §6). KHÔNG đổi cấu trúc.
+4. Ghi `summary.json` (schema dưới) — bao gồm key `rob_audit` mới.
+5. Ghi `rob_audit.json` (bản riêng cho QC).
+6. Set `analysis_status: "analyzed"` + xác nhận `prediction_horizon` trong metadata.
 
-## Di SAU — bat buoc moi du
-Khong dung o mo ta chung. PHAI rut duoc:
+## Đi SÂU — bắt buộc moi đủ
+Không dừng ở mô tả chung. PHẢI rút được:
 - **Prediction horizon** (§3b)
-- **Pipeline chinh xac**: tung buoc tien xu ly → can bang → feature → model → tuning
-- **Dataset & split**: ten, so mau, so feature, ti le train/test, CV, can bang lop
-- **Metric kem NGUON**: ghi "Table X / Fig Y / Section Z". Khong co → UNKNOWN.
-- **Kha nang tai lap** (high/medium/low) + ly do
-- **So voi baseline**: hon/kem cu the
-- **Gap / diem yeu**: co hoi cai tien cho de tai
+- **Pipeline chính xác**: từng bước tiền xử lý → cân bằng → feature → model → tuning
+- **Dataset & split**: tên, số mẫu, số feature, tỉ lệ train/test, CV, cân bằng lớp
+- **Metric kèm NGUỒN**: ghi "Table X / Fig Y / Section Z". Không có → UNKNOWN.
+- **Khả năng tái lập** (high/medium/low) + lý do
+- **So với baseline**: hơn/kém cụ thể
+- **Gap / điểm yếu**: cơ hội cải tiến cho đề tài
 
-## RoB mini-audit (them 2026-09-21)
+## RoB mini-audit (thêm 2026-09-21)
 
-Sau khi phan tich pipeline, chay **6 probe CP + 1 probe O11** (tu skill peer-review):
+Sau khi phân tích pipeline, chạy **6 probe CP + 1 probe O11** (từ skill peer-review):
 
-### Probe CP1-CP6 (Clinical Prediction Model)
-- **CP1**: Co nested CV hoac held-out test set that su? (Tuning va reporting TACH biet?)
-- **CP2**: Feature selection co nam TRONG fold khong, hay fit tren toan data?
-- **CP3**: Oversampling/SMOTE co TRONG fold khong, hay truoc khi split?
-- **CP4**: Co bao calibration (slope, intercept, calibration plot) khong?
-- **CP5**: Co external/temporal validation khong?
-- **CP6**: Co bien dinh-nghia-nhan (HbA1c/FPG/OGTT/glucose) nam trong feature khong?
+### Probe CP1–CP6 (Clinical Prediction Model)
+- **CP1**: Có nested CV hoặc held-out test set thật sự? (Tuning và reporting TÁCH biệt?)
+- **CP2**: Feature selection có nằm TRONG fold không, hay fit trên toàn data?
+- **CP3**: Oversampling/SMOTE có TRONG fold không, hay trước khi split?
+- **CP4**: Có báo calibration (slope, intercept, calibration plot) không?
+- **CP5**: Có external/temporal validation không?
+- **CP6**: Có biến định-nghĩa-nhãn (HbA1c/FPG/OGTT/glucose) nằm trong feature không?
 
 ### Probe O11 (Complex Survey / NHANES)
-- **O11**: Neu dung NHANES/BRFSS/KNHANES: co ap survey weights? Co bao prevalence co trong so?
+- **O11**: Nếu dùng NHANES/BRFSS/KNHANES: có áp survey weights? Có báo prevalence có trọng số?
 
-### Taxonomy ro ri (LEAKAGE_MAP.md §2)
-Doi chieu voi 6 dang vi pham:
-- **B**: Impute/scale tren toan bo data truoc split
-- **C**: Feature selection tren toan bo data
-- **D**: SMOTE/oversample truoc split
-- **E**: Chon model tren test set (winner curse)
-- **F**: Bien dinh-nghia-nhan trong feature
-- **G**: Ep 50/50 roi doc accuracy o prevalence gia
+### Taxonomy rò rỉ (LEAKAGE_MAP.md §2)
+Đối chiếu với 6 dạng vi phạm:
+- **B**: Impute/scale trên toàn bộ data trước split
+- **C**: Feature selection trên toàn bộ data
+- **D**: SMOTE/oversample trước split
+- **E**: Chọn model trên test set (winner's curse)
+- **F**: Biến định-nghĩa-nhãn trong feature
+- **G**: Ép 50/50 rồi đọc accuracy ở prevalence giả
 
-Ghi vao `leakage_types[]` moi loai vi pham tim thay (ky hieu "B"..."G").
+Ghi vào `leakage_types[]` mỗi loại vi phạm tìm thấy (ký hiệu "B"..."G").
 
 ---
 
@@ -75,17 +75,17 @@ Ghi vao `leakage_types[]` moi loai vi pham tim thay (ky hieu "B"..."G").
   "paper_id": "<id>",
   "layer": 2,
   "prediction_horizon": "cross_sectional|early_detection|long_term_risk",
-  "contribution": "1 cau dong gop chinh",
-  "method": "method/ky thuat chinh",
-  "best_metric": "vd: 98.2% acc tren PIMA (Table 3)",
+  "contribution": "1 câu đóng góp chính",
+  "method": "method/kỹ thuật chính",
+  "best_metric": "vd: 98.2% acc trên PIMA (Table 3)",
   "datasets": ["pima-indians-diabetes"],
   "has_code": true,
-  "code_url": "<url hoac null>",
+  "code_url": "<url hoặc null>",
   "reproducible": "high|medium|low",
-  "vs_baseline": "hon <paper_id> o <diem cu the>",
-  "gap": "diem yeu / khoang trong chinh",
+  "vs_baseline": "hơn <paper_id> ở <điểm cụ thể>",
+  "gap": "điểm yếu / khoảng trống chính",
   "verdict": "strong|maybe|weak",
-  "verdict_reason": "1 cau vi sao",
+  "verdict_reason": "1 câu vì sao",
   "analyzed_at": "<ISO-8601>",
   "rob_audit": {
     "probe_hits": ["CP2", "E"],
@@ -100,19 +100,19 @@ Ghi vao `leakage_types[]` moi loai vi pham tim thay (ky hieu "B"..."G").
 }
 ```
 
-**Ghi chu schema rob_audit**:
-- `probe_hits[]`: probe THAT BAI (CP1-CP6, O11). Rong = khong tim thay vi pham.
-- `leakage_types[]`: loai vi pham ro ri (B-G). Rong = khong xac dinh.
-- `validation_level`: cap do cao nhat (external > temporal > internal > UNKNOWN).
-- `calibration_reported`: co bao calibration khong.
-- `survey_design_handled`: chi dien neu paper dung NHANES/BRFSS; else null.
-- `prevalence_realistic`: danh gia co o prevalence thuc te khong.
-- `evidence_ref`: nguon bang chung ("Table X / Sec Y") hoac UNKNOWN.
-- `confidence`: muc tin cay (high=co quote, medium=suy luan, low=thieu thong tin).
+**Ghi chú schema `rob_audit`**:
+- `probe_hits[]`: probe THẤT BẠI (CP1–CP6, O11). Rỗng = không tìm thấy vi phạm.
+- `leakage_types[]`: loại vi phạm rò rỉ (B–G). Rỗng = không xác định.
+- `validation_level`: cấp độ cao nhất (external > temporal > internal > UNKNOWN).
+- `calibration_reported`: có báo calibration không.
+- `survey_design_handled`: chỉ điền nếu paper dùng NHANES/BRFSS; else null.
+- `prevalence_realistic`: đánh giá có ở prevalence thực tế không.
+- `evidence_ref`: nguồn bằng chứng ("Table X / Sec Y") hoặc UNKNOWN.
+- `confidence`: mức tin cậy (high=có quote, medium=suy luận, low=thiếu thông tin).
 
 ---
 
-## rob_audit.json (ban rieng QC)
+## rob_audit.json (bản riêng QC)
 ```json
 {
   "paper_id": "<id>",
@@ -130,27 +130,28 @@ Ghi vao `leakage_types[]` moi loai vi pham tim thay (ky hieu "B"..."G").
 }
 ```
 
-> **Khi kiem thu (Buoc 5)**: ghi `rob_audit.json` canh `summary.json` nhung KHONG sua `summary.json` o luot thu. Sau khi user duyet moi merge.
+> **Khi kiểm thử (Bước 5)**: ghi `rob_audit.json` cạnh `summary.json` nhưng KHÔNG sửa `summary.json` ở lượt thử. Sau khi user duyệt mới merge.
 
 ---
 
-## Tu reject khi bai do (user da uy quyen — AGENTS.md §11)
-Neu phan tich thay bai KHONG dat → them vao `rejected.json` kem ly do cu the, `by: "Codex"`, set `status: "rejected"`. KHONG xoa folder.
+## Tự reject khi bài dở (user đã uỷ quyền — AGENTS.md §11)
+Nếu phân tích thấy bài KHÔNG đạt → thêm vào `rejected.json` kèm lý do cụ thể, `by: "Codex"`, set `status: "rejected"`. KHÔNG xoá folder.
 
-## Rang buoc
-- `analysis.html` doc lap (inline CSS, khong CDN), tieng Viet, giu thuat ngu EN.
-- Khoi **Header** PHAI co badge Horizon tu `prediction_horizon`.
-- **8 KHOI HTML KHONG DOI** — rob_audit KHONG xuat hien trong analysis.html.
-- KHONG bia so. Thieu → UNKNOWN.
-- KHONG ghi de `analysis.html` da co → tao `analysis.v2.html`.
-- KHONG tu dung `chosed_papers/`.
+## Ràng buộc
+- `analysis.html` độc lập (inline CSS, không CDN), tiếng Việt, giữ thuật ngữ EN.
+- Khối **Header** PHẢI có badge Horizon từ `prediction_horizon`.
+- **8 KHỐI HTML KHÔNG ĐỔI** — rob_audit KHÔNG xuất hiện trong analysis.html.
+- KHÔNG bịa số. Thiếu → UNKNOWN.
+- KHÔNG ghi đè `analysis.html` đã có → tạo `analysis.v2.html`.
+- KHÔNG tự đụng `chosed_papers/`.
 
 ## Orchestration
-- **Tai PDF**: MAIN LOOP (skill pdf-fetch). Subagent bi 403.
-- **Phan tich**: parallel hoa duoc (doc/ghi file local).
+- **Tải PDF**: MAIN LOOP (skill pdf-fetch). Subagent bị 403 với HTTP ngoài.
+- **Phân tích**: parallel hoá được (đọc/ghi file local).
 
-## Changelog cuc bo
+## Changelog cục bộ
 
-| Ngay | Thay doi | Nguoi thuc hien |
+| Ngày | Thay đổi | Người thực hiện |
 |------|---------|----------------|
-| 2026-09-21 | v2: Them buoc RoB mini-audit (probe CP1-CP6 + O11), taxonomy ro ri tu LEAKAGE_MAP. Them key `rob_audit` vao summary.json. Them output `rob_audit.json`. KHONG doi 8 khoi HTML, KHONG doi field webapp doc. | agent (chore/skills-upgrade) |
+| 2026-09-21 | v2: Thêm bước RoB mini-audit (probe CP1–CP6 + O11), taxonomy rò rỉ từ LEAKAGE_MAP. Thêm key `rob_audit` vào summary.json. Thêm output `rob_audit.json`. KHÔNG đổi 8 khối HTML, KHÔNG đổi field webapp đọc. | agent (chore/skills-upgrade) |
+| 2026-09-22 | fix: Khôi phục dấu tiếng Việt (mất do PowerShell Out-File CP437). Dùng Python UTF-8 write. | agent (fix/encoding) |

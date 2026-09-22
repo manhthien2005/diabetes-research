@@ -1,106 +1,107 @@
 ---
 name: paper-comparator
 description: |
-  So sanh chi tiet mot bai bao trong `searched_papers/` voi cac bai
-  bao con lai trong CUNG LAYER (va optionally voi `chosed_papers/`
-  cung layer) — tim diem trung, diem khac biet, diem vuot troi, gap.
+  So sánh chi tiết một bài báo trong `searched_papers/` với các bài
+  báo còn lại trong CÙNG LAYER (và optionally với `chosed_papers/`
+  cùng layer) — tìm điểm trùng, điểm khác biệt, điểm vượt trội, gap.
 inputs:
   - searched_papers/Layer_<n>/<target_paper_id>/analysis.html
-  - searched_papers/Layer_<n>/<target_paper_id>/summary.json   # rob_audit neu co
+  - searched_papers/Layer_<n>/<target_paper_id>/summary.json   # rob_audit nếu có
   - searched_papers/Layer_<n>/*/analysis.html
-  - searched_papers/Layer_<n>/*/summary.json                   # rob_audit cac bai khac
+  - searched_papers/Layer_<n>/*/summary.json
   - chosed_papers/Layer_<n>/*/analysis.html  (optional)
 outputs:
-  - searched_papers/Layer_<n>/<target_paper_id>/comparison.md   # hoac comparison.v2.md neu da co
+  - searched_papers/Layer_<n>/<target_paper_id>/comparison.md   # hoặc comparison.v2.md nếu đã có
 ---
 
 # paper-comparator
 
-## Muc dich
-Tra loi 1 cau hoi: "Paper nay co gi NEW / BETTER / OVERLAP so voi
-nhung paper khac trong layer?" — de user nhanh chong quyet dinh loai
-bo paper trung va promote paper noi bat len `chosed_papers/`.
+## Mục đích
+Trả lời 1 câu hỏi: "Paper này có gì NEW / BETTER / OVERLAP so với
+những paper khác trong layer?" — để user nhanh chóng quyết định loại
+bỏ paper trùng và promote paper nổi bật lên `chosed_papers/`.
 
-## Quy trinh
-1. Lay `analysis.html` + `summary.json` cua paper target + tat ca paper khac cung layer.
-2. **Chi so sanh bai cung `prediction_horizon` VA cung `label_type`**:
-   - Cung horizon + cung label: so metric truc tiep.
-   - Khac horizon: chi so phuong phap tiep can, KHONG so metric so.
-   - Khac label_type (binary vs multiclass_staging): KHONG so metric, note ro.
-3. Doi chieu cac truc:
-   - **Prediction horizon** (§3b): cung horizon moi so truc tiep
-   - **Dataset**: cung / khac / mo rong?
-   - **Method**: trung / cai tien / moi hoan toan?
-   - **Metric & ket qua**: ai cao hon? Tren cung dataset (cung horizon)?
-   - **Han che**: paper target co khac phuc limit cua paper khac khong?
-   - **Rob audit** (neu co summary.json voi rob_audit): so sanh muc do vi pham ro ri.
-4. Xuat `comparison.md` (hoac `comparison.v2.md` neu da co) gom:
-   - `## Trung lap` — cac paper lam tuong tu
-   - `## Khac biet / Vuot troi` — diem paper target hon
-   - `## Gap con lai` — diem paper target chua giai quyet
-   - `## Bang claim-evidence` (moi — xem schema duoi)
-   - `## So lieu nghi thoi phong` (moi — xem duoi)
-   - `## Verdict`: `promote` / `keep_in_searched` / `reject` + 1 cau ly do
+## Quy trình
+1. Lấy `analysis.html` + `summary.json` của paper target + tất cả paper khác cùng layer.
+2. **Chỉ so sánh bài cùng `prediction_horizon` VÀ cùng `label_type`**:
+   - Cùng horizon + cùng label: so metric trực tiếp.
+   - Khác horizon: chỉ so phương pháp tiếp cận, KHÔNG so metric số.
+   - Khác label_type (binary vs multiclass_staging): KHÔNG so metric, note rõ.
+3. Đối chiếu các trục:
+   - **Prediction horizon** (§3b): cùng horizon mới so trực tiếp
+   - **Dataset**: cùng / khác / mở rộng?
+   - **Method**: trùng / cải tiến / mới hoàn toàn?
+   - **Metric & kết quả**: ai cao hơn? Trên cùng dataset (cùng horizon)?
+   - **Hạn chế**: paper target có khắc phục limit của paper khác không?
+   - **Rob audit** (nếu có summary.json với rob_audit): so sánh mức độ vi phạm rò rỉ.
+4. Xuất `comparison.md` (hoặc `comparison.v2.md` nếu đã có) gồm:
+   - `## Trùng lặp` — các paper làm tương tự
+   - `## Khác biệt / Vượt trội` — điểm paper target hơn
+   - `## Gap còn lại` — điểm paper target chưa giải quyết
+   - `## Bảng claim-evidence` (mới — xem schema dưới)
+   - `## Số liệu nghi thổi phồng` (mới — xem dưới)
+   - `## Verdict`: `promote` / `keep_in_searched` / `reject` + 1 câu lý do
 
 ---
 
-## Bang claim-evidence (them 2026-09-21)
+## Bảng claim-evidence (thêm 2026-09-21)
 
-Sau phan So sanh metric, PHAI xuat bang nay:
+Sau phần So sánh metric, PHẢI xuất bảng này:
 
 ```markdown
-## Bang claim-evidence
+## Bảng claim-evidence
 
-| paper_id | metric | dataset | validation | Co ro ri (tu rob_audit)? | So sanh duoc voi Paper_01? |
+| paper_id | metric | dataset | validation | Có rò rỉ (từ rob_audit)? | So sánh được với Paper_01? |
 |----------|--------|---------|-----------|--------------------------|---------------------------|
-| gr2024 | AUROC 0.89 (Table 3) | PIMA | internal CV | CP3: SMOTE truoc split (E) | KHONG — khac horizon (cross_sectional vs early_detection) |
-| nipa2023 | Acc 98.7% (Table 5) | PIMA | 1 split co dinh | E: winner curse (25/34 bai) | KHONG — khong co calibration, winner curse |
-| sgchoi2023 | AUROC 0.827 (Table 4) | KNHANES | external temporal | Khong xac dinh ro ri | CO — cung early_detection, co external val |
+| gr2024 | AUROC 0.89 (Table 3) | PIMA | internal CV | CP3: SMOTE trước split (E) | KHÔNG — khác horizon (cross_sectional vs early_detection) |
+| nipa2023 | Acc 98.7% (Table 5) | PIMA | 1 split cố định | E: winner curse | KHÔNG — không có calibration, winner curse |
+| sgchoi2023 | AUROC 0.827 (Table 4) | KNHANES | external temporal | Không xác định | CÓ — cùng early_detection, có external val |
 ```
 
-**Quy tac dien bang**:
-- `paper_id`: ma paper theo AGENTS.md §5
-- `metric`: so + don vi + nguon (Table X / Fig Y). Thieu → UNKNOWN.
-- `dataset`: ten dataset
-- `validation`: loai validation (internal CV / temporal / external / 1 split / UNKNOWN)
-- `Co ro ri`: lay tu `summary.json.rob_audit.probe_hits[]` + `leakage_types[]` neu co. Neu chua co rob_audit → ghi "Chua co rob_audit, can kiem tra".
-- `So sanh duoc voi Paper_01?`: Y + ly do ngan, hoac N + ly do ngan.
-  - Y chi khi: cung `prediction_horizon`, cung hoac tuong tu `label_type`, co metric tren tap test/external khong ro ri.
-  - N neu: khac horizon, metric tu tren val set duy nhat bi winner-curse, co F-leakage ro rang.
+**Quy tắc điền bảng**:
+- `paper_id`: mã paper theo AGENTS.md §5
+- `metric`: số + đơn vị + nguồn (Table X / Fig Y). Thiếu → UNKNOWN.
+- `dataset`: tên dataset
+- `validation`: loại validation (internal CV / temporal / external / 1 split / UNKNOWN)
+- `Có rò rỉ`: lấy từ `summary.json.rob_audit.probe_hits[]` + `leakage_types[]` nếu có. Nếu chưa có rob_audit → ghi "Chưa có rob_audit, cần kiểm tra".
+- `So sánh được với Paper_01?`: Y + lý do ngắn, hoặc N + lý do ngắn.
+  - Y chỉ khi: cùng `prediction_horizon`, cùng hoặc tương tự `label_type`, có metric trên tập test/external không rò rỉ.
+  - N nếu: khác horizon, metric từ trên val set duy nhất bị winner-curse, có F-leakage rõ ràng.
 
 ---
 
-## Muc "So lieu nghi thoi phong" (them 2026-09-21)
+## Mục "Số liệu nghi thổi phồng" (thêm 2026-09-21)
 
-Neu co bat ky bai nao trong comparison co `role: inflation` (AGENTS.md §5) HOAC co cac dau hieu:
-- AUROC/Acc > 0.95 tren PIMA hay Sylhet khong co nested CV
-- Winner curse ro rang (1 split co dinh, nhieu model, lay cao nhat)
+Nếu có bất kỳ bài nào trong comparison có `role: inflation` (AGENTS.md §5) HOẶC có các dấu hiệu:
+- AUROC/Acc > 0.95 trên PIMA hay Sylhet không có nested CV
+- Winner curse rõ ràng (1 split cố định, nhiều model, lấy cao nhất)
 - F-leakage (glucose/HbA1c trong feature)
 
-Thi them muc:
+Thì thêm mục:
 
 ```markdown
-## So lieu nghi thoi phong
+## Số liệu nghi thổi phồng
 
-| paper_id | metric | ly do nghi | evidence_ref | can verify truoc khi cite? |
+| paper_id | metric | lý do nghi | evidence_ref | cần verify trước khi cite? |
 |----------|--------|-----------|--------------|---------------------------|
-| nipa2023 | Acc 98.7% | Winner curse: 35 classifier, 1 split, tu nhan "no validation methods" | Sec 3 | CO — khong duoc cite so nay nhu benchmark that |
-| olisah2022 | AUROC 1.00 | F-leakage: relabel theo glucose trong feature | Table 2 | CO — so nay khong co gia tri tham chieu |
+| nipa2023 | Acc 98.7% | Winner curse: 35 classifier, 1 split, tự nhận "no validation methods" | Sec 3 | CÓ |
+| olisah2022 | AUROC 1.00 | F-leakage: relabel theo glucose trong feature | Table 2 | CÓ |
 ```
 
-> Muc nay giup user tranh viet so bi thoi phong vao Discussion cua Paper_01.
+> Mục này giúp user tránh viết số bị thổi phồng vào Discussion của Paper_01.
 
 ---
 
-## Rang buoc
-- So sanh metric chi hop le khi **cung `prediction_horizon` + cung dataset**; khac horizon thi so phuong phap.
-- **Neu comparison.md da co → ghi `comparison.v2.md`**, ghi chu o dau file "Phien ban 2 - co them bang claim-evidence + muc thoi phong".
-- KHONG tu move paper sang `chosed_papers/`. Chi goi y verdict.
-- So sanh PHAI dua tren `analysis.html` + `summary.json` da co, khong tu doc lai PDF.
-- Neu paper khac thieu analysis.html → bo qua, note ro trong comparison.md.
+## Ràng buộc
+- So sánh metric chỉ hợp lệ khi **cùng `prediction_horizon` + cùng dataset**; khác horizon thì so phương pháp.
+- **Nếu comparison.md đã có → ghi `comparison.v2.md`**, ghi chú ở đầu file "Phiên bản 2 - có thêm bảng claim-evidence + mục thổi phồng".
+- KHÔNG tự move paper sang `chosed_papers/`. Chỉ gợi ý verdict.
+- So sánh PHẢI dựa trên `analysis.html` + `summary.json` đã có, không tự đọc lại PDF.
+- Nếu paper khác thiếu analysis.html → bỏ qua, note rõ trong comparison.md.
 
-## Changelog cuc bo
+## Changelog cục bộ
 
-| Ngay | Thay doi | Nguoi thuc hien |
+| Ngày | Thay đổi | Người thực hiện |
 |------|---------|----------------|
-| 2026-09-21 | v2: Chi so sanh metric bai cung prediction_horizon + label_type. Them bang claim-evidence (paper_id|metric|dataset|validation|ro ri|so sanh Paper_01). Them muc "so lieu nghi thoi phong" (role:inflation). Neu comparison.md da co → ghi comparison.v2.md. | agent (chore/skills-upgrade) |
+| 2026-09-21 | v2: Chỉ so metric bài cùng prediction_horizon + label_type. Thêm bảng claim-evidence. Thêm mục "số liệu nghi thổi phồng" (role:inflation). Nếu comparison.md đã có → ghi comparison.v2.md. | agent (chore/skills-upgrade) |
+| 2026-09-22 | fix: Khôi phục dấu tiếng Việt (mất do PowerShell Out-File CP437). Dùng Python UTF-8 write. | agent (fix/encoding) |
