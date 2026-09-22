@@ -45,19 +45,19 @@ mis-keyed cites; `verify_refs.py` catches fabricated metadata.
 Run the bundled script rather than verifying citations by memory:
 
 ```bash
-python "${CLAUDE_SKILL_DIR}/scripts/verify_refs.py" manuscript/manuscript.md --project-root .
+python .agents/skills/verify-refs/scripts/verify_refs.py manuscript/manuscript.md --project-root .
 ```
 
 For hooks or quick manual runs, use the wrapper:
 
 ```bash
-"${CLAUDE_SKILL_DIR}/scripts/verify_cli.sh" manuscript/manuscript.md --offline
+.agents/skills/verify-refs/scripts/verify_cli.sh manuscript/manuscript.md --offline
 ```
 
 **Manual pre-submission strict run** (Phase 1A.5):
 
 ```bash
-"${CLAUDE_SKILL_DIR}/scripts/verify_cli.sh" manuscript/index.qmd --strict
+.agents/skills/verify-refs/scripts/verify_cli.sh manuscript/index.qmd --strict
 ```
 
 `--strict` forbids `--offline` and exits non-zero on any UNVERIFIED row.
@@ -185,11 +185,11 @@ the claim attached to it is not. That gap is where the failure lives: the DOI re
 authors match, the reference list renders, and the sentence is still wrong.
 
 `scripts/check_claim_fidelity.py` checks the claims that have a checkable answer, against
-full texts you have already downloaded and converted (`/fulltext-retrieval` produces exactly
-that layout — it never fetches anything itself):
+full texts you have already downloaded and converted (`/pdf-fetch` retrieves paper PDFs;
+claim fidelity reads converted text off disk):
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_claim_fidelity.py" \
+python3 .agents/skills/verify-refs/scripts/check_claim_fidelity.py \
   --manuscript manuscript/manuscript.md \
   --fulltext-dir fulltext/ --bib manuscript/_src/refs.bib \
   --out qc/claim_fidelity.json --strict
@@ -218,7 +218,7 @@ advisory retrieval identity, and a separate assessor-entered comparison. Initial
 rows are `not_assessed`, even when bibliographic status is OK and no probe fires.
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_claim_fidelity.py" \
+python3 .agents/skills/verify-refs/scripts/check_claim_fidelity.py \
   --manuscript manuscript/manuscript.md --bib manuscript/_src/refs.bib \
   --fulltext-dir fulltext/ --retrieval-report pdfs/retrieval_report.json \
   --reference-audit qc/reference_audit.json \
@@ -238,7 +238,7 @@ source-identity limitations, and the difference between recorded and verified.
 
 ## What This Skill Does NOT Do
 
-- Does not fetch full texts (use `/fulltext-retrieval`); claim fidelity reads converted text
+- Does not fetch full texts (use `/pdf-fetch`); claim fidelity reads converted text
   off disk so it stays deterministic and CI-runnable.
 - Does not automatically judge topical fit or semantic support. The probes check limited
   wording patterns; the evidence table records attributed assessments, not verified facts.

@@ -66,7 +66,7 @@ not at all for this manuscript type.
 Run the deterministic scope gate:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_scope_coherence.py" \
+python3 .agents/skills/self-review/scripts/check_scope_coherence.py \
   --manuscript manuscript.md --out qc/scope_coherence.json --strict
 ```
 
@@ -148,7 +148,7 @@ before submission for item-level assessment."
 Run the deterministic classical-style lint (these are all greps, so they belong in a gate, not eyeballing):
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_classical_style.py" \
+python3 .agents/skills/self-review/scripts/check_classical_style.py \
   --manuscript manuscript.md --out qc/classical_style.json --strict
 ```
 
@@ -166,7 +166,7 @@ Run the deterministic check at Phase 2 entry (pass the extraction JSON — a fil
 a directory of per-study JSONs — so the prose↔JSON↔confession 3-way is covered):
 
 ```bash
-python "${CLAUDE_SKILL_DIR}/scripts/check_reviewer_team_consistency.py" \
+python .agents/skills/self-review/scripts/check_reviewer_team_consistency.py \
     --manuscript manuscript.md \
     --prospero prospero/record.md \
     --extraction-json extraction/ \
@@ -202,7 +202,7 @@ REMOVE / MOVE / TIGHTEN, not "add a caveat."
 Run the deterministic gate (Phase 2.5g) rather than eyeballing it — these are all counts and placements:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_editorial_impression.py" \
+python3 .agents/skills/self-review/scripts/check_editorial_impression.py \
   --manuscript manuscript.md --out qc/editorial_impression.json
 ```
 

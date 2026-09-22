@@ -70,7 +70,7 @@ Phase 2.5c covers reference **integrity** — are the cited references real (fab
 1. **Run the deterministic checker.** Resolve the article type from `project.yaml` (passed verbatim; the script's alias map handles repo paper-type names) and the journal cap from the target journal profile when known:
 
    ```bash
-   python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/self-review/scripts/check_reference_adequacy.py" \
+   python3 .agents/skills/self-review/scripts/check_reference_adequacy.py \
      --manuscript manuscript/manuscript.md --bib "$BIB" \
      --article-type "$TYPE" ${CAP:+--journal-cap "$CAP"} \
      --out qc/reference_adequacy.json --strict

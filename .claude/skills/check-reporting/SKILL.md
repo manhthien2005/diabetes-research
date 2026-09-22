@@ -82,7 +82,7 @@ compliance report suitable for journal submission.
 If a checklist already exists for this project (`qc/reporting_checklist.json` or a prior `.md` report), verify it targets the **current** manuscript before reusing it — a checklist generated against an older version carries stale section/line references and a stale version label that a reviewer who cross-checks will catch:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_checklist_version.py" \
+python3 .agents/skills/check-reporting/scripts/check_checklist_version.py \
   --checklist qc/reporting_checklist.json --manuscript manuscript_v8.md
 ```
 
@@ -163,7 +163,7 @@ user specification.
 1. **Run the fail-fast guard first** for every guideline you intend to apply:
 
    ```bash
-   python "${CLAUDE_SKILL_DIR}/scripts/check_checklist_exists.py" --guideline "STARD-AI"
+   python .agents/skills/check-reporting/scripts/check_checklist_exists.py --guideline "STARD-AI"
    ```
 
    - Exit 0 → the vendored checklist exists; read it from
@@ -306,7 +306,7 @@ automatically (same keyword regex, the four arithmetic equations, the body↔fig
 cross-reference) and writes `qc/prisma_figure_audit.json`:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/check_prisma_figure.py \
+python3 .agents/skills/check-reporting/scripts/check_prisma_figure.py \
   --md <manuscript.md> --figure <Figure 1 source: .md manifest / caption / text export> \
   --out qc/prisma_figure_audit.json
 ```
@@ -359,7 +359,7 @@ labels like "12-AI"; and waving at "recent guidance" instead of naming the frame
 **Run the deterministic gate:**
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_framework_naming.py" \
+python3 .agents/skills/check-reporting/scripts/check_framework_naming.py \
   --manuscript manuscript.md --out qc/framework_naming.json --strict
 ```
 
@@ -490,7 +490,7 @@ When PRISMA 2020 or PRISMA-DTA is selected and round-by-round
 screening TSV artifacts are available, run the cascade auto-verify:
 
 ```bash
-python "${CLAUDE_SKILL_DIR}/scripts/prisma_cascade_check.py" \
+python .agents/skills/check-reporting/scripts/prisma_cascade_check.py \
     --round1 2_Screening/round1.tsv \
     --round2 2_Screening/round2.tsv \
     --round3 2_Screening/round3_adjudication.tsv \

@@ -32,7 +32,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
    / protocol / `project.yaml`:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_claim_artifact.py" \
+   python3 .agents/skills/self-review/scripts/check_claim_artifact.py \
      --manuscript manuscript.md --prereg prereg.md \
      --out qc/claim_artifact.json --strict
    ```
@@ -71,7 +71,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
 6. **Methods ↔ Results ↔ disk coverage.** Run the deterministic coverage gate:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_artifact_coverage.py" \
+   python3 .agents/skills/self-review/scripts/check_artifact_coverage.py \
      --manuscript manuscript.md --analysis-dir output/analysis \
      --out qc/artifact_coverage.json --strict
    ```
@@ -91,7 +91,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
    yet absent from every table. Pass the rendered supplement so the corpus is complete:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_artifact_coverage.py" \
+   python3 .agents/skills/self-review/scripts/check_artifact_coverage.py \
      --manuscript manuscript.md --supplement supplement.md \
      --out qc/artifact_coverage.json --strict
    ```
@@ -105,7 +105,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
    supplement-hygiene gate over **every** rendered reader-facing artifact:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_supplement_hygiene.py" \
+   python3 .agents/skills/self-review/scripts/check_supplement_hygiene.py \
      --supplement supplement.md --supplement tables.md --supplement captions.md \
      --manuscript manuscript.md --out qc/supplement_hygiene.json --strict
    ```
@@ -128,7 +128,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
    back-matter so an in-order legends block cannot mask an out-of-order body):
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_citation_order.py" \
+   python3 .agents/skills/self-review/scripts/check_citation_order.py \
      --manuscript manuscript.md --out qc/citation_order.json --strict
    ```
 
@@ -157,7 +157,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
    margin/TOST, or a CI-compatibility sentence. Run the null-calibration gate:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_null_calibration.py" \
+   python3 .agents/skills/self-review/scripts/check_null_calibration.py \
      --manuscript manuscript.md --out qc/null_calibration.json --strict
    ```
 
@@ -174,7 +174,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
     collapses opposite (call × confidence) cells and silently mis-estimates the AUC; a
     prose review cannot see an estimator bug. Run the encoding through the reusable
     monotonicity probe and ship its 10-combination unit test:
-    `python3 "${MEDSCI_SKILLS_ROOT}/skills/analyze-stats/scripts/rating_monotonicity.py" --encoding score_def.json`.
+    `python3 .agents/skills/analyze-stats/scripts/rating_monotonicity.py --encoding score_def.json`.
 
 11. **Figure-embedded numbers are text-grep blind.** PRISMA/flow/forest/statistic figures
     are rasterised, so every numeric audit above is blind to the numbers *inside* them.

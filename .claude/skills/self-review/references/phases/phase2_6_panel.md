@@ -50,7 +50,7 @@ One editor pass (a final agent, or the main agent in the fallback) consolidates 
 A panel only earns its cost if its reviewers span *distinct* axes rather than echo one theme louder. Before the editor finalizes, serialize the reviewers' structured outputs (the schema above) to a JSON file — either a top-level list or `{"reviewers": [...], "research_type": "..."}` — and run the gate:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/check_panel_diversity.py \
+python3 .agents/skills/self-review/scripts/check_panel_diversity.py \
     --panel panel_reviews.json --roster panel_roster.json \
     --research-type {survival|sr_ma|radiomics|dta|observational|narrative} --strict
 ```

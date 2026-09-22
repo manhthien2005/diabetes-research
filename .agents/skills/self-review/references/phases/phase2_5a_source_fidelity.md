@@ -16,7 +16,7 @@ Also run the **displayed-arithmetic** gate — a stated difference must equal th
 its two displayed component values at the SAME precision:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_rounded_delta.py" \
+python3 .agents/skills/self-review/scripts/check_rounded_delta.py \
   --manuscript manuscript.md --out qc/rounded_delta.json
 ```
 

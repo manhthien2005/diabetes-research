@@ -30,7 +30,7 @@ Run `verify-refs --strict` manually at every one of these checkpoints:
 From the project root:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/verify_refs.py" \
+python3 .agents/skills/verify-refs/scripts/verify_refs.py \
   manuscript/index.qmd \
   --project-root . \
   --strict
@@ -39,13 +39,13 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/verify_refs.py" \
 Or via the wrapper:
 
 ```bash
-"${CLAUDE_SKILL_DIR}/scripts/verify_cli.sh" manuscript/index.qmd --strict
+.agents/skills/verify-refs/scripts/verify_cli.sh manuscript/index.qmd --strict
 ```
 
 Docx input is also accepted:
 
 ```bash
-"${CLAUDE_SKILL_DIR}/scripts/verify_cli.sh" \
+.agents/skills/verify-refs/scripts/verify_cli.sh \
   submission/radiology_ai/manuscript_main.docx --strict
 ```
 

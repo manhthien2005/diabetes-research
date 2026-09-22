@@ -24,12 +24,12 @@
 | Skill | Purpose in Research Project | Local Modifications |
 |-------|----------------------------|---------------------|
 | design-study | Gate leakage + cohort design + validation strategy for tabular ML | Added Changelog |
-| analyze-stats | Reproducible statistics, separation checks | Added Changelog |
+| analyze-stats | Reproducible statistics, separation checks | Added Changelog, R5A runtime path portability |
 | radiomics-ml | Learner-agnostic gates ONLY (nested CV, calibration) — skip pyradiomics/IBSI | Added Changelog |
-| check-reporting | TRIPOD+AI, PROBAST+AI checklists | Added Changelog |
-| verify-refs | Verify DOI, claim fidelity via PubMed/CrossRef | Email patch + Changelog |
-| self-review | Self-critique of Paper_01 manuscript draft | Added Changelog |
-| peer-review | Probe CP1-CP6 + O11 for RoB mini-audit of repository papers | NCKH scope note + Changelog |
+| check-reporting | TRIPOD+AI, PROBAST+AI checklists | Added Changelog, R5A runtime path portability |
+| verify-refs | Verify DOI, claim fidelity via PubMed/CrossRef | Email patch + Changelog, R5A runtime portability + /pdf-fetch mapping |
+| self-review | Self-critique of Paper_01 manuscript draft | Added Changelog, R5A runtime portability + local target remap |
+| peer-review | Probe CP1-CP6 + O11 for RoB mini-audit of repository papers | NCKH scope note + Changelog, R5A runtime portability |
 | polish-language | Consistency linting + ESL clarity | Added Changelog |
 
 ---
@@ -62,6 +62,8 @@
 1. `verify-refs/scripts/verify_refs.py`: replaced default email with `phandienmanhthienk16@siu.edu.vn`
 2. `peer-review/SKILL.md`: added NCKH scope section (probe CP1-CP6 + O11 only)
 3. All 8 `SKILL.md`: added local Changelog section
+4. Round 5A (R5A) runtime portability: remapped unverified ${CLAUDE_SKILL_DIR} and ${MEDSCI_SKILLS_ROOT} assumptions to canonical repository-relative paths (.agents/skills/...) for locally bundled helpers across analyze-stats, check-reporting, peer-review, self-review, and verify-refs.
+5. Round 5A (R5A) verify-refs full-text mapping: remapped unavailable upstream /fulltext-retrieval route to installed repository skill /pdf-fetch.
 
 ---
 

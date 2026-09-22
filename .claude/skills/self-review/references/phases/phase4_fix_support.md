@@ -41,7 +41,7 @@ When `--fix` is passed:
 4. **Post-edit paren-span safety scan**: if any fix reduced em-dashes (e.g. a `— X —` appositive → `(X)`), run the parenthesis-span gate before re-review — a bulk conversion can pair two unrelated dashes across a sentence boundary and wrap a whole sentence (or an ordinal "Sixth, …" limitation) inside one parenthesis (paren-balanced, so a balance check misses it):
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_paren_spans.py" \
+   python3 .agents/skills/self-review/scripts/check_paren_spans.py \
      --manuscript manuscript.md --out qc/paren_spans.json --strict
    ```
 

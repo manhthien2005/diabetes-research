@@ -41,13 +41,12 @@ Scan the PDF **before** you feed it to any model, and feed the model the sanitiz
 
 ```bash
 set -euo pipefail   # step 1 must not fail quietly into step 2's "no such file"
-S="${CLAUDE_SKILL_DIR}/scripts"
 # 1) extract the span manifest (needs PyMuPDF: pip install pymupdf)
-python3 "$S/scan_pdf_layers.py" manuscript.pdf -o review/{manuscript_id}/{manuscript_id}.manifest.json
+python3 .agents/skills/peer-review/scripts/scan_pdf_layers.py manuscript.pdf -o review/{manuscript_id}/{manuscript_id}.manifest.json
 # 2) audit it (stdlib only) — non-zero exit on hidden or injected text
-python3 "$S/check_pdf_injection.py" review/{manuscript_id}/{manuscript_id}.manifest.json --strict
+python3 .agents/skills/peer-review/scripts/check_pdf_injection.py review/{manuscript_id}/{manuscript_id}.manifest.json --strict
 # 3) write the visible-only text that is safe to hand to an LLM
-python3 "$S/check_pdf_injection.py" review/{manuscript_id}/{manuscript_id}.manifest.json \
+python3 .agents/skills/peer-review/scripts/check_pdf_injection.py review/{manuscript_id}/{manuscript_id}.manifest.json \
   --sanitize review/{manuscript_id}/{manuscript_id}.sanitized.txt
 # or in one pipe: scan_pdf_layers.py manuscript.pdf | check_pdf_injection.py - --strict
 ```
@@ -266,7 +265,7 @@ it concerns the journal recommendation, which `/self-review` does not produce.
 **Probe detail (SI1–SI7):** `${CLAUDE_SKILL_DIR}/references/domain-probes/self_improving_system.md`. The organizing question is not *did it improve?* but **what said so?** Every improvement loop is a claim that some signal can substitute for human judgment, and signals are not interchangeable: a formal verifier is sound by construction, execution feedback is reliable but incomplete, an LLM-as-judge is bounded by its own competence, and a model's self-consistency is the most gameable of all. A rung-1 conclusion drawn from a rung-3 signal is the commonest failure in this literature and is a design-level Major — surface it in the Confidential Comments to the Editor. **SI2** (the judge is the model it judges, unvalidated) and **SI3** (an ungrounded loop, where the gain may be reformulation rather than progress) are the two that a deterministic pass can decide:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_self_improvement_claims.py" \
+python3 .agents/skills/peer-review/scripts/check_self_improvement_claims.py \
   --manuscript paper.md --out qc/self_improvement.json --strict
 ```
 
@@ -290,7 +289,7 @@ A computation request must carry an explicit justification that the existing tab
 **This rule is enforced, not merely stated.** It shipped as prose once and did not bind: the first live review after it landed went out with six computation requests and a demand for a second reader, and passed every neighbouring gate (word count, em-dash density, forbidden words, attitude markers) because those are scripts and this was a sentence. Run the gate on your own draft before Phase 5:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_review_request_types.py" \
+python3 .agents/skills/peer-review/scripts/check_review_request_types.py \
   --review review/{manuscript_id}_review_draft.md --strict
 ```
 
@@ -300,9 +299,9 @@ The budgets below, and the two-box structure, are enforced the same way and for 
 reason. Run both on the draft alongside the request-type gate:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_review_length.py" \
+python3 .agents/skills/peer-review/scripts/check_review_length.py \
   --review review/{manuscript_id}_review_draft.md --tier 2 --strict
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_review_boxes.py" \
+python3 .agents/skills/peer-review/scripts/check_review_boxes.py \
   --review review/{manuscript_id}_review_draft.md --strict
 ```
 

@@ -66,7 +66,7 @@ searched. Two guards make that argument honest:
 INPUT CONTRACT
 
 Full texts are supplied as a directory of ALREADY-CONVERTED text — this detector never
-fetches. `/fulltext-retrieval` produces exactly that (`fetch_oa.py` writes
+fetches. `/pdf-fetch` and converters produce that layout (`fetch_oa.py` writes
 `<doi-with-unsafe-chars-underscored>.pdf`, `pdf_to_md.py` converts it alongside), and a
 detector that reached the network would be neither deterministic nor CI-runnable.
 
@@ -253,7 +253,7 @@ def parse_numbered_refs(ref_text: str) -> dict[str, str]:
 
 
 def safe_doi_name(doi: str) -> str:
-    """Filesystem-safe stem for a DOI — identical to /fulltext-retrieval fetch_oa.py, so the
+    """Filesystem-safe stem for a DOI — identical to /pdf-fetch converter convention, so the
     files that skill writes are found without any hand-built map."""
     return re.sub(r"[^\w\-.]", "_", doi)
 
@@ -637,7 +637,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Verify what a manuscript says a cited work says.")
     ap.add_argument("--manuscript", required=True, type=Path)
     ap.add_argument("--fulltext-dir", required=True, type=Path,
-                    help="directory of ALREADY-CONVERTED source texts (see /fulltext-retrieval)")
+                    help="directory of ALREADY-CONVERTED source texts (see /pdf-fetch)")
     ap.add_argument("--bib", type=Path, help="refs.bib, for [@key] -> DOI resolution")
     ap.add_argument("--refmap", type=Path,
                     help='JSON {"41": "10.1000/xyz"} for citations neither bib nor list resolves')

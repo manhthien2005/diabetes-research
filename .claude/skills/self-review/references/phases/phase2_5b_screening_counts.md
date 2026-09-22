@@ -84,7 +84,7 @@ stratum-total mis-entry rather than a partition. Run `check_cohort_arithmetic.py
 analogue of an ID-set mismatch and is a P0 Major:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_cohort_arithmetic.py" \
+python3 .agents/skills/self-review/scripts/check_cohort_arithmetic.py \
   --manuscript manuscript.md --data analysis/strata.csv --strict
 ```
 
@@ -103,7 +103,7 @@ cause. `check_binning_consistency.py` parses the analysis source (R/Python) and 
 signatures across files:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_binning_consistency.py" \
+python3 .agents/skills/self-review/scripts/check_binning_consistency.py \
   --root analysis --root scripts --strict
 ```
 

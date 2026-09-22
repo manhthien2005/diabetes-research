@@ -11,7 +11,7 @@ Before the DOCX is built, run the **markdown-stage orphan gate** — every capti
 `Figure N.` / `Table N.` must be cited at least once elsewhere in the body:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_figure_citation.py" \
+python3 .agents/skills/self-review/scripts/check_figure_citation.py \
   --manuscript manuscript.md --out qc/figure_citation.json
 ```
 

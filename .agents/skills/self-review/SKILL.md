@@ -128,25 +128,25 @@ than in eyeballing. Run them at Phase 2 entry, on every path:
 
 ```bash
 # D. endpoint↔conclusion scope
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_scope_coherence.py" \
+python3 .agents/skills/self-review/scripts/check_scope_coherence.py \
   --manuscript manuscript.md --out qc/scope_coherence.json --strict
 
 # J. classical-style body conventions
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_classical_style.py" \
+python3 .agents/skills/self-review/scripts/check_classical_style.py \
   --manuscript manuscript.md --out qc/classical_style.json --strict
 
 # K. reviewer-team consistency (SR/MA only; pass the extraction JSON file or directory)
-python "${CLAUDE_SKILL_DIR}/scripts/check_reviewer_team_consistency.py" \
+python .agents/skills/self-review/scripts/check_reviewer_team_consistency.py \
     --manuscript manuscript.md --prospero prospero/record.md \
     --extraction-json extraction/ --out _audit_self/reviewer_team_consistency.md
 
 # L. editorial impression (advisory; exits 0 even under --strict)
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_editorial_impression.py" \
+python3 .agents/skills/self-review/scripts/check_editorial_impression.py \
   --manuscript manuscript.md --out qc/editorial_impression.json
 
 # J/D. Perspective structure (genre-gated: silent unless article_type is a Perspective).
 # Pass the known type via --type; it also self-detects from the front-matter article_type.
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_perspective_structure.py" \
+python3 .agents/skills/self-review/scripts/check_perspective_structure.py \
   --manuscript manuscript.md --type "${TYPE:-}" --out qc/perspective_structure.json
 ```
 
@@ -165,7 +165,7 @@ per-verdict rationale and the resolution paths are in the reference file.
 > "The outcome (dependent variable) for the multivariable Cox model is not specified." … "The ground truth (reference standard) against which discrimination and calibration were assessed is not defined." … "This section is largely incomprehensible in its current form."
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_analysis_definitions.py" \
+python3 .agents/skills/self-review/scripts/check_analysis_definitions.py \
   --manuscript manuscript.md --out qc/analysis_definitions.json --strict
 ```
 
@@ -238,7 +238,7 @@ These modules carry the same domain-specific critique probes used by `/peer-revi
 For a **classifier / NLP / tabular ML** manuscript, also run the deterministic feature-selection-leakage gate — a data-driven selection (feature selection, log-odds / univariate filtering, vocabulary construction, a threshold) fit on the FULL dataset before cross-validation inflates the CV metric:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_cv_leakage.py" \
+python3 .agents/skills/self-review/scripts/check_cv_leakage.py \
   --manuscript manuscript.md --out qc/cv_leakage.json
 ```
 
@@ -261,7 +261,7 @@ Before generating the report, verify internal consistency:
 For cohort/observational manuscripts, run the deterministic gate instead of eyeballing it (it parses prose equations + GFM tables, and recomputes from a committed CSV when given one):
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_cohort_arithmetic.py" \
+python3 .agents/skills/self-review/scripts/check_cohort_arithmetic.py \
   --manuscript manuscript.md --data analysis/cohort.csv --id-col mockid \
   --out qc/cohort_arithmetic.json --strict
 ```
@@ -274,15 +274,15 @@ they fail:
 
 ```bash
 # Every "n (%)" in a table, recomputed against its own denominator.
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_table_percentages.py" \
+python3 .agents/skills/self-review/scripts/check_table_percentages.py \
   --manuscript manuscript.md --out qc/table_percentages.json --strict
 
 # Every reported P beside a 2×2 (or r×c) count, recomputed from the counts themselves.
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_reported_p_from_counts.py" \
+python3 .agents/skills/self-review/scripts/check_reported_p_from_counts.py \
   --manuscript manuscript.md --out qc/reported_p.json --strict
 
 # Diagnostic-accuracy only: sensitivity/specificity against the reference-standard denominators.
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_dta_denominators.py" \
+python3 .agents/skills/self-review/scripts/check_dta_denominators.py \
   --manuscript manuscript.md --out qc/dta_denominators.json --strict
 ```
 
@@ -303,7 +303,7 @@ Run the **displayed-arithmetic** gate first — a stated difference must equal t
 its two displayed component values at the *same* precision:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_rounded_delta.py" \
+python3 .agents/skills/self-review/scripts/check_rounded_delta.py \
   --manuscript manuscript.md --out qc/rounded_delta.json
 ```
 
@@ -376,7 +376,7 @@ stratum n equals the grand total is a mis-entry, not a partition. Confirm the re
 other strata are uninterpretable.
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_cohort_arithmetic.py" \
+python3 .agents/skills/self-review/scripts/check_cohort_arithmetic.py \
   --manuscript manuscript.md --data analysis/strata.csv --strict
 ```
 
@@ -388,7 +388,7 @@ manuscript-only check cannot localize it. The same gate covers the composite-ind
 (a derived 0/1 criterion rebuilt in a second script with a clause dropped).
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_binning_consistency.py" \
+python3 .agents/skills/self-review/scripts/check_binning_consistency.py \
   --root analysis --root scripts --strict
 ```
 
@@ -404,7 +404,7 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/check_binning_consistency.py" \
 Two scans run on the bibliography: **2.5c** catches a citation that does not exist or whose first author is invented, and **2.5c-2** catches a claim that carries no citation at all. Both need a bibliography — a draft with no `refs.bib` and no reference list skips them entirely. Run `/verify-refs --strict` first; these scans read its audit rather than re-deriving it, then run the adequacy checker:
 
 ```bash
-python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/self-review/scripts/check_reference_adequacy.py" \
+python3 .agents/skills/self-review/scripts/check_reference_adequacy.py \
   --manuscript manuscript/manuscript.md --bib "$BIB" \
   --article-type "$TYPE" ${CAP:+--journal-cap "$CAP"} \
   --out qc/reference_adequacy.json --strict
@@ -430,7 +430,7 @@ cannot see it — the prose and the build artifact each echo their own divergent
 elsewhere in the body:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_figure_citation.py" \
+python3 .agents/skills/self-review/scripts/check_figure_citation.py \
   --manuscript manuscript.md --out qc/figure_citation.json
 ```
 
@@ -490,7 +490,7 @@ exposed by joining the exposure-stratified Table 1 against the Methods adjustmen
 an Anticipated Major Comment (category A. Study Design & Data Integrity):
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_confounding_completeness.py" \
+python3 .agents/skills/self-review/scripts/check_confounding_completeness.py \
   --table1 table1_by_<exposure>.csv \
   --adjusted-list "age, sex, BMI, hypertension, diabetes" \
   --exposure-defining-list "body mass index, waist, fasting glucose, triglycerides, HDL cholesterol" \
@@ -518,39 +518,39 @@ the estimate it is quoted against, an analysis promised in Methods that never re
 
 ```bash
 # 1. claims ↔ pre-registration/protocol: estimand provenance + E-value arithmetic
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_claim_artifact.py" \
+python3 .agents/skills/self-review/scripts/check_claim_artifact.py \
   --manuscript manuscript.md --prereg prereg.md \
   --out qc/claim_artifact.json --strict
 
 # 2. Methods ↔ Results ↔ disk coverage (both directions: promised-absent AND run-but-unreported)
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_artifact_coverage.py" \
+python3 .agents/skills/self-review/scripts/check_artifact_coverage.py \
   --manuscript manuscript.md --supplement supplement.md --analysis-dir output/analysis \
   --out qc/artifact_coverage.json --strict
 
 # 3. reader-facing residue in EVERY rendered artifact, not just the body
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_supplement_hygiene.py" \
+python3 .agents/skills/self-review/scripts/check_supplement_hygiene.py \
   --supplement supplement.md --supplement tables.md --supplement captions.md \
   --manuscript manuscript.md --out qc/supplement_hygiene.json --strict
 
 # 4. float AND in-text reference-number ([N]) citation order — a desk-reject item the hygiene gate does not cover
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_citation_order.py" \
+python3 .agents/skills/self-review/scripts/check_citation_order.py \
   --manuscript manuscript.md --out qc/citation_order.json --strict
 
 # 5. a headline null is uninterpretable without a precision statement
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_null_calibration.py" \
+python3 .agents/skills/self-review/scripts/check_null_calibration.py \
   --manuscript manuscript.md --out qc/null_calibration.json --strict
 
 # 5b. a headline OR/HR/RR whose 95% CI spans an order of magnitude (a direction, not a magnitude), or events/covariates < 10 (EPV)
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_effect_stability.py" \
+python3 .agents/skills/self-review/scripts/check_effect_stability.py \
   --manuscript manuscript.md --out qc/effect_stability.json --strict
 
 # 5c. incorporation bias — a trajectory-defined reference standard with a trajectory predictor (growth) reported as associated with the outcome
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_incorporation_bias.py" \
+python3 .agents/skills/self-review/scripts/check_incorporation_bias.py \
   --manuscript manuscript.md --out qc/incorporation_bias.json --strict
 
 # 6. reader/observer study only — prove the (call × confidence) → score encoding is strictly
 #    monotonic; a folded score silently mis-estimates the AUC and no prose review can see it
-python3 "${MEDSCI_SKILLS_ROOT}/skills/analyze-stats/scripts/rating_monotonicity.py" \
+python3 .agents/skills/analyze-stats/scripts/rating_monotonicity.py \
   --encoding score_def.json
 ```
 
@@ -596,7 +596,7 @@ confident. It is advisory and **non-blocking** — it never produces a Major and
 submission.
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_editorial_impression.py" \
+python3 .agents/skills/self-review/scripts/check_editorial_impression.py \
   --manuscript manuscript.md --out qc/editorial_impression.json
 ```
 
@@ -640,7 +640,7 @@ output — and reports lexical framing drift. Supply the baseline explicitly; wi
 available (a first draft) skip it — the gate is a no-op without one.
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/check_baseline_drift.py" \
+python3 .agents/skills/self-review/scripts/check_baseline_drift.py \
   --manuscript manuscript.md --baseline "$BASELINE_MD" \
   --out qc/baseline_drift.json
 ```
@@ -674,7 +674,7 @@ the catalog) and it is **advisory — it never blocks**; it must not double-gate
 detectors, which already fail under `--strict` on their own Majors.
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/refinement_stop.py" \
+python3 .agents/skills/self-review/scripts/refinement_stop.py \
   --qc-dir qc --out qc/refinement_stop.json
 ```
 
@@ -702,7 +702,7 @@ line per run, the `verdict@where` fingerprints of that run's findings — and re
 **regression axis next to the pass-rate axis**: what the revision *fixed* vs what it *broke*.
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/refinement_regression.py" \
+python3 .agents/skills/self-review/scripts/refinement_regression.py \
   --qc-dir qc --ledger qc/refinement_ledger.jsonl --append \
   --out qc/refinement_regression.json
 ```

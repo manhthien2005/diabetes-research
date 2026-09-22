@@ -37,7 +37,7 @@ adjusted exposure–outcome association. Skip for RCTs and descriptive studies.
 2. **Run the deterministic gate:**
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_confounding_completeness.py" \
+   python3 .agents/skills/self-review/scripts/check_confounding_completeness.py \
      --table1 table1_by_<exposure>.csv \
      --adjusted-list "age, sex, BMI, hypertension, diabetes" \
      --exposure-defining-list "body mass index, waist, fasting glucose, triglycerides, HDL cholesterol" \

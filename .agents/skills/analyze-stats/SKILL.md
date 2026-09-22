@@ -74,7 +74,7 @@ Based on the data structure and research question, propose an analysis plan:
    the string sign, a halo sign): 100% specificity means an empty cell by construction.
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/check_separation.py" \
+   python3 .agents/skills/analyze-stats/scripts/check_separation.py \
      --data cohort.csv --outcome idh_mutant --auto --strict
    ```
 
@@ -184,7 +184,7 @@ command in this same manifest. `audit` checks recorded versions without rewritin
 them; `compare` separates declared context and recorded numeric equality from byte
 drift. It does not select thresholds or establish study validity, privacy clearance
 or reuse rights. The original synthetic example runs with
-`python3 ${CLAUDE_SKILL_DIR}/scripts/demo_analysis_run.py --out demo-project`.
+`python3 .agents/skills/analyze-stats/scripts/demo_analysis_run.py --out demo-project`.
 
 ### Phase 3.5: Generated-Code Quality Gate
 
@@ -192,9 +192,9 @@ Before reporting any script as final, lint every emitted `.py`/`.R` file for the
 reproducibility-hygiene "slop" that AI-generated analysis code recurrently carries:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/check_generated_code.py {script.py} --strict
+python3 .agents/skills/analyze-stats/scripts/check_generated_code.py {script.py} --strict
 # or scan a whole output directory:
-python3 ${CLAUDE_SKILL_DIR}/scripts/check_generated_code.py --code-dir {analysis_dir} --strict
+python3 .agents/skills/analyze-stats/scripts/check_generated_code.py --code-dir {analysis_dir} --strict
 ```
 
 **Major findings (fix before reporting the script):**
