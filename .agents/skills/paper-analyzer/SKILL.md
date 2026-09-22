@@ -1,10 +1,10 @@
 ---
 name: paper-analyzer
 description: |
-  Phân tích SÂU một bài báo trong `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`,
-  xuất ra `analysis.html` (tiếng Việt, 8 khối theo AGENTS.md §6) VÀ
-  `summary.json` (máy đọc được, để sinh research brief). Mục tiêu: user
-  quyết promote/loại mà không cần mở PDF.
+  Deeply analyze a paper in `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`,
+  generating `analysis.html` (Vietnamese, 8 blocks per AGENTS.md §6) AND
+  `summary.json` (machine-readable, for research brief synthesis). Goal: enable user
+  to decide promote/reject without opening the PDF.
 inputs:
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/extracted.md
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/source.pdf
@@ -18,53 +18,53 @@ outputs:
 
 # paper-analyzer
 
-## Mục đích
-Biến 1 PDF khoa học thành phân tích tiếng Việt SÂU + một bản tóm tắt máy
-đọc được, để user quyết "promote lên `01_Diabetes_Research/chosed_papers/` hay loại".
+## Purpose
+Transform 1 scientific PDF into a DEEP Vietnamese analysis + a machine-readable
+summary, enabling the user to decide whether to "promote to `01_Diabetes_Research/chosed_papers/` or reject".
 
-## Quy trình
-1. **Đọc full text**: ưu tiên `extracted.md`. Nếu chưa có → chạy `pdf-extract`.
-2. Đọc `metadata.json` + đọc paper trong `01_Diabetes_Research/chosed_papers/Layer_<n>/` cùng layer.
-3. Render `analysis.html` theo **8 khối** (AGENTS.md §6). KHÔNG đổi cấu trúc.
-4. Ghi `summary.json` (schema dưới) — bao gồm key `rob_audit` mới.
-5. Ghi `rob_audit.json` (bản riêng cho QC).
-6. Set `analysis_status: "analyzed"` + xác nhận `prediction_horizon` trong metadata.
+## Procedure
+1. **Read full text**: prioritize `extracted.md`. If missing → run `pdf-extract`.
+2. Read `metadata.json` + read papers in `01_Diabetes_Research/chosed_papers/Layer_<n>/` within the same layer.
+3. Render `analysis.html` following the **8 blocks** (AGENTS.md §6). DO NOT alter the structure.
+4. Record `summary.json` (schema below) — including the new `rob_audit` key.
+5. Record `rob_audit.json` (dedicated QC version).
+6. Set `analysis_status: "analyzed"` + confirm `prediction_horizon` in metadata.
 
-## Đi SÂU — bắt buộc moi đủ
-Không dừng ở mô tả chung. PHẢI rút được:
+## Deep Analysis — Mandatory Rigorous Extraction
+Do not stop at generic descriptions. MUST extract:
 - **Prediction horizon** (§3b)
-- **Pipeline chính xác**: từng bước tiền xử lý → cân bằng → feature → model → tuning
-- **Dataset & split**: tên, số mẫu, số feature, tỉ lệ train/test, CV, cân bằng lớp
-- **Metric kèm NGUỒN**: ghi "Table X / Fig Y / Section Z". Không có → UNKNOWN.
-- **Khả năng tái lập** (high/medium/low) + lý do
-- **So với baseline**: hơn/kém cụ thể
-- **Gap / điểm yếu**: cơ hội cải tiến cho đề tài
+- **Exact pipeline**: step-by-step preprocessing → class balancing → feature engineering → model → hyperparameter tuning
+- **Dataset & split**: name, sample size, feature count, train/test ratio, CV scheme, class balance
+- **Metric with PROVENANCE**: cite "Table X / Fig Y / Section Z". Missing → `UNKNOWN`.
+- **Reproducibility** (high/medium/low) + rationale
+- **Comparison against baseline**: concrete advantages/disadvantages
+- **Gap / limitations**: concrete improvement opportunities for our research project
 
-## RoB mini-audit (thêm 2026-09-21)
+## RoB mini-audit (Added 2026-09-21)
 
-Sau khi phân tích pipeline, chạy **6 probe CP + 1 probe O11** (từ skill peer-review):
+After analyzing the pipeline, execute the **6 CP probes + 1 O11 probe** (from skill `peer-review`):
 
-### Probe CP1–CP6 (Clinical Prediction Model)
-- **CP1**: Có nested CV hoặc held-out test set thật sự? (Tuning và reporting TÁCH biệt?)
-- **CP2**: Feature selection có nằm TRONG fold không, hay fit trên toàn data?
-- **CP3**: Oversampling/SMOTE có TRONG fold không, hay trước khi split?
-- **CP4**: Có báo calibration (slope, intercept, calibration plot) không?
-- **CP5**: Có external/temporal validation không?
-- **CP6**: Có biến định-nghĩa-nhãn (HbA1c/FPG/OGTT/glucose) nằm trong feature không?
+### Probes CP1–CP6 (Clinical Prediction Model)
+- **CP1**: Is there true nested CV or a genuine held-out test set? (Tuning and reporting SEPARATED?)
+- **CP2**: Is feature selection performed INSIDE the fold, or fitted on the entire dataset?
+- **CP3**: Is oversampling/SMOTE performed INSIDE the fold, or prior to data splitting?
+- **CP4**: Is calibration reported (slope, intercept, calibration plot)?
+- **CP5**: Is there external/temporal validation?
+- **CP6**: Are label-defining variables (HbA1c/FPG/OGTT/glucose) included in the feature set?
 
 ### Probe O11 (Complex Survey / NHANES)
-- **O11**: Nếu dùng NHANES/BRFSS/KNHANES: có áp survey weights? Có báo prevalence có trọng số?
+- **O11**: If using NHANES/BRFSS/KNHANES: are survey weights applied? Is weighted prevalence reported?
 
-### Taxonomy rò rỉ (01_Diabetes_Research/docs/LEAKAGE_MAP.md §2)
-Đối chiếu với 6 dạng vi phạm:
-- **B**: Impute/scale trên toàn bộ data trước split
-- **C**: Feature selection trên toàn bộ data
-- **D**: SMOTE/oversample trước split
-- **E**: Chọn model trên test set (winner's curse)
-- **F**: Biến định-nghĩa-nhãn trong feature
-- **G**: Ép 50/50 rồi đọc accuracy ở prevalence giả
+### Leakage Taxonomy (01_Diabetes_Research/docs/LEAKAGE_MAP.md §2)
+Cross-check against the 6 violation types:
+- **B**: Imputation/scaling on entire dataset prior to splitting
+- **C**: Feature selection on entire dataset
+- **D**: SMOTE/oversampling prior to splitting
+- **E**: Model selection on test set (winner's curse)
+- **F**: Label-defining variable in features
+- **G**: Artificial 50/50 balance reading accuracy at fake prevalence
 
-Ghi vào `leakage_types[]` mỗi loại vi phạm tìm thấy (ký hiệu "B"..."G").
+Record every detected violation type into `leakage_types[]` (identifiers "B"..."G").
 
 ---
 
@@ -75,17 +75,17 @@ Ghi vào `leakage_types[]` mỗi loại vi phạm tìm thấy (ký hiệu "B"...
   "paper_id": "<id>",
   "layer": 2,
   "prediction_horizon": "cross_sectional|early_detection|long_term_risk",
-  "contribution": "1 câu đóng góp chính",
-  "method": "method/kỹ thuật chính",
-  "best_metric": "vd: 98.2% acc trên PIMA (Table 3)",
+  "contribution": "1-sentence main contribution",
+  "method": "primary method / technique",
+  "best_metric": "e.g., 98.2% acc on PIMA (Table 3)",
   "datasets": ["pima-indians-diabetes"],
   "has_code": true,
-  "code_url": "<url hoặc null>",
+  "code_url": "<url or null>",
   "reproducible": "high|medium|low",
-  "vs_baseline": "hơn <paper_id> ở <điểm cụ thể>",
-  "gap": "điểm yếu / khoảng trống chính",
+  "vs_baseline": "outperforms <paper_id> in <specific aspect>",
+  "gap": "primary weakness / research gap",
   "verdict": "strong|maybe|weak",
-  "verdict_reason": "1 câu vì sao",
+  "verdict_reason": "1-sentence rationale",
   "analyzed_at": "<ISO-8601>",
   "rob_audit": {
     "probe_hits": ["CP2", "E"],
@@ -100,19 +100,19 @@ Ghi vào `leakage_types[]` mỗi loại vi phạm tìm thấy (ký hiệu "B"...
 }
 ```
 
-**Ghi chú schema `rob_audit`**:
-- `probe_hits[]`: probe THẤT BẠI (CP1–CP6, O11). Rỗng = không tìm thấy vi phạm.
-- `leakage_types[]`: loại vi phạm rò rỉ (B–G). Rỗng = không xác định.
-- `validation_level`: cấp độ cao nhất (external > temporal > internal > UNKNOWN).
-- `calibration_reported`: có báo calibration không.
-- `survey_design_handled`: chỉ điền nếu paper dùng NHANES/BRFSS; else null.
-- `prevalence_realistic`: đánh giá có ở prevalence thực tế không.
-- `evidence_ref`: nguồn bằng chứng ("Table X / Sec Y") hoặc UNKNOWN.
-- `confidence`: mức tin cậy (high=có quote, medium=suy luận, low=thiếu thông tin).
+**Notes on `rob_audit` schema**:
+- `probe_hits[]`: FAILED probes (CP1–CP6, O11). Empty = no violations detected.
+- `leakage_types[]`: data leakage violation categories (B–G). Empty = indeterminate.
+- `validation_level`: highest validation level (external > temporal > internal > UNKNOWN).
+- `calibration_reported`: whether calibration was reported.
+- `survey_design_handled`: fill only if paper uses NHANES/BRFSS; otherwise null.
+- `prevalence_realistic`: evaluated against realistic clinical prevalence.
+- `evidence_ref`: source citation ("Table X / Sec Y") or UNKNOWN.
+- `confidence`: confidence level (high=verbatim quote, medium=inference, low=insufficient details).
 
 ---
 
-## rob_audit.json (bản riêng QC)
+## rob_audit.json (dedicated QC version)
 ```json
 {
   "paper_id": "<id>",
@@ -130,28 +130,28 @@ Ghi vào `leakage_types[]` mỗi loại vi phạm tìm thấy (ký hiệu "B"...
 }
 ```
 
-> **Khi kiểm thử (Bước 5)**: ghi `rob_audit.json` cạnh `summary.json` nhưng KHÔNG sửa `summary.json` ở lượt thử. Sau khi user duyệt mới merge.
+> **During testing (Step 5)**: write `rob_audit.json` alongside `summary.json` but DO NOT edit `summary.json` during test runs. Merge only after user approval.
 
 ---
 
-## Tự reject khi bài dở (user đã uỷ quyền — AGENTS.md §11)
-Nếu phân tích thấy bài KHÔNG đạt → thêm vào `01_Diabetes_Research/rejected.json` kèm lý do cụ thể, `by: "Codex"`, set `status: "rejected"`. KHÔNG xoá folder.
+## Autonomous Rejection for Low-Quality Papers (User Delegated — AGENTS.md §11)
+If analysis reveals the paper FAILS criteria → add to `01_Diabetes_Research/rejected.json` with a specific reason, `by: "Codex"`, set `status: "rejected"`. DO NOT delete folder.
 
-## Ràng buộc
-- `analysis.html` độc lập (inline CSS, không CDN), tiếng Việt, giữ thuật ngữ EN.
-- Khối **Header** PHẢI có badge Horizon từ `prediction_horizon`.
-- **8 KHỐI HTML KHÔNG ĐỔI** — rob_audit KHÔNG xuất hiện trong analysis.html.
-- KHÔNG bịa số. Thiếu → UNKNOWN.
-- KHÔNG ghi đè `analysis.html` đã có → tạo `analysis.v2.html`.
-- KHÔNG tự đụng `01_Diabetes_Research/chosed_papers/`.
+## Constraints
+- `analysis.html` is self-contained (inline CSS, no CDN), in Vietnamese, retaining EN technical terms.
+- **Header** block MUST include the Horizon badge from `prediction_horizon`.
+- **8 HTML BLOCKS REMAIN UNCHANGED** — rob_audit DOES NOT appear in analysis.html.
+- DO NOT fabricate numbers. Missing → `UNKNOWN`.
+- DO NOT overwrite existing `analysis.html` → create `analysis.v2.html`.
+- DO NOT touch `01_Diabetes_Research/chosed_papers/` autonomously.
 
 ## Orchestration
-- **Tải PDF**: MAIN LOOP (skill pdf-fetch). Subagent bị 403 với HTTP ngoài.
-- **Phân tích**: parallel hoá được (đọc/ghi file local).
+- **PDF Download**: MAIN LOOP (skill pdf-fetch). Subagents receive 403 on external HTTP APIs.
+- **Analysis**: parallelizable (local file read/write).
 
-## Changelog cục bộ
+## Local Changelog
 
-| Ngày | Thay đổi | Người thực hiện |
-|------|---------|----------------|
-| 2026-09-21 | v2: Thêm bước RoB mini-audit (probe CP1–CP6 + O11), taxonomy rò rỉ từ LEAKAGE_MAP. Thêm key `rob_audit` vào summary.json. Thêm output `rob_audit.json`. KHÔNG đổi 8 khối HTML, KHÔNG đổi field webapp đọc. | agent (chore/skills-upgrade) |
-| 2026-09-22 | fix: Khôi phục dấu tiếng Việt (mất do PowerShell Out-File CP437). Dùng Python UTF-8 write. | agent (fix/encoding) |
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-09-21 | v2: Added RoB mini-audit step (probes CP1–CP6 + O11), leakage taxonomy from LEAKAGE_MAP. Added `rob_audit` key to summary.json. Added `rob_audit.json` output. 8 HTML blocks unchanged, webapp-read fields unchanged. | agent (chore/skills-upgrade) |
+| 2026-09-22 | fix: Restored Vietnamese diacritics (lost due to PowerShell Out-File CP437). Use Python UTF-8 write. | agent (fix/encoding) |

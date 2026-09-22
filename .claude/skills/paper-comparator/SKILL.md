@@ -1,52 +1,52 @@
 ---
 name: paper-comparator
 description: |
-  So sánh chi tiết một bài báo trong `01_Diabetes_Research/searched_papers/` với các bài
-  báo còn lại trong CÙNG LAYER (và optionally với `01_Diabetes_Research/chosed_papers/`
-  cùng layer) — tìm điểm trùng, điểm khác biệt, điểm vượt trội, gap.
+  Perform detailed comparison of a paper in `01_Diabetes_Research/searched_papers/` against
+  other papers in the SAME LAYER (and optionally with `01_Diabetes_Research/chosed_papers/`
+  in the same layer) — identifying overlaps, differences, advantages, and gaps.
 inputs:
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<target_paper_id>/analysis.html
-  - 01_Diabetes_Research/searched_papers/Layer_<n>/<target_paper_id>/summary.json   # rob_audit nếu có
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<target_paper_id>/summary.json   # rob_audit if available
   - 01_Diabetes_Research/searched_papers/Layer_<n>/*/analysis.html
   - 01_Diabetes_Research/searched_papers/Layer_<n>/*/summary.json
   - 01_Diabetes_Research/chosed_papers/Layer_<n>/*/analysis.html  (optional)
 outputs:
-  - 01_Diabetes_Research/searched_papers/Layer_<n>/<target_paper_id>/comparison.md   # hoặc comparison.v2.md nếu đã có
+  - 01_Diabetes_Research/searched_papers/Layer_<n>/<target_paper_id>/comparison.md   # or comparison.v2.md if already exists
 ---
 
 # paper-comparator
 
-## Mục đích
-Trả lời 1 câu hỏi: "Paper này có gì NEW / BETTER / OVERLAP so với
-những paper khác trong layer?" — để user nhanh chóng quyết định loại
-bỏ paper trùng và promote paper nổi bật lên `01_Diabetes_Research/chosed_papers/`.
+## Purpose
+Answer 1 core question: "What is NEW / BETTER / OVERLAPPING in this paper compared to
+other papers in the layer?" — enabling the user to quickly reject
+redundant papers and promote outstanding papers to `01_Diabetes_Research/chosed_papers/`.
 
-## Quy trình
-1. Lấy `analysis.html` + `summary.json` của paper target + tất cả paper khác cùng layer.
-2. **Chỉ so sánh bài cùng `prediction_horizon` VÀ cùng `label_type`**:
-   - Cùng horizon + cùng label: so metric trực tiếp.
-   - Khác horizon: chỉ so phương pháp tiếp cận, KHÔNG so metric số.
-   - Khác label_type (binary vs multiclass_staging): KHÔNG so metric, note rõ.
-3. Đối chiếu các trục:
-   - **Prediction horizon** (§3b): cùng horizon mới so trực tiếp
-   - **Dataset**: cùng / khác / mở rộng?
-   - **Method**: trùng / cải tiến / mới hoàn toàn?
-   - **Metric & kết quả**: ai cao hơn? Trên cùng dataset (cùng horizon)?
-   - **Hạn chế**: paper target có khắc phục limit của paper khác không?
-   - **Rob audit** (nếu có summary.json với rob_audit): so sánh mức độ vi phạm rò rỉ.
-4. Xuất `comparison.md` (hoặc `comparison.v2.md` nếu đã có) gồm:
-   - `## Trùng lặp` — các paper làm tương tự
-   - `## Khác biệt / Vượt trội` — điểm paper target hơn
-   - `## Gap còn lại` — điểm paper target chưa giải quyết
-   - `## Bảng claim-evidence` (mới — xem schema dưới)
-   - `## Số liệu nghi thổi phồng` (mới — xem dưới)
-   - `## Verdict`: `promote` / `keep_in_searched` / `reject` + 1 câu lý do
+## Procedure
+1. Retrieve `analysis.html` + `summary.json` for target paper + all other papers in the same layer.
+2. **Compare ONLY papers sharing the same `prediction_horizon` AND `label_type`**:
+   - Same horizon + same label: compare quantitative metrics directly.
+   - Different horizon: compare methodological approaches only, DO NOT compare quantitative metrics.
+   - Different label_type (binary vs multiclass_staging): DO NOT compare metrics, explicitly note distinction.
+3. Compare across axes:
+   - **Prediction horizon** (§3b): direct comparison valid only for shared horizon
+   - **Dataset**: identical / different / extended?
+   - **Method**: overlapping / incremental / entirely novel?
+   - **Metrics & results**: which performs higher? On identical dataset (shared horizon)?
+   - **Limitations**: does target paper resolve limitations of other papers?
+   - **RoB audit** (if summary.json contains rob_audit): compare degree of leakage violations.
+4. Output `comparison.md` (or `comparison.v2.md` if already existing) containing:
+   - `## Trùng lặp` — papers with similar methodologies
+   - `## Khác biệt / Vượt trội` — advantages of target paper
+   - `## Gap còn lại` — unresolved limitations of target paper
+   - `## Bảng claim-evidence` (new — see schema below)
+   - `## Số liệu nghi thổi phồng` (new — see schema below)
+   - `## Verdict`: `promote` / `keep_in_searched` / `reject` + 1-sentence rationale
 
 ---
 
-## Bảng claim-evidence (thêm 2026-09-21)
+## Bảng claim-evidence (Added 2026-09-21)
 
-Sau phần So sánh metric, PHẢI xuất bảng này:
+Following the metric comparison section, this table MUST be emitted:
 
 ```markdown
 ## Bảng claim-evidence
@@ -58,26 +58,26 @@ Sau phần So sánh metric, PHẢI xuất bảng này:
 | sgchoi2023 | AUROC 0.827 (Table 4) | KNHANES | external temporal | Không xác định | CÓ — cùng early_detection, có external val |
 ```
 
-**Quy tắc điền bảng**:
-- `paper_id`: mã paper theo AGENTS.md §5
-- `metric`: số + đơn vị + nguồn (Table X / Fig Y). Thiếu → UNKNOWN.
-- `dataset`: tên dataset
-- `validation`: loại validation (internal CV / temporal / external / 1 split / UNKNOWN)
-- `Có rò rỉ`: lấy từ `summary.json.rob_audit.probe_hits[]` + `leakage_types[]` nếu có. Nếu chưa có rob_audit → ghi "Chưa có rob_audit, cần kiểm tra".
-- `So sánh được với Paper_01?`: Y + lý do ngắn, hoặc N + lý do ngắn.
-  - Y chỉ khi: cùng `prediction_horizon`, cùng hoặc tương tự `label_type`, có metric trên tập test/external không rò rỉ.
-  - N nếu: khác horizon, metric từ trên val set duy nhất bị winner-curse, có F-leakage rõ ràng.
+**Table completion rules**:
+- `paper_id`: paper identifier per AGENTS.md §5
+- `metric`: number + unit + provenance (Table X / Fig Y). Missing → `UNKNOWN`.
+- `dataset`: dataset name
+- `validation`: validation type (internal CV / temporal / external / 1 split / UNKNOWN)
+- `Có rò rỉ`: extracted from `summary.json.rob_audit.probe_hits[]` + `leakage_types[]` if available. If rob_audit not yet available → write "Chưa có rob_audit, cần kiểm tra".
+- `So sánh được với Paper_01?`: Y + brief rationale, or N + brief rationale.
+  - Y only when: same `prediction_horizon`, identical or equivalent `label_type`, with metric on test/external set free from leakage.
+  - N if: different horizon, metric derived solely from validation set with winner's curse, or explicit F-leakage present.
 
 ---
 
-## Mục "Số liệu nghi thổi phồng" (thêm 2026-09-21)
+## Section "Số liệu nghi thổi phồng" (Added 2026-09-21)
 
-Nếu có bất kỳ bài nào trong comparison có `role: inflation` (AGENTS.md §5) HOẶC có các dấu hiệu:
-- AUROC/Acc > 0.95 trên PIMA hay Sylhet không có nested CV
-- Winner curse rõ ràng (1 split cố định, nhiều model, lấy cao nhất)
-- F-leakage (glucose/HbA1c trong feature)
+If any paper in the comparison carries `role: inflation` (AGENTS.md §5) OR displays signs of:
+- AUROC/Acc > 0.95 on PIMA or Sylhet without nested CV
+- Evident winner's curse (single fixed split, evaluated across many models, highest chosen)
+- F-leakage (glucose/HbA1c included in features)
 
-Thì thêm mục:
+Then add section:
 
 ```markdown
 ## Số liệu nghi thổi phồng
@@ -88,20 +88,20 @@ Thì thêm mục:
 | olisah2022 | AUROC 1.00 | F-leakage: relabel theo glucose trong feature | Table 2 | CÓ |
 ```
 
-> Mục này giúp user tránh viết số bị thổi phồng vào Discussion của Paper_01.
+> This section prevents the user from including inflated numbers in the Discussion section of Paper_01.
 
 ---
 
-## Ràng buộc
-- So sánh metric chỉ hợp lệ khi **cùng `prediction_horizon` + cùng dataset**; khác horizon thì so phương pháp.
-- **Nếu comparison.md đã có → ghi `comparison.v2.md`**, ghi chú ở đầu file "Phiên bản 2 - có thêm bảng claim-evidence + mục thổi phồng".
-- KHÔNG tự move paper sang `01_Diabetes_Research/chosed_papers/`. Chỉ gợi ý verdict.
-- So sánh PHẢI dựa trên `analysis.html` + `summary.json` đã có, không tự đọc lại PDF.
-- Nếu paper khác thiếu analysis.html → bỏ qua, note rõ trong comparison.md.
+## Constraints
+- Metric comparison is valid only with **same `prediction_horizon` + same dataset**; otherwise compare methodologies.
+- **If comparison.md already exists → write `comparison.v2.md`**, noting at the top: "Phiên bản 2 - có thêm bảng claim-evidence + mục thổi phồng".
+- DO NOT move papers to `01_Diabetes_Research/chosed_papers/` autonomously. Suggest verdict only.
+- Comparisons MUST rely on existing `analysis.html` + `summary.json`, do not re-read PDFs.
+- If another paper lacks analysis.html → skip it, noting explicitly in comparison.md.
 
-## Changelog cục bộ
+## Local Changelog
 
-| Ngày | Thay đổi | Người thực hiện |
-|------|---------|----------------|
-| 2026-09-21 | v2: Chỉ so metric bài cùng prediction_horizon + label_type. Thêm bảng claim-evidence. Thêm mục "số liệu nghi thổi phồng" (role:inflation). Nếu comparison.md đã có → ghi comparison.v2.md. | agent (chore/skills-upgrade) |
-| 2026-09-22 | fix: Khôi phục dấu tiếng Việt (mất do PowerShell Out-File CP437). Dùng Python UTF-8 write. | agent (fix/encoding) |
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-09-21 | v2: Compare metrics only across papers with matching prediction_horizon + label_type. Added claim-evidence table. Added inflated metrics section (role:inflation). If comparison.md exists → write comparison.v2.md. | agent (chore/skills-upgrade) |
+| 2026-09-22 | fix: Restored Vietnamese diacritics (lost due to PowerShell Out-File CP437). Use Python UTF-8 write. | agent (fix/encoding) |

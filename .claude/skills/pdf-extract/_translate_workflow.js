@@ -1,6 +1,6 @@
 export const meta = {
   name: 'translate-extracts-vi',
-  description: 'Dịch extracted.md -> extracted.vi.md (song ngữ EN|VN, giữ cấu trúc 1:1) cho từng bài, theo đợt nhỏ',
+  description: 'Translate extracted.md -> extracted.vi.md (bilingual EN|VN, 1:1 structure preserved) for each paper, in small waves',
   phases: [{ title: 'Translate', detail: 'one agent per paper, parallel (capped)' }],
 }
 
@@ -16,7 +16,7 @@ const RET = {
   },
 }
 
-// Đợt chạy: chỉ dịch các bài có id khớp 1 trong WAVE (sửa list này giữa các đợt).
+// Run wave: only translate papers whose id matches one in WAVE (edit this list between waves).
 const WAVE = ['yang2021', 'deberneh2021', 'dinh2019', 'nipa2023', 'gr2024']
 
 const PAPERS = [
@@ -168,22 +168,22 @@ log(`Wave: ${RUN.length} papers -> ${RUN.map((p) => p.id).join(', ')}`)
 phase('Translate')
 
 const out = await parallel(RUN.map((p) => () => agent(
-  `Ban la dich gia khoa hoc. DICH file extracted.md sang TIENG VIET, ghi ra extracted.vi.md, GIU NGUYEN CAU TRUC MARKDOWN 1:1 de web canh muc song ngu EN|VN.
+  `You are a scientific translator. Translate extracted.md into VIETNAMESE, write to extracted.vi.md, PRESERVING 1:1 MARKDOWN STRUCTURE so the web can align bilingual EN|VN side-by-side.
 
-DOC (toan bo): ${p.dir}/extracted.md
-GHI: ${p.dir}/extracted.vi.md
-${p.ocr ? 'LUU Y: ban goc qua OCR, chu co the bi dinh/nhieu. Doc file source.pdf trong CUNG thu muc tren khi can de hieu dung nghia; nhung CON SO van phai copy chinh xac tu bang.' : ''}
+READ (entire): ${p.dir}/extracted.md
+WRITE: ${p.dir}/extracted.vi.md
+${p.ocr ? 'NOTE: original from OCR, characters may be fused/noisy. Read source.pdf in the SAME directory above when needed to understand correct meaning; but NUMBERS must still be copied accurately from tables.' : ''}
 
-HOP DONG CAU TRUC (BAT BUOC - guardrail translate_check.py se kiem, vi pham phai dich lai):
-1. Dong dau GIU NGUYEN Y HET comment header \`<!-- extracted by pdf-extract | ... -->\`.
-2. GIU NGUYEN bo khung markdown: CUNG SO heading (moi dong #/##/...), CUNG THU TU, cung so doan, CUNG SO BANG va so hang bang, cung list. KHONG gop/tach/dao/bo/them khoi.
-3. DICH sang tieng Viet tu nhien, hoc thuat: van xuoi, tieu de muc (giu so muc, vd '## 3  Dataset' -> '## 3  Bo du lieu'), muc list, va NHAN O TIEU DE cua bang.
-4. GIU NGUYEN KHONG DOI (copy y het): moi CON SO va o du lieu trong bang; cong thuc/ky hieu toan; trich dan [1], [7-9]; DOI/URL; ten dataset (PIMA, BRFSS, NHANES, MIMIC...); ten rieng/tac gia/co quan; tu viet tat & thuat ngu tieng Anh (de thuat ngu Anh trong ngoac sau lan dich dau neu giup ro nghia).
-5. TUYET DOI KHONG doi chu-so: khong bien 'two' thanh '2' hay nguoc lai; khong them/bot/lam tron so; giu y nguyen dinh dang so (dau . , ) nhu ban goc.
-6. Bang GFM: giu y het so cot, dau | va hang |---|; chi dich chu trong O TIEU DE, GIU NGUYEN moi o du lieu.
-7. Neu ban goc OCR co chu dinh (vd 'Theinsulinhormone'), hay dich thanh tieng Viet dung nghia & ro rang; so lieu van copy chinh xac.
+STRUCTURAL CONTRACT (MANDATORY - translate_check.py guardrail will verify, violations must be re-translated):
+1. First line KEEP EXACTLY IDENTICAL header comment \`<!-- extracted by pdf-extract | ... -->\`.
+2. PRESERVE markdown structure: SAME NUMBER of headings (each line #/##/...), SAME ORDER, same paragraph count, SAME NUMBER OF TABLES and table rows, same lists. DO NOT merge/split/reorder/omit/add blocks.
+3. TRANSLATE into natural, academic Vietnamese: prose, section titles (keep section numbers, e.g., '## 3 Dataset' -> '## 3 Bộ dữ liệu'), list items, and TABLE HEADER LABELS.
+4. KEEP STRICTLY UNCHANGED (copy verbatim): all NUMBERS and data cells in tables; math formulas/symbols; citations [1], [7-9]; DOI/URLs; dataset names (PIMA, BRFSS, NHANES, MIMIC...); proper nouns/authors/institutions; acronyms & English technical terms (place English term in parentheses after first translation if it aids clarity).
+5. STRICTLY DO NOT change digits/words: do not convert 'two' to '2' or vice versa; do not add/remove/round numbers; keep exact number formatting (. ,) as in original.
+6. GFM Tables: keep exact column count, | characters, and |---| rows; only translate text in HEADER CELLS, KEEP ALL DATA CELLS EXACTLY UNCHANGED.
+7. If OCR original has fused words (e.g. 'Theinsulinhormone'), translate into correct and clear Vietnamese meaning; numbers must still be copied accurately.
 
-Sau khi ghi xong, dem so heading (dong #..) va so hang bang (dong | .. |) trong ban VI va tra ve JSON theo schema (notes = ghi chu neu co cho lech/kho dich).`,
+After writing, count headings (#.. lines) and table rows (| .. | lines) in the VI version and return JSON per schema (notes = notes if any for discrepancies/difficult translations).`,
   { label: `vi:${p.id}`, schema: RET },
 )))
 

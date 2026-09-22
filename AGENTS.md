@@ -1,467 +1,466 @@
-# AGENTS.md — Quy ước cho mọi AI agent làm việc trong repositoryr
-r
-> Mọi agent (Claude, Codex, Cursor...) PHẢI đọc file này trước khi thao tác.r
-> Khi xung đột: AGENTS.md > skill default > prompt cụ thể của user.r
-r
----r
-r
-## 1. Bối cảnh nghiên cứur
-r
-- **Chủ đề (DUY NHẤT)**: **Dự đoán / phân tầng đái tháo đường (diabetes prediction & staging)**r
-  trên dữ liệu tabular/EHR. Hai **dạng nhãn** TRONG scope (trục `label_type`, §5):r
-  - **Binary (chính)** — có / không ĐTĐ. Vẫn là trục chủ đạo của kho.r
-  - **Multi-class ordinal glycemic staging (mở rộng — thêm 2026-07-06, Q006)** — Bình thường →r
-    Tiền ĐTĐ (prediabetes) → ĐTĐ, theo ngưỡng ADA (HbA1c/FPG/OGTT). CHỈ nhận khi làmr
-    **leakage-safe**: KHÔNG dùng trực tiếp chính biomarker định-nghĩa-nhãn (HbA1c/FPG/OGTT) làmr
-    feature, HOẶC phải khung lại thành **dự báo giai đoạn tương lai (progression)**.r
-  MỌI search, phân tích, so sánh PHẢI phục vụ đúng chủ đề này; KHÔNG nhận paper ngoài topic.r
-- **NGOÀI scope staging — TỪ CHỐI**: (a) **T1D immune staging** Stage 1/2/3 (Insel 2015) — làr
-  Type 1, dựa autoantibody/OGTT dài/omics/longitudinal, KHÔNG phải tabular/EHR T2D thường quy;r
-  (b) **phân độ biến chứng bằng ảnh/tín hiệu** (retinopathy, neuropathy) — đã loại ở mục image-based.r
-- **3 dạng prediction trong scope** (trục thời gian — chi tiết §3b `prediction_horizon`):r
-  - **Cross-sectional** — dự đoán "bình thường" từ feature đo cùng thời điểm (PIMA,r
-    BRFSS…). Bao gồm cả các paper khung "chẩn đoán" cổ điển kiểu PIMA.r
-  - **Early detection** — phát hiện sớm ở giai đoạn tiền/cận lâm sàng, người chưa đượcr
-    chẩn đoán (early detection of T2D, opportunistic screening).r
-  - **Long-term risk** — dự đoán nguy cơ mắc sau N năm; cần dữ liệu longitudinal/cohort.r
-- **Hướng kỹ thuật**: ML & DL trên dữ liệu **tabular + EHR**.r
-- **2 trục phân loại (VUÔNG GÓC nhau)**: **Layer 1-4** = đóng góp kỹ thuật (§3);r
-  **`prediction_horizon`** = dạng bài toán dự đoán (§3b). Mỗi paper mang ĐỦ CẢ HAI.r
-- **Ngoài scope — TỪ CHỐI**: retinopathy, CGM time-series, image-based, và mọi bàir
-  KHÔNG phải diabetes prediction (chỉ điều trị, chỉ dịch tễ mô tả, genomics không cór
-  mô hình dự đoán…). Gặp loại này → từ chối, gợi ý quay về diabetes prediction tabular/EHR.r
-- **Ngôn ngữ output cho user**: Tiếng Việt (giữ thuật ngữ EN trong ngoặc khi cần).r
-r
----r
-r
-## 2. Cấu trúc thư mục (BẮT BUỘC tuân thủ)r
-r
-```r
-<repository-root>/r
-├── AGENTS.md                               ← Cẩm nang quy ước cho mọi AI agent (file này)r
-├── README.md                               ← Giới thiệu & hướng dẫn dự ánr
-│r
-├── .agents/                                ← Antigravity skills & automation toolsr
-│   └── skills/                             ← paper-analyzer, paper-comparator, paper-finder, pdf-extract, pdf-fetch...r
-│r
-├── .claude/                                ← Claude Code skills & templatesr
-│   ├── skills/                             ← Skills tương ứng cho Claude Coder
-│   ├── templates/r
-│   │   └── analysis-template.html          ← Template HTML chuẩn cho mọi analysis.html (xem §6)r
-│   └── settings.local.jsonr
-│r
-├── 01_Diabetes_Research/                   ← [Kho bài báo & tài liệu nghiên cứu]r
-│   ├── searched_papers/                    ← TẤT CẢ paper agent tìm được (phân theo 4 Layer)r
-│   │   ├── Layer_1_Pipeline_Nen_Tang/r
-│   │   │   └── <paper_id>/r
-│   │   │       ├── source.pdf              ← File gốc PDFr
-│   │   │       ├── metadata.json           ← Thông tin chuẩn (xem §5)r
-│   │   │       ├── extracted.md            ← Text trích xuất từ PDF (pdf-extract sinh)r
-│   │   │       ├── analysis.html           ← Phân tích tiếng Việt 8 khối (paper-analyzer sinh)r
-│   │   │       ├── comparison.md           ← So sánh trong layer (paper-comparator sinh)r
-│   │   │       ├── notes.md                ← Ghi chú của user (web tab "Ghi chú" — đọc/sửa được)r
-│   │   │       └── highlights.json         ← Vùng tô PDF của user (web overlay, KHÔNG sửa source.pdf)r
-│   │   ├── Layer_2_Model_Hieu_Qua/r
-│   │   ├── Layer_3_Dataset_EHR/r
-│   │   └── Layer_4_XAI_Trien_Khai/r
-│   ├── chosed_papers/                      ← Các paper user THỰC SỰ chọn (chỉ PDF)r
-│   │   ├── Layer_1_Pipeline_Nen_Tang/r
-│   │   ├── Layer_2_Model_Hieu_Qua/r
-│   │   ├── Layer_3_Dataset_EHR/r
-│   │   └── Layer_4_XAI_Trien_Khai/r
-│   ├── docs/                               ← Toàn bộ tài liệu phân tích, cheatsheet & bản đồr
-│   │   ├── RESEARCH_BRIEF.md               ← Bản tóm tắt tri thức tổng hợp từ các bài báor
-│   │   ├── RESEARCH_LOOP.html              ← Sơ đồ trực quan quy trình nghiên cứu ExploreXr
-│   │   ├── READING_LIST.md                 ← Danh sách bài báo ưu tiên đọc theo mục tiêur
-│   │   ├── CHEATSHEET.md                   ← Sổ tay tra cứu phương pháp ML & tiền xử lýr
-│   │   ├── LEAKAGE_MAP.md                  ← Bản đồ phân loại vi phạm rò rỉ dữ liệur
-│   │   ├── DECISION_BOARD.md               ← Bảng theo dõi quyết định nhận/loại paperr
-│   │   └── QA_LOG.md                       ← Nhật ký định hướng chiến lược & phương phápr
-│   ├── search_pool.json                    ← Hàng đợi kết quả tìm kiếm ExploreXr
-│   ├── rejected.json                       ← Danh sách bài bị loại kèm lý do chi tiết (§11)r
-│   └── qa_log.json                         ← Trạng thái kiểm thử chất lượng trích xuấtr
-│r
-├── 02_Implementation/                      ← [Mô-đun thực nghiệm & code thật]r
-│   └── Paper_01_NHANES_NoLab/              ← [Bài báo 1] Sàng lọc ĐTĐ no-lab trên NHANESr
-│       ├── START_HERE.md                   ← Hướng dẫn nhanh cho tác giảr
-│       ├── TO_DO.md                        ← Lộ trình chi tiết từng tuần & nhiệm vụr
-│       ├── PROGRESS.json                   ← Bảng theo dõi tiến độ thời gian thực (§13)r
-│       ├── src/                            ← Mã nguồn pipeline Pythonr
-│       └── qc/                             ← Output QC / audit từ skills bên thứ bar
-│r
-├── 03_Final_Result/                        ← [Kết quả đầu ra cuối cùng]r
-│   └── README.md                           ← Nơi lưu bài báo hoàn chỉnh, figures chuẩn nộpr
-│r
-└── web/                                    ← Research Hub (Next.js local) — GUI đọc/ghi kho paperr
-    │                                         KHÔNG phải nguồn chân lý; chỉ là giao diện trên filesystem.r
-    ├── src/                                ← Mã nguồn frontend & API routes (Next.js)r
-    └── data/hub.db                         ← SQLite: highlights, ghi chú cá nhân, triage poolr
-```r
-r
-> **`notes.md` / `highlights.json`** do Research Hub (web/ExploreX) sinh ra từ thao tácr
-> của user. Agent ĐƯỢC đọc để hiểu user quan tâm gì, nhưng KHÔNG tự ghi đè —r
-> đây là dữ liệu thủ công của user. `highlights.json` là overlay toạ độ chuẩnr
-> hoá (0..1) theo trang, không nằm trong PDF gốc.r
----r
-r
-## 3. Định nghĩa 4 Layer (NỀN TẢNG để gán paper)r
-r
-| Layer | Tên | Trọng tâm |r
-|------|-----|-----------|r
-| **1** | Pipeline_Nen_Tang | Tiền xử lý, handling missing, outlier, **oversampling/SMOTE**, feature selection (Boruta/PCA), baseline ML (RF, LGBM, GB) |r
-| **2** | Model_Hieu_Qua    | So sánh model, **ensemble/stacking/boosting**, deep tabular, tối ưu hyperparam, kỹ thuật tăng accuracy |r
-| **3** | Dataset_EHR       | Làm việc với **EHR thật** (NHANES, MIMIC, eICU), opportunistic screening, cohort thực tế, longitudinal data |r
-| **4** | XAI_Trien_Khai    | **Explainability** (SHAP, LIME), interpretability, deployment, clinical impact, trust |r
-r
-**Quy tắc gán Layer**: 1 paper = 1 Layer chính. Nếu phân vân giữa nhiều Layer → chọn Layer ứng với **đóng góp lớn nhất** của paper, không phải topic phụ.r
-r
----r
-r
-## 3b. Trục thứ hai: `prediction_horizon` (BẮT BUỘC — vuông góc với Layer)r
-r
-Layer cho biết paper **xây thế nào**; `prediction_horizon` cho biết paper **dự đoán cái gì**.r
-Mỗi paper PHẢI mang đúng **1 horizon**, gán ĐỘC LẬP với Layer (một Layer-2 ensemble có thểr
-là `cross_sectional`, `early_detection`, hay `long_term_risk`).r
-r
-| Horizon | Định nghĩa | Dấu hiệu nhận biết | VD trong kho |r
-|---------|-----------|--------------------|--------------|r
-| `cross_sectional` | Dự đoán trạng thái ĐTĐ **hiện tại** từ feature đo cùng thời điểm (không có khoảng cách thời gian feature → label) | Dataset cross-sectional (PIMA, BRFSS, Sylhet, Frankfurt); không follow-up; khung "diagnosis/classification" cổ điển | gr2024, hasan2020, khanam2021, naz2020 |r
-| `early_detection` | **Phát hiện sớm**: đối tượng chưa được chẩn đoán / giai đoạn tiền-cận lâm sàng; sàng lọc cơ hội | Từ khoá "early detection", "screening", "undiagnosed", "prediabetes", "opportunistic" | lai2019, nipa2023, dinh2019 |r
-| `long_term_risk` | Dự đoán **onset sau N năm** từ baseline; cần theo dõi dọc | Cohort longitudinal, follow-up N năm, "incident diabetes", "risk over X years" | rasmy2021, fazakis2021, deberneh2021, li2020, lugner2024 |r
-r
-**Quy tắc gán horizon**: theo **khung bài toán paper TỰ ĐẶT RA**, không suy từ dataset đơn thuầnr
-(cùng NHANES có thể dùng cho cả 3 horizon tuỳ cách lập label). Phân vân → đặtr
-`horizon_uncertain: true`, mặc định `cross_sectional`, để user quyết.r
-r
-> **Lưu ý cân bằng kho**: kho vẫn nghiêng về `cross_sectional`. `long_term_risk` đã có vài bàir
-> (rasmy2021, fazakis2021, deberneh2021, li2020, lugner2024) nhưng còn mỏng; `early_detection`r
-> cũng cần thêm. Khi finder đề xuất bài mới, ưu tiên lấp 2 horizon này.r
-r
----r
-r
-## 4. Quan hệ giữa `01_Diabetes_Research/chosed_papers/` và `01_Diabetes_Research/searched_papers/`r
-r
-- `01_Diabetes_Research/searched_papers/` là **superset** của `01_Diabetes_Research/chosed_papers/`. Mọi paper agent tìm được đều vào đây trước.r
-- `01_Diabetes_Research/chosed_papers/` chỉ chứa các PDF mà **user đã duyệt** sau khi đọc analysis.r
-- Agent **KHÔNG** được tự ý move/copy paper sang `01_Diabetes_Research/chosed_papers/`. Chỉ user mới có quyền promote.r
-- Khi user yêu cầu "nâng cấp / mở rộng / so sánh / cải tiến" — agent PHẢI dùng `01_Diabetes_Research/chosed_papers/` làm baseline, không phải `01_Diabetes_Research/searched_papers/`.r
-r
----r
-r
-## 5. Schema `metadata.json` (cho mọi paper trong `01_Diabetes_Research/searched_papers/`)r
-r
-> Có **2 nguồn ghi** file này: (a) **webapp** (ExploreX) khi user lưu/queue/promote; (b) **agent**r
-> (Claude) khi tìm/phân tích/tải PDF. Cả hai dùng read-modify-write **giữ nguyên field của nhau** →r
-> thêm field mới luôn an toàn. Field webapp **đọc** (đánh dấu 🔗) thì **TUYỆT ĐỐI không đổi tên**.r
-r
-Ví dụ các field thường gặp (không phải tất cả đều bắt buộc — bài cũ/seed có thể thiếu vài field):r
-```jsonr
-{r
-  "paper_id": "nnamoko2020_outliers_imbalance",r
-  "title": "<full title>",r
-  "authors": ["..."],r
-  "year": 2020,r
-  "venue": "<journal/conference>",r
-  "doi": "<doi or null>", "arxiv": null, "pubmed": null, "pmc": null,r
-  "citations": 154,r
-  "citations_secondary": null,r
-  "citations_checked_at": "2026-06-20T00:00:00+07:00",r
-  "citations_source": "openalex",r
-  "layer": 1,r
-  "layer_uncertain": false,r
-  "prediction_horizon": "cross_sectional",r
-  "horizon_uncertain": false,r
-  "label_type": "binary",r
-  "datasets_mentioned": ["pima", "..."],r
-  "dataset_slugs": ["pima-indians-diabetes", "..."],r
-  "method_slugs": ["iqr-outlier-detection", "smote", "c4.5"],r
-  "code_url": null,r
-  "reproducibility": 2,r
-  "source_pdf": "source.pdf",r
-  "page_count": 12,r
-  "open_access_pdf": "<link OA or null>",r
-  "license": null,r
-  "pdf_status": "downloaded",r
-  "pdf_fetch_attempts": "<log tự do — route đã thử>",r
-  "download_link": null,r
-  "is_seed": false,r
-  "lookup_status": "ok",r
-  "status": "analyzed",r
-  "analysis_status": "analyzed",r
-  "reject_reason": null,r
-  "scope_note": "<reviewer: vì sao đáng giá / hạn chế>",r
-  "corrections": "<sửa gì sau khi đọc full text>"r
-}r
-```r
-r
-### Bảng field (🔗 = webapp ĐỌC → không đổi tên)r
-r
-| Nhóm | Field | Ý nghĩa |r
-|------|-------|---------|r
-| Định danh | `paper_id` 🔗 · `title` 🔗 · `authors` · `year` · `venue` · `doi` · `arxiv` · `pubmed` · `pmc` | nhận dạng bài |r
-| Trích dẫn | `citations` 🔗 (chính, OpenAlex — webapp **sort theo field này**) · `citations_secondary` (S2) · `citations_checked_at` (ISO-8601 có offset) · `citations_source` | số cite |r
-| Phân loại | `layer` (1–4) · `layer_uncertain` · `prediction_horizon` (§3b) · `horizon_uncertain` · `label_type` (§1) | 2 trục §3/§3b + dạng nhãn §1 |r
-| Dữ liệu/PP | `datasets_mentioned` 🔗 (tên thô) · `dataset_slugs` 🔗 (kebab) · `method_slugs` (kebab) | dataset + method |r
-| Code | `code_url` 🔗 | repo public, hoặc `null` = KHÔNG có code. **Đây là nguồn-chân-lý** — KHÔNG dùng `code_available` |r
-| PDF/nguồn | `source_pdf` 🔗 (tên file PDF; gate xem PDF + promote) · `page_count` 🔗 · `open_access_pdf`/`pdf_url` · `license` · `pdf_status` (enum) · `pdf_fetch_attempts` (log) · `download_link` (link tải tay bài closed) | quản lý PDF |r
-| Vòng đời | `status` 🔗 (enum) · `analysis_status` 🔗 (enum) · `analysis_status_at` · `reject_reason` · `chosen_at` | xem mục dưới |r
-| Provenance | `is_seed` · `lookup_status` · `found_by` · `abstract` · `url` | nguồn gốc (webapp save) |r
-| Reviewer (agent) | `scope_note` (vì sao đáng giá/hạn chế) · `corrections` (sửa gì sau khi đọc full) | enrichment — NÊN ghi |r
-| Vai trò đề tài | `role` 🔗 · `role_note` 🔗 · `role_at` | **thêm 2026-07-26 (Q008)** — bài này dùng vào việc gì trong đề tài ĐÃ CHỐT. Xem enum dưới |r
-| Kiểm §7 | `s7_recheck` | snapshot `{at, publication_date, age_years, citations, threshold, pass, note}` — §7 là cổng NHẬN VÀO, KHÔNG loại bài chỉ vì nó già qua mốc |r
-| Tái lập | `reproducibility` (int) | **LEGACY** — thang KHÔNG nhất quán, webapp không đọc. Field thật = `summary.json.reproducible` (high/med/low). Backfill mới theo thang **1=low / 2=medium / 3=high** |r
-r
-### Enum (giá trị cố định)r
-- `status`: `searched` → `analyzed` → `chosen` \| `rejected`. (Bỏ `compared` — không dùng.)r
-- `analysis_status`: `none` \| `queued` \| `analyzed`. **KHÔNG dùng `pending`** (webapp không hiểu). Bài closed chưa có PDF: để `analysis_status:"none"`, trạng thái chờ-PDF nằm ở `pdf_status`.r
-- `pdf_status`: `ok` \| `downloaded` \| `pending_closed_access` \| `blocked_closed_access` (chi tiết route ghi ở `pdf_fetch_attempts` — xem skill `pdf-fetch`).r
-- `prediction_horizon`: `cross_sectional` \| `early_detection` \| `long_term_risk` (§3b). KHÔNG tự chế giá trị khác.r
-- `label_type`: `binary` \| `multiclass_staging` (§1). Mặc định `binary` (bài cũ thiếu field → coi là `binary`). `multiclass_staging` chỉ dùng cho glycemic staging leakage-safe/progression theo §1.r
-- `layer`: `1` \| `2` \| `3` \| `4` (số nguyên).r
-- `role` (thêm 2026-07-26, Q008): `design` \| `method` \| `positioning` \| `inflation` \| `later` \| `related`r
-  — khớp 1-1 với 6 nhóm đọc 🅐–🅕 của `TO_DO.md` §6. **Trục này VUÔNG GÓC với `verdict`**:r
-  `verdict` = chất lượng/độ tin cậy của bài; `role` = bài này dùng vào việc gì trong bài báo.r
-  Webapp hiện `role` thành cột "Vai trò" + chip lọc + sort "Thứ tự đọc" ở trang Thư viện.r
-  Paper mới PHẢI được gán `role` khi phân tích; phân vân → `related` (mặc định an toàn).r
-r
-### `status` vs `analysis_status` (2 trục — đừng nhầm)r
-- `status` = **vòng đời paper**. LƯU Ý: webapp suy ra "đã chọn" từ **sự hiện diện folder trong `01_Diabetes_Research/chosed_papers/`**, KHÔNG từ field `status` → `status:"chosen"` chỉ là ghi chú phụ.r
-- `analysis_status` = **trạng thái hàng đợi phân tích**. webapp tự coi là `analyzed` nếu có `analysis.html`.r
-r
-### Quy tắc đặt tên & field deprecatedr
-- `paper_id`: `<lastname><year>_<3-word-slug>`, snake_case, không dấu. VD: `kumar2023_ensemble_xai`.r
-- `dataset_slug` / `method_slug`: kebab-case. VD: `pima-indians-diabetes`, `random-oversampling`, `shap`.r
-- **KHÔNG ghi mới** các field deprecated: `code_available` (→ `code_url`), `open_access_pdf_status` (→ `pdf_status`), `citations_alt` (→ `citations_secondary`), `analysis_status:"pending"` (→ `none`).r
-r
----r
-r
-## 6. Template `analysis.html` (CHỐT — dùng cho MỌI paper)r
-r
-File template: `.claude/templates/analysis-template.html`.r
-File mẫu đã render (xem trước layout): `01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/gr2024_random_oversampling_diabetes/analysis.html`.r
-r
-Mọi `analysis.html` agent sinh ra PHẢI có đúng **8 khối** sau, theo đúng thứ tự (để so sánh chéo giữa các paper được nhanh, mở 5 tab cạnh nhau scroll cùng vị trí):r
-r
-| # | Khối | Nội dung BẮT BUỘC |r
-|---|------|-------------------|r
-| 1 | **Header** (gradient xanh) | title · year · venue · `📚 N citations (MM/YYYY)` · DOI link · badge `💻 Code: Có/Không` (xanh/đỏ) · badge `📊 Dataset: Có/Không` (xanh/đỏ) · badge `⏱️ Horizon: Cross-sectional/Early/Long-term` (tím — value lấy từ `prediction_horizon`) · danh sách dataset có link embed nếu có |r
-| 2 | **Compare Card** (gradient tím) | 4 field CỐ ĐỊNH: 🎯 Đóng góp chính · 🏆 Best metric (số + dataset) · 🔧 Method chính · 🔄 So với baseline / paper khác cùng Layer |r
-| 3 | Section: 📋 Tổng quan & vì sao Layer N | 1 đoạn lead + bảng `lý do | giải thích` |r
-| 4 | Section: 🔧 Công nghệ & mô hình | Bảng `kỹ thuật | vai trò | mạnh | yếu`, đánh ⭐ cho model thắng |r
-| 5 | Section: 🗄️ Dataset | Bảng `tên | mẫu | feature | mô tả | link` |r
-| 6 | Section: ⚙️ Cách triển khai | Bảng pipeline + công thức (formula block đen) + hình crop từ PDF (embed base64) |r
-| 7 | Section: 🏆 Kết quả | Metric grid (cards lớn) + bảng chi tiết `dataset | model | setting | metric | nguồn` |r
-| 8 | Section: ⚠️ Lưu ý quan trọng | 3 callout vàng: ⚠️ Rủi ro · 🎯 Giới hạn · 💡 Vai trò trong đề tài |r
-r
-### Ràng buộc khi renderr
-- **KHÔNG bịa số liệu**: paper không nêu → ghi `UNKNOWN` (Compare Card vẫn phải có 4 field, value = `UNKNOWN` nếu thiếu).r
-- **KHÔNG đổi số khối, đổi thứ tự, đổi tên field trong Compare Card** — phá rule này = phá so sánh chéo.r
-- **Self-contained**: inline CSS + inline SVG, KHÔNG CDN, KHÔNG external image (hình từ PDF phải embed base64).r
-- **Ngôn ngữ**: tiếng Việt, giữ EN trong ngoặc khi cần (vd: "tăng cường mẫu thiểu số (SMOTE)").r
-- **Nguồn số liệu**: mọi metric trong section 7 PHẢI ghi rõ `Table X` / `Fig Y` / `Section Z` của PDF.r
-- **Khi paper hoàn toàn không có số kết quả**: section 7 render dòng muted "Paper không công bố số liệu cụ thể — chỉ mô tả định tính. Không bịa số." thay vì metric grid.r
-r
----r
-r
-## 7. Ràng buộc cứng cho paper được "found"r
-r
-Trước khi tạo folder trong `01_Diabetes_Research/searched_papers/`, paper PHẢI thỏa cả 3 tiêu chí dưới (nếu fail bất kỳ → reject, báo user lý do):r
-r
-1. **Highly cited** (lấy số từ Semantic Scholar, KHÔNG đoán):r
-   - ≥ 100 citations nếu xuất bản > 3 năm.r
-   - ≥ 30 citations nếu 1–3 năm.r
-   - "Rising star" (≥ 5 citations/tháng) nếu < 1 năm.r
-2. **Dataset public**: có link tải hoặc procedure xin access rõ (PhysioNet DUA OK).r
-3. **Code/Method reproducible**: repo GitHub public + README, HOẶC method mô tả đủ chi tiết trong paper để tái lập.r
-r
-Nếu không thỏa → KHÔNG tạo folder, báo user lý do reject.r
-r
----r
-r
-## 8. Quy tắc làm việc chungr
-r
-- **Không drift sang topic ngoài scope** (xem §1). Bài/topic KHÔNG phải diabetes prediction → từ chối/reject (ghi `01_Diabetes_Research/rejected.json` nếu đã có folder). retinopathy / CGM / image → từ chối, gợi ý quay về diabetes prediction tabular/EHR.r
-- **Không tự đoán số liệu** (citations, accuracy, year). Ghi `UNKNOWN` nếu không verify được.r
-- **Tra citation OpenAlex phải dùng `/works?filter=doi:<doi>` và kiểm `meta.count == 1`** — endpointr
-  `/works/doi:<doi>` có thể khớp nhầm **bản ghi TRÙNG**. Đã dính thật: `yu2010` bị trả 0 citationsr
-  (bản ghi 2008) trong khi bản đúng có 524 (Q008, 26/07/2026). Số citation trong `analysis.html`r
-  ghi rõ nguồn khác (Scopus/S2) thì KHÔNG ghi đè bằng số OpenAlex — bổ sung bên cạnh.r
-- **Không ghi đè analysis.html / overview.md / etc.** đã có. Tạo `analysis.v2.html` và update metadata `status`.r
-- **Hoạt động đúng phạm vi các thư mục chuẩn**: Agent chỉ làm việc bên trong các khu vực được định nghĩa trong cấu trúc repository (`.agents/`, `.claude/`, `01_Diabetes_Research/`, `02_Implementation/`, `03_Final_Result/`, `web/`), KHÔNG tự ý tạo thêm thư mục gốc mới nếu chưa có sự đồng ý của user.r
-- **Mọi tham chiếu paper** trong chat: dùng `paper_id` chứ không phải title dài.r
-r
----r
-r
-## 9. Khi user yêu cầu "nâng cấp" / "mở rộng" / "cải tiến"r
-r
-Agent PHẢI:r
-1. Đọc TẤT CẢ paper trong `01_Diabetes_Research/chosed_papers/Layer_<n>/` của layer liên quan trước.r
-2. Đọc `analysis.html` / `overview.md` của các paper đó trong `01_Diabetes_Research/searched_papers/`.r
-3. Dùng chính những paper này làm **nền tảng**, đề xuất cải tiến SO VỚI những gì paper chọn đã làm.r
-4. Không đưa đề xuất chung chung "có thể dùng SHAP" mà phải nói rõ "paper X đã dùng SHAP cho Layer 4, đề xuất mở rộng bằng …".r
-r
----r
-r
-## 10. Khi xung đột / không chắcr
-r
-- Dừng lại, hỏi user. Không tự ý phá rule §1-§7.r
-- Nếu thấy file/folder lạ ngoài cấu trúc §2 → hỏi user trước khi xóa hoặc move.r
-r
----r
-r
-## 11. Workflow phân tích & chọn lọc (ExploreX webapp + Claude)r
-r
-ExploreX (webapp) chỉ **tìm + gom + lọc thô**. Việc **đọc, phán xét, chọn lọc**r
-là của Claude (agent). Webapp KHÔNG tự gọi AI.r
-r
-### Khi user nói "phân tích hàng đợi" / "duyệt hàng đợi"r
-1. Quét `01_Diabetes_Research/searched_papers/Layer_*/*/metadata.json`, lấy paper cór
-   `"analysis_status": "queued"` (đây là hàng đợi user đánh dấu trên web).r
-2. Với mỗi paper trong hàng đợi:r
-   - Đọc `metadata.json` + `extracted.md` (nếu chưa có, chạy `pdf-extract`) +r
-     `source.pdf` khi cần.r
-   - **Phán xét theo §7** (highly-cited, dataset public, code/method tái lập được)r
-     VÀ đúng scope §1 (tabular/EHR diabetes).r
-   - **Nếu ĐẠT** → viết `analysis.html` 8 khối theo §6, setr
-     `analysis_status: "analyzed"`, `status: "analyzed"`.r
-   - **Nếu KHÔNG đạt** → thêm vào `01_Diabetes_Research/rejected.json` (xem dưới) kèm **lý do cụ thể**,r
-     `by: "claude"`. Được tự reject, không cần hỏi (user đã uỷ quyền).r
-3. Báo user tóm tắt: bài nào analyzed, bài nào rejected + lý do.r
-r
-### File `rejected.json` (ở `01_Diabetes_Research/rejected.json`)r
-Danh sách paper đã loại để **search KHÔNG gợi lại**. Schema mỗi entry:r
-```jsonr
-{r
-  "dedup_key": "doi:10.x/yyy",          // doi:<doi> | arxiv:<id> | title:<norm>r
-  "paper_id": null,r
-  "title": "...",r
-  "title_norm": "...",                  // title lowercase, bỏ ký tự đặc biệtr
-  "doi": "...", "arxiv": null,r
-  "reason": "lý do loại — BẮT BUỘC, cụ thể",r
-  "by": "claude",                       // "claude" | "user"r
-  "layer": 2,r
-  "rejected_at": "ISO-8601"r
-}r
-```r
-- `dedup_key` tính giống §5 logic: ưu tiên `doi:` → `arxiv:` → `title:<title_norm>`.r
-- Khi reject 1 paper đã có folder trong `01_Diabetes_Research/searched_papers/`: thêm vào `01_Diabetes_Research/rejected.json`r
-  VÀ set metadata `status: "rejected"` + `reject_reason`. KHÔNG xoá folder (user xoá).r
-- Append/upsert theo `dedup_key`, giữ nguyên các entry cũ. KHÔNG ghi đè cả file mất dữ liệu.r
-r
-### Quan hệ với rule cũr
-- §7 vẫn là tiêu chí gốc để nhận/loại. §11 chỉ thêm: nơi ghi lý do loạir
-  (`01_Diabetes_Research/rejected.json`) + cơ chế hàng đợi (`analysis_status`).r
-- `analysis_status` (none/queued/analyzed) khác với `status` (searched/analyzed/r
-  chosen/rejected) ở §5 — cái trước cho hàng đợi web, cái sau cho vòng đời paper.r
-r
-### Artefact mới của vòng lặp (ExploreX)r
-- **`extracted.md`**: bản trích PDF **trung thực, đầy đủ, giữ cấu trúc** (bảng→markdown,r
-  đa cột đúng thứ tự đọc, OCR trang scan) do skill `pdf-extract` (engine **docling** +r
-  fallback pymupdf4llm) sinh. ExploreX có thể tự trích text-only khi paper vào queuer
-  NHƯNG bản đó THÔ (mất bảng, trộn cột, dính watermark) → **trước khi analyze, đảm bảor
-  `extracted.md` đã qua `pdf-extract`**. Mỗi file có header `<!-- ... | score=N -->` +r
-  `extraction_report.json` (QA có cơ sở: coverage bảng vs caption gốc, tail-check chốngr
-  cụt; **score <85 = cần xem lại**). Bản thô cũ được lưu `extracted.prev.md`.r
-  Re-trích 1 bài: `python .claude/skills/pdf-extract/extract.py 01_Diabetes_Research/searched_papers/Layer_X/<paper_id> --force`;r
-  toàn bộ: `python .claude/skills/pdf-extract/run_all.py [--root 01_Diabetes_Research/searched_papers] [--min-skip 95]`;r
-  chỉ chấm lại QA (đổi công thức điểm, không trích lại): `recompute_qa.py`.r
-  (Coverage bỏ "Supplementary Table N"; tail-check bỏ qua khi OCR — tránh phạt oan.)r
-- **`summary.json`** (trong folder paper): em ghi khi phân tích (schema ở skillr
-  `paper-analyzer`). Là nguồn cho research brief — PHẢI ghi mỗi lần analyze.r
-- **`RESEARCH_BRIEF.md`** (`01_Diabetes_Research/docs/RESEARCH_BRIEF.md`): bản tóm tắt trạng thái nghiên cứu, sinh từ webr
-  (nút "Sinh Research Brief") hoặc bất cứ lúc nào. **ĐỌC FILE NÀY ĐẦU MỖI PHIÊN**r
-  để định hướng nhanh thay vì đọc lại tất cả analysis.html.r
-- **`rejected.json`** (`01_Diabetes_Research/rejected.json`): xem §11.r
-- **Snowballing**: ExploreX có thể duyệt references (backward) + citations (forward)r
-  của bài đã chọn qua OpenAlex → pool ứng viên trúng đích cho em triage.r
-- **`search_pool.json`** (`01_Diabetes_Research/search_pool.json`): ExploreX ghi đè sau MỖI lần search — pool kết quảr
-  gần nhất (đã dedup, đã bỏ rejected + đã có trong thư viện), kèm title/abstract/r
-  citations/dedup_key. Khi user nói "triage" / "sàng lọc pool": đọc file này,r
-  phán giữ/loại từng bài theo §7 + scope §1. Bài loại → ghi vào `01_Diabetes_Research/rejected.json`r
-  (đã uỷ quyền); bài đáng giữ → đề xuất user lưu vào Layer trên web.r
-  Đồng thời ghi verdict vào field `triage` của chính file này để web hiển thịr
-  (panel "Pool & Triage" ở trang Tìm bài báo):r
-  `triage[dedup_key] = { "verdict": "keep"|"reject", "reason": "...", "layer": 1-4? }`r
-  — chỉ thêm/sửa field `triage`, KHÔNG đụng `papers`.r
-- **`RESEARCH_LOOP.html`** (`01_Diabetes_Research/docs/RESEARCH_LOOP.html`): sơ đồ vòng lặp 8 bước + ai làm gì. Mở để nhớ luồng.r
-r
-### Vòng lặp chuẩn (xem 01_Diabetes_Research/docs/RESEARCH_LOOP.html)r
-discover (web) → **triage (em)** → save (user/web) → queue+auto-extract (web) →r
-**deep-analyze: analysis.html + summary.json (em)** → **decide: promote/reject (em+user)**r
-→ brief (web) → **đọc brief định hướng (em)** → lặp lại.r
-r
----r
-r
-## 12. Nhật ký Hỏi–Đáp định hướng — `QA_LOG.md` (huấn luyện agent)r
-r
-File **`QA_LOG.md`** (`01_Diabetes_Research/docs/QA_LOG.md`) + bản máy đọc **`qa_log.json`** (`01_Diabetes_Research/qa_log.json`) lưu các câu hỏi **chiến lược /r
-định hướng / phương pháp luận** của user và câu trả lời đã chốt. Mục đích: agent các phiên SAUr
-học **cách user nghĩ + nguyên tắc đã chốt**, không trả lời lại từ đầu. Khác `01_Diabetes_Research/docs/RESEARCH_BRIEF.md`r
-(trạng thái paper) và `01_Diabetes_Research/docs/DECISION_BOARD.md` (gợi ý promote) — đây là *tư duy định hướng*.r
-r
-- **ĐỌC `01_Diabetes_Research/docs/QA_LOG.md` đầu mỗi phiên** (cùng `01_Diabetes_Research/docs/RESEARCH_BRIEF.md`) để nắm định hướng + ưu tiên của user.r
-- Sau MỖI câu hỏi định hướng của user + câu trả lời đã chốt → **append 1 entry** vào CẢ HAI filer
-  (`01_Diabetes_Research/docs/QA_LOG.md` thêm section + 1 dòng mục lục; `01_Diabetes_Research/qa_log.json` push vào `entries`). **Append-only**,r
-  KHÔNG sửa entry cũ; quyết định bị đảo → entry mới ghi `supersedes: "Q###"`.r
-- Mỗi entry BẮT BUỘC có **`Nguyên tắc rút ra` / `principle`** — 1–3 câu tái dùng được (phần giá trịr
-  nhất để huấn luyện). Không chỉ là câu hỏi vặt kỹ thuật một lần; ưu tiên câu định hướng có giá trị lâu dài.r
-r
----r
-r
-## 13. Trạng thái thi công — `PROGRESS.json` (thêm 2026-07-26, Q007)r
-r
-Sau khi đề tài được chốt (Q007), dự án chuyển từ giai đoạn *gom paper* sang giai đoạn *thi công*.r
-File **`PROGRESS.json`** (`02_Implementation/Paper_01_NHANES_NoLab/PROGRESS.json`) là **nguồn chân lý về "đang ở đâu, làm gì tiếp"**.r
-r
-- **ĐỌC đầu mỗi phiên**, cùng `02_Implementation/Paper_01_NHANES_NoLab/START_HERE.md` + `01_Diabetes_Research/docs/QA_LOG.md`. Đây là thứ trả lời câu hỏir
-  user hay hỏi nhất: *"tuần này làm gì?"*r
-- **Giao diện**: trang `/tien-do` của ExploreX (`web/src/app/tien-do/`). Webapp chỉ là GUI —r
-  file trên đĩa mới là chân lý (§2). User tick/ghi chú trên web → ghi thẳng vào file này quar
-  `PATCH /api/progress`.r
-- **Khi user báo xong việc** → cập nhật `status` + `done_at` + `note` (kết quả/số liệu thật).r
-  **Append-only về mặt task**: KHÔNG xoá task; việc bỏ thì để `status: "skipped"` + lý do trong `note`.r
-- **Ghi phải read-modify-write** (giữ field lạ) + atomic, giống `metadata.json` (§5).r
-- Trường `owner` phân công: `"anh"` = user tự làm (quyết định, đọc, viết, gặp bác sĩ);r
-  `"claude"` = agent làm (code, trích xuất, dò bug, đóng vai reviewer).r
-- Trường `done_when` là **Definition of Done** — dùng nó để CHẶN scope creep: đạt là dừng,r
-  không làm thêm.r
-- 3 tầng: **Tầng 0 = bắt buộc** (đủ để có bài báo) · Tầng 1–2 = nâng cấp tuỳ chọn.r
-  Khi tư vấn, **mặc định chỉ nói về Tầng 0** trừ khi user hỏi xa hơn — user đã nêu rõr
-  bị ngợp vì scope rộng.r
-r
-**Bộ file định hướng hiện tại (đọc theo thứ tự này):**r
-`02_Implementation/Paper_01_NHANES_NoLab/START_HERE.md` (ngắn, chống ngợp) → `02_Implementation/Paper_01_NHANES_NoLab/PROGRESS.json` (làm gì tiếp) →r
-`01_Diabetes_Research/docs/CHEATSHEET.md` (tra cứu thay cho đọc paper) → `02_Implementation/Paper_01_NHANES_NoLab/TO_DO.md` (bản đồ đầy đủ) → `01_Diabetes_Research/docs/QA_LOG.md` (vì sao quyết vậy).r
+# AGENTS.md — Conventions for All AI Agents Working in This Repository
+
+> Every agent (Claude, Codex, Cursor...) MUST read this file before taking action.
+> On conflict: AGENTS.md > skill default > user-specific prompt.
 
 ---
-## 14. Skill bên thứ ba (medsci-skills) — quy tắc tích hợp
 
-> Thêm 2026-09-21 (chore/skills-upgrade). Áp dụng cho mọi skill trong `medsci-skills` đã cài vào `.claude/skills/` và `.agents/skills/`.
+## 1. Research Context
 
-**(1) Thứ tự ưu tiên: AGENTS.md > SKILL.md**
-Khi có xung đột giữa hướng dẫn trong AGENTS.md và SKILL.md của skill bên thứ ba → AGENTS.md thắng tuyệt đối. Skill là công cụ; chính sách nghiên cứu do AGENTS.md định.
+- **Topic (SOLE TOPIC)**: **Diabetes prediction & staging**
+  on tabular/EHR data. Two **label types** IN scope (`label_type` axis, §5):
+  - **Binary (primary)** — diabetes presence / absence. Remains the predominant axis of the repository.
+  - **Multi-class ordinal glycemic staging (extension — added 2026-07-06, Q006)** — Normal →
+    Prediabetes → Diabetes, according to ADA thresholds (HbA1c/FPG/OGTT). Accepted ONLY when done
+    **leakage-safe**: DO NOT directly use the label-defining biomarkers themselves (HbA1c/FPG/OGTT) as
+    features, OR the task must be reframed as **future stage prediction (progression)**.
+  EVERY search, analysis, and comparison MUST serve strictly this topic; DO NOT accept papers outside this topic.
+- **OUT of staging scope — REJECT**: (a) **T1D immune staging** Stage 1/2/3 (Insel 2015) — this is
+  Type 1, based on autoantibodies/extended OGTT/omics/longitudinal data, NOT routine tabular/EHR T2D;
+  (b) **complication grading using images/signals** (retinopathy, neuropathy) — already excluded under image-based.
+- **3 prediction forms in scope** (time axis — see §3b `prediction_horizon` for details):
+  - **Cross-sectional** — predicting current diabetes status from features measured at the same point in time (PIMA,
+    BRFSS…). Includes classic PIMA-style "diagnosis/classification" papers.
+  - **Early detection** — early detection at the pre-symptomatic/subclinical stage in undiagnosed individuals
+    (early detection of T2D, opportunistic screening).
+  - **Long-term risk** — predicting risk of onset after N years; requires longitudinal/cohort data.
+- **Technical approach**: ML & DL on **tabular + EHR** data.
+- **2 classification axes (ORTHOGONAL to each other)**: **Layer 1-4** = technical contribution (§3);
+  **`prediction_horizon`** = prediction problem formulation (§3b). Every paper MUST carry BOTH.
+- **Out of scope — REJECT**: retinopathy, CGM time-series, image-based, and any paper that is
+  NOT diabetes prediction (treatment-only, descriptive epidemiology-only, genomics without a predictive
+  model…). When encountering these → reject and suggest returning to tabular/EHR diabetes prediction.
+- **Output language for user**: Vietnamese (keep EN terms in parentheses when necessary).
 
-**(2) Output QC ghi vào `02_Implementation/<Paper_XX>/qc/`**
-Thư mục `02_Implementation/<Paper_XX>/qc/` được phép tạo. Mọi file QA/audit do skill sinh (design_audit.md, rob_audit.json, checklist output...) ghi vào đây — không ghi vào `01_Diabetes_Research/searched_papers/` hay `01_Diabetes_Research/chosed_papers/`. Xem mẫu: `02_Implementation/Paper_01_NHANES_NoLab/qc/`.
+---
 
-**(3) Verdict/gate của skill chỉ là GỢI Ý — quyết định cuối là của user**
-Skill `peer-review`, `self-review`, `design-study`, `radiomics-ml` có thể trả về verdict (MAJOR/MINOR/reject/keep...). Đây chỉ là input để user xem xét. Quyết định promote/reject paper, dừng/tiếp tục thí nghiệm vẫn là của user — không phải của agent hay skill.
+## 2. Directory Structure (MANDATORY Adherence)
 
-**(4) Số liệu do skill sinh phải có provenance hoặc ghi UNKNOWN**
-Mọi metric, thống kê, kết quả mà skill tự tính (design-study, radiomics-ml, analyze-stats) phải kèm provenance (file input, hàm/script cụ thể, random seed nếu có). Thiếu provenance → ghi `UNKNOWN`. Không bịa số. Đây là nguyên tắc chung của AGENTS.md §8 áp thêm cho output skill.
+```
+<repository-root>/
+├── AGENTS.md                               ← Conventions handbook for all AI agents (this file)
+├── README.md                               ← Project overview & guide
+│
+├── .agents/                                ← Antigravity skills & automation tools
+│   └── skills/                             ← paper-analyzer, paper-comparator, paper-finder, pdf-extract, pdf-fetch...
+│
+├── .claude/                                ← Claude Code skills & templates
+│   ├── skills/                             ← Corresponding skills for Claude Code
+│   ├── templates/
+│   │   └── analysis-template.html          ← Standard HTML template for all analysis.html (see §6)
+│   └── settings.local.json
+│
+├── 01_Diabetes_Research/                   ← [Paper repository & research literature]
+│   ├── searched_papers/                    ← ALL papers found by agents (categorized across 4 Layers)
+│   │   ├── Layer_1_Pipeline_Nen_Tang/
+│   │   │   └── <paper_id>/
+│   │   │       ├── source.pdf              ← Original PDF file
+│   │   │       ├── metadata.json           ← Standard metadata (see §5)
+│   │   │       ├── extracted.md            ← Text extracted from PDF (generated by pdf-extract)
+│   │   │       ├── analysis.html           ← 8-block Vietnamese analysis (generated by paper-analyzer)
+│   │   │       ├── comparison.md           ← Intra-layer comparison (generated by paper-comparator)
+│   │   │       ├── notes.md                ← User notes (web tab "Ghi chú" — readable/editable)
+│   │   │       └── highlights.json         ← User PDF highlights (web overlay, DOES NOT modify source.pdf)
+│   │   ├── Layer_2_Model_Hieu_Qua/
+│   │   ├── Layer_3_Dataset_EHR/
+│   │   └── Layer_4_XAI_Trien_Khai/
+│   ├── chosed_papers/                      ← Papers ACTUALLY selected by user (PDF only)
+│   │   ├── Layer_1_Pipeline_Nen_Tang/
+│   │   ├── Layer_2_Model_Hieu_Qua/
+│   │   ├── Layer_3_Dataset_EHR/
+│   │   └── Layer_4_XAI_Trien_Khai/
+│   ├── docs/                               ← Full collection of analytical documents, cheatsheets & maps
+│   │   ├── RESEARCH_BRIEF.md               ← Synthesized research state brief across papers
+│   │   ├── RESEARCH_LOOP.html              ← Visual diagram of the ExploreX research loop
+│   │   ├── READING_LIST.md                 ← Prioritized reading list grouped by goals
+│   │   ├── CHEATSHEET.md                   ← Reference handbook for ML methods & preprocessing
+│   │   ├── LEAKAGE_MAP.md                  ← Classification map of data leakage violations
+│   │   ├── DECISION_BOARD.md               ← Tracking board for paper acceptance/rejection decisions
+│   │   └── QA_LOG.md                       ← Strategic guidance and methodology decision log
+│   ├── search_pool.json                    ← ExploreX search result triage queue
+│   ├── rejected.json                       ← List of rejected papers with detailed reasons (§11)
+│   └── qa_log.json                         ← Extraction quality test status
+│
+├── 02_Implementation/                      ← [Implementation module & real code]
+│   └── Paper_01_NHANES_NoLab/              ← [Paper 1] No-lab diabetes screening on NHANES
+│       ├── START_HERE.md                   ← Quick start guide for authors
+│       ├── TO_DO.md                        ← Detailed weekly roadmap & tasks
+│       ├── PROGRESS.json                   ← Real-time progress tracking board (§13)
+│       ├── src/                            ← Python pipeline source code
+│       └── qc/                             ← QC / audit outputs from third-party skills
+│
+├── 03_Final_Result/                        ← [Final output deliverables]
+│   └── README.md                           ← Storage for finalized manuscripts and submission-ready figures
+│
+└── web/                                    ← Research Hub (local Next.js) — GUI to read/write paper repository
+    │                                         NOT the source of truth; only a filesystem interface.
+    ├── src/                                ← Frontend & API routes source code (Next.js)
+    └── data/hub.db                         ← SQLite: highlights, personal notes, triage pool
+```
 
-**(5) Skill KHÔNG được ghi vào `01_Diabetes_Research/chosed_papers/`**
-Skill bên thứ ba không có quyền move, copy hay tạo file trong `01_Diabetes_Research/chosed_papers/`. Chỉ user mới promote. (Kế thừa AGENTS.md §4.)
+> **`notes.md` / `highlights.json`** are generated by Research Hub (web/ExploreX) from user actions.
+> Agents ARE ALLOWED to read them to understand user interest, but MUST NOT overwrite them —
+> this is manual user data. `highlights.json` contains normalized coordinates (0..1)
+> per page, not embedded in the original PDF.
+---
 
-**(6) Danh sách skill đã cài và khoá phiên bản (lock file)**
-Nguồn chân lý xác thực về nguồn gốc, phiên bản và thay đổi cục bộ nằm tại `.agents/skills/SKILLS_LOCK.md`. File `.claude/skills/SKILLS_LOCK.md` chỉ là con trỏ tương thích (pointer).
+## 3. Definition of 4 Layers (FOUNDATION for Paper Assignment)
 
-**(7) Nguồn chân lý skill nghiên cứu và cơ chế đồng bộ (Skill Parity)**
-- `.agents/skills` là nguồn chân lý duy nhất (canonical source) cho mọi research skill được quản lý.
-- KHÔNG chỉnh sửa trực tiếp các thư mục research skills trong `.claude/skills` (đây là generated compatibility mirrors).
-- Sau khi chỉnh sửa một canonical research skill trong `.agents/skills`, BẮT BUỘC chạy:
+| Layer | Name | Focus |
+|------|-----|-----------|
+| **1** | Pipeline_Nen_Tang | Preprocessing, handling missing data, outliers, **oversampling/SMOTE**, feature selection (Boruta/PCA), baseline ML (RF, LGBM, GB) |
+| **2** | Model_Hieu_Qua    | Model comparison, **ensemble/stacking/boosting**, deep tabular, hyperparameter optimization, accuracy-enhancing techniques |
+| **3** | Dataset_EHR       | Working with **real EHR** (NHANES, MIMIC, eICU), opportunistic screening, real-world cohorts, longitudinal data |
+| **4** | XAI_Trien_Khai    | **Explainability** (SHAP, LIME), interpretability, deployment, clinical impact, trust |
+
+**Layer assignment rule**: 1 paper = 1 primary Layer. If uncertain among multiple Layers → choose the Layer corresponding to the paper's **primary contribution**, not a secondary topic.
+
+---
+
+## 3b. Second Axis: `prediction_horizon` (MANDATORY — Orthogonal to Layer)
+
+The Layer indicates **how the paper is built**; `prediction_horizon` indicates **what the paper predicts**.
+Each paper MUST carry exactly **1 horizon**, assigned INDEPENDENTLY of the Layer (a Layer-2 ensemble may
+be `cross_sectional`, `early_detection`, or `long_term_risk`).
+
+| Horizon | Definition | Identifying Signs | Repository Examples |
+|---------|-----------|--------------------|--------------|
+| `cross_sectional` | Predicts **current** diabetes status from features measured at the same time (no time gap from feature → label) | Cross-sectional datasets (PIMA, BRFSS, Sylhet, Frankfurt); no follow-up; classic "diagnosis/classification" framing | gr2024, hasan2020, khanam2021, naz2020 |
+| `early_detection` | **Early detection**: undiagnosed population / pre-symptomatic or subclinical stage; opportunistic screening | Keywords "early detection", "screening", "undiagnosed", "prediabetes", "opportunistic" | lai2019, nipa2023, dinh2019 |
+| `long_term_risk` | Predicts **onset after N years** from baseline; requires longitudinal follow-up | Longitudinal cohorts, follow-up over N years, "incident diabetes", "risk over X years" | rasmy2021, fazakis2021, deberneh2021, li2020, lugner2024 |
+
+**Horizon assignment rule**: follow the **problem framing set by the paper itself**, not deduced solely from the dataset
+(the same NHANES data can be used for all 3 horizons depending on label construction). If uncertain → set
+`horizon_uncertain: true`, default to `cross_sectional`, and leave the decision to the user.
+
+> **Note on repository balance**: the repository still leans toward `cross_sectional`. `long_term_risk` has several papers
+> (rasmy2021, fazakis2021, deberneh2021, li2020, lugner2024) but remains thin; `early_detection`
+> also needs expansion. When the finder proposes new papers, prioritize filling these two horizons.
+
+---
+
+## 4. Relationship Between `01_Diabetes_Research/chosed_papers/` and `01_Diabetes_Research/searched_papers/`
+
+- `01_Diabetes_Research/searched_papers/` is a **superset** of `01_Diabetes_Research/chosed_papers/`. All papers found by agents enter here first.
+- `01_Diabetes_Research/chosed_papers/` contains only PDFs that the **user has approved** after reading the analysis.
+- Agents **MUST NOT** move or copy papers to `01_Diabetes_Research/chosed_papers/` on their own. Only the user has authority to promote.
+- When the user requests to "upgrade / extend / compare / improve" — the agent MUST use `01_Diabetes_Research/chosed_papers/` as the baseline, not `01_Diabetes_Research/searched_papers/`.
+
+---
+
+## 5. `metadata.json` Schema (for Every Paper in `01_Diabetes_Research/searched_papers/`)
+
+> There are **2 write sources** for this file: (a) the **webapp** (ExploreX) when the user saves/queues/promotes; (b) the **agent**
+> (Claude) when finding/analyzing/downloading PDFs. Both use read-modify-write, **preserving each other's fields** →
+> adding new fields is always safe. Fields that the webapp **reads** (marked 🔗) **MUST NEVER be renamed**.
+
+Example of frequently encountered fields (not all are strictly required — older/seed papers may lack certain fields):
+```json
+{
+  "paper_id": "nnamoko2020_outliers_imbalance",
+  "title": "<full title>",
+  "authors": ["..."],
+  "year": 2020,
+  "venue": "<journal/conference>",
+  "doi": "<doi or null>", "arxiv": null, "pubmed": null, "pmc": null,
+  "citations": 154,
+  "citations_secondary": null,
+  "citations_checked_at": "2026-06-20T00:00:00+07:00",
+  "citations_source": "openalex",
+  "layer": 1,
+  "layer_uncertain": false,
+  "prediction_horizon": "cross_sectional",
+  "horizon_uncertain": false,
+  "label_type": "binary",
+  "datasets_mentioned": ["pima", "..."],
+  "dataset_slugs": ["pima-indians-diabetes", "..."],
+  "method_slugs": ["iqr-outlier-detection", "smote", "c4.5"],
+  "code_url": null,
+  "reproducibility": 2,
+  "source_pdf": "source.pdf",
+  "page_count": 12,
+  "open_access_pdf": "<link OA or null>",
+  "license": null,
+  "pdf_status": "downloaded",
+  "pdf_fetch_attempts": "<free-form log — routes attempted>",
+  "download_link": null,
+  "is_seed": false,
+  "lookup_status": "ok",
+  "status": "analyzed",
+  "analysis_status": "analyzed",
+  "reject_reason": null,
+  "scope_note": "<reviewer: why valuable / limitations>",
+  "corrections": "<what was corrected after reading full text>"
+}
+```
+
+### Field Table (🔗 = Read by Webapp → DO NOT Rename)
+
+| Group | Field | Meaning |
+|------|-------|---------|
+| Identity | `paper_id` 🔗 · `title` 🔗 · `authors` · `year` · `venue` · `doi` · `arxiv` · `pubmed` · `pmc` | paper identification |
+| Citations | `citations` 🔗 (primary, OpenAlex — webapp **sorts by this field**) · `citations_secondary` (S2) · `citations_checked_at` (ISO-8601 with offset) · `citations_source` | citation counts |
+| Classification | `layer` (1–4) · `layer_uncertain` · `prediction_horizon` (§3b) · `horizon_uncertain` · `label_type` (§1) | 2 axes §3/§3b + label form §1 |
+| Data/Methods | `datasets_mentioned` 🔗 (raw names) · `dataset_slugs` 🔗 (kebab) · `method_slugs` (kebab) | dataset + method |
+| Code | `code_url` 🔗 | public repo, or `null` = NO code available. **This is the source-of-truth** — DO NOT use `code_available` |
+| PDF/Source | `source_pdf` 🔗 (PDF filename; gate for viewing PDF + promotion) · `page_count` 🔗 · `open_access_pdf`/`pdf_url` · `license` · `pdf_status` (enum) · `pdf_fetch_attempts` (log) · `download_link` (manual download link for closed-access papers) | PDF management |
+| Lifecycle | `status` 🔗 (enum) · `analysis_status` 🔗 (enum) · `analysis_status_at` · `reject_reason` · `chosen_at` | see section below |
+| Provenance | `is_seed` · `lookup_status` · `found_by` · `abstract` · `url` | source provenance (saved by webapp) |
+| Reviewer (agent) | `scope_note` (why valuable/limitations) · `corrections` (what was corrected after reading full text) | enrichment — RECOMMENDED |
+| Study Role | `role` 🔗 · `role_note` 🔗 · `role_at` | **added 2026-07-26 (Q008)** — how this paper is used in the FINALIZED study. See enums below |
+| §7 Check | `s7_recheck` | snapshot `{at, publication_date, age_years, citations, threshold, pass, note}` — §7 is an ADMISSION GATE, DO NOT reject papers merely because they aged past the boundary |
+| Reproducibility | `reproducibility` (int) | **LEGACY** — inconsistent scale, not read by webapp. True field = `summary.json.reproducible` (high/med/low). New backfill follows scale **1=low / 2=medium / 3=high** |
+
+### Enums (Fixed Values)
+- `status`: `searched` → `analyzed` → `chosen` | `rejected`. (Deprecated `compared` — do not use.)
+- `analysis_status`: `none` | `queued` | `analyzed`. **DO NOT use `pending`** (webapp does not recognize it). For closed-access papers without PDF: set `analysis_status: "none"`, while the waiting-for-PDF state is tracked in `pdf_status`.
+- `pdf_status`: `ok` | `downloaded` | `pending_closed_access` | `blocked_closed_access` (route details logged in `pdf_fetch_attempts` — see skill `pdf-fetch`).
+- `prediction_horizon`: `cross_sectional` | `early_detection` | `long_term_risk` (§3b). DO NOT invent other values.
+- `label_type`: `binary` | `multiclass_staging` (§1). Default is `binary` (older papers lacking the field → treated as `binary`). `multiclass_staging` is used only for leakage-safe/progression glycemic staging per §1.
+- `layer`: `1` | `2` | `3` | `4` (integer).
+- `role` (added 2026-07-26, Q008): `design` | `method` | `positioning` | `inflation` | `later` | `related`
+  — maps 1-to-1 with the 6 reading groups 🅐–🅕 in `TO_DO.md` §6. **This axis is ORTHOGONAL to `verdict`**:
+  `verdict` = quality/reliability of the paper; `role` = how this paper is utilized in the manuscript.
+  The webapp displays `role` as the "Vai trò" column + filter chip + "Thứ tự đọc" sort in the Library page.
+  New papers MUST be assigned a `role` upon analysis; if uncertain → `related` (safe default).
+
+### `status` vs `analysis_status` (Two Separate Axes — DO NOT Confuse)
+- `status` = **paper lifecycle**. NOTE: the webapp infers "chosen" from the **presence of the folder in `01_Diabetes_Research/chosed_papers/`**, NOT from the `status` field → `status: "chosen"` is merely an auxiliary note.
+- `analysis_status` = **analysis queue state**. The webapp automatically considers a paper `analyzed` if `analysis.html` exists.
+
+### Naming Conventions & Deprecated Fields
+- `paper_id`: `<lastname><year>_<3-word-slug>`, snake_case, no diacritics. E.g., `kumar2023_ensemble_xai`.
+- `dataset_slug` / `method_slug`: kebab-case. E.g., `pima-indians-diabetes`, `random-oversampling`, `shap`.
+- **DO NOT write newly deprecated fields**: `code_available` (→ `code_url`), `open_access_pdf_status` (→ `pdf_status`), `citations_alt` (→ `citations_secondary`), `analysis_status: "pending"` (→ `none`).
+
+---
+
+## 6. Template `analysis.html` (FINALIZED — Used for EVERY Paper)
+
+Template file: `.claude/templates/analysis-template.html`.
+Rendered reference file (preview layout): `01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/gr2024_random_oversampling_diabetes/analysis.html`.
+
+Every `analysis.html` generated by an agent MUST contain exactly the following **8 blocks**, in the exact order (to enable quick cross-comparison across papers by opening 5 tabs side-by-side and scrolling to identical positions):
+
+| # | Block | MANDATORY Content |
+|---|------|-------------------|
+| 1 | **Header** (green gradient) | title · year · venue · `📚 N citations (MM/YYYY)` · DOI link · badge `💻 Code: Có/Không` (green/red) · badge `📊 Dataset: Có/Không` (green/red) · badge `⏱️ Horizon: Cross-sectional/Early/Long-term` (purple — value derived from `prediction_horizon`) · list of datasets with embedded links if available |
+| 2 | **Compare Card** (purple gradient) | 4 FIXED fields: 🎯 Đóng góp chính · 🏆 Best metric (number + dataset) · 🔧 Method chính · 🔄 So với baseline / paper khác cùng Layer |
+| 3 | Section: 📋 Tổng quan & vì sao Layer N | 1 lead paragraph + table `lý do | giải thích` |
+| 4 | Section: 🔧 Công nghệ & mô hình | Table `kỹ thuật | vai trò | mạnh | yếu`, with ⭐ marking the winning model |
+| 5 | Section: 🗄️ Dataset | Table `tên | mẫu | feature | mô tả | link` |
+| 6 | Section: ⚙️ Cách triển khai | Pipeline table + formulas (black formula block) + cropped images from PDF (embedded base64) |
+| 7 | Section: 🏆 Kết quả | Metric grid (large cards) + detailed table `dataset | model | setting | metric | nguồn` |
+| 8 | Section: ⚠️ Lưu ý quan trọng | 3 yellow callouts: ⚠️ Rủi ro · 🎯 Giới hạn · 💡 Vai trò trong đề tài |
+
+### Rendering Constraints
+- **DO NOT fabricate numbers**: if not stated in the paper → write `UNKNOWN` (the Compare Card must still contain all 4 fields, with value = `UNKNOWN` if missing).
+- **DO NOT alter block count, change ordering, or rename fields in Compare Card** — violating this breaks cross-comparison.
+- **Self-contained**: inline CSS + inline SVG, NO CDN, NO external images (images from PDF must be embedded as base64).
+- **Language**: Vietnamese, keeping EN terms in parentheses when needed (e.g., "tăng cường mẫu thiểu số (SMOTE)").
+- **Metric provenance**: every metric in section 7 MUST explicitly cite `Table X` / `Fig Y` / `Section Z` from the PDF.
+- **When paper reports no quantitative results**: section 7 renders the muted line "Paper không công bố số liệu cụ thể — chỉ mô tả định tính. Không bịa số." instead of the metric grid.
+
+---
+
+## 7. Hard Criteria for "Found" Papers
+
+Before creating a folder in `01_Diabetes_Research/searched_papers/`, a paper MUST satisfy all 3 criteria below (if any fails → reject, report reason to user):
+
+1. **Highly cited** (retrieve count from Semantic Scholar, DO NOT guess):
+   - ≥ 100 citations if published > 3 years.
+   - ≥ 30 citations if 1–3 years.
+   - "Rising star" (≥ 5 citations/month) if < 1 year.
+2. **Dataset public**: download link or clear access procedure available (PhysioNet DUA OK).
+3. **Code/Method reproducible**: public GitHub repo + README, OR method described in sufficient detail in paper for replication.
+
+If not satisfied → DO NOT create a folder; report rejection reason to user.
+
+---
+
+## 8. General Working Rules
+
+- **Do not drift into out-of-scope topics** (see §1). Papers/topics NOT on diabetes prediction → decline/reject (record in `01_Diabetes_Research/rejected.json` if folder already exists). Retinopathy / CGM / image → decline, suggest returning to tabular/EHR diabetes prediction.
+- **Do not guess figures** (citations, accuracy, year). Record `UNKNOWN` if not verified.
+- **Querying citations via OpenAlex must use `/works?filter=doi:<doi>` and verify `meta.count == 1`** — the
+  `/works/doi:<doi>` endpoint may match a **DUPLICATE record**. This has occurred: `yu2010` was returned with 0 citations
+  (a 2008 duplicate entry) whereas the true record had 524 (Q008, 2026-07-26). Citation numbers in `analysis.html`
+  stating other sources (Scopus/S2) MUST NOT be overwritten by OpenAlex numbers — append alongside.
+- **Do not overwrite existing analysis.html / overview.md / etc.** Create `analysis.v2.html` and update metadata `status`.
+- **Operate strictly within standard repository directories**: Agents may work only inside directories defined in the repository layout (`.agents/`, `.claude/`, `01_Diabetes_Research/`, `02_Implementation/`, `03_Final_Result/`, `web/`), and MUST NOT create new top-level directories without user consent.
+- **All paper references** in chat: use `paper_id` rather than long titles.
+
+---
+
+## 9. When User Requests "Upgrade" / "Extension" / "Improvement"
+
+The agent MUST:
+1. Read ALL papers in `01_Diabetes_Research/chosed_papers/Layer_<n>/` for the relevant layer first.
+2. Read `analysis.html` / `overview.md` of those papers in `01_Diabetes_Research/searched_papers/`.
+3. Use those exact papers as the **foundation**, proposing improvements RELATIVE TO what the chosen papers already did.
+4. Do not offer generic suggestions such as "could use SHAP", but state concretely: "paper X used SHAP for Layer 4; propose extending with …".
+
+---
+
+## 10. On Conflict / Uncertainty
+
+- Stop and ask the user. Do not arbitrarily break rules §1-§7.
+- If unfamiliar files/folders appear outside the §2 structure → ask user before deleting or moving.
+
+---
+
+## 11. Analysis & Screening Workflow (ExploreX Webapp + Claude)
+
+ExploreX (webapp) only performs **search + collection + rough filtering**. Reading, judgment, and screening
+belong to Claude (agent). The webapp DOES NOT call AI autonomously.
+
+### When User Requests "Analyze Queue" / "Process Queue"
+1. Scan `01_Diabetes_Research/searched_papers/Layer_*/*/metadata.json`, selecting papers with
+   `"analysis_status": "queued"` (this is the queue marked by user on the web).
+2. For each queued paper:
+   - Read `metadata.json` + `extracted.md` (if missing, run `pdf-extract`) +
+     `source.pdf` when necessary.
+   - **Judge against §7** (highly-cited, public dataset, reproducible code/method)
+     AND §1 scope (tabular/EHR diabetes).
+   - **If QUALIFIED** → write 8-block `analysis.html` per §6, set
+     `analysis_status: "analyzed"`, `status: "analyzed"`.
+   - **If NOT qualified** → add to `01_Diabetes_Research/rejected.json` (see below) with a **specific reason**,
+     `by: "claude"`. Authorized to reject automatically without asking (delegated by user).
+3. Report summary to user: which papers were analyzed, which were rejected + reasons.
+
+### File `rejected.json` (at `01_Diabetes_Research/rejected.json`)
+List of rejected papers so that **search DOES NOT suggest them again**. Schema per entry:
+```json
+{
+  "dedup_key": "doi:10.x/yyy",          // doi:<doi> | arxiv:<id> | title:<norm>
+  "paper_id": null,
+  "title": "...",
+  "title_norm": "...",                  // title lowercase, special characters stripped
+  "doi": "...", "arxiv": null,
+  "reason": "rejection reason — MANDATORY, specific",
+  "by": "claude",                       // "claude" | "user"
+  "layer": 2,
+  "rejected_at": "ISO-8601"
+}
+```
+- `dedup_key` computed per §5 logic: priority `doi:` → `arxiv:` → `title:<title_norm>`.
+- When rejecting a paper that already has a folder in `01_Diabetes_Research/searched_papers/`: add to `01_Diabetes_Research/rejected.json`
+  AND set metadata `status: "rejected"` + `reject_reason`. DO NOT delete folder (user deletes).
+- Append/upsert by `dedup_key`, preserving existing entries. DO NOT overwrite entire file causing data loss.
+
+### Relationship with Existing Rules
+- §7 remains the primary criterion for acceptance/rejection. §11 adds: the location for recording rejection reasons
+  (`01_Diabetes_Research/rejected.json`) + queue mechanism (`analysis_status`).
+- `analysis_status` (none/queued/analyzed) differs from `status` (searched/analyzed/chosen/rejected) in §5 — the former is for the web queue, the latter is for the paper lifecycle.
+
+### New Loop Artifacts (ExploreX)
+- **`extracted.md`**: high-fidelity, complete, structure-preserving PDF extract (tables→markdown,
+  multi-column reading order, OCR for scanned pages) generated by skill `pdf-extract` (engine **docling** +
+  fallback pymupdf4llm). ExploreX can extract text-only automatically upon queuing,
+  BUT that extract is ROUGH (loses tables, mixes columns, retains watermarks) → **before analyzing, verify
+  that `extracted.md` has been processed by `pdf-extract`**. Each file contains a header `<!-- ... | score=N -->` +
+  `extraction_report.json` (evidence-based QA: table coverage vs original captions, tail-check against
+  truncation; **score <85 = requires review**). Older rough extracts are archived as `extracted.prev.md`.
+  Re-extracting a single paper: `python .claude/skills/pdf-extract/extract.py 01_Diabetes_Research/searched_papers/Layer_X/<paper_id> --force`;
+  batch: `python .claude/skills/pdf-extract/run_all.py [--root 01_Diabetes_Research/searched_papers] [--min-skip 95]`;
+  re-scoring QA only (updated score formula without re-extraction): `recompute_qa.py`.
+  (Coverage excludes "Supplementary Table N"; tail-check is bypassed during OCR — preventing unfair penalties.)
+- **`summary.json`** (in paper folder): recorded upon analysis (schema in skill
+  `paper-analyzer`). Feeds research brief — MUST be written on every analysis.
+- **`RESEARCH_BRIEF.md`** (`01_Diabetes_Research/docs/RESEARCH_BRIEF.md`): research state brief, generated from web
+  ("Sinh Research Brief" button) or anytime. **READ THIS FILE AT THE START OF EVERY SESSION**
+  for fast orientation instead of re-reading all analysis.html files.
+- **`rejected.json`** (`01_Diabetes_Research/rejected.json`): see §11.
+- **Snowballing**: ExploreX can crawl references (backward) + citations (forward)
+  of chosen papers via OpenAlex → generating candidate pool for agent triage.
+- **`search_pool.json`** (`01_Diabetes_Research/search_pool.json`): ExploreX overwrites after EVERY search — pool of most recent results
+  (deduplicated, rejected papers and existing library papers removed), with title/abstract/citations/dedup_key.
+  When user says "triage" / "filter pool": read this file,
+  judge keep/reject for each paper per §7 + §1 scope. Rejected papers → record in `01_Diabetes_Research/rejected.json`
+  (delegated authority); papers worth keeping → recommend user to save into Layer via web.
+  Simultaneously write verdict into the `triage` field of this file for web display
+  ("Pool & Triage" panel on Paper Search page):
+  `triage[dedup_key] = { "verdict": "keep"|"reject", "reason": "...", "layer": 1-4? }`
+  — only add/modify the `triage` field, DO NOT touch `papers`.
+- **`RESEARCH_LOOP.html`** (`01_Diabetes_Research/docs/RESEARCH_LOOP.html`): visual diagram of the 8-step loop + roles. Open to review workflow.
+
+### Standard Research Loop (see 01_Diabetes_Research/docs/RESEARCH_LOOP.html)
+discover (web) → **triage (agent)** → save (user/web) → queue+auto-extract (web) →
+**deep-analyze: analysis.html + summary.json (agent)** → **decide: promote/reject (agent+user)**
+→ brief (web) → **read brief for orientation (agent)** → repeat loop.
+
+---
+
+## 12. Strategic Q&A Log — `QA_LOG.md` (Agent Training)
+
+The file **`QA_LOG.md`** (`01_Diabetes_Research/docs/QA_LOG.md`) + machine-readable companion **`qa_log.json`** (`01_Diabetes_Research/qa_log.json`) record **strategic /
+directional / methodological** questions from the user along with finalized answers. Purpose: agents in FUTURE sessions
+learn **how the user reasons + settled principles**, avoiding re-answering from scratch. Distinct from `01_Diabetes_Research/docs/RESEARCH_BRIEF.md`
+(paper status) and `01_Diabetes_Research/docs/DECISION_BOARD.md` (promotion suggestions) — this captures *strategic direction*.
+
+- **READ `01_Diabetes_Research/docs/QA_LOG.md` AT START OF EVERY SESSION** (along with `01_Diabetes_Research/docs/RESEARCH_BRIEF.md`) to grasp user direction + priorities.
+- After EVERY directional question from user + settled answer → **append 1 entry** to BOTH files
+  (`01_Diabetes_Research/docs/QA_LOG.md` adds section + 1 TOC line; `01_Diabetes_Research/qa_log.json` pushes to `entries`). **Append-only**,
+  DO NOT edit older entries; if a decision is overturned → new entry records `supersedes: "Q###"`.
+- Each entry MUST contain **`Nguyên tắc rút ra` / `principle`** — 1–3 reusable sentences (the most valuable
+  part for agent training). Not just one-off technical trivia; prioritize questions with long-term strategic value.
+
+---
+
+## 13. Implementation Status — `PROGRESS.json` (Added 2026-07-26, Q007)
+
+After the study design was finalized (Q007), the project transitioned from *paper collection* to *implementation*.
+The file **`PROGRESS.json`** (`02_Implementation/Paper_01_NHANES_NoLab/PROGRESS.json`) is the **single source of truth for "where we are, what to do next"**.
+
+- **READ AT START OF EVERY SESSION**, along with `02_Implementation/Paper_01_NHANES_NoLab/START_HERE.md` + `01_Diabetes_Research/docs/QA_LOG.md`. This answers the question
+  the user asks most often: *"what should we do this week?"*
+- **Interface**: the `/tien-do` page of ExploreX (`web/src/app/tien-do/`). The webapp is merely a GUI —
+  the file on disk is the source of truth (§2). When the user checks off / annotates on the web → writes directly to this file via
+  `PATCH /api/progress`.
+- **When user reports task completion** → update `status` + `done_at` + `note` (real results/metrics).
+  **Append-only in terms of tasks**: DO NOT delete tasks; discarded work is marked `status: "skipped"` with reason in `note`.
+- **Writes must follow read-modify-write** (preserving unrecognized fields) + atomic, matching `metadata.json` (§5).
+- The `owner` field assigns responsibility: `"anh"` = user handles directly (decisions, reading, writing, meeting physicians);
+  `"claude"` = agent handles (code, extraction, bug detection, acting as peer reviewer).
+- The `done_when` field serves as the **Definition of Done** — use it to PREVENT scope creep: once met, stop,
+  do not overbuild.
+- 3 tiers: **Tier 0 = mandatory** (sufficient for publication) · Tier 1–2 = optional upgrades.
+  When advising, **default strictly to Tier 0** unless the user asks further — the user explicitly noted
+  feeling overwhelmed by broad scope.
+
+**Current orientation reading sequence (read in this exact order):**
+`02_Implementation/Paper_01_NHANES_NoLab/START_HERE.md` (short, prevents overwhelm) → `02_Implementation/Paper_01_NHANES_NoLab/PROGRESS.json` (what to do next) →
+`01_Diabetes_Research/docs/CHEATSHEET.md` (quick lookup instead of reading papers) → `02_Implementation/Paper_01_NHANES_NoLab/TO_DO.md` (full roadmap) → `01_Diabetes_Research/docs/QA_LOG.md` (why decisions were made).
+
+---
+## 14. Third-Party Skills (medsci-skills) — Integration Rules
+
+> Added 2026-09-21 (chore/skills-upgrade). Applies to all skills in `medsci-skills` installed into `.claude/skills/` and `.agents/skills/`.
+
+**(1) Precedence: AGENTS.md > SKILL.md**
+When instructions conflict between AGENTS.md and a third-party SKILL.md → AGENTS.md strictly prevails. Skills are tools; research policies are governed by AGENTS.md.
+
+**(2) QC output writes to `02_Implementation/<Paper_XX>/qc/`**
+Creating the `02_Implementation/<Paper_XX>/qc/` directory is permitted. All QA/audit files generated by skills (design_audit.md, rob_audit.json, checklist outputs...) are written here — NOT into `01_Diabetes_Research/searched_papers/` or `01_Diabetes_Research/chosed_papers/`. Reference example: `02_Implementation/Paper_01_NHANES_NoLab/qc/`.
+
+**(3) Skill verdict/gate is an ADVISORY SUGGESTION only — final decision rests with user**
+Skills `peer-review`, `self-review`, `design-study`, `radiomics-ml` may return verdicts (MAJOR/MINOR/reject/keep...). These are inputs for user review only. Decisions to promote/reject papers, stop/continue experiments remain strictly with the user — not the agent or skill.
+
+**(4) Metrics generated by skills must provide provenance or record UNKNOWN**
+Every metric, statistic, or result calculated by skills (design-study, radiomics-ml, analyze-stats) must include provenance (input file, specific function/script, random seed if applicable). Missing provenance → record `UNKNOWN`. Do not fabricate numbers. This is a general AGENTS.md §8 principle applied additionally to skill outputs.
+
+**(5) Skills MUST NOT write to `01_Diabetes_Research/chosed_papers/`**
+Third-party skills have no authority to move, copy, or create files in `01_Diabetes_Research/chosed_papers/`. Only the user may promote. (Inherited from AGENTS.md §4.)
+
+**(6) Installed skill inventory and version locking (lock file)**
+The authoritative canonical source of truth for provenance, versions, and local modifications is located at `.agents/skills/SKILLS_LOCK.md`. The file `.claude/skills/SKILLS_LOCK.md` is a compatibility pointer only.
+
+**(7) Research skill source of truth and parity sync (Skill Parity)**
+- `.agents/skills` is the sole canonical source of truth for all managed research skills.
+- DO NOT directly edit research skill directories in `.claude/skills` (these are generated compatibility mirrors).
+- After editing a canonical research skill in `.agents/skills`, it is MANDATORY to run:
   `python scripts/skills/research_skill_mirror.py --sync`
-- Trước khi commit, BẮT BUỘC kiểm tra tính toàn vẹn và đồng bộ:
+- Before committing, it is MANDATORY to verify integrity and parity:
   `python scripts/skills/research_skill_mirror.py --check`
-- Các frontend/design skills chỉ có trong Claude (`banner-design`, `ui-ux-pro-max`, v.v.) không thuộc phạm vi quản lý của mirror research skills và được duy trì độc lập trong `.claude/skills`.
-- `.agents/skills/SKILLS_LOCK.md` là file khoá phiên bản có thẩm quyền (authoritative research skill provenance lock file).
+- Frontend/design skills present only in Claude (`banner-design`, `ui-ux-pro-max`, etc.) are outside the scope of managed research skills and maintained independently in `.claude/skills`.
+- `.agents/skills/SKILLS_LOCK.md` is the authoritative research skill provenance lock file.

@@ -1,49 +1,49 @@
 ---
 name: paper-finder
 description: |
-  Tìm bài báo mới về DỰ ĐOÁN đái tháo đường (diabetes prediction, binary
-  classification, tabular & EHR), gán đúng Layer 1-4 + prediction_horizon,
-  đặt vào `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/` để đợi phân tích.
+  Find new research papers on diabetes PREDICTION (diabetes prediction, binary
+  classification, tabular & EHR), assign appropriate Layer 1-4 + prediction_horizon,
+  and place into `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/` awaiting analysis.
 inputs:
-  - 01_Diabetes_Research/chosed_papers/Layer_<1..4>/        # nền tảng để so chiếu chủ đề
+  - 01_Diabetes_Research/chosed_papers/Layer_<1..4>/        # baseline for thematic comparison
   - AGENTS.md                          # §1 scope, §3 Layer, §3b prediction_horizon
 outputs:
   - 01_Diabetes_Research/searched_papers/Layer_<1..4>/<paper_id>/source.pdf
-  - 01_Diabetes_Research/searched_papers/Layer_<1..4>/<paper_id>/metadata.json  # gồm cả field integrity mới
+  - 01_Diabetes_Research/searched_papers/Layer_<1..4>/<paper_id>/metadata.json  # including new integrity field
 ---
 
 # paper-finder
 
-## Mục đích
-Mở rộng kho `01_Diabetes_Research/searched_papers/` bằng các bài báo **dự đoán đái tháo đường**, phân
-ngay vào Layer phù hợp + gán `prediction_horizon`, dựa trên chủ đề chính:
+## Purpose
+Expand repository `01_Diabetes_Research/searched_papers/` with **diabetes prediction** papers,
+categorizing immediately into the appropriate Layer + assigning `prediction_horizon`, based on primary focus:
 
-| Layer | Trọng tâm |
-|-------|-----------|
-| 1 — Pipeline_Nen_Tang | Tiền xử lý, imbalance, oversampling, feature engineering |
-| 2 — Model_Hieu_Qua    | So sánh model / ensemble / boosting / deep tabular |
-| 3 — Dataset_EHR       | EHR thật, MIMIC, eICU, NHANES, cohort thực tế |
+| Layer | Focus |
+|-------|-------|
+| 1 — Pipeline_Nen_Tang | Preprocessing, imbalance, oversampling, feature engineering |
+| 2 — Model_Hieu_Qua    | Model comparison / ensemble / boosting / deep tabular |
+| 3 — Dataset_EHR       | Real EHR, MIMIC, eICU, NHANES, real-world cohorts |
 | 4 — XAI_Trien_Khai    | Explainability, SHAP/LIME, deployment, clinical impact |
 
-**Đồng thời gán `prediction_horizon`** (trục thứ 2 — AGENTS.md §3b, độc lập Layer):
+**Concurrently assign `prediction_horizon`** (second axis — AGENTS.md §3b, independent of Layer):
 
-| Horizon | Khi nào |
-|---------|---------|
-| `cross_sectional` | Dự đoán từ feature hiện tại, không follow-up |
-| `early_detection` | Phát hiện sớm / sàng lọc người chưa chẩn đoán, prediabetes — **ƯU TIÊN** |
-| `long_term_risk`  | Onset sau N năm, cohort longitudinal — **ƯU TIÊN (kho đang thiếu)** |
+| Horizon | Condition |
+|---------|-----------|
+| `cross_sectional` | Predicted from current features, no follow-up |
+| `early_detection` | Early detection / screening in undiagnosed individuals, prediabetes — **PRIORITY** |
+| `long_term_risk`  | Onset after N years, longitudinal cohort — **PRIORITY (currently underrepresented)** |
 
-## Ràng buộc cứng (lấy từ AGENTS.md §7)
-0. **Đúng scope §1**: phải là bài DỰ ĐOÁN đái tháo đường (tabular/EHR). Không phải → loại ngay.
-1. Citations ≥ 100 (>3y) hoặc ≥ 30 (1–3y) hoặc rising-star (>5 cite/tháng nếu <1y).
-2. Dataset public + license cho research.
-3. Có code reproducible hoặc mô tả method đủ chi tiết.
+## Hard Criteria (Derived from AGENTS.md §7)
+0. **Strict §1 Scope**: must be a diabetes PREDICTION paper (tabular/EHR). Otherwise → reject immediately.
+1. Citations ≥ 100 (>3y) or ≥ 30 (1–3y) or rising-star (>5 cite/month if <1y).
+2. Dataset public + licensed for research.
+3. Method reproducible with code or described in sufficient detail.
 
-## Cổng toàn vẹn (thêm 2026-09-21) — TRƯỚC khi tạo folder
+## Integrity Gates (Added 2026-09-21) — BEFORE Creating Folder
 
-Trước khi tạo `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`, PHẢI chạy đủ 3 kiểm tra:
+Before creating `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`, MUST run all 3 checks:
 
-### Kiểm tra 1: DOI phân giải qua CrossRef
+### Check 1: DOI Resolves via CrossRef
 ```bash
 curl -s "https://api.crossref.org/works/<DOI>" | python -c "
 import sys, json
@@ -55,14 +55,14 @@ print('doi:', m.get('DOI'))
 print('status: ok')
 "
 ```
-- Nếu CrossRef trả về `Resource not found` → ghi `integrity.doi_resolved: false`, KHÔNG tạo folder.
-- Đối chiếu title CrossRef vs title paper tìm được: khác lớn (>30% words) → cảnh báo.
+- If CrossRef returns `Resource not found` → record `integrity.doi_resolved: false`, DO NOT create folder.
+- Cross-check CrossRef title vs retrieved paper title: substantial divergence (>30% words) → raise warning.
 
-### Kiểm tra 2: Khớp title
-- Title từ CrossRef phải khớp phần lớn với title từ Semantic Scholar/PubMed.
-- Nếu khác → ghi `integrity.title_match: false`, cảnh báo user.
+### Check 2: Title Match
+- Title from CrossRef must substantially match title from Semantic Scholar/PubMed.
+- If divergent → record `integrity.title_match: false`, alert user.
 
-### Kiểm tra 3: Retraction / Correction check
+### Check 3: Retraction / Correction Check
 ```bash
 curl -s "https://api.crossref.org/works/<DOI>" | python -c "
 import sys, json
@@ -75,10 +75,10 @@ print('has_correction:', bool(corr))
 print('type:', m.get('type'))
 "
 ```
-- Nếu có `is-retraction-of` → KHÔNG tạo folder, ghi vào `01_Diabetes_Research/rejected.json` với `reason: retracted`.
-- Nếu có correction → tạo folder nhưng ghi `integrity.has_correction: true`.
+- If `is-retraction-of` is present → DO NOT create folder, record into `01_Diabetes_Research/rejected.json` with `reason: retracted`.
+- If correction is present → create folder but record `integrity.has_correction: true`.
 
-### Ghi vào metadata.json: field `integrity` (mới)
+### Record in metadata.json: Field `integrity` (New)
 ```json
 "integrity": {
   "doi_resolved": true,
@@ -90,29 +90,29 @@ print('type:', m.get('type'))
   "check_source": "crossref"
 }
 ```
-- Field `integrity` là field MỚI THÊM — không đụng field cũ, không phá webapp.
-- Nếu CrossRef không trả lời → ghi `integrity.doi_resolved: null`, `check_source: "unavailable"`.
+- The `integrity` field is NEWLY ADDED — does not modify existing fields, does not break webapp.
+- If CrossRef is unresponsive → record `integrity.doi_resolved: null`, `check_source: "unavailable"`.
 
 ---
 
-## Quy trình
-1. Đọc 4 layer trong `01_Diabetes_Research/chosed_papers/` để biết đang có gì → tránh trùng lặp.
-2. Đề xuất ≤ 5 paper mới mỗi lần, mỗi paper kèm:
-   - `paper_id` theo format `<lastname><year>_<3-word-slug>`
-   - Layer được gán + lý do (1 câu)
-   - `prediction_horizon` (1 trong 3) + lý do (1 câu)
-   - **ƯU TIÊN ĐẶC BIỆT** bài thuộc `early_detection` hoặc `long_term_risk`
-3. Chạy **cổng toàn vẹn** (3 bước trên) với mỗi paper đề xuất trước khi trình user.
-   Nếu kiểm tra thất bại → không đề xuất bài đó, thay thế bằng bài khác.
-4. Sau khi user duyệt, tạo folder và chạy pdf-fetch.
+## Procedure
+1. Inspect 4 layers in `01_Diabetes_Research/chosed_papers/` to know current holdings → prevent duplicates.
+2. Propose ≤ 5 new papers per batch, each paper including:
+   - `paper_id` in format `<lastname><year>_<3-word-slug>`
+   - Assigned Layer + rationale (1 sentence)
+   - `prediction_horizon` (1 of 3) + rationale (1 sentence)
+   - **SPECIAL PRIORITY** for papers belonging to `early_detection` or `long_term_risk`
+3. Run **integrity gates** (3 checks above) for every proposed paper before presenting to user.
+   If checks fail → do not propose paper, replace with another candidate.
+4. Upon user approval, create folder and execute pdf-fetch.
 
-## Khi không chắc Layer / horizon
-- Không chắc Layer → mặc định Layer 2, `layer_uncertain: true`.
-- Không chắc horizon → mặc định `cross_sectional`, `horizon_uncertain: true`.
+## When Uncertain on Layer / Horizon
+- Uncertain on Layer → default to Layer 2, `layer_uncertain: true`.
+- Uncertain on horizon → default to `cross_sectional`, `horizon_uncertain: true`.
 
-## Changelog cục bộ
+## Local Changelog
 
-| Ngày | Thay đổi | Người thực hiện |
-|------|---------|----------------|
-| 2026-09-21 | v2: Thêm cổng toàn vẹn (DOI phân giải, khớp title, retraction check qua CrossRef). Thêm field `integrity` vào metadata.json. Ưu tiên đề xuất early_detection + long_term_risk. | agent (chore/skills-upgrade) |
-| 2026-09-22 | fix: Khôi phục dấu tiếng Việt (mất do PowerShell Out-File CP437). Dùng Python UTF-8 write. | agent (fix/encoding) |
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-09-21 | v2: Added integrity gates (DOI resolution, title match, retraction check via CrossRef). Added `integrity` field to metadata.json. Prioritize early_detection + long_term_risk proposals. | agent (chore/skills-upgrade) |
+| 2026-09-22 | fix: Restored Vietnamese diacritics (lost due to PowerShell Out-File CP437). Use Python UTF-8 write. | agent (fix/encoding) |

@@ -32,7 +32,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/abnoosian2023_ensemble_multiclassifier/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/hennebelle2023_mlops_iot_diabetes/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "hennebelle2023_mlops_iot_diabetes",
@@ -43,7 +43,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/gr2024_random_oversampling_diabetes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/abnoosian2023_ensemble_multiclassifier/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "nnamoko2020_outliers_imbalance",
@@ -54,7 +54,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/gr2024_random_oversampling_diabetes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/abnoosian2023_ensemble_multiclassifier/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "olisah2022_preprocessing_ml_perspective",
@@ -65,7 +65,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/gr2024_random_oversampling_diabetes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_1_Pipeline_Nen_Tang/abnoosian2023_ensemble_multiclassifier/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "hasan2020_diabetes_prediction_ensembling",
@@ -76,7 +76,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/li2020_behrt_transformer_ehr/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label). Text từ OCR — METRIC CHÍNH phải đối chiếu source.pdf trước khi ghi."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method). Text from OCR — primary metric must be checked against source.pdf before recording."
   },
   {
     "id": "khanam2021_comparison_ml_pima",
@@ -87,7 +87,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/li2020_behrt_transformer_ehr/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "li2020_behrt_transformer_ehr",
@@ -98,7 +98,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = long_term_risk (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = long_term_risk (reconfirm from labeling method)."
   },
   {
     "id": "lu2021_patient_network_t2dm",
@@ -109,7 +109,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = early_detection (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = early_detection (reconfirm from labeling method)."
   },
   {
     "id": "naz2020_deep_learning_pima",
@@ -120,7 +120,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "rasmy2021_medbert_ehr",
@@ -131,7 +131,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = long_term_risk (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = long_term_risk (reconfirm from labeling method)."
   },
   {
     "id": "wang2020_xgboost_t2d_beijing",
@@ -142,7 +142,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "yang2021_bigdata_physical_exam_fusion",
@@ -153,7 +153,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/hasan2020_diabetes_prediction_ensembling/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_2_Model_Hieu_Qua/khanam2021_comparison_ml_pima/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = early_detection (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = early_detection (reconfirm from labeling method)."
   },
   {
     "id": "agliata2023_nhanes_mimic_ann",
@@ -164,7 +164,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/deberneh2021_korean_ehr_nextyear/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "deberneh2021_korean_ehr_nextyear",
@@ -175,7 +175,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = early_detection (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = early_detection (reconfirm from labeling method)."
   },
   {
     "id": "dinh2019_data_driven_nhanes",
@@ -186,7 +186,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/deberneh2021_korean_ehr_nextyear/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = early_detection (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = early_detection (reconfirm from labeling method)."
   },
   {
     "id": "fazakis2021_longterm_t2d_risk",
@@ -197,7 +197,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = long_term_risk (xác nhận lại từ cách lập label). Text từ OCR — METRIC CHÍNH phải đối chiếu source.pdf trước khi ghi."
+    "hint": "prediction_horizon already = long_term_risk (reconfirm from labeling method). Text from OCR — primary metric must be checked against source.pdf before recording."
   },
   {
     "id": "lai2019_predictive_models_diabetes",
@@ -208,7 +208,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = early_detection (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = early_detection (reconfirm from labeling method)."
   },
   {
     "id": "lugner2024_top_ten_predictors",
@@ -219,7 +219,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = long_term_risk (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = long_term_risk (reconfirm from labeling method)."
   },
   {
     "id": "nguyen2019_wide_deep_onset",
@@ -230,7 +230,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = long_term_risk (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = long_term_risk (reconfirm from labeling method)."
   },
   {
     "id": "zhang2020_henan_rural_cohort",
@@ -241,7 +241,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/dinh2019_data_driven_nhanes/summary.prev.json",
       "01_Diabetes_Research/searched_papers/Layer_3_Dataset_EHR/agliata2023_nhanes_mimic_ann/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "ahmed2024_lime_shap_comparison",
@@ -252,7 +252,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/tasin2022_diabetes_prediction_explainable/summary.json",
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/dharmarathne2024_self_explainable_interface/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label). Text từ OCR — METRIC CHÍNH phải đối chiếu source.pdf trước khi ghi."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method). Text from OCR — primary metric must be checked against source.pdf before recording."
   },
   {
     "id": "dharmarathne2024_self_explainable_interface",
@@ -263,7 +263,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/tasin2022_diabetes_prediction_explainable/summary.json",
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/ahmed2024_lime_shap_comparison/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label). Text từ OCR — METRIC CHÍNH phải đối chiếu source.pdf trước khi ghi."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method). Text from OCR — primary metric must be checked against source.pdf before recording."
   },
   {
     "id": "kaliappan2024_featsel_diverse_datasets",
@@ -274,7 +274,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/tasin2022_diabetes_prediction_explainable/summary.json",
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/ahmed2024_lime_shap_comparison/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   },
   {
     "id": "nipa2023_clinically_adaptable",
@@ -285,7 +285,7 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/tasin2022_diabetes_prediction_explainable/summary.json",
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/ahmed2024_lime_shap_comparison/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = early_detection (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = early_detection (reconfirm from labeling method)."
   },
   {
     "id": "xu2025_label_noise_local_explanation",
@@ -296,37 +296,37 @@ const PAPERS = [
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/tasin2022_diabetes_prediction_explainable/summary.json",
       "01_Diabetes_Research/searched_papers/Layer_4_XAI_Trien_Khai/ahmed2024_lime_shap_comparison/summary.prev.json"
     ],
-    "hint": "prediction_horizon đã có = cross_sectional (xác nhận lại từ cách lập label)."
+    "hint": "prediction_horizon already = cross_sectional (reconfirm from labeling method)."
   }
 ]
 
 phase('Analyze')
 
 const out = await parallel(PAPERS.map((p) => () => agent(
-  `Ban la paper-analyzer. Phan tich SAU bai "${p.id}" (Layer ${p.layer}, ${p.pages} trang) va GHI FILE.
+  `You are paper-analyzer. Deeply analyze paper "${p.id}" (Layer ${p.layer}, ${p.pages} pages) and WRITE FILES.
 
-DOC (bat buoc, doc HET extracted.md khong chi abstract):
-1. ${p.dir}/extracted.md   - full text ban trich MOI (chuan bang). Day la nguon so lieu.
-2. ${p.dir}/extraction_report.json - doc canh bao QA (garbled tables, OCR...).
-3. .claude/skills/paper-analyzer/SKILL.md - quy trinh + yeu cau "di SAU".
-4. ${TEMPLATE} - template HTML 8 khoi A6 (cau truc CHOT, khong doi).
-5. ${EXAMPLE} - 1 analysis.html mau da render dung layout (tham khao style, KHONG copy so).
+READ (mandatory, read ENTIRE extracted.md, not just abstract):
+1. ${p.dir}/extracted.md   - full text of NEW extraction (table-accurate). This is the source of metrics.
+2. ${p.dir}/extraction_report.json - review QA warnings (garbled tables, OCR...).
+3. .claude/skills/paper-analyzer/SKILL.md - procedure + deep analysis requirements.
+4. ${TEMPLATE} - 8-block A6 HTML template (FINALIZED structure, do not change).
+5. ${EXAMPLE} - 1 rendered sample analysis.html with correct layout (refer to style, DO NOT copy numbers).
 6. metadata: ${p.dir}/metadata.json
-7. baseline cung layer (de so sanh, field "vs_baseline"): ${p.baselines.join(', ')}
+7. baselines in same layer (for comparison, field "vs_baseline"): ${p.baselines.join(', ')}
 
-GOI Y RIENG BAI NAY: ${p.hint}
+HINT FOR THIS PAPER: ${p.hint}
 
-GHI 3 FILE (ghi de truc tiep, KHONG tao v2 - ban cu da duoc backup san):
-A. ${p.dir}/analysis.html - DUNG 8 KHOI A6 theo template, dung thu tu, Compare Card du 4 field co dinh.
-   - Tieng Viet, giu thuat ngu EN trong ngoac. Self-contained: inline CSS + inline SVG, KHONG CDN, KHONG external image.
-   - Header co badge Horizon lay tu prediction_horizon.
-   - Section 7 (Ket qua): MOI metric phai ghi nguon "Table X / Fig Y / Section Z" cua bai. Thieu so -> UNKNOWN, TUYET DOI KHONG bia.
-   - Hinh crop PDF embed base64 la TUY CHON (bo qua neu khong kha thi) - uu tien so DUNG tu bang + formula block.
-B. ${p.dir}/summary.json - dung schema 15 key cua SKILL (paper_id, layer, prediction_horizon, contribution, method, best_metric, datasets, has_code, code_url, reproducible, vs_baseline, gap, verdict, verdict_reason, analyzed_at). analyzed_at de chuoi ISO "2026-06-22".
-C. ${p.dir}/metadata.json - cap nhat: analysis_status="analyzed", status giu/dat phu hop, dien prediction_horizon, va neu doc full thay lech dataset/method/code so voi metadata cu thi ghi vao field "corrections".
+WRITE 3 FILES (overwrite directly, DO NOT create v2 - backups already created):
+A. ${p.dir}/analysis.html - EXACT 8 A6 BLOCKS per template, exact order, Compare Card with 4 fixed fields.
+   - Vietnamese, keep EN terms in parentheses. Self-contained: inline CSS + inline SVG, NO CDN, NO external images.
+   - Header has Horizon badge taken from prediction_horizon.
+   - Section 7 (Results): EVERY metric must cite paper source "Table X / Fig Y / Section Z". Missing numbers -> UNKNOWN, STRICTLY NO fabrication.
+   - PDF cropped images embedded as base64 are OPTIONAL (skip if not feasible) - prioritize ACCURATE numbers from tables + formula block.
+B. ${p.dir}/summary.json - exact 15-key schema of SKILL (paper_id, layer, prediction_horizon, contribution, method, best_metric, datasets, has_code, code_url, reproducible, vs_baseline, gap, verdict, verdict_reason, analyzed_at). analyzed_at set to ISO string "2026-06-22".
+C. ${p.dir}/metadata.json - update: analysis_status="analyzed", keep/set appropriate status, fill prediction_horizon, and if full text differs from old metadata for dataset/method/code, record in "corrections" field.
 
-RANG BUOC: KHONG dung 01_Diabetes_Research/chosed_papers/. KHONG bia so. Doc so truc tiep tu extracted.md (doi chieu source.pdf khi bai la OCR hoac bang garbled).
-Tra ve JSON theo schema (best_metric kem dataset+nguon; caveats = ghi chu quan trong neu co).`,
+CONSTRAINTS: DO NOT touch 01_Diabetes_Research/chosed_papers/. DO NOT fabricate numbers. Read numbers directly from extracted.md (verify against source.pdf when paper has OCR or garbled tables).
+Return JSON per schema (best_metric with dataset+source; caveats = important notes if any).`,
   { label: `analyze:${p.id}`, schema: RET },
 )))
 

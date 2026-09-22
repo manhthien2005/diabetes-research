@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-Token-free guardrail cho bản dịch song ngữ: so extracted.vi.md vs extracted.md.
+Token-free guardrail for bilingual translation: compare extracted.vi.md vs extracted.md.
 
-Mục tiêu: bảo đảm bản dịch GIỮ NGUYÊN cấu trúc để web canh mục EN|VN 1:1 và
-KHÔNG mất/sai số liệu. Kiểm 3 thứ mỗi bài:
-  1. Số heading (dòng bắt đầu #..######) khớp nhau.
-  2. Số hàng bảng (dòng dạng | ... |) khớp nhau.
-  3. Phủ số (number coverage): mọi CON SỐ trong bản EN phải xuất hiện ở bản VI
-     (không mất dữ liệu). Báo số bị thiếu ở VI và số "dư" ở VI (nghi thêm/bịa).
+Goal: ensure translation PRESERVES 1:1 structure so web can align EN|VN side-by-side
+and DOES NOT lose or alter figures. Checks 3 items per paper:
+  1. Heading count (#..###### line starts) matches.
+  2. Table row count (| ... | lines) matches.
+  3. Number coverage: every NUMBER in EN version must appear in VI version
+     (no data loss). Flags missing numbers in VI and extraneous numbers in VI (suspicion of additions/hallucinations).
 
-Bài OCR (theo extraction_report.json ocr_used=True) được hạ FAIL->WARN ở phần
-số (OCR có thể nhiễu chữ-số; agent đã đối chiếu source.pdf).
+OCR papers (per extraction_report.json ocr_used=True) are downgraded from FAIL to WARN
+for numbers (OCR may introduce digit-character noise; agent verified against source.pdf).
 
-Dùng:
+Usage:
   python .agents/skills/pdf-extract/translate_check.py [--root 01_Diabetes_Research/searched_papers] [--only <substr>]
-Exit 0 nếu không có FAIL, 1 nếu có.
+Exit code 0 if no FAIL, 1 if any FAIL.
 """
 import sys, re, json, argparse
 from pathlib import Path
@@ -24,12 +24,12 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 HDR_RE = re.compile(r"^<!-- extracted by pdf-extract \|.*?-->\s*", re.S)
 HEAD_RE = re.compile(r"^#{1,6}\s", re.M)
 TBL_RE = re.compile(r"^\s*\|.*\|\s*$", re.M)
-# Số: chuỗi chữ số có thể kèm '.' thập phân; dấu phẩy/space = ranh giới ->
-# "0.789,0.934" tách 2 token, khớp với bản VI "0.789, 0.934".
+# Number: digit sequence optionally containing decimal '.'; comma/space = boundary ->
+# "0.789,0.934" splits into 2 tokens, matching VI version "0.789, 0.934".
 NUM_RE = re.compile(r"\d+(?:\.\d+)?")
 COVERAGE_MIN = 0.95
-# Chữ cái riêng của tiếng Việt (có dấu). Bản dịch thật đặc dấu (đo được 19-25%);
-# bản EN nguyên si ~0%. Ngưỡng 8% bắt lỗi "copy nguyên văn không dịch".
+# Vietnamese-specific letters (with diacritics). Real translations are dense in diacritics (19-25% measured);
+# untouched EN source ~0%. Threshold 8% catches "verbatim copy without translation".
 VIET_CHARS = set("ăâđêôơưáàảãạắằẳẵặấầẩẫậéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ")
 VIET_MIN = 0.08
 
@@ -37,7 +37,7 @@ VIET_MIN = 0.08
 def viet_ratio(text):
     letters = [c for c in text.lower() if c.isalpha()]
     if not letters:
-        return 1.0  # không có chữ (toàn bảng/số) -> không phạt
+        return 1.0  # no alphabetic characters (tables/numbers only) -> do not penalize
     return sum(1 for c in letters if c in VIET_CHARS) / len(letters)
 
 
@@ -46,7 +46,7 @@ def strip_hdr(p):
 
 
 def numset(text):
-    # bỏ chú thích citation [..] sẽ vẫn giữ số bên trong (cố ý: số trang/ref cũng phải giữ)
+    # stripping citation [..] annotations still keeps internal numbers (intentional: page/ref numbers must be preserved)
     return set(NUM_RE.findall(text))
 
 
@@ -56,7 +56,7 @@ def check(d):
     if not en_p.exists():
         return ["no extracted.md"], warns, info
     if not vi_p.exists():
-        return ["no extracted.vi.md (chưa dịch)"], warns, info
+        return ["no extracted.vi.md (not translated)"], warns, info
     en, vi = strip_hdr(en_p), strip_hdr(vi_p)
     ocr = bool((_jload(d / "extraction_report.json") or {}).get("ocr_used"))
 
@@ -64,28 +64,28 @@ def check(d):
     te, tv = len(TBL_RE.findall(en)), len(TBL_RE.findall(vi))
     info.update(headings=f"{he}/{hv}", tables=f"{te}/{tv}")
 
-    # Văn xuôi có thật sự là tiếng Việt? (bắt lỗi copy nguyên văn EN, không dịch).
+    # Is prose genuinely in Vietnamese? (catches verbatim copy of EN without translation).
     vr = viet_ratio(vi)
     info["viet"] = f"{vr*100:.0f}%"
     if vr < VIET_MIN:
         issues.append(
-            f"viet ratio quá thấp {vr*100:.1f}% (<{VIET_MIN*100:.0f}%) — nghi CHƯA dịch / copy nguyên văn EN")
+            f"viet ratio too low {vr*100:.1f}% (<{VIET_MIN*100:.0f}%) — suspected untranslated / verbatim copy of EN")
     if he != hv:
-        (warns if ocr else issues).append(f"heading count lệch EN={he} VI={hv}")
+        (warns if ocr else issues).append(f"heading count mismatch EN={he} VI={hv}")
     if te != tv:
-        (warns if ocr else issues).append(f"table-row count lệch EN={te} VI={tv}")
+        (warns if ocr else issues).append(f"table-row count mismatch EN={te} VI={tv}")
 
     en_n, vi_n = numset(en), numset(vi)
-    missing = en_n - vi_n            # số EN biến mất ở VI = mất dữ liệu
-    extra = vi_n - en_n              # số VI không có ở EN = nghi thêm/bịa
+    missing = en_n - vi_n            # EN numbers missing in VI = data loss
+    extra = vi_n - en_n              # VI numbers not in EN = suspected addition/hallucination
     cov = 1.0 if not en_n else len(en_n & vi_n) / len(en_n)
     info["num_coverage"] = f"{cov:.3f} ({len(en_n & vi_n)}/{len(en_n)})"
     if cov < COVERAGE_MIN:
-        tag = "num coverage thấp %.3f; thiếu ở VI(mẫu): %s" % (
+        tag = "num coverage low %.3f; missing in VI (sample): %s" % (
             cov, sorted(missing, key=lambda x: (len(x), x))[:12])
         (warns if ocr else issues).append(tag)
     if len(extra) > max(8, int(0.10 * (len(en_n) or 1))):
-        warns.append("VI có %d số không thấy ở EN (nghi thêm): %s" % (
+        warns.append("VI has %d numbers not found in EN (suspected additions): %s" % (
             len(extra), sorted(extra, key=lambda x: (len(x), x))[:10]))
     return issues, warns, info
 
@@ -122,7 +122,7 @@ def main():
         for w in warns:
             print("       ! " + w)
 
-    print("\n%d papers | %d có bản VI | %d FAIL" % (len(dirs), n_vi, n_fail))
+    print("\n%d papers | %d with VI version | %d FAIL" % (len(dirs), n_vi, n_fail))
     sys.exit(1 if n_fail else 0)
 
 
