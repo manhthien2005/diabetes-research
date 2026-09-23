@@ -25,7 +25,7 @@
 |-------|----------------------------|---------------------|
 | design-study | Gate leakage + cohort design + validation strategy for tabular ML | Added Changelog, R5B tabular ML discovery & context-first routine autonomy |
 | analyze-stats | Reproducible statistics, separation checks | Added Changelog, R5A runtime path portability, R5B context-first routine autonomy & optional routes |
-| radiomics-ml | Learner-agnostic gates ONLY (nested CV, calibration) — skip pyradiomics/IBSI | Added Changelog, R5B tabular clinical-ML discovery rebalancing |
+| prediction-model-rigor | Repository-native clinical tabular prediction-model rigor (nested CV, fold-safe preprocessing, calibration, DCA, validation, NHANES survey profile) | Derived fork from upstream radiomics-ml (commit d7df514); retired pyradiomics/IBSI/imaging; R6 tabular rigor contract |
 | check-reporting | TRIPOD+AI, PROBAST+AI checklists | Added Changelog, R5A runtime path portability, R5B prediction-model discovery & optional routes |
 | verify-refs | Verify DOI, claim fidelity via PubMed/CrossRef | Email patch + Changelog, R5A runtime portability + /pdf-fetch mapping, R5B optional-route hardening |
 | self-review | Self-critique of Paper_01 manuscript draft | Added Changelog, R5A runtime portability + local target remap, R5B context-first autonomy & optional routes |
@@ -71,6 +71,13 @@
    - Context-first routine autonomy: Streamlined intake and reversible execution in analyze-stats, design-study, and self-review to infer available context from repository documents and proceed without redundant blocking questions for reversible analysis tasks.
    - Optional companion route hardening: Explicitly declared unavailable upstream companion workflows (/search-lit, /lit-sync, /manage-refs, /sync-submission, /write-paper, /revise, /orchestrate, /find-journal) as optional companion integrations with standalone continuations; no false local equivalence claimed.
    - Scientific and integrity gates preserved: All scientific methodology, CP1-CP6, O11, EQ0-EQ6, G1-G10, leakage definitions, nested CV, calibration, package-installation confirmations, clinical variable definition gates, SSOT singularity, and reference verification gates (FABRICATED blocks submission, UNVERIFIED requires user confirmation) strictly preserved.
+8. Round 6 (R6) prediction-model-rigor repository-native transformation:
+   - Derived fork provenance: `prediction-model-rigor` is a repository-native skill derived from the generic model-validation rigor portions of upstream `radiomics-ml` (upstream repo: https://github.com/Aperivue/medsci-skills, commit `d7df5142971efe58ef40b1986711fabc50ebc6ec`, MIT License). Upstream identity is preserved for historical provenance without claiming the renamed skill exists upstream.
+   - Imaging/radiomics retirement: Fully retired pyradiomics, IBSI, ROI, segmentation, voxel, scanner, phantom, and deep-imaging requirements from the active skill, aligning strictly with repository scope (clinical tabular diabetes prediction on EHR/NHANES/public-health cohorts).
+   - Preserved generic model rigor: Retained nested cross-validation, fold-isolated preprocessing (imputation, scaling, encoding), in-fold feature selection, in-fold resampling/balancing, calibration (intercept, slope, curve, Brier score), decision-curve analysis (DCA), and external/temporal validation.
+   - Clinical tabular safeguards added: Missing-data contract (skip-pattern vs ordinary missingness, no outcome imputation, fold-safe), event sufficiency & model complexity (no universal EPV>=10 rule; explicit parameter/sample justification), transparent baseline comparators (penalized logistic, established risk scores like FINDRISC/ADA Diabetes Risk Test only when reproducible definitions exist; no silent approximation), threshold selection (prespecified or inner loop only; never tuned on final test/external), class imbalance evaluation without pre-split resampling, and NHANES complex-survey profile (strata, PSU, weights, pooling rules; target estimand/population justification; no universal weighting rule; no PSU/strata as features).
+   - Causal claim boundaries: Explicitly declared that model coefficients, feature importance, and SHAP values are predictive associations, not causal effects.
+   - Deterministic manifest & gate: Upgraded manifest schema and `check_prediction_model_rigor.py` with tabular clinical gates and automated regression test suite.
 
 ---
 

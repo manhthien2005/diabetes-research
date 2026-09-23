@@ -1,0 +1,16 @@
+{
+  "task": "classification",
+  "n_features": 1200,
+  "n_samples": 140,
+  "n_events": 40,
+  "cv_scheme": "flat",
+  "feature_selection_stage": "outside_cv",
+  "preprocessing_stage": "outside_cv",
+  "resampling_stage": "outside_cv",
+  "threshold_tuning_stage": "tuned_on_test",
+  "dimensionality_reduction": false,
+  "calibration_reported": false,
+  "external_validation": "none",
+  "baseline_comparator": "none",
+  "model": "xgboost"
+}

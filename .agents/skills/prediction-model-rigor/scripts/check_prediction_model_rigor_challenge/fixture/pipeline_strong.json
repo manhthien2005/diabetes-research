@@ -1,0 +1,17 @@
+{
+  "task": "classification",
+  "n_features": 18,
+  "n_samples": 3000,
+  "n_events": 450,
+  "cv_scheme": "nested",
+  "feature_selection_stage": "inside_cv",
+  "preprocessing_stage": "inside_cv",
+  "resampling_stage": "none",
+  "threshold_tuning_stage": "inner_cv",
+  "dimensionality_reduction": true,
+  "calibration_reported": true,
+  "external_validation": "temporal",
+  "external_validation_type": "temporal_cohort",
+  "baseline_comparator": "logistic_regression",
+  "model": "random_forest"
+}

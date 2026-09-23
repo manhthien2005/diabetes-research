@@ -1,0 +1,17 @@
+===============================================================
+ Clinical Prediction-Model Rigor Gate (prediction-model-rigor)
+===============================================================
+  model=xgboost  n_features=1200  n_samples=140  n_events=40  cv_scheme=flat
+| Check | Severity | Detail |
+|---|---|---|
+| NO_NESTED_CV | Major | flat CV ('flat') tunes and reports on the same folds; use nested cross-validation or a strictly held-out test set so tuning does not inflate reported performance |
+| SELECTION_OUTSIDE_CV | Major | feature selection is fit outside the CV fold (on the pooled dataset), leaking validation folds into selection; nest selection inside each training fold |
+| PREPROCESSING_LEAKAGE | Major | data-driven preprocessing (imputation/scaling/encoding) is fit outside CV on the entire dataset; all transformers must be fit strictly on training folds |
+| IMBALANCE_RESAMPLING_OUTSIDE_CV | Major | class-imbalance resampling (e.g. SMOTE) is applied before fold splitting; resampling must occur strictly inside training folds to preserve natural evaluation prevalence |
+| THRESHOLD_TUNED_ON_TEST | Major | classification decision threshold is tuned or selected on the test or external validation set; thresholds must be prespecified clinically or tuned strictly within inner training folds |
+| HIGH_DIM_LOW_EVENTS | Major | 1200 candidate features vs 40 events (p >= events) with no dimensionality reduction or regularisation; apply regularized regression (LASSO/Elastic Net) or in-fold feature selection to prevent extreme optimism |
+| NO_CALIBRATION | Minor | clinical prediction model is reported without calibration (slope/intercept, Brier score, or calibration curve), evaluating only discrimination |
+| NO_EXTERNAL_VALIDATION | Minor | single-cohort development with no external or temporal validation; clinical claims must be qualified as development-only |
+| NO_BASELINE_COMPARATOR | Minor | complex model reported without benchmarking against a transparent baseline (e.g. penalized logistic regression); incremental utility over standard clinical predictors is unverified |
+
+MAJOR candidate: 6 prediction-model rigor issue(s).

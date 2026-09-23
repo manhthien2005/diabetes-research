@@ -1,0 +1,50 @@
+schema_version: 2
+name: prediction-model-rigor
+layer: D
+owner_domain: model_validation
+maturity: official
+
+when_to_use: "Produce or audit a clinical tabular prediction-model pipeline (features → penalized logistic / random forest / XGBoost / LightGBM / CatBoost → clinical outcome) for diabetes, NHANES, EHR, or public-health cohorts so it clears the rigor bar expected by reviewers: nested cross-validation (tuning never on reported folds), fold-isolated preprocessing and imputation, feature selection inside the fold, calibration assessment (slope, intercept, curves), baseline comparators, and external or temporal validation. Emits a pipeline manifest and a deterministic rigor gate. Supports model development planning, pipeline audit, result review, or pre-submission assessment."
+when_NOT_to_use: "Deep-learning computer vision or medical-imaging models; classical inferential statistics or regression models as the primary estimand (use analyze-stats); LLM/MLLM evaluation; item-by-item reporting-guideline audit of a finished manuscript (use check-reporting — TRIPOD+AI / PROBAST-AI / STROBE); reviewer critique of manuscript prose (use self-review / peer-review); reimplementing scikit-learn / xgboost (out of scope — this skill wires and audits them)."
+
+inputs:
+  - "a tabular feature table (clinical/EHR/survey data) with a patient/cluster ID and clinical outcome"
+  - "the intended model (penalized logistic / random forest / XGBoost / LightGBM / CatBoost) and validation plan"
+  - "resampling design, preprocessing sequence, missing-data strategy, and complex-survey design metadata if applicable"
+outputs:
+  - "a pipeline manifest (JSON: task_type, n_samples, n_events, n_features, cv_scheme, preprocessing_stage, feature_selection_stage, calibration, external_validation, survey_design)"
+  - "fold-safe cross-validation training code (scikit-learn / imblearn / xgboost) with in-fold preprocessing, calibration, and clinical utility"
+  - "prediction-model pipeline-rigor audit JSON (deterministic) + TRIPOD+AI / PROBAST-AI reporting fit"
+deterministic_scripts:
+  - scripts/check_prediction_model_rigor.py
+side_effects:
+  - writes_decision_notes
+downstream_consumers:
+  - analyze-stats
+  - check-reporting
+  - design-study
+  - peer-review
+  - self-review
+forbidden_actions:
+  - fabricate_features_performance_metrics_or_sample_counts
+  - report_flat_cv_performance_as_if_nested_or_held_out
+  - approve_a_pipeline_with_preprocessing_or_selection_fit_outside_the_cv_fold
+  - tune_classification_threshold_on_test_or_external_validation_set
+  - claim_external_validation_from_a_random_split_of_the_same_source_cohort
+  - assert_causal_effects_from_feature_importance_or_shap_values
+  - report_a_rigor_audit_pass_without_running_the_detector
+  - reimplement_scikit_learn_xgboost_or_statsmodels
+
+# v2.1 quality card
+purpose: "Stop over-optimistic clinical tabular prediction models — preprocessing and selection outside CV, flat-CV hyperparameter tuning, uncalibrated models, test-set threshold tuning, and mislabeled validation — from reaching clinical manuscripts."
+safety_boundaries:
+  - "Advisory plus deterministic-audit only: never alters features, metrics, or sample counts."
+  - "The rigor verdict is reproduced by a stdlib script (rule on the pipeline manifest), never asserted from prose."
+  - "Integrates scikit-learn / xgboost / lightgbm / catboost by reference; it does not reimplement them and never runs a model on real patient data without user command."
+known_limitations:
+  - "Audits the declared pipeline manifest, not arbitrary unexecuted Python code; complements self-review / check_cv_leakage which audits manuscript text."
+  - "A clean pipeline audit is necessary, not sufficient — external validation and clinical-utility evidence still govern the clinical claim."
+validation_commands:
+  - "python3 scripts/check_prediction_model_rigor.py --manifest <pipeline_manifest.json> --strict"
+  - "bash scripts/check_prediction_model_rigor_challenge/verify.sh  # deterministic, network-free"
+evidence_surface: ci_validator

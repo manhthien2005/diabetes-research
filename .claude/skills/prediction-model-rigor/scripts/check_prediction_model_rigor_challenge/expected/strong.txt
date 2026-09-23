@@ -1,0 +1,9 @@
+===============================================================
+ Clinical Prediction-Model Rigor Gate (prediction-model-rigor)
+===============================================================
+  model=random_forest  n_features=18  n_samples=3000  n_events=450  cv_scheme=nested
+| Check | Severity | Detail |
+|---|---|---|
+| (none) | — | prediction-model pipeline meets the rigor bar |
+
+OK: prediction-model pipeline meets the rigor bar.

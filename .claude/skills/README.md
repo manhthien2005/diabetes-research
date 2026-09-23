@@ -8,7 +8,7 @@ This directory contains skills available in Claude environments for this reposit
 - **Managed Research Skills Manifest**: [`scripts/skills/research_skills_manifest.json`](../../scripts/skills/research_skills_manifest.json)
 - **Authoritative Provenance Lock File**: [`.agents/skills/SKILLS_LOCK.md`](../../.agents/skills/SKILLS_LOCK.md)
 
-The 13 managed research skills (`analyze-stats`, `check-reporting`, `design-study`, `paper-analyzer`, `paper-comparator`, `paper-finder`, `pdf-extract`, `pdf-fetch`, `peer-review`, `polish-language`, `radiomics-ml`, `self-review`, and `verify-refs`) located under `.claude/skills/` are **generated compatibility mirrors**.
+The 13 managed research skills (`analyze-stats`, `check-reporting`, `design-study`, `paper-analyzer`, `paper-comparator`, `paper-finder`, `pdf-extract`, `pdf-fetch`, `peer-review`, `polish-language`, `prediction-model-rigor`, `self-review`, and `verify-refs`) located under `.claude/skills/` are **generated compatibility mirrors**.
 
 **IMPORTANT**: Do not directly edit managed research skill directories in `.claude/skills/`. All edits must be made to the canonical source files under `.agents/skills/`.
 
