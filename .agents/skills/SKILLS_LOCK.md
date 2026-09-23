@@ -23,6 +23,7 @@
 
 | Skill | Purpose in Research Project | Local Modifications |
 |-------|----------------------------|---------------------|
+| define-variables | Repository-native clinical tabular variable operationalization and leakage contract | Repository-native (Round 8); source-first codebook binding, units, coding, missingness, timing, outcome labels, prediction horizon, clinical score integrity, deterministic validator |
 | design-study | Gate leakage + cohort design + validation strategy for tabular ML | Added Changelog, R5B tabular ML discovery & context-first routine autonomy |
 | analyze-stats | Reproducible statistics, separation checks | Added Changelog, R5A runtime path portability, R5B context-first routine autonomy & optional routes |
 | prediction-model-rigor | Repository-native clinical tabular prediction-model rigor (nested CV, fold-safe preprocessing, calibration, DCA, validation, NHANES survey profile) | Derived fork from upstream radiomics-ml (commit d7df514); retired pyradiomics/IBSI/imaging; R6 tabular rigor contract |
@@ -43,7 +44,6 @@
 | manage-refs | Concurrently with write-paper |
 | make-figures | Concurrently with write-paper |
 | find-journal | When Table 3 is completed (M2) |
-| define-variables | When T1.3 begins |
 
 ---
 
@@ -78,6 +78,12 @@
    - Clinical tabular safeguards added: Missing-data contract (skip-pattern vs ordinary missingness, no outcome imputation, fold-safe), event sufficiency & model complexity (no universal EPV>=10 rule; explicit parameter/sample justification), transparent baseline comparators (penalized logistic, established risk scores like FINDRISC/ADA Diabetes Risk Test only when reproducible definitions exist; no silent approximation), threshold selection (prespecified or inner loop only; never tuned on final test/external), class imbalance evaluation without pre-split resampling, and NHANES complex-survey profile (strata, PSU, weights, pooling rules; target estimand/population justification; no universal weighting rule; no PSU/strata as features).
    - Causal claim boundaries: Explicitly declared that model coefficients, feature importance, and SHAP values are predictive associations, not causal effects.
    - Deterministic manifest & gate: Upgraded manifest schema and `check_prediction_model_rigor.py` with tabular clinical gates and automated regression test suite.
+9. Round 8 (R8) define-variables repository-native variable operationalization skill:
+   - Repository-native implementation: `define-variables` is an original repository-native skill (not imported from Aperivue medsci-skills). It enforces `docs/agent/VARIABLE_CONTRACT.md` and `docs/agent/schemas/variable_definition.schema.json`.
+   - Operationalization scope: Converts dataset variables, questionnaire items, and clinical concepts into explicit, source-backed, leakage-aware definitions before modeling or analysis across NHANES, EHR, and other clinical tabular datasets.
+   - Invariant enforcement: Distinguishes canonical concepts from cycle-specific source variables, verifies timing (post-index leakage prevention), units, categorical coding, missing sentinels (e.g., 7777/9999), skip logic, outcome label construction, and prediction horizons (cross_sectional, early_detection, long_term_risk).
+   - Score integrity & survey design: Prohibits mislabeling proxy clinical risk scores as validated official scores (FINDRISC, ADA Diabetes Risk Test); prevents survey design variables (weights, strata, PSUs) from being fed as ordinary predictive features.
+   - Deterministic validation: Bundled `scripts/validate_variable_registry.py` and regression test suite.
 
 ---
 

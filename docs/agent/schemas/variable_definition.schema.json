@@ -1,0 +1,410 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VariableDefinitionRegistry",
+  "description": "Canonical machine-readable variable registry contract for clinical tabular research, operationalization, and data leakage prevention",
+  "type": "object",
+  "required": [
+    "study_id",
+    "dataset",
+    "registry_version",
+    "definitions"
+  ],
+  "properties": {
+    "study_id": {
+      "type": "string",
+      "description": "Identifier of the research study or paper (e.g., Paper_01_NHANES_NoLab)"
+    },
+    "dataset": {
+      "type": "string",
+      "description": "Primary dataset name or family (e.g., NHANES, BRFSS, MIMIC-IV)"
+    },
+    "registry_version": {
+      "type": "string",
+      "description": "Semantic version or date-stamped revision of this variable registry"
+    },
+    "prediction_horizon": {
+      "type": ["string", "null"],
+      "enum": [
+        "cross_sectional",
+        "early_detection",
+        "long_term_risk",
+        null
+      ],
+      "description": "Study-level prediction horizon per AGENTS.md §3b"
+    },
+    "definitions": {
+      "type": "array",
+      "description": "List of operationalized variable definitions",
+      "items": {
+        "$ref": "#/definitions/VariableDefinition"
+      }
+    }
+  },
+  "definitions": {
+    "VariableDefinition": {
+      "type": "object",
+      "required": [
+        "canonical_name",
+        "role",
+        "concept",
+        "source_bindings",
+        "timing",
+        "unit",
+        "coding",
+        "missingness",
+        "derivation",
+        "verification",
+        "leakage_assessment"
+      ],
+      "properties": {
+        "canonical_name": {
+          "type": "string",
+          "description": "Standardized canonical variable name in snake_case (e.g., age_years, fasting_glucose_mg_dl)"
+        },
+        "role": {
+          "type": "string",
+          "description": "Primary epidemiological and modeling role of the variable",
+          "enum": [
+            "predictor",
+            "outcome",
+            "label_component",
+            "exclusion",
+            "identifier",
+            "survey_weight",
+            "survey_strata",
+            "survey_psu",
+            "time_anchor",
+            "auxiliary"
+          ]
+        },
+        "concept": {
+          "type": "string",
+          "description": "Clinical or physiological concept description"
+        },
+        "prediction_horizon": {
+          "type": ["string", "null"],
+          "enum": [
+            "cross_sectional",
+            "early_detection",
+            "long_term_risk",
+            null
+          ],
+          "description": "Prediction horizon for predictive outcomes per AGENTS.md §3b"
+        },
+        "source_bindings": {
+          "type": "array",
+          "description": "Source variable bindings across dataset releases or survey cycles",
+          "items": {
+            "$ref": "#/definitions/SourceBinding"
+          }
+        },
+        "timing": {
+          "$ref": "#/definitions/TimingContract"
+        },
+        "unit": {
+          "$ref": "#/definitions/UnitContract"
+        },
+        "coding": {
+          "$ref": "#/definitions/CodingContract"
+        },
+        "missingness": {
+          "$ref": "#/definitions/MissingnessContract"
+        },
+        "derivation": {
+          "$ref": "#/definitions/DerivationContract"
+        },
+        "verification": {
+          "$ref": "#/definitions/VerificationContract"
+        },
+        "leakage_assessment": {
+          "$ref": "#/definitions/LeakageContract"
+        },
+        "score_integrity": {
+          "$ref": "#/definitions/ClinicalScoreIntegrity"
+        }
+      }
+    },
+    "SourceBinding": {
+      "type": "object",
+      "required": [
+        "source_name",
+        "source_reference"
+      ],
+      "properties": {
+        "dataset": {
+          "type": ["string", "null"],
+          "description": "Specific dataset or cohort identifier"
+        },
+        "cycle": {
+          "type": ["string", "null"],
+          "description": "Survey cycle or cohort year (e.g., 1999-2000, 2017-2018)"
+        },
+        "source_name": {
+          "type": "string",
+          "description": "Exact column or field name in the raw dataset file (e.g., RIDAGEYR, LBXGLU)"
+        },
+        "source_label": {
+          "type": ["string", "null"],
+          "description": "Verbatim descriptive label from raw codebook or dataset metadata"
+        },
+        "source_reference": {
+          "$ref": "#/definitions/SourceReference"
+        }
+      }
+    },
+    "SourceReference": {
+      "type": "object",
+      "required": [
+        "type",
+        "title"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of reference (e.g., codebook, questionnaire, laboratory_procedure_manual, clinical_guideline, publication, project_frozen_definition)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title or descriptive label of the authoritative source document"
+        },
+        "url_or_identifier": {
+          "type": ["string", "null"],
+          "description": "Direct URL, DOI, or accession identifier for the documentation"
+        },
+        "location": {
+          "type": ["string", "null"],
+          "description": "Exact section, table, question ID, or variable entry in the document"
+        },
+        "accessed_or_verified_date": {
+          "type": ["string", "null"],
+          "description": "ISO-8601 date when the documentation was accessed or verified"
+        }
+      }
+    },
+    "TimingContract": {
+      "type": "object",
+      "required": [
+        "availability",
+        "index_time_definition",
+        "measurement_window"
+      ],
+      "properties": {
+        "availability": {
+          "type": "string",
+          "description": "Availability relative to decision or index time t0",
+          "enum": [
+            "pre_index",
+            "at_index",
+            "post_index",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "index_time_definition": {
+          "type": ["string", "null"],
+          "description": "Explicit definition of index time t0 for this variable"
+        },
+        "measurement_window": {
+          "type": ["string", "null"],
+          "description": "Temporal measurement window relative to index time (e.g., baseline exam, 12 months prior to t0)"
+        }
+      }
+    },
+    "UnitContract": {
+      "type": "object",
+      "required": [
+        "source_unit",
+        "analysis_unit",
+        "conversion"
+      ],
+      "properties": {
+        "source_unit": {
+          "type": ["string", "null"],
+          "description": "Raw measurement unit documented in source codebook"
+        },
+        "analysis_unit": {
+          "type": ["string", "null"],
+          "description": "Standardized measurement unit used in statistical analysis or modeling"
+        },
+        "conversion": {
+          "type": ["string", "object", "null"],
+          "description": "Mathematical formula, conversion factor, or null if source_unit matches analysis_unit"
+        }
+      }
+    },
+    "CodingContract": {
+      "type": "object",
+      "required": [
+        "type",
+        "source_codes",
+        "analysis_mapping"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Data type of the variable",
+          "enum": [
+            "continuous",
+            "binary",
+            "categorical",
+            "ordinal",
+            "date_time",
+            "identifier",
+            "other"
+          ]
+        },
+        "source_codes": {
+          "type": ["object", "array", "null"],
+          "description": "Raw category values and descriptions from source codebook"
+        },
+        "analysis_mapping": {
+          "type": ["object", "array", "null"],
+          "description": "Explicit mapping of source codes to analysis levels/values"
+        }
+      }
+    },
+    "MissingnessContract": {
+      "type": "object",
+      "required": [
+        "source_missing_codes",
+        "structural_missingness",
+        "skip_pattern",
+        "planned_handling"
+      ],
+      "properties": {
+        "source_missing_codes": {
+          "type": "array",
+          "description": "List of explicit integer or string sentinel codes denoting non-response, refusal, or unmeasured"
+        },
+        "structural_missingness": {
+          "type": ["boolean", "null"],
+          "description": "True if missingness is due to legitimate skip patterns or questionnaire branching"
+        },
+        "skip_pattern": {
+          "type": ["string", "null"],
+          "description": "Documented questionnaire filter or skip condition explaining structural absence"
+        },
+        "planned_handling": {
+          "type": "string",
+          "description": "Planned pipeline handling strategy (e.g., complete_case, fold_safe_median_impute, encode_as_zero_with_indicator)"
+        }
+      }
+    },
+    "DerivationContract": {
+      "type": "object",
+      "required": [
+        "is_derived",
+        "formula_or_rule",
+        "components"
+      ],
+      "properties": {
+        "is_derived": {
+          "type": "boolean",
+          "description": "True if variable is computed or derived from other variables"
+        },
+        "formula_or_rule": {
+          "type": ["string", "null"],
+          "description": "Exact mathematical formula or logical rule used to derive the variable"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of canonical variable names required to compute this derived variable"
+        }
+      }
+    },
+    "VerificationContract": {
+      "type": "object",
+      "required": [
+        "status",
+        "evidence",
+        "conflicts"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Verification status of the variable definition",
+          "enum": [
+            "verified",
+            "provisional",
+            "unknown",
+            "conflict"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "description": "Authoritative evidence sources verifying the definition"
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Documented discrepancies or conflicts between sources requiring resolution"
+        }
+      }
+    },
+    "LeakageContract": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Data leakage evaluation status",
+          "enum": [
+            "allowed_predictor",
+            "not_a_predictor",
+            "post_index_leakage",
+            "outcome_leakage",
+            "needs_review"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "description": "Clinical and methodological rationale supporting the leakage determination"
+        }
+      }
+    },
+    "ClinicalScoreIntegrity": {
+      "type": "object",
+      "properties": {
+        "is_clinical_score": {
+          "type": "boolean",
+          "description": "True if this variable represents an established clinical risk score"
+        },
+        "score_name": {
+          "type": ["string", "null"],
+          "description": "Name of official score (e.g., FINDRISC, ADA Diabetes Risk Test)"
+        },
+        "official_reference": {
+          "type": ["string", "null"],
+          "description": "Citation or DOI of the published score specification"
+        },
+        "reproduction_fidelity": {
+          "type": ["string", "null"],
+          "enum": [
+            "exact_official",
+            "adapted",
+            "proxy",
+            "incomplete",
+            "not_reproducible",
+            null
+          ],
+          "description": "Degree of fidelity to the official score definition"
+        },
+        "unmapped_components": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of official score components that could not be mapped in this dataset"
+        }
+      }
+    }
+  }
+}

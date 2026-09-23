@@ -5,6 +5,7 @@
   "managed_skills": [
     "analyze-stats",
     "check-reporting",
+    "define-variables",
     "design-study",
     "paper-analyzer",
     "paper-comparator",

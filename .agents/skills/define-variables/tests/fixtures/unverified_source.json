@@ -1,0 +1,66 @@
+{
+  "study_id": "Paper_01_NHANES_NoLab",
+  "dataset": "NHANES",
+  "registry_version": "1.0.0",
+  "prediction_horizon": "cross_sectional",
+  "definitions": [
+    {
+      "canonical_name": "unverified_physical_activity_index",
+      "role": "predictor",
+      "concept": "Self-reported physical activity index from unverified questionnaire item",
+      "prediction_horizon": null,
+      "source_bindings": [
+        {
+          "dataset": "NHANES",
+          "cycle": "1999-2000",
+          "source_name": "PAQRAW",
+          "source_label": "Physical Activity Raw Score",
+          "source_reference": {
+            "type": "secondary_literature",
+            "title": "Unverified secondary web reference",
+            "url_or_identifier": null,
+            "location": null,
+            "accessed_or_verified_date": null
+          }
+        }
+      ],
+      "timing": {
+        "availability": "pre_index",
+        "index_time_definition": "Screening visit",
+        "measurement_window": "Prior 30 days"
+      },
+      "unit": {
+        "source_unit": "unknown",
+        "analysis_unit": "unknown",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": null,
+        "skip_pattern": null,
+        "planned_handling": "unspecified"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "unknown",
+        "evidence": [],
+        "conflicts": [
+          "Discrepancy in PAQ scoring definitions between 1999 and 2007"
+        ]
+      },
+      "leakage_assessment": {
+        "status": "needs_review",
+        "reason": "Unverified source codebook requires official documentation check"
+      }
+    }
+  ]
+}

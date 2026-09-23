@@ -1,0 +1,234 @@
+{
+  "study_id": "Paper_01_NHANES_NoLab",
+  "dataset": "NHANES",
+  "registry_version": "1.0.0",
+  "prediction_horizon": "cross_sectional",
+  "definitions": [
+    {
+      "canonical_name": "age_years",
+      "role": "predictor",
+      "concept": "Age in years at screening exam",
+      "prediction_horizon": null,
+      "source_bindings": [
+        {
+          "dataset": "NHANES",
+          "cycle": "1999-2000",
+          "source_name": "RIDAGEYR",
+          "source_label": "Age in years of the participant at the time of screening",
+          "source_reference": {
+            "type": "codebook",
+            "title": "NHANES 1999-2000 Demographics Data Dictionary",
+            "url_or_identifier": "https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/DEMO.htm",
+            "location": "Variable RIDAGEYR",
+            "accessed_or_verified_date": "2026-09-21"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "pre_index",
+        "index_time_definition": "Screening visit baseline",
+        "measurement_window": "At interview baseline"
+      },
+      "unit": {
+        "source_unit": "years",
+        "analysis_unit": "years",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [77777, 99999],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "complete_case"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          "CDC NHANES Demographics Codebook 1999-2000"
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Demographic baseline feature measured prior to clinical outcome testing"
+      }
+    },
+    {
+      "canonical_name": "fasting_plasma_glucose_mg_dl",
+      "role": "label_component",
+      "concept": "Fasting plasma glucose concentration",
+      "prediction_horizon": null,
+      "source_bindings": [
+        {
+          "dataset": "NHANES",
+          "cycle": "1999-2000",
+          "source_name": "LBXGLU",
+          "source_label": "Fasting Glucose (mg/dL)",
+          "source_reference": {
+            "type": "codebook",
+            "title": "NHANES 1999-2000 Laboratory Data Dictionary",
+            "url_or_identifier": "https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/LAB10AM.htm",
+            "location": "Variable LBXGLU",
+            "accessed_or_verified_date": "2026-09-21"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "Morning fasting laboratory exam",
+        "measurement_window": "Laboratory session"
+      },
+      "unit": {
+        "source_unit": "mg/dL",
+        "analysis_unit": "mg/dL",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [7777, 9999],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "exclude_from_outcome_derivation_if_missing"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          "CDC NHANES Lab 10 AM Codebook"
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "not_a_predictor",
+        "reason": "Diagnostic criterion biomarker used to construct outcome label; strictly barred from predictors"
+      }
+    },
+    {
+      "canonical_name": "undiagnosed_diabetes",
+      "role": "outcome",
+      "concept": "Undiagnosed Type 2 Diabetes defined by fasting glucose >= 126 mg/dL in self-reported non-diabetics",
+      "prediction_horizon": "cross_sectional",
+      "source_bindings": [],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "Mobile Exam Center evaluation",
+        "measurement_window": "Laboratory examination"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "binary",
+        "source_codes": {
+          "0": "Normal or non-diabetic",
+          "1": "Undiagnosed diabetes"
+        },
+        "analysis_mapping": {
+          "0": 0,
+          "1": 1
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "complete_case_for_outcome"
+      },
+      "derivation": {
+        "is_derived": true,
+        "formula_or_rule": "1 if (fasting_plasma_glucose_mg_dl >= 126) else 0",
+        "components": [
+          "fasting_plasma_glucose_mg_dl"
+        ]
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          "ADA Standards of Care 2026 Diagnostic Criteria"
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "not_a_predictor",
+        "reason": "Target outcome label"
+      }
+    },
+    {
+      "canonical_name": "survey_weight_mec",
+      "role": "survey_weight",
+      "concept": "MEC examination 2-year sampling weight",
+      "prediction_horizon": null,
+      "source_bindings": [
+        {
+          "dataset": "NHANES",
+          "cycle": "1999-2000",
+          "source_name": "WTMEC2YR",
+          "source_label": "Full Sample 2 Year MEC Exam Weight",
+          "source_reference": {
+            "type": "codebook",
+            "title": "NHANES 1999-2000 Demographics Data Dictionary",
+            "url_or_identifier": "https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/DEMO.htm",
+            "location": "Variable WTMEC2YR",
+            "accessed_or_verified_date": "2026-09-21"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "not_applicable",
+        "index_time_definition": null,
+        "measurement_window": null
+      },
+      "unit": {
+        "source_unit": "dimensionless_weight",
+        "analysis_unit": "dimensionless_weight",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "survey_design_weighting"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          "NCHS NHANES Analytic Guidelines"
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "not_a_predictor",
+        "reason": "Sampling weight used for survey variance estimation; not a predictive feature"
+      }
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "study_id": "Paper_01_NHANES_NoLab",
+  "dataset": "NHANES",
+  "registry_version": "1.0.0",
+  "prediction_horizon": "cross_sectional",
+  "definitions": [
+    {
+      "canonical_name": "post_baseline_antidiabetic_prescription",
+      "role": "predictor",
+      "concept": "Prescription of metformin recorded 12 months after baseline screening",
+      "prediction_horizon": null,
+      "source_bindings": [
+        {
+          "dataset": "NHANES",
+          "cycle": "1999-2000",
+          "source_name": "RXDDRUG",
+          "source_label": "Prescription Drug Name",
+          "source_reference": {
+            "type": "codebook",
+            "title": "NHANES Prescription Medications Codebook",
+            "url_or_identifier": "https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/RXQ_RX.htm",
+            "location": "Variable RXDDRUG",
+            "accessed_or_verified_date": "2026-09-21"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "post_index",
+        "index_time_definition": "Baseline exam t0",
+        "measurement_window": "12 months post-baseline"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "binary",
+        "source_codes": {
+          "0": "No metformin",
+          "1": "Metformin prescribed"
+        },
+        "analysis_mapping": {
+          "0": 0,
+          "1": 1
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "complete_case"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          "Prescription records"
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "post_index_leakage",
+        "reason": "Variable collected after index time; severe temporal leakage"
+      }
+    }
+  ]
+}

@@ -3,11 +3,12 @@
 > Every agent (Claude, Codex, Cursor...) MUST read this file before taking action.
 > On conflict: AGENTS.md > skill default > user-specific prompt.
 >
-> **Canonical Literature Evidence Contracts**:
-> For literature evidence policy, paper schema, and decision authority, the following documents are authoritative:
+> **Canonical Research & Evidence Contracts**:
+> For literature evidence policy, paper schema, decision authority, and variable operationalization, the following documents are authoritative:
 > - `docs/agent/EVIDENCE_POLICY.md` (authoritative for scientific evidence evaluation, separation of evidence value from reproducibility, and claim-level provenance)
 > - `docs/agent/PAPER_SCHEMA.md` (authoritative for candidate roles, reproducibility assessment, and paper record contracts)
 > - `docs/agent/DECISION_AUTHORITY.md` (authoritative for autonomous agent actions versus actions requiring explicit human approval)
+> - `docs/agent/VARIABLE_CONTRACT.md` (authoritative for variable operationalization, source bindings, units, coding, missingness, timing, outcome labels, and leakage safety)
 
 ---
 
@@ -293,6 +294,7 @@ Before proposing or creating a folder in `01_Diabetes_Research/searched_papers/`
 - **Do not overwrite existing analysis.html / overview.md / etc.** Create `analysis.v2.html` and update metadata `status`.
 - **Operate strictly within standard repository directories**: Agents may work only inside directories defined in the repository layout (`.agents/`, `.claude/`, `01_Diabetes_Research/`, `02_Implementation/`, `03_Final_Result/`, `web/`), and MUST NOT create new top-level directories without user consent.
 - **All paper references** in chat: use `paper_id` rather than long titles.
+- **Variable Operationalization and Leakage Prevention**: Before statistical analysis or prediction modeling, variable definitions must be operationalized and grounded in authoritative codebooks using `/define-variables` whenever source variable meaning, timing, units, coding, missingness, outcome definition, label construction, or prediction horizon is unresolved. Agents must enforce `docs/agent/VARIABLE_CONTRACT.md`. Changing a frozen research outcome definition, positive class threshold, cohort criteria, or prediction horizon requires explicit human approval per `docs/agent/DECISION_AUTHORITY.md`.
 
 ---
 

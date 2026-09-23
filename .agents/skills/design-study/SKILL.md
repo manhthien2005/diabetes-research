@@ -42,7 +42,7 @@ Always inspect these dimensions:
 8. What validation strategy is used?
 9. What uncertainty reporting is required?
 10. Which reporting guideline best fits?
-11. Are exposure/outcome/covariate **definitions literature-grounded**, or invented ad-hoc from the data dictionary? If ad-hoc, defer to `/define-variables` (or verify against official codebooks and published literature if `/define-variables` is uninstalled) before drafting Methods.
+11. Are exposure/outcome/covariate **definitions literature-grounded**, or invented ad-hoc from the data dictionary? If ad-hoc, defer to `/define-variables` to establish source-backed definitions, units, coding, missingness, and leakage safety before drafting Methods.
 
 ---
 

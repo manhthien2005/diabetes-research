@@ -45,6 +45,7 @@ reimplement them and never fabricates patient data or metrics.
 - Item-by-item reporting compliance audit of a finished manuscript → `/check-reporting` (TRIPOD+AI, PROBAST+AI, RECORD, STROBE).
 - Reviewer-side manuscript critique and risk-of-bias audits → `/self-review` and `/peer-review`.
 - Study design and cohort eligibility gates → `/design-study`.
+- Unresolved variable definitions, source coding, timing, units, or clinical scores → `/define-variables`.
 
 ---
 

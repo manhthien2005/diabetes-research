@@ -1,0 +1,72 @@
+{
+  "study_id": "Paper_01_NHANES_NoLab",
+  "dataset": "NHANES",
+  "registry_version": "1.0.0",
+  "prediction_horizon": null,
+  "definitions": [
+    {
+      "canonical_name": "incident_diabetes_unspecified_horizon",
+      "role": "outcome",
+      "concept": "Future incident diabetes event without specified prediction horizon",
+      "prediction_horizon": null,
+      "source_bindings": [
+        {
+          "dataset": "NHANES",
+          "cycle": "1999-2000",
+          "source_name": "DIQ010",
+          "source_label": "Doctor told you have diabetes",
+          "source_reference": {
+            "type": "codebook",
+            "title": "NHANES Diabetes Questionnaire",
+            "url_or_identifier": "https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/DIQ.htm",
+            "location": "Variable DIQ010",
+            "accessed_or_verified_date": "2026-09-21"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "Baseline",
+        "measurement_window": "Unspecified follow-up"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "binary",
+        "source_codes": {
+          "1": "Yes",
+          "2": "No"
+        },
+        "analysis_mapping": {
+          "1": 1,
+          "2": 0
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [7, 9],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "exclude_missing"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          "CDC NHANES DIQ Codebook"
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "not_a_predictor",
+        "reason": "Target outcome label"
+      }
+    }
+  ]
+}
