@@ -86,7 +86,14 @@ Based on the data structure and research question, propose an analysis plan:
    already diagnosed and the real question is what to do with everyone else. Decide this in
    the plan; do not discover it in the output.
 
-Present the plan and **wait for user approval** before executing.
+Present the plan before executing.
+
+**Execution Autonomy Policy:**
+- Inspect the repository research brief, existing implementation, variable definitions, and the explicit user request first.
+- If the requested analysis is already defined and execution is reversible (e.g., generating baseline tables, ROC curves, diagnostics, or scripts writing to standard output paths), present the concise plan and proceed in the same turn without waiting for a separate approval turn.
+- **Ask before proceeding** if the analysis would change a frozen hypothesis, primary outcome, cohort definition, prediction horizon, label definition, or other high-impact scientific decision.
+- **Ask before proceeding** when required variable names, mappings, or definitions are ambiguous or absent — never invent variable names.
+- **Ask before proceeding** before installing or modifying system packages or dependencies (`install.packages()` / pip).
 
 | Type | When to use | Python packages | R packages | Primary output |
 |------|-------------|-----------------|------------|----------------|
@@ -716,7 +723,7 @@ Applies to any cross-sectional / single-visit outcome regression (the exposure a
 
 - **Never fabricate variable names, dataset column names, or variable codings.** If a variable mapping is uncertain, output `[VERIFY: variable_name]` and ask the user to confirm against the data dictionary.
 - **Never fabricate statistical results** — no invented p-values, effect sizes, confidence intervals, or sample sizes. All numbers must come from executed code output.
-- **Never generate references from memory.** Use `/search-lit` for all citations.
+- **Never generate references from memory.** Use verified citations with confirmed DOI or PMID from the repository corpus, or prompt the user for citation details if `/search-lit` is unavailable.
 - If a function, package, or API does not exist or you are unsure, say so explicitly rather than guessing.
 
 
@@ -725,3 +732,4 @@ Applies to any cross-sectional / single-visit outcome regression (the exposure a
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-09-21 | Copied from medsci-skills commit d7df514 (MIT). Added Changelog. Did NOT modify upstream logic. | agent (chore/skills-upgrade) |
+| 2026-09-23 | Round 5B: context-first routine autonomy for reversible analysis; hardened optional /search-lit route; preserved package installation and variable definition gates. | agent (chore/skills-upgrade) |

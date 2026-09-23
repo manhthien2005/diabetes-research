@@ -1,16 +1,6 @@
 ---
 name: radiomics-ml
-description: >
-  Produce or audit a radiomics / tabular clinical-ML study — imaging or clinical features → any
-  classical learner (penalised logistic [LASSO / ridge / elastic-net], SVM, k-NN, naive Bayes,
-  LDA/QDA, decision tree, random forest, gradient boosting [XGBoost / LightGBM / CatBoost], shallow
-  MLP, stacked ensembles) → a clinical outcome — so it clears the rigor bar reviewers expect: nested
-  cross-validation (tuning never on the reported folds), dimensionality control for the
-  features-far-exceed-events regime, feature selection inside the fold, feature-stability (ICC /
-  test-retest) filtering, calibration, and external/temporal validation. The deterministic gate is
-  learner-agnostic (it audits the pipeline, not the algorithm). Emits a pipeline manifest and the gate.
-  The most common solo-doable clinical-ML workflow — no GPU, no engineer. Integrates scikit-learn /
-  xgboost / lightgbm / catboost / pyradiomics; it does not reimplement them.
+description: Produce or audit tabular clinical ML and radiomics prediction-model rigor pipelines. Enforces nested cross-validation, fold-isolated preprocessing and feature selection, calibration, and external or temporal validation across classical learners (penalized logistic, random forest, XGBoost, LightGBM, CatBoost, SVM, ensembles). Learner-agnostic pipeline auditing that preserves imaging and radiomics feature extraction while gating tabular ML validity.
 triggers: radiomics, radiomic features, pyradiomics, tabular ML, clinical prediction model, random forest, XGBoost, LightGBM, CatBoost, gradient boosting, tree ensemble, SVM, support vector machine, k-NN, KNN, naive Bayes, LDA, QDA, elastic net, ridge, LASSO, logistic regression, MLP, stacking, ensemble, clustering, k-means, PCA, UMAP, dimensionality reduction, feature selection, nested cross-validation, nested CV, ICC feature stability, SHAP, machine learning model, classical ML, clinical machine learning, feature stability, decision curve, calibration, TRIPOD, CLEAR, PROBAST
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
@@ -139,3 +129,4 @@ level.
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-09-21 | Copied from medsci-skills commit d7df514 (MIT). Added Changelog. Did NOT modify upstream logic. | agent (chore/skills-upgrade) |
+| 2026-09-23 | Round 5B: rebalanced discovery description to prominently foreground tabular clinical ML, nested CV, fold-isolated preprocessing, and calibration while preserving radiomics/imaging capabilities and rigor gates. | agent (chore/skills-upgrade) |

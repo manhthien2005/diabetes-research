@@ -11,7 +11,7 @@ model: inherit
 You help a medical researcher prevent reference hallucinations before submission.
 This skill audits an existing manuscript or bibliography. It **does not write**
 to `references/` or `manuscript/_src/refs.bib`. It does not discover new
-literature; use `/search-lit` for discovery and `/lit-sync` for bib management.
+literature (candidate discovery belongs to literature workflows like optional `/search-lit` if installed or direct retrieval; bibliography sync belongs to tools like `/lit-sync`).
 
 ## When to Use
 
@@ -19,7 +19,7 @@ literature; use `/search-lit` for discovery and `/lit-sync` for bib management.
   coauthors or external editors.
 - After AI-assisted drafting or revision introduced or modified references.
 - When a reviewer or collaborator flags a possibly fabricated citation.
-- Before `/sync-submission` freezes a journal package.
+- Before final submission packaging (or before optional companion `/sync-submission` freezes a journal package).
 
 ## Inputs
 
@@ -33,8 +33,8 @@ literature; use `/search-lit` for discovery and `/lit-sync` for bib management.
 
 For markdown manuscripts using pandoc `[@bibkey]` citations, validate citation
 keys first to catch undefined/unused keys before this audit. If you also use the
-companion `manage-refs` skill, run its `check_citation_keys.py` for this;
-otherwise use your reference manager's citation-key check.
+optional companion `manage-refs` skill, run its `check_citation_keys.py` for this;
+otherwise use your reference manager's citation-key check or continue directly.
 
 Then run `verify_refs.py` against the .bib to validate each entry against
 PubMed/CrossRef. The two checks are complementary: a citation-key check catches
@@ -96,7 +96,7 @@ to restrict verification to PubMed + CrossRef.
 
 **Removed in Phase 1A.2** (per `docs/artifact_contract.md`):
 - `references/verified_references.tsv` — record-level details now live inside `reference_audit.json` under `records[]`.
-- `references/library.bib` — never this skill's concern. `/search-lit` produces candidates; `/lit-sync` (via Better BibTeX) writes `manuscript/_src/refs.bib`.
+- `references/library.bib` — never this skill's concern. Candidate retrieval (such as optional companion `/search-lit`) produces candidates; bibliography management (such as optional `/lit-sync` via Better BibTeX or direct editor) writes `manuscript/_src/refs.bib`.
 
 Sole-writer enforcement: `scripts/validate_project_contract.py` will flag any `references/*` file written by this skill as drift.
 
@@ -244,8 +244,8 @@ source-identity limitations, and the difference between recorded and verified.
   wording patterns; the evidence table records attributed assessments, not verified facts.
 - Does not generate new references from memory.
 - Does not replace missing citations with plausible alternatives without
-  `/search-lit` or user approval.
-- Does not sync Zotero collections; use `/lit-sync` after this audit.
+  explicit literature verification (via optional companion `/search-lit` if available, or direct user approval).
+- Does not sync external reference libraries (such as optional companion `/lit-sync` after this audit).
 
 ## Anti-Hallucination
 
@@ -260,3 +260,4 @@ source-identity limitations, and the difference between recorded and verified.
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-09-21 | Copied from medsci-skills commit d7df514 (MIT). Added Changelog. Did NOT modify upstream logic. | agent (chore/skills-upgrade) |
+| 2026-09-23 | Round 5B: Hardened optional companion routes (/search-lit, /lit-sync, /sync-submission, /manage-refs) without changing audit-only verification contract or submission-blocking gates. | Antigravity (chore/skills-upgrade) |

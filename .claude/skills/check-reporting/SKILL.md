@@ -1,6 +1,6 @@
 ---
 name: check-reporting
-description: Check manuscript compliance with medical research reporting guidelines. Supports 49 guidelines including STROBE, STROBE-MR, RECORD, REMARK (prognostic tumor-marker studies), TARGET (target trial emulation), GATHER (burden-of-disease / health-estimate modeling), CONSORT, CONSORT-AI, STARD, STARD-AI, TRIPOD, TRIPOD+AI, TRIPOD-LLM, PGS-RS, ARRIVE, PRISMA, PRISMA 2020 for Abstracts, PRISMA-DTA, PRISMA-P, PRISMA-ScR (scoping reviews), CARE, SPIRIT, SPIRIT-AI, CLAIM, DECIDE-AI, MI-CLEAR-LLM, SQUIRE 2.0, CLEAR, MOOSE, GRRAS, SWiM, AMSTAR 2, CHEERS 2022, CROSS (survey studies), SRQR and COREQ (qualitative research), and risk of bias tools (QUADAS-3, QUADAS-2, QUADAS-C, RoB 2, ROBINS-I, ROBINS-E, ROBIS, ROB-ME, PROBAST, PROBAST+AI, NOS, COSMIN, RoB NMA). Generates item-by-item assessment with PRESENT/MISSING/PARTIAL status.
+description: Audit manuscript compliance with medical research reporting guidelines and risk-of-bias tools. Use when checking study reporting before journal submission or peer review, especially for clinical prediction models (TRIPOD+AI, PROBAST+AI), observational cohorts (STROBE), and routinely collected health or EHR data (RECORD). Supports 49 guidelines including CONSORT, STARD-AI, PRISMA, and CHEERS 2022, generating item-by-item assessments with PRESENT/MISSING/PARTIAL status.
 triggers: checklist, QUADAS-3, abstract checklist, structured abstract, reporting guideline, STROBE, STROBE-MR, Mendelian randomization, CONSORT, CONSORT-AI, STARD, STARD-AI, TRIPOD, TRIPOD-LLM, PGS-RS, PRS-RS, polygenic risk score, polygenic score, PRISMA, PRISMA-DTA, PRISMA-P, PRISMA-ScR, scoping review, scoping, evidence map, ARRIVE, CARE, CLAIM, DECIDE-AI, MI-CLEAR-LLM, SPIRIT, SPIRIT-AI, QUADAS, QUADAS-C, RoB, ROBINS, ROBINS-E, ROBIS, ROB-ME, PROBAST, NOS, COSMIN, AMSTAR, SWiM, CHEERS, economic evaluation, cost-effectiveness, cost-utility, QALY, ICER, RECORD, RECORD-PE, routinely-collected data, registry, claims, electronic health records, EHR, real-world data, CROSS, CHERRIES, survey, questionnaire, KAP, e-survey, response rate, SRQR, COREQ, qualitative research, interviews, focus groups, thematic analysis, grounded theory, reflexivity, REMARK, tumor marker, prognostic marker, prognostic biomarker, molecular residual disease, TARGET, target trial emulation, target trial, causal inference, estimand, immortal time bias, GATHER, burden of disease, global burden, GBD, health estimates, attributable burden, comparative risk assessment, population attributable fraction, disability-adjusted life years, DALY, forecasting, decomposition, risk of bias, compliance check, LLM accuracy, large language model, clinical deployment
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
@@ -421,7 +421,7 @@ a submission directory — but the banner is what makes it catchable.)
   strictly (ethics approval, registration, sample size) → items in Methods (easiest to fix) →
   everything else.
 - **Part D — Machine-readable JSON**, appended as a fenced block. **MUST** be present under
-  `--json` or when called from `/write-paper` Phase 7, which parses it.
+  `--json` or when called from `/write-paper` Phase 7, which parses it (if `/write-paper` is unavailable, the JSON block remains valid and consumable standalone).
 
 **JSON field contract** (the part other skills depend on — get these right):
 
@@ -534,10 +534,12 @@ Page numbers should be filled in by the user after final formatting. Use section
 
 | When | Call | Purpose |
 |------|------|---------|
-| During manuscript writing | `/write-paper` Phase 7 | Final compliance check |
-| Need to add Methods text | `/write-paper` Phase 3 | Draft missing Methods content |
+| During manuscript writing | `/write-paper` Phase 7 (if installed) | Final compliance check |
+| Need to add Methods text | `/write-paper` Phase 3 (if installed) | Draft missing Methods content |
 | Need statistical details | `/analyze-stats` | Generate missing statistical reporting |
-| Need flow diagram | `/make-figures` | Generate CONSORT/STARD/PRISMA diagram |
+| Need flow diagram | `/make-figures` (if installed) | Generate CONSORT/STARD/PRISMA diagram |
+
+*Note: `/write-paper` and `/make-figures` are optional companion skills. If unavailable, output recommendations and draft text directly in the compliance report for author action.*
 
 ---
 
@@ -556,7 +558,7 @@ Page numbers should be filled in by the user after final formatting. Use section
 
 ## Anti-Hallucination
 
-- **Never fabricate references.** All citations must be verified via `/search-lit` with confirmed DOI or PMID. Mark unverified references as `[UNVERIFIED - NEEDS MANUAL CHECK]`.
+- **Never fabricate references.** All citations must be verified via `/search-lit` (if installed) or authoritative sources (PubMed/CrossRef) with confirmed DOI or PMID. Mark unverified references as `[UNVERIFIED - NEEDS MANUAL CHECK]`.
 - **Never invent clinical definitions, diagnostic criteria, or guideline recommendations.** If uncertain, flag with `[VERIFY]` and ask the user.
 
 ---
@@ -565,7 +567,7 @@ Page numbers should be filled in by the user after final formatting. Use section
 
 | Gate | Severity | Trigger | Action on fail |
 |---|---|---|---|
-| Mandatory items present | ENFORCED at submission | < 100% of guideline-mandatory items marked PRESENT | Auto-fix MISSING items where text exists; otherwise route to `/write-paper` Phase 7 for re-draft |
+| Mandatory items present | ENFORCED at submission | < 100% of guideline-mandatory items marked PRESENT | Auto-fix MISSING items where text exists; otherwise route to `/write-paper` Phase 7 for re-draft (or report draft additions in action items if /write-paper is unavailable) |
 | Step 4d PRISMA Figure 1 arithmetic & cross-reference audit (PRISMA / PRISMA-DTA only) | ENFORCED for SR/MA | flow numbers don't sum (e.g., screened ≠ included + excluded), or in-text counts mismatch flow diagram | HALT; reconcile against extraction artifacts |
 | Optional items (e.g., supplementary AI declarations) | ADVISORY | < 80% of optional items present | warn; user accepts |
 | Cross-reporting-guideline routing (study type → guideline) | ENFORCED | study type undeclared or guideline missing | Ask user; do not silently default |
@@ -584,3 +586,4 @@ need, that is a bug — please open an issue, because the instruction belongs he
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-09-21 | Copied from medsci-skills commit d7df514 (MIT). Added Changelog. Did NOT modify upstream logic. | agent (chore/skills-upgrade) |
+| 2026-09-23 | Round 5B: enhanced discovery description with clinical prediction model and reporting keywords; hardened optional /write-paper, /make-figures, and /search-lit routes; preserved study-type ambiguity and reporting integrity gates. | agent (chore/skills-upgrade) |

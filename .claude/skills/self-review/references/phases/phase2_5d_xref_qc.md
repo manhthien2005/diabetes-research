@@ -44,7 +44,7 @@ DOCX build has occurred yet (early drafts).
    and the rendered DOCX (typically `manuscript/manuscript_final.docx` or the
    most recent circulation `.docx`).
 
-2. **Invoke the shared script** (lives in `/manage-refs`):
+2. **Invoke the cross-reference check script** (if `/manage-refs` is installed):
 
    ```bash
    python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/manage-refs/scripts/check_xref.py" \
@@ -53,6 +53,8 @@ DOCX build has occurred yet (early drafts).
      --out qc/xref_audit.json \
      [--allow-separate-attachments]
    ```
+
+   (If `/manage-refs` is unavailable, rely on the bundled markdown-stage check `check_figure_citation.py` and report that rendered DOCX cross-referencing was deferred.)
 
    The script writes `qc/xref_audit.json` with per-label rows tagged
    `OK | MISSING_DOCX | MISSING_BODY | MISMATCH | UNCITED | NOT_CITED_NO_BODY`,
@@ -96,9 +98,10 @@ DOCX build has occurred yet (early drafts).
 
 5. **Emit each P0 row as a separate `M`-numbered Major Comment** with
    `category: "F"` (Reporting Completeness) and `fixable_by_ai: false`
-   (build script changes are out of scope for the auto-fix loop — they
-   require pipeline-side fixes per `/write-paper` Step 7.6a routing).
+   (build script changes are out of scope for the auto-fix loop — if
+   `/write-paper` is installed, route to Step 7.6a; if unavailable,
+   document the required pipeline/caption fix directly in the review report).
 
 **Do NOT auto-fix cross-reference defects in `--fix` mode.** Caption rewrites
 in the body without re-running the DOCX build will simply move the mismatch.
-Surface as Major Comments and let the user route to `/write-paper` Step 7.6a.
+Surface as Major Comments and let the author resolve in the build pipeline or via `/write-paper` Step 7.6a (if installed).

@@ -18,10 +18,10 @@ Numerical audits (2.5/2.5a/2.5b) cover in-text numbers; they do **not** cover re
    python3 skills/verify-refs/scripts/verify_refs.py "$BIB" --project-root . --strict
    ```
 
-   When both reference QC and cross-reference QC are needed in one pass, prefer
-   the master orchestration entry point in `/manage-refs` — it chains
-   `check_citation_keys.py` → `verify_refs.py --strict` → `render_pandoc.sh`
-   (optional) → `check_xref.py --strict` and writes
+   When both reference QC and cross-reference QC are needed in one pass and
+   optional companion skill `/manage-refs` is installed, its master orchestration
+   entry point can chain `check_citation_keys.py` → `verify_refs.py --strict` →
+   `render_pandoc.sh` (optional) → `check_xref.py --strict` and write
    `qc/pre_submission_gate.json` as the single submission-readiness artifact:
 
    ```bash
@@ -31,6 +31,9 @@ Numerical audits (2.5/2.5a/2.5b) cover in-text numbers; they do **not** cover re
        --docx submission/<journal>/manuscript.docx \
        --allow-separate-attachments  # see Phase 2.5d for when this is appropriate
    ```
+
+   If `/manage-refs` is unavailable, run `verify_refs.py` directly as shown above
+   and execute cross-reference checks independently without halting.
 
 3. **Read `qc/reference_audit.json`.** For each entry not marked `VERIFIED`, add a row to the reconciliation block below. `FABRICATED` entries are P0 Major Comments (block submission). `UNVERIFIED` entries are Minor Comments unless the manuscript is at a circulation/submission gate, in which case they escalate to Major. For each `duplicate_findings[]` entry (category `duplicate_pmid` / `duplicate_doi`), add a Major Comment row noting the duplicated `ref_ids` pair and recommend cite renumbering — duplicates block submission (P0 Major) regardless of per-record `VERIFIED` status.
 
@@ -57,7 +60,7 @@ Numerical audits (2.5/2.5a/2.5b) cover in-text numbers; they do **not** cover re
 
 **Short-circuit rule:** if `qc/reference_audit.json` already exists with a bib-hash match within 60s (P9 cache TTL, pending), the scan MAY reuse it; otherwise re-run. Never consume a stale audit from a prior manuscript revision.
 
-**Do NOT fabricate replacement references** if any entry fails. Fix-forward belongs to `/search-lit` and `/lit-sync`, not to this skill. Self-review only reports the failure and blocks submission.
+**Do NOT fabricate replacement references** if any entry fails. Fix-forward belongs to authoring and literature-search workflows (such as optional companion tools `/search-lit` and `/lit-sync` if installed, or manual literature curation), not to this skill. Self-review only reports the failure and blocks submission.
 
 ### Phase 2.5c-2: Reference Adequacy Scan
 
@@ -86,9 +89,9 @@ Phase 2.5c covers reference **integrity** — are the cited references real (fab
     "location":"Methods - Statistical Analysis",
     "description":"Fine-Gray competing-risk model is named without a canonical citation.",
     "fixable_by_ai":false,
-    "suggested_fix":"Run /search-lit for the canonical Fine-Gray competing-risk source, sync via /lit-sync, then rerun /verify-refs --strict."}
+    "suggested_fix":"Locate the canonical Fine-Gray competing-risk source (via optional /search-lit if installed or literature search), sync to bibliography (via /lit-sync or reference manager), then rerun /verify-refs --strict."}
    ```
 
    **Severity:** `methods_zero_citations` (original / AI-validation / meta-analysis) and each uncited statistical method → **Major** (a P0 candidate before submission when the method is central to the primary or a sensitivity analysis); each uncited reporting/diagnostic standard → **Minor**; a total count below the article-type target → **Major** when far below (under half the floor), otherwise **Minor**, scaled also by stage (escalate at a submission/circulation gate).
 
-3. **Fix-forward, not fabricate.** As in Phase 2.5c, this skill never writes replacement references. Every adequacy finding carries `fixable_by_ai: false`; the remedy is `/search-lit` (Manuscript Paper Reference Pool mode) → `/lit-sync` → `/verify-refs --strict`, which the author runs.
+3. **Fix-forward, not fabricate.** As in Phase 2.5c, this skill never writes replacement references. Every adequacy finding carries `fixable_by_ai: false`; the remedy is finding the canonical reference (via optional companion `/search-lit` → `/lit-sync` if installed, or manual literature curation) and verifying via `/verify-refs --strict`, which the author runs.

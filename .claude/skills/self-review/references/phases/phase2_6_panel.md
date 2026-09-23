@@ -65,7 +65,7 @@ Healthy CONSENSUS is preserved — agreement on *some* themes is a strength (Ste
 
 ## Step 4 — Feed Phase 3
 
-The consolidated panel output flows into the Phase 3 report, Phase 3b R0 numbering (**preserved**, so `/revise` still consumes it), and Phase 3c JSON. CONSENSUS flags and reviewer attribution are additive annotations on the existing `M`/`m` comments (and the optional `consensus` JSON field); they do not change the report or JSON structure.
+The consolidated panel output flows into the Phase 3 report, Phase 3b R0 numbering (**preserved** for standalone tracking or optional downstream `/revise` consumption if installed), and Phase 3c JSON. CONSENSUS flags and reviewer attribution are additive annotations on the existing `M`/`m` comments (and the optional `consensus` JSON field); they do not change the report or JSON structure.
 
 ## Re-run the panel after a large revision
 

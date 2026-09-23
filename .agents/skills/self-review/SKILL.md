@@ -1,6 +1,6 @@
 ---
 name: self-review
-description: Pre-submission self-review for the user's own manuscripts, applying a reviewer perspective. Systematic check across 10 categories with research-type branching. Outputs Anticipated Major/Minor Comments with severity framing and optional R0 numbering for /revise pipeline integration.
+description: Pre-submission manuscript audit and methodological review for clinical research papers. Anticipates reviewer critique across study design, data leakage, statistical consistency, reference and reporting checks, and editorial impression. Outputs actionable Anticipated Major and Minor comments with severity framing.
 triggers: self-review, pre-submission check, check my paper, reviewer perspective, manuscript self-check
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
@@ -64,11 +64,12 @@ by a pass it does not need.
 ### Phase 1: Intake
 
 1. Get the manuscript -- PDF, Word doc, or pasted text.
-2. Ask the user:
-   - Target journal? (affects reporting standards and scope expectations)
-   - Manuscript type? (original research / review / perspective / technical note / letter / meta-analysis / case report)
-   - Anything they're already worried about?
-   - **Review depth?** The default is a single-pass review. For a high-stakes pre-submission final pass, a multi-agent **panel** (`--panel`, Phase 2.6) is available — several domain-expert reviewers run independently, then an editor consolidates them (more thorough, but it spawns several agents so it costs several times more tokens). On an interactive run, surface this option **once** in one line and offer it; then proceed with the single-pass review unless the user opts in. Do **not** surface or auto-apply the panel when invoked with `--json` or from `/write-paper` — those stay single-pass.
+2. **Context-First Scoping & Autonomy Policy:**
+   - Before asking questions, inspect the repository manuscript, research brief, paper directory, prior review artifacts, and project metadata first.
+   - Infer manuscript files, study type, and review scope when they are explicit in repository structure.
+   - If target journal is unknown, perform a journal-agnostic scientific review and mark journal-specific formatting checks as deferred rather than blocking the review.
+   - Default to a single-pass review without prompting for review depth unless high-stakes `--panel` mode was explicitly requested.
+   - Ask only unresolved scoping questions that materially affect the review.
 3. Read the full manuscript.
 4. **SSOT gate — confirm there is one manuscript, not several.** Self-review reads a single
    input file, so a divergence between a legacy working copy and the live submission copy is
@@ -79,15 +80,14 @@ by a pass it does not need.
    find . \( -path '*manuscript*' -o -path '*main_document*' \) -name '*.md' | grep -v node_modules
    ```
 
-   If more than one manuscript-like file exists, confirm which is the SSOT and run
-   `/sync-submission`'s divergence gate before reviewing — a `STALE_COPY` (an SSOT numeric claim
-   or heading that did not propagate to the other copy) is a P0 that must clear first:
+   If more than one manuscript-like file exists, confirm which is the SSOT. If `/sync-submission` is installed, run its divergence gate:
 
    ```bash
    python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/sync-submission/scripts/detect_copy_divergence.py" \
      --ssot <ssot>.md --copy <other-copy>.md
    ```
 
+   If `/sync-submission` is unavailable, verify manuscript file identity against repository SSOT documentation (e.g. START_HERE.md or TO_DO.md) and continue the review, noting that automated cross-artifact sync was not run.
    Review the SSOT copy; do not review a stale copy and pass it.
 
    **In `--panel` mode this is a blocking precondition, not advice.** A panel spawns N reviewer
@@ -440,11 +440,15 @@ in-text citation — the early, no-build counterpart to `check_xref`'s `UNCITED`
 **DOCX stage (when a rendered DOCX exists** — circulation drafts, post-build pre-submission
 checks. Skip on early drafts with no build):
 
+If `/manage-refs` is installed, run its cross-reference check:
+
 ```bash
 python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/manage-refs/scripts/check_xref.py" \
   --md manuscript/manuscript.md --docx manuscript/manuscript_final.docx \
   --out qc/xref_audit.json [--allow-separate-attachments]
 ```
+
+(If `/manage-refs` is unavailable, rely on the bundled markdown-stage orphan gate `check_figure_citation.py` and report that rendered DOCX cross-referencing was deferred.)
 
 Severity depends on the journal's figure/table submission policy. Many radiology and medical
 journals (European Radiology, Radiology, AJR) accept figures and tables as **separate
@@ -467,8 +471,9 @@ submission and read `summary.downgraded_unchecked` in the audit JSON.
 
 **Do NOT auto-fix cross-reference defects in `--fix` mode.** Rewriting a caption in the body
 without re-running the DOCX build merely moves the mismatch. Emit each P0 row as its own
-`M`-numbered Major Comment with `category: "F"` and `fixable_by_ai: false`, and route the user to
-`/write-paper` Step 7.6a for the pipeline-side fix.
+`M`-numbered Major Comment with `category: "F"` and `fixable_by_ai: false`. If `/write-paper` is installed,
+route to Step 7.6a; if `/write-paper` is unavailable, document the required pipeline/caption fix directly
+in the review report for manual author resolution rather than halting.
 
 **Read on demand:**
 
@@ -577,8 +582,8 @@ python3 .agents/skills/analyze-stats/scripts/rating_monotonicity.py \
 4. **Figure-embedded numbers are grep-blind** — every numeric audit above is blind to numbers
    *inside* a rasterised figure. Read each figure page visually before submission.
 
-Also re-run `/sync-submission`'s `check_cross_artifact_stale.py` **after** any reframe, not just
-once at the start. For time-to-event manuscripts, apply probe **S8 (estimand provenance)** of
+Also re-run `/sync-submission`'s `check_cross_artifact_stale.py` (if installed) **after** any reframe, not just
+once at the start; if unavailable, note that cross-artifact staleness checking was deferred. For time-to-event manuscripts, apply probe **S8 (estimand provenance)** of
 `references/domain-probes/survival_prognostic.md`.
 
 **Read on demand:**
@@ -800,8 +805,7 @@ Minor Comments; an author who sees only "add this" will monotonically over-defen
 
 ### Phase 3b: R0 Numbering (Optional)
 
-If the user plans to use `/revise` after receiving actual reviews, offer to append
-R0-numbered output for pipeline compatibility:
+If the user plans to use `/revise` after receiving actual reviews, or wishes to track findings numerically across revisions, offer to append R0-numbered output for pipeline compatibility. Note that self-review output is standalone and fully actionable on its own without `/revise`:
 
 ```markdown
 ## R0 Pre-Submission Findings (for /revise cross-reference)
@@ -860,7 +864,7 @@ Here is how to address it with your existing data."
 
 ## Anti-Hallucination
 
-- **Never fabricate references.** All citations must be verified via `/search-lit` with confirmed DOI or PMID. Mark unverified references as `[UNVERIFIED - NEEDS MANUAL CHECK]`. Self-review enforces this through **Phase 2.5c: Reference Hallucination Scan** (runs `/verify-refs` against the SSOT bib); any `FABRICATED` verdict blocks submission as a P0 Major Comment.
+- **Never fabricate references.** All citations must be verified via `/verify-refs` or authoritative sources (PubMed/CrossRef) with confirmed DOI or PMID. If `/search-lit` is unavailable, use the existing literature corpus or mark unverified citations as `[UNVERIFIED - NEEDS MANUAL CHECK]`. Self-review enforces this through **Phase 2.5c: Reference Hallucination Scan** (runs `/verify-refs` against the SSOT bib); any `FABRICATED` verdict blocks submission as a P0 Major Comment.
 - **Never invent clinical definitions, diagnostic criteria, or guideline recommendations.** If uncertain, flag with `[VERIFY]` and ask the user.
 
 ---
@@ -869,13 +873,13 @@ Here is how to address it with your existing data."
 
 | Gate | Severity | Trigger | Action on fail |
 |---|---|---|---|
-| Phase 2.5b cross-reference QC (delegate `/manage-refs scripts/check_xref.py`) | ENFORCED | MISSING_DOCX / MISSING_BODY / MISMATCH > 0 | P0 Major Comment, blocks submission |
+| Phase 2.5b cross-reference QC (delegate `/manage-refs scripts/check_xref.py` if installed) | ENFORCED | MISSING_DOCX / MISSING_BODY / MISMATCH > 0 | P0 Major Comment, blocks submission (report deferred if manage-refs uninstalled) |
 | Phase 2.5c reference hallucination scan (delegate `/verify-refs`) | ENFORCED | `FABRICATED` in `records[]` OR nonempty `duplicate_findings[]` | P0 Major Comment, blocks submission |
 | Phase 2.5a-2 design/power statistic provenance | ENFORCED | a reported MDE / power / sample-size value is not reproduced by committed code, or is reproducible only by a method the committed script does not implement | Major Comment (P0 if a headline claim); recompute and either correct the value or update the committed code to reproduce it |
-| `--fix` auto-fix loop (max 2 iterations) | ENFORCED in `/write-paper` Phase 7.4 chain | score still below threshold after 2 iterations | Route to write-paper Phase 7.4a Audit Recovery |
+| `--fix` auto-fix loop (max 2 iterations) | ENFORCED in `/write-paper` Phase 7.4 chain | score still below threshold after 2 iterations | Route to write-paper Phase 7.4a Audit Recovery (or report in action items if write-paper is uninstalled) |
 | Phase 2.5g editorial-impression scan (`check_editorial_impression.py`) | ADVISORY (non-blocking) | HEDGE_DENSITY / HEDGE_REPEAT / AUDIT_IN_BODY / LIMITATIONS_VOLUME / ABSTRACT_CAVEAT_LOAD / BURIED_DEFENSE | Minor REMOVE/MOVE/TIGHTEN recommendation in the Editorial-Impression Risks block; never blocks submission |
-| R0 numbering output | OPT-IN | `--r0-numbering` flag or downstream `/revise` consumer | Emits structured Anticipated Major/Minor Comments — consumable by `/revise` |
-| `--json` machine-readable output | OPT-IN | `--json` flag | Emits parseable JSON block consumed by `/orchestrate` post-skill validation |
+| R0 numbering output | OPT-IN | `--r0-numbering` flag or downstream `/revise` consumer | Emits structured Anticipated Major/Minor Comments — standalone or consumable by `/revise` |
+| `--json` machine-readable output | OPT-IN | `--json` flag | Emits parseable JSON block — standalone or consumable by downstream orchestrators |
 
 ## Global-rule references
 
@@ -891,3 +895,4 @@ need, that is a bug — please open an issue, because the instruction belongs he
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-09-21 | Copied from medsci-skills commit d7df514 (MIT). Added Changelog. Did NOT modify upstream logic. | agent (chore/skills-upgrade) |
+| 2026-09-23 | Round 5B: decoupled discovery description from /revise; added context-first routine autonomy to intake questions; hardened optional companion routes (/sync-submission, /manage-refs, /write-paper, /revise, /orchestrate, /search-lit); preserved blocking SSOT singularity, reference integrity, and refinement stop gates. | agent (chore/skills-upgrade) |

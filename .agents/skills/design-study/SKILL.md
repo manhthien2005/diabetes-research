@@ -1,9 +1,6 @@
 ---
 name: design-study
-description: >
-  Study design and validity review for radiology and medical AI research. Identifies analysis unit,
-  cohort logic, leakage risks, comparator design, validation strategy, and reporting guideline fit before
-  drafting or submission.
+description: Study design and methodological validity review for clinical tabular ML, EHR cohorts, NHANES, and medical AI research. Use before drafting or analysis to identify analysis unit, cohort design, leakage risks, comparators, validation strategy, and reporting guideline fit.
 triggers: study design, leakage check, cohort design, analysis plan, validation strategy, comparator design, bias check
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
@@ -45,7 +42,7 @@ Always inspect these dimensions:
 8. What validation strategy is used?
 9. What uncertainty reporting is required?
 10. Which reporting guideline best fits?
-11. Are exposure/outcome/covariate **definitions literature-grounded**, or invented ad-hoc from the data dictionary? If ad-hoc, defer to `/define-variables` before drafting Methods.
+11. Are exposure/outcome/covariate **definitions literature-grounded**, or invented ad-hoc from the data dictionary? If ad-hoc, defer to `/define-variables` (or verify against official codebooks and published literature if `/define-variables` is uninstalled) before drafting Methods.
 
 ---
 
@@ -90,9 +87,12 @@ Extract from protocol, draft, slides, tables, or notes:
 - outcome definition
 - timing of variable availability
 
-**Gate:** Present the reconstructed study summary (question, analysis unit, intended use)
-to the user. Confirm before proceeding — if the reconstruction is wrong, the entire
-validity review will be misdirected.
+**Gate & Context-First Autonomy Policy:**
+- Before asking questions, inspect AGENTS.md, the research brief, repository documentation, current implementation, and the user request first.
+- Recover answers to the core design questions (clinical problem, intended use case, population, inputs, outputs, outcome definition, timing) from existing repository evidence whenever possible.
+- Do not ask the user to repeat context already documented in repository source.
+- Ask only unresolved scoping questions whose answers remain unknown and materially affect cohort, outcome, comparator, validation, or study design.
+- If sufficient context exists, present the reconstructed study summary and proceed directly with the study-design validity analysis in the same turn.
 
 ### Phase 2: Check structural validity
 
@@ -160,9 +160,12 @@ evaluation — the design decisions that matter are made **before data collectio
 acceptance ceiling of a perceptual / reader AI study is fixed at design time: no quality of
 execution lifts a ceiling baked into the comparator, the estimand, or the reader cohort.
 
-For an AI-system-versus-human-expert benchmark specifically, route to `/design-ai-benchmarking`,
+For an AI-system-versus-human-expert benchmark specifically, route to `/design-ai-benchmarking` (if installed),
 which extends this subsection with arm definition, LLM-as-judge versus human-as-judge
-adjudication, and a structured export schema.
+adjudication, and a structured export schema. (Note: specialized extensions like `/design-ai-benchmarking`,
+`/model-evaluation`, `/uncertainty-imaging`, and `/find-journal` are optional companion routes;
+for the repository's primary focus on clinical tabular ML, EHR cohorts, and NHANES, core study design
+proceeds directly without requiring these uninstalled tools.)
 
 | File | Read it when | Cost if read blindly |
 |---|---|---|
@@ -272,7 +275,7 @@ Escalate to redesign only when the central claim is not defensible otherwise.
 
 ## Anti-Hallucination
 
-- **Never fabricate references.** All citations must be verified via `/search-lit` with confirmed DOI or PMID. Mark unverified references as `[UNVERIFIED - NEEDS MANUAL CHECK]`.
+- **Never fabricate references.** All citations must be verified via `/search-lit` (if installed) or authoritative sources (PubMed/CrossRef) with confirmed DOI or PMID. Mark unverified references as `[UNVERIFIED - NEEDS MANUAL CHECK]`.
 - **Never invent clinical definitions, diagnostic criteria, or guideline recommendations.** If uncertain, flag with `[VERIFY]` and ask the user.
 
 
@@ -281,3 +284,4 @@ Escalate to redesign only when the central claim is not defensible otherwise.
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-09-21 | Copied from medsci-skills commit d7df514 (MIT). Added Changelog. Did NOT modify upstream logic. | agent (chore/skills-upgrade) |
+| 2026-09-23 | Round 5B: corrected discovery description scope to surface clinical tabular ML, EHR cohorts, and NHANES; implemented context-first routine autonomy for study reconstruction; hardened optional companion routes; preserved clinical-definition and design-ambiguity gates. | agent (chore/skills-upgrade) |
