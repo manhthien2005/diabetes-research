@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ScientificOrchestratorEvalContract",
+  "description": "Structured planning-only response schema for diabetes-research-scientist evaluations.",
+  "type": "object",
+  "properties": {
+    "task_class": {
+      "type": "string",
+      "description": "Canonical classification of the requested research task."
+    },
+    "primary_skills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "analyze-stats",
+          "check-reporting",
+          "define-variables",
+          "design-study",
+          "paper-analyzer",
+          "paper-comparator",
+          "paper-finder",
+          "pdf-extract",
+          "pdf-fetch",
+          "peer-review",
+          "polish-language",
+          "prediction-model-rigor",
+          "self-review",
+          "verify-refs"
+        ]
+      },
+      "description": "Primary skills required for the task."
+    },
+    "support_skills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "analyze-stats",
+          "check-reporting",
+          "define-variables",
+          "design-study",
+          "paper-analyzer",
+          "paper-comparator",
+          "paper-finder",
+          "pdf-extract",
+          "pdf-fetch",
+          "peer-review",
+          "polish-language",
+          "prediction-model-rigor",
+          "self-review",
+          "verify-refs"
+        ]
+      },
+      "description": "Support or secondary skills permitted or needed."
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Canonical repository contracts governing the task."
+    },
+    "workflow_order": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ordered sequence of skill execution for multi-step tasks."
+    },
+    "requires_human_approval": {
+      "type": "boolean",
+      "description": "Whether the requested action requires explicit human approval under DECISION_AUTHORITY.md."
+    },
+    "approval_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Specific rationale if human approval is required, or null if autonomous."
+    },
+    "must_not_do": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Actions explicitly prohibited or avoided in this scenario."
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Unresolved dependencies, data gaps, or ambiguities that halt execution."
+    },
+    "scientific_risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Identified methodological risks, leakage threats, or validity issues."
+    }
+  },
+  "required": [
+    "task_class",
+    "primary_skills",
+    "support_skills",
+    "contracts",
+    "workflow_order",
+    "requires_human_approval",
+    "approval_reason",
+    "must_not_do",
+    "blockers",
+    "scientific_risks"
+  ],
+  "additionalProperties": false
+}
