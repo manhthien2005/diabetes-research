@@ -64,6 +64,7 @@
 3. All 8 `SKILL.md`: added local Changelog section
 4. Round 5A (R5A) runtime portability: remapped unverified ${CLAUDE_SKILL_DIR} and ${MEDSCI_SKILLS_ROOT} assumptions to canonical repository-relative paths (.agents/skills/...) for locally bundled helpers across analyze-stats, check-reporting, peer-review, self-review, and verify-refs.
 5. Round 5A (R5A) verify-refs full-text mapping: remapped unavailable upstream /fulltext-retrieval route to installed repository skill /pdf-fetch.
+6. Round 5A.1 (R5A.1) bundled resource path portability: normalized Claude-specific bundled-resource paths (${CLAUDE_SKILL_DIR}/references/...) to canonical repository-relative workspace paths (.agents/skills/...) for active runtime/on-demand resources across analyze-stats, check-reporting, peer-review, and self-review.
 
 ---
 

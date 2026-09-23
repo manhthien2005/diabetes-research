@@ -20,7 +20,7 @@ compliance report suitable for journal submission.
 
 ## Reference Files
 
-- **Checklists (bundled, open license)**: `${CLAUDE_SKILL_DIR}/references/checklists/`
+- **Checklists (bundled, open license)**: `.agents/skills/check-reporting/references/checklists/`
   - `STROBE.md` -- observational studies (CC BY)
   - `STROBE_MR.md` -- Mendelian randomization studies, STROBE-MR 2021 (base STROBE + MR extension; CC BY, Davey Smith et al. BMJ 2021)
   - `STARD.md` -- diagnostic accuracy studies (CC BY 4.0)
@@ -71,7 +71,7 @@ compliance report suitable for journal submission.
   - `SWiM.md` -- synthesis without meta-analysis reporting (Campbell et al. BMJ 2020)
   - `GATHER.md` -- health-estimate / burden-of-disease modeling studies (GBD and GBD-satellite, comparative-risk / population-attributable-fraction, cause-of-death and prevalence/incidence estimation, with or without forecasts), GATHER 2016 (in-house faithful summary; CC BY, Stevens et al. Lancet 2016;388:e19-23 / PLoS Med 2016;13(6):e1002056). Pairs with `/analyze-stats` `references/analysis_guides/burden_decomposition_forecasting.md` for the analytic methods.
 - Fail-fast contract: if a routed guideline has no vendored checklist file, the skill does **not** silently construct items from memory. It halts with a `MISSING_CHECKLIST_CONTRACT_VIOLATION` and surfaces the gap. A from-memory assessment is allowed only with the explicit `--allow-from-memory` opt-in, and that report must be clearly labelled NON-AUTHORITATIVE. See Step 2 and `scripts/check_checklist_exists.py`.
-- **Critical-item floor**: `${CLAUDE_SKILL_DIR}/references/critical_item_floor.md` -- the small set of non-waivable items per study type (presence outranks the headline %), plus the AI/radiomics methodological-quality / risk-of-bias instruments (PROBAST+AI, METRICS/RQS, APPRAISE-AI) kept distinct from their reporting counterparts. Loaded in Step 4f.
+- **Critical-item floor**: `.agents/skills/check-reporting/references/critical_item_floor.md` -- the small set of non-waivable items per study type (presence outranks the headline %), plus the AI/radiomics methodological-quality / risk-of-bias instruments (PROBAST+AI, METRICS/RQS, APPRAISE-AI) kept distinct from their reporting counterparts. Loaded in Step 4f.
 
 ---
 
@@ -154,7 +154,7 @@ user specification.
 - **STARD-AI** (Sounderajah et al., Nat Med 2025) extends STARD 2015 with 14 new and 4 modified items (40 total). For AI diagnostic accuracy studies, use STARD-AI (which incorporates all STARD 2015 items). Do NOT apply both STARD 2015 and STARD-AI simultaneously — STARD-AI supersedes STARD 2015 for AI studies.
 - **TRIPOD-LLM** (Gallifant et al., Nat Med 2025) is the reporting guideline for studies that develop, fine-tune, prompt, or evaluate a large language model for a clinical/biomedical task. It extends the TRIPOD family (TRIPOD 2015 → TRIPOD+AI 2024 → TRIPOD-LLM 2025); name the base instrument and the extension and cite each. It is modular — task-specific items (Annotation, Prompting, Summarization, Instruction-tuning) are N/A when that component is absent. Use TRIPOD-LLM for LLM studies in place of TRIPOD+AI; pair with MI-CLEAR-LLM when LLM accuracy is an evaluated outcome. The vendored checklist is an educational summary (own-words paraphrase of item intent); complete the official instrument for a submission checklist.
 - **MI-CLEAR-LLM** is a supplementary checklist (8 item categories in the 2025 update; the 2024 original had 6), not a standalone reporting guideline. Always pair it with the study's primary guideline (e.g., STARD-AI for AI diagnostic accuracy, CLAIM for imaging AI). Apply MI-CLEAR-LLM whenever the study evaluates LLM accuracy as an outcome — do NOT apply it merely because the manuscript was written with LLM assistance. Its scope is **LLM accuracy** studies (including VLMs interpreting images); it does **not** apply at study level to studies where a generative model *produces* the images under study (see next bullet).
-- **Generative-AI images as the study object** (a generative model synthesizes images and the study evaluates their realism, controllability, real-vs-synthetic distinguishability, or model-vs-model quality) has **no single dominant checklist**. Assemble: CLAIM 2024 (imaging-AI umbrella; model-development items N/A when commercial models are used as-is) + FUTURE-AI traceability + MI-CLEAR-LLM **transparency items only** (prompt/model/version/params/runs — for generation provenance, not study-level compliance) on the generator side; STARD-AI (for real-vs-synthetic detection) + GRRAS (reader reliability) + MRMC reporting on the evaluation side. Map applicable items and cite base + extension; never claim wholesale compliance. Full decision aid: `${CLAUDE_SKILL_DIR}/references/genai_image_study_object_decision_aid.md`.
+- **Generative-AI images as the study object** (a generative model synthesizes images and the study evaluates their realism, controllability, real-vs-synthetic distinguishability, or model-vs-model quality) has **no single dominant checklist**. Assemble: CLAIM 2024 (imaging-AI umbrella; model-development items N/A when commercial models are used as-is) + FUTURE-AI traceability + MI-CLEAR-LLM **transparency items only** (prompt/model/version/params/runs — for generation provenance, not study-level compliance) on the generator side; STARD-AI (for real-vs-synthetic detection) + GRRAS (reader reliability) + MRMC reporting on the evaluation side. Map applicable items and cite base + extension; never claim wholesale compliance. Full decision aid: `.agents/skills/check-reporting/references/genai_image_study_object_decision_aid.md`.
 - If multiple guidelines apply (e.g., a diagnostic accuracy study that is also an AI study), check against all relevant guidelines and merge into one report.
 - If the user requests a specific guideline, use that one regardless of auto-detection.
 
@@ -167,7 +167,7 @@ user specification.
    ```
 
    - Exit 0 → the vendored checklist exists; read it from
-     `${CLAUDE_SKILL_DIR}/references/checklists/` and proceed.
+     `.agents/skills/check-reporting/references/checklists/` and proceed.
    - Exit 1 (`MISSING_CHECKLIST_CONTRACT_VIOLATION`) → the guideline is routed
      but no checklist file is vendored. **Do not construct items from memory.**
      Halt, report the violation to the user, and stop unless they explicitly
@@ -274,7 +274,7 @@ disclosed elsewhere. Part D JSON includes a `registration_timing` object
 (registry, id, initial_registration_date, amendments[], timing_consistency, findings[]).
 
 **Load-on-demand procedural detail** (exact item-by-item procedure, JSON schema,
-flagging edge cases): `${CLAUDE_SKILL_DIR}/references/step4c_registration_timing.md`.
+flagging edge cases): `.agents/skills/check-reporting/references/step4c_registration_timing.md`.
 
 ### Step 4d: PRISMA Figure 1 Arithmetic & Cross-Reference Audit
 
@@ -339,7 +339,7 @@ be transcribed by hand:
 
 **Load-on-demand procedural detail** (exact regex set, JSON schema, edge cases —
 duplicates handled across databases, citation searching strand, dual-reviewer screening):
-`${CLAUDE_SKILL_DIR}/references/step4d_prisma_figure_audit.md`.
+`.agents/skills/check-reporting/references/step4d_prisma_figure_audit.md`.
 
 **Cross-cutting**: integrates with `~/.claude/rules/numerical-safety.md` (PRISMA 5-way
 consistency: text ↔ Figure ↔ extraction CSV ↔ analysis script ↔ supplementary).
@@ -373,7 +373,7 @@ the script's `claims[]`.
 
 **Applies to:** every guideline assessment **for which the floor defines a row** (load and
 check only those; do not invent a floor for an unlisted guideline). After the item-by-item
-table, load `${CLAUDE_SKILL_DIR}/references/critical_item_floor.md` and check the small set
+table, load `.agents/skills/check-reporting/references/critical_item_floor.md` and check the small set
 of **non-waivable** items for this study type. A MISSING critical item is surfaced as a
 **Critical gap** and becomes the report's headline regardless of the overall percentage —
 a high percentage with a missing critical item (undefined reference standard, no
@@ -384,7 +384,7 @@ For AI/ML and radiomics manuscripts, also confirm the chosen **methodological-qu
 risk-of-bias** instrument (PROBAST+AI, METRICS/RQS, APPRAISE-AI) and its non-waivable
 concerns — a fully *reported* paper can still be at high risk of bias. For radiomics, the
 fuller METRICS breakdown (9 categories / 30 weighted items) is in
-`${CLAUDE_SKILL_DIR}/references/appraisal_tools/METRICS.md` (an appraisal reference, not a counted
+`.agents/skills/check-reporting/references/appraisal_tools/METRICS.md` (an appraisal reference, not a counted
 reporting checklist). Keep these distinct
 from the reporting counterparts (CLEAR, DECIDE-AI), which route through the normal checklist
 flow. Do not assert a numeric journal desk-reject threshold; the hard signals are a missing
@@ -410,7 +410,7 @@ report, not the official journal checklist. Do not upload to a submission portal
 (`/sync-submission`'s `check_checklist_dump_leak` gate also catches this dump if it ever lands in
 a submission directory — but the banner is what makes it catchable.)
 
-**The four parts** — literal templates in `${CLAUDE_SKILL_DIR}/references/report_templates.md`:
+**The four parts** — literal templates in `.agents/skills/check-reporting/references/report_templates.md`:
 
 - **Part A — Summary.** Header (manuscript file, version token, guideline, date), the
   PRESENT/PARTIAL/MISSING/N-A count table, and overall compliance. The **headline is the critical

@@ -244,7 +244,7 @@ python3 .agents/skills/self-review/scripts/check_cv_leakage.py \
 
 `CV_SELECTION_LEAKAGE` (Major) fires when a selection token co-occurs with cross-validation and no fold-nesting is disclosed ("within each fold" / "nested CV" suppresses it). This is distinct from patient-vs-image split leakage (`model-validation/check_split_leakage.py`).
 
-When the manuscript matches a row, read `${CLAUDE_SKILL_DIR}/references/domain-probes/<module>.md` and apply each probe as an additional source of Anticipated Major / Minor Comments. The module severity words (MAJOR / MINOR) map to this skill's framing as follows: a conclusion-threatening or design-level finding becomes a **Fatal** Anticipated Major Comment, a reporting-level finding becomes a **Fixable** Anticipated Minor Comment, and each is tagged with the closest category letter (A–K). These probes **complement** categories A–K above; they do not replace them. (The modules are vendored byte-identical from `/peer-review`; do not edit one copy only — run `python3 scripts/check_domain_probe_sync.py --sync`.)
+When the manuscript matches a row, read `.agents/skills/self-review/references/domain-probes/<module>.md` and apply each probe as an additional source of Anticipated Major / Minor Comments. The module severity words (MAJOR / MINOR) map to this skill's framing as follows: a conclusion-threatening or design-level finding becomes a **Fatal** Anticipated Major Comment, a reporting-level finding becomes a **Fixable** Anticipated Minor Comment, and each is tagged with the closest category letter (A–K). These probes **complement** categories A–K above; they do not replace them. (The modules are vendored byte-identical from `/peer-review`; do not edit one copy only — run `python3 scripts/check_domain_probe_sync.py --sync`.)
 
 ### Phase 2.5: Numerical Cross-Verification (Internal)
 
@@ -344,7 +344,7 @@ A design or power statistic is **computed**, not copied from a source, so the so
 |---|---|---|
 | `references/phases/phase2_5a2_design_power.md` | the manuscript reports a sample-size / power / MDE calculation | ~1,050 tokens; a manuscript with no power statement needs none of it |
 
-**Load-on-demand**: read `${CLAUDE_SKILL_DIR}/references/phases/phase2_5a2_design_power.md` when the manuscript reports a sample-size / power / MDE calculation.
+**Load-on-demand**: read `.agents/skills/self-review/references/phases/phase2_5a2_design_power.md` when the manuscript reports a sample-size / power / MDE calculation.
 
 ### Phase 2.5b: Screening-Count Reconciliation from ID Sets (SR/MA + observational tier/stratum)
 
@@ -416,7 +416,7 @@ python3 .agents/skills/self-review/scripts/check_reference_adequacy.py \
 |---|---|---|
 | `references/phases/phase2_5c_reference_scans.md` | the manuscript has a bibliography and you are auditing citations | ~1,950 tokens; a draft with no reference list cannot use any of it |
 
-**Load-on-demand**: read `${CLAUDE_SKILL_DIR}/references/phases/phase2_5c_reference_scans.md` when the manuscript has a bibliography and you are auditing citations.
+**Load-on-demand**: read `.agents/skills/self-review/references/phases/phase2_5c_reference_scans.md` when the manuscript has a bibliography and you are auditing citations.
 
 ### Phase 2.5d: Cross-Reference QC (Manuscript ↔ rendered DOCX)
 
@@ -735,7 +735,7 @@ Two things bind before you spawn anything: the **SSOT must be singular** (the Ph
 |---|---|---|
 | `references/phases/phase2_6_panel.md` | `--panel` was passed and you are composing the reviewer set | ~2,600 tokens — the reviewer-set table, roster manifest, editor synthesis and lens-diversity gate; a default single-pass review reaches none of it |
 
-**Load-on-demand**: read `${CLAUDE_SKILL_DIR}/references/phases/phase2_6_panel.md` when `--panel` is passed.
+**Load-on-demand**: read `.agents/skills/self-review/references/phases/phase2_6_panel.md` when `--panel` is passed.
 
 ### Phase 3: Report
 
@@ -825,7 +825,7 @@ Emit the review as machine-readable JSON **only when `--json` is passed** (or wh
 |---|---|---|
 | `references/phases/phase3c_json_output.md` | --json was passed, or a downstream skill consumes this run | ~790 tokens of schema a human-facing review never emits |
 
-**Load-on-demand**: read `${CLAUDE_SKILL_DIR}/references/phases/phase3c_json_output.md` when --json was passed, or a downstream skill consumes this run.
+**Load-on-demand**: read `.agents/skills/self-review/references/phases/phase3c_json_output.md` when --json was passed, or a downstream skill consumes this run.
 
 ### Phase 4: Fix Support (on request)
 
@@ -837,7 +837,7 @@ The review ends at Phase 3. Enter this phase **only when the user asks for help 
 |---|---|---|
 | `references/phases/phase4_fix_support.md` | the user asks you to apply or draft fixes for the findings | ~850 tokens; a review that is only read never reaches this phase |
 
-**Load-on-demand**: read `${CLAUDE_SKILL_DIR}/references/phases/phase4_fix_support.md` when the user asks you to apply or draft fixes for the findings.
+**Load-on-demand**: read `.agents/skills/self-review/references/phases/phase4_fix_support.md` when the user asks you to apply or draft fixes for the findings.
 
 ## What This Skill Does NOT Do
 

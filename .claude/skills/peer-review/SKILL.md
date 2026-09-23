@@ -254,7 +254,7 @@ does not apply* — read that before deciding a row does not fire.
 
 Before finalizing **Major Revision** (or an AJR-style Reconsider tier) for an original AI,
 LLM or methodology paper — or for a Review / narrative / primer article — run the calibration
-gate in `${CLAUDE_SKILL_DIR}/references/reviewer_calibration/recommendation_calibration.md`.
+gate in `.agents/skills/peer-review/references/reviewer_calibration/recommendation_calibration.md`.
 It stops a valid issue list from under-weighting contribution and priority. Peer-review only:
 it concerns the journal recommendation, which `/self-review` does not produce.
 
@@ -262,7 +262,7 @@ it concerns the journal recommendation, which `/self-review` does not produce.
 
 **Trigger:** the manuscript's claimed mechanism of improvement is the system judging or revising **itself** — an agent that iteratively critiques and rewrites its own output, a pipeline trained on data it generated, an LLM used as the judge that scores or filters the training signal, a "self-evolving" clinical agent.
 
-**Probe detail (SI1–SI7):** `${CLAUDE_SKILL_DIR}/references/domain-probes/self_improving_system.md`. The organizing question is not *did it improve?* but **what said so?** Every improvement loop is a claim that some signal can substitute for human judgment, and signals are not interchangeable: a formal verifier is sound by construction, execution feedback is reliable but incomplete, an LLM-as-judge is bounded by its own competence, and a model's self-consistency is the most gameable of all. A rung-1 conclusion drawn from a rung-3 signal is the commonest failure in this literature and is a design-level Major — surface it in the Confidential Comments to the Editor. **SI2** (the judge is the model it judges, unvalidated) and **SI3** (an ungrounded loop, where the gain may be reformulation rather than progress) are the two that a deterministic pass can decide:
+**Probe detail (SI1–SI7):** `.agents/skills/peer-review/references/domain-probes/self_improving_system.md`. The organizing question is not *did it improve?* but **what said so?** Every improvement loop is a claim that some signal can substitute for human judgment, and signals are not interchangeable: a formal verifier is sound by construction, execution feedback is reliable but incomplete, an LLM-as-judge is bounded by its own competence, and a model's self-consistency is the most gameable of all. A rung-1 conclusion drawn from a rung-3 signal is the commonest failure in this literature and is a design-level Major — surface it in the Confidential Comments to the Editor. **SI2** (the judge is the model it judges, unvalidated) and **SI3** (an ungrounded loop, where the gain may be reformulation rather than progress) are the two that a deterministic pass can decide:
 
 ```bash
 python3 .agents/skills/peer-review/scripts/check_self_improvement_claims.py \
@@ -319,7 +319,7 @@ round), `BOX_MISSING`.
 Generate `{manuscript_id}_review_draft.md`:
 
 Generate `{manuscript_id}_review_draft.md` from the skeleton in
-`${CLAUDE_SKILL_DIR}/references/review_draft_template.md`. It has three blocks: a
+`.agents/skills/peer-review/references/review_draft_template.md`. It has three blocks: a
 **Confidential Comments to the Editor** block (100–150 words: summary, strengths, key
 concerns, fatal-flaw hierarchy, recommendation, clinical impact) and a **Comments to the
 Authors** block (research summary + strengths, then Major, Minor, and a closing remark).

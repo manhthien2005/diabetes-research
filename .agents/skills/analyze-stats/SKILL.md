@@ -26,14 +26,14 @@ Before reading any data file, check whether it might contain Protected Health In
 
 ## Reference Files
 
-- **Templates**: `${CLAUDE_SKILL_DIR}/references/templates/` -- reusable analysis scripts
-- **Analysis guides**: `${CLAUDE_SKILL_DIR}/references/analysis_guides/` -- on-demand methodology references
-- **Table standards**: `${CLAUDE_SKILL_DIR}/references/table-standards/` -- journal-specific table formatting
+- **Templates**: `.agents/skills/analyze-stats/references/templates/` -- reusable analysis scripts
+- **Analysis guides**: `.agents/skills/analyze-stats/references/analysis_guides/` -- on-demand methodology references
+- **Table standards**: `.agents/skills/analyze-stats/references/table-standards/` -- journal-specific table formatting
   - `table-standards.md` -- universal rules, AMA rules, footnote system, mistakes checklist
   - `journal-profiles/` -- YAML profiles per journal (radiology, jama, nejm, lancet, eur_rad, ajr)
   - `table-types/` -- templates per table type (Table 1, diagnostic accuracy, regression, survival/Cox, agreement/reliability, meta-analysis, model comparison, incremental value, reader study (MRMC))
   - `tool-comparison.md` -- R/Python tool comparison and recommended pipelines
-- **Figure style**: `${CLAUDE_SKILL_DIR}/references/style/figure_style.mplstyle`
+- **Figure style**: `.agents/skills/analyze-stats/references/style/figure_style.mplstyle`
 - **Project data**: See CLAUDE.md for data locations under `2_Data/`
 
 Read relevant templates before generating analysis code. For complex analysis types
@@ -106,9 +106,9 @@ Present the plan and **wait for user approval** before executing.
 | Repeated Measures | Longitudinal / multi-timepoint data | pingouin, statsmodels | lme4, nlme, geepack | Spaghetti plot, LMM/GEE/RM ANOVA results |
 
 For **Logistic Regression**, **Linear Regression**, **Propensity Score**, **Survey-Weighted**, and **Repeated Measures**:
-load the corresponding guide from `${CLAUDE_SKILL_DIR}/references/analysis_guides/` before generating code.
+load the corresponding guide from `.agents/skills/analyze-stats/references/analysis_guides/` before generating code.
 For **Survey-Weighted** analysis, also load `survey_weighted.md`. For NHIS claims-based studies, load `nhis_icd10_mapping.md`.
-For test selection guidance, load `${CLAUDE_SKILL_DIR}/references/analysis_guides/test_selection.md`.
+For test selection guidance, load `.agents/skills/analyze-stats/references/analysis_guides/test_selection.md`.
 
 ### Phase 3: Execute
 
@@ -329,8 +329,8 @@ added later:
 ### Tables
 
 **Before generating any publication table**, load the journal profile and table type template:
-1. Load `${CLAUDE_SKILL_DIR}/references/table-standards/journal-profiles/{journal}.yaml` if a target journal is known
-2. Load `${CLAUDE_SKILL_DIR}/references/table-standards/table-types/{type}.md` for the relevant table type
+1. Load `.agents/skills/analyze-stats/references/table-standards/journal-profiles/{journal}.yaml` if a target journal is known
+2. Load `.agents/skills/analyze-stats/references/table-standards/table-types/{type}.md` for the relevant table type
 3. If no journal specified, default to AMA style (Radiology profile)
 
 **Output formats** (always generate all three):
