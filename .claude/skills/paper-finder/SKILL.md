@@ -3,20 +3,23 @@ name: paper-finder
 description: |
   Find new research papers on diabetes PREDICTION (diabetes prediction, binary
   classification, tabular & EHR), assign appropriate Layer 1-4 + prediction_horizon,
-  and place into `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/` awaiting analysis.
+  evaluate candidate roles per docs/agent/EVIDENCE_POLICY.md, and propose candidates
+  for human approval before placing into `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`.
 inputs:
   - 01_Diabetes_Research/chosed_papers/Layer_<1..4>/        # baseline for thematic comparison
   - AGENTS.md                          # §1 scope, §3 Layer, §3b prediction_horizon
+  - docs/agent/EVIDENCE_POLICY.md      # evidence evaluation & candidate role policy
+  - docs/agent/PAPER_SCHEMA.md          # candidate record contract
+  - docs/agent/DECISION_AUTHORITY.md   # decision authority matrix
 outputs:
   - 01_Diabetes_Research/searched_papers/Layer_<1..4>/<paper_id>/source.pdf
-  - 01_Diabetes_Research/searched_papers/Layer_<1..4>/<paper_id>/metadata.json  # including new integrity field
+  - 01_Diabetes_Research/searched_papers/Layer_<1..4>/<paper_id>/metadata.json  # including integrity & candidate fields
 ---
 
 # paper-finder
 
 ## Purpose
-Expand repository `01_Diabetes_Research/searched_papers/` with **diabetes prediction** papers,
-categorizing immediately into the appropriate Layer + assigning `prediction_horizon`, based on primary focus:
+Expand repository literature on **diabetes prediction**, categorizing candidates into the appropriate Layer + assigning `prediction_horizon`, based on primary focus:
 
 | Layer | Focus |
 |-------|-------|
@@ -33,15 +36,33 @@ categorizing immediately into the appropriate Layer + assigning `prediction_hori
 | `early_detection` | Early detection / screening in undiagnosed individuals, prediabetes — **PRIORITY** |
 | `long_term_risk`  | Onset after N years, longitudinal cohort — **PRIORITY (currently underrepresented)** |
 
-## Hard Criteria (Derived from AGENTS.md §7)
-0. **Strict §1 Scope**: must be a diabetes PREDICTION paper (tabular/EHR). Otherwise → reject immediately.
-1. Citations ≥ 100 (>3y) or ≥ 30 (1–3y) or rising-star (>5 cite/month if <1y).
-2. Dataset public + licensed for research.
-3. Method reproducible with code or described in sufficient detail.
+---
 
-## Integrity Gates (Added 2026-09-21) — BEFORE Creating Folder
+## Candidate Assessment & Evidence Guidelines (Governed by `docs/agent/EVIDENCE_POLICY.md`)
 
-Before creating `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`, MUST run all 3 checks:
+Candidate evaluation strictly separates **scientific evidence value** from **reproducibility feasibility**:
+
+1. **Strict §1 Scope**: Must be a diabetes PREDICTION paper on tabular or EHR data. Non-tabular, image/CGM-only, treatment-only, or non-prediction papers are out of scope → recommend `exclude_from_current_scope`.
+2. **Dual Candidate Roles (`candidate_roles`)**:
+   - **`evidence_candidate`**: Evaluated on methodological rigor, clinical validity, conceptual insight, and relevance to diabetes prediction.
+     - **No Public Dataset Requirement**: Proprietary or restricted clinical EHR cohorts (HIPAA/GDPR) remain valid evidence candidates.
+     - **No Source Code Requirement**: Lack of open source code does not disqualify a study from being valuable evidence.
+   - **`reproduction_candidate`**: Evaluated on practical feasibility of pipeline re-implementation.
+     - Considers data accessibility (public download or clear DUA like PhysioNet), code availability, operationalized variable definitions, and parameter transparency.
+   - **Multi-Role Structure**: A paper may be an `evidence_candidate`, a `reproduction_candidate`, both, or neither.
+3. **Citation Count as Discovery Signal Only**:
+   - Citation counts from CrossRef, Semantic Scholar, or OpenAlex serve strictly for discovery search ordering and triage prioritization.
+   - Citation count is **NEVER a truth gate**, scientific validity gate, or automatic rejection criterion.
+   - Low citation count (e.g., recent preprints or niche clinical cohorts) does not warrant rejection.
+4. **Advisory Authority**:
+   - Agents formulate advisory recommendations (`recommended_action: "promote" | "retain_in_pool" | "exclude_from_current_scope" | "reject_with_human_review" | "needs_more_review"`).
+   - Agents **NEVER** execute irreversible repository transitions (moving files to `chosed_papers/`, recording permanent rejections in `rejected.json`, or deleting folders) without explicit human authorization (`docs/agent/DECISION_AUTHORITY.md`).
+
+---
+
+## Integrity Gates — BEFORE Proposing or Creating Folder
+
+For every candidate paper, MUST run all 3 verification checks:
 
 ### Check 1: DOI Resolves via CrossRef
 ```bash
@@ -55,8 +76,8 @@ print('doi:', m.get('DOI'))
 print('status: ok')
 "
 ```
-- If CrossRef returns `Resource not found` → record `integrity.doi_resolved: false`, DO NOT create folder.
-- Cross-check CrossRef title vs retrieved paper title: substantial divergence (>30% words) → raise warning.
+- If CrossRef returns `Resource not found` → record `integrity.doi_resolved: false`, `identity_verified: false`, do NOT create folder.
+- Cross-check CrossRef title vs retrieved paper title: substantial divergence (>30% words) → record in `metadata_conflicts`, alert user.
 
 ### Check 2: Title Match
 - Title from CrossRef must substantially match title from Semantic Scholar/PubMed.
@@ -75,36 +96,84 @@ print('has_correction:', bool(corr))
 print('type:', m.get('type'))
 "
 ```
-- If `is-retraction-of` is present → DO NOT create folder, record into `01_Diabetes_Research/rejected.json` with `reason: retracted`.
-- If correction is present → create folder but record `integrity.has_correction: true`.
+- If `is-retraction-of` is present → set `retraction_status: "retracted"`, do NOT create folder. Formulate recommendation `recommended_action: "reject_with_human_review"` with reason `"retracted"`. Permanent addition to `01_Diabetes_Research/rejected.json` requires human confirmation.
+- If correction is present → record `integrity.has_correction: true`, `retraction_status: "corrected"`.
 
-### Record in metadata.json: Field `integrity` (New)
+---
+
+## Metadata and Candidate Schema (`metadata.json`)
+
+Future metadata records emit candidate role assessments alongside standard metadata:
+
 ```json
-"integrity": {
-  "doi_resolved": true,
-  "title_match": true,
-  "crossref_type": "journal-article",
-  "retracted": false,
-  "has_correction": false,
-  "checked_at": "<ISO-8601>",
-  "check_source": "crossref"
+{
+  "paper_id": "<lastname><year>_<slug>",
+  "title": "<full title>",
+  "authors": ["..."],
+  "year": 2024,
+  "venue": "<venue>",
+  "doi": "10.xxx/yyy",
+  "citations": 42,
+  "layer": 2,
+  "prediction_horizon": "early_detection",
+  "candidate_roles": ["evidence_candidate", "reproduction_candidate"],
+  "candidate_assessment": {
+    "evidence_candidate": {
+      "eligible": true,
+      "reasons": ["Well-validated early screening cohort on NHANES"],
+      "limitations": ["Lacks temporal calibration"]
+    },
+    "reproduction_candidate": {
+      "eligible": true,
+      "reasons": ["Public code repository on GitHub and public NHANES data"],
+      "limitations": ["Requires manual survey weight configuration"]
+    }
+  },
+  "integrity": {
+    "identity_verified": true,
+    "doi_resolved": true,
+    "title_match": true,
+    "crossref_type": "journal-article",
+    "retraction_status": "not_retracted",
+    "has_correction": false,
+    "metadata_conflicts": [],
+    "checked_at": "<ISO-8601>",
+    "check_source": "crossref"
+  },
+  "reproducibility": {
+    "dataset_access": "public",
+    "code_access": "public",
+    "methods_operationalized": "sufficient",
+    "variable_mapping_feasible": "yes",
+    "overall": "high",
+    "notes": ["Public NHANES cycles and GitHub code available"]
+  },
+  "recommended_action": "retain_in_pool",
+  "decision_state": "recommendation_ready",
+  "source_pdf": "source.pdf",
+  "status": "searched",
+  "analysis_status": "none"
 }
 ```
-- The `integrity` field is NEWLY ADDED — does not modify existing fields, does not break webapp.
-- If CrossRef is unresponsive → record `integrity.doi_resolved: null`, `check_source: "unavailable"`.
+
+*Note: All new candidate fields are optional for legacy records to guarantee full backward compatibility.*
 
 ---
 
 ## Procedure
-1. Inspect 4 layers in `01_Diabetes_Research/chosed_papers/` to know current holdings → prevent duplicates.
-2. Propose ≤ 5 new papers per batch, each paper including:
+1. Inspect 4 layers in `01_Diabetes_Research/chosed_papers/` and `searched_papers/` to know current holdings → prevent duplicate proposals.
+2. Search and screen candidates against §1 topic scope.
+3. Assess `candidate_roles` independently (`evidence_candidate` vs `reproduction_candidate`).
+4. Propose ≤ 5 new papers per batch, each paper including:
    - `paper_id` in format `<lastname><year>_<3-word-slug>`
    - Assigned Layer + rationale (1 sentence)
    - `prediction_horizon` (1 of 3) + rationale (1 sentence)
+   - Candidate role assessment (`candidate_roles`) + rationale
+   - Advisory `recommended_action`
    - **SPECIAL PRIORITY** for papers belonging to `early_detection` or `long_term_risk`
-3. Run **integrity gates** (3 checks above) for every proposed paper before presenting to user.
+5. Run **integrity gates** (3 checks above) for every proposed paper before presenting to user.
    If checks fail → do not propose paper, replace with another candidate.
-4. Upon user approval, create folder and execute pdf-fetch.
+6. Upon explicit user approval, create folder and execute `pdf-fetch`.
 
 ## When Uncertain on Layer / Horizon
 - Uncertain on Layer → default to Layer 2, `layer_uncertain: true`.
@@ -116,3 +185,4 @@ print('type:', m.get('type'))
 |------|--------|--------|
 | 2026-09-21 | v2: Added integrity gates (DOI resolution, title match, retraction check via CrossRef). Added `integrity` field to metadata.json. Prioritize early_detection + long_term_risk proposals. | agent (chore/skills-upgrade) |
 | 2026-09-22 | fix: Restored Vietnamese diacritics (lost due to PowerShell Out-File CP437). Use Python UTF-8 write. | agent (fix/encoding) |
+| 2026-09-23 | v3: Formalized dual candidate roles (evidence_candidate vs reproduction_candidate). Separated evidence value from reproducibility. Citation count made discovery-only signal. Replaced autonomous rejection with advisory recommendations per EVIDENCE_POLICY.md and DECISION_AUTHORITY.md. | agent (chore/skills-upgrade) |

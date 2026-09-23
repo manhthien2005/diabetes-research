@@ -3,13 +3,17 @@ name: paper-analyzer
 description: |
   Deeply analyze a paper in `01_Diabetes_Research/searched_papers/Layer_X/<paper_id>/`,
   generating `analysis.html` (Vietnamese, 8 blocks per AGENTS.md §6) AND
-  `summary.json` (machine-readable, for research brief synthesis). Goal: enable user
-  to decide promote/reject without opening the PDF.
+  `summary.json` (machine-readable, for research brief synthesis). Evaluates candidate
+  roles, multi-dimensional reproducibility, and claim-level provenance per docs/agent/EVIDENCE_POLICY.md
+  to formulate advisory recommendations for human decision-making.
 inputs:
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/extracted.md
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/source.pdf
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/metadata.json
   - 01_Diabetes_Research/chosed_papers/Layer_<n>/
+  - docs/agent/EVIDENCE_POLICY.md
+  - docs/agent/PAPER_SCHEMA.md
+  - docs/agent/DECISION_AUTHORITY.md
 outputs:
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/analysis.html
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/summary.json
@@ -19,14 +23,13 @@ outputs:
 # paper-analyzer
 
 ## Purpose
-Transform 1 scientific PDF into a DEEP Vietnamese analysis + a machine-readable
-summary, enabling the user to decide whether to "promote to `01_Diabetes_Research/chosed_papers/` or reject".
+Transform 1 scientific PDF into a DEEP Vietnamese analysis + a machine-readable summary, evaluating candidate roles (`evidence_candidate` vs `reproduction_candidate`), multi-dimensional reproducibility, and claim-level provenance, enabling the human researcher to make informed promotion or retention decisions.
 
 ## Procedure
 1. **Read full text**: prioritize `extracted.md`. If missing → run `pdf-extract`.
 2. Read `metadata.json` + read papers in `01_Diabetes_Research/chosed_papers/Layer_<n>/` within the same layer.
 3. Render `analysis.html` following the **8 blocks** (AGENTS.md §6). DO NOT alter the structure.
-4. Record `summary.json` (schema below) — including the new `rob_audit` key.
+4. Record `summary.json` (schema below) — preserving backward-compatible fields and emitting candidate assessment, multi-dimensional reproducibility, claim-level provenance, and `rob_audit`.
 5. Record `rob_audit.json` (dedicated QC version).
 6. Set `analysis_status: "analyzed"` + confirm `prediction_horizon` in metadata.
 
@@ -36,7 +39,10 @@ Do not stop at generic descriptions. MUST extract:
 - **Exact pipeline**: step-by-step preprocessing → class balancing → feature engineering → model → hyperparameter tuning
 - **Dataset & split**: name, sample size, feature count, train/test ratio, CV scheme, class balance
 - **Metric with PROVENANCE**: cite "Table X / Fig Y / Section Z". Missing → `UNKNOWN`.
-- **Reproducibility** (high/medium/low) + rationale
+- **Multi-Dimensional Reproducibility** (PAPER_SCHEMA.md): dataset access, code access, algorithmic operationalization, and variable mapping feasibility.
+- **Candidate Assessment** (EVIDENCE_POLICY.md): evaluate `evidence_candidate` and `reproduction_candidate` independently. Methodological flaws reduce confidence but do not automatically erase evidence value.
+- **Claim-Level Provenance**: extract assertions with explicit location (`section`, `table`, `page`), support degree (`direct | partial | contextual | unsupported`), and confidence (`high | medium | low`).
+- **Anti-Fabrication Constraint**: Never invent or approximate page, table, or section references. When location is absent, record `null` or `UNKNOWN`.
 - **Comparison against baseline**: concrete advantages/disadvantages
 - **Gap / limitations**: concrete improvement opportunities for our research project
 
@@ -87,6 +93,43 @@ Record every detected violation type into `leakage_types[]` (identifiers "B"..."
   "verdict": "strong|maybe|weak",
   "verdict_reason": "1-sentence rationale",
   "analyzed_at": "<ISO-8601>",
+  "candidate_roles": ["evidence_candidate", "reproduction_candidate"],
+  "candidate_assessment": {
+    "evidence_candidate": {
+      "eligible": true,
+      "reasons": ["Demonstrates robust tree ensemble comparison on clinical tabular features"],
+      "limitations": ["Evaluated only on single-center cohort"]
+    },
+    "reproduction_candidate": {
+      "eligible": false,
+      "reasons": [],
+      "limitations": ["Private clinical data; source code not shared"]
+    }
+  },
+  "reproducibility": {
+    "dataset_access": "unavailable",
+    "code_access": "unavailable",
+    "methods_operationalized": "sufficient",
+    "variable_mapping_feasible": "partial",
+    "overall": "low",
+    "notes": ["Proprietary hospital EHR data under institutional governance"]
+  },
+  "claim_provenance": [
+    {
+      "claim": "XGBoost yielded the highest AUROC of 0.881 compared to RF and SVM.",
+      "source": "<paper_id>",
+      "doi": "10.xxx/yyy",
+      "location": {
+        "section": "3.1 Performance Comparison",
+        "table": "Table 2",
+        "page": 5
+      },
+      "support": "direct",
+      "confidence": "high"
+    }
+  ],
+  "recommended_action": "retain_in_pool",
+  "decision_state": "recommendation_ready",
   "rob_audit": {
     "probe_hits": ["CP2", "E"],
     "leakage_types": ["C", "E"],
@@ -100,15 +143,14 @@ Record every detected violation type into `leakage_types[]` (identifiers "B"..."
 }
 ```
 
-**Notes on `rob_audit` schema**:
-- `probe_hits[]`: FAILED probes (CP1–CP6, O11). Empty = no violations detected.
-- `leakage_types[]`: data leakage violation categories (B–G). Empty = indeterminate.
-- `validation_level`: highest validation level (external > temporal > internal > UNKNOWN).
-- `calibration_reported`: whether calibration was reported.
-- `survey_design_handled`: fill only if paper uses NHANES/BRFSS; otherwise null.
-- `prevalence_realistic`: evaluated against realistic clinical prevalence.
-- `evidence_ref`: source citation ("Table X / Sec Y") or UNKNOWN.
-- `confidence`: confidence level (high=verbatim quote, medium=inference, low=insufficient details).
+**Notes on new schema extensions**:
+- `candidate_roles`: array containing `"evidence_candidate"`, `"reproduction_candidate"`, both, or neither (`[]`).
+- `candidate_assessment`: independent justifications and limitations for each candidate role.
+- `reproducibility`: multi-dimensional assessment object conforming to `docs/agent/PAPER_SCHEMA.md`.
+- `claim_provenance`: structured array of extracted factual claims with section, table, and page provenance.
+- `recommended_action`: advisory action (`"promote" | "retain_in_pool" | "exclude_from_current_scope" | "reject_with_human_review" | "needs_more_review"`).
+- `decision_state`: governance state (`"unreviewed" | "recommendation_ready" | "human_approved" | "human_rejected"`).
+- Legacy fields (`paper_id`, `layer`, `prediction_horizon`, `contribution`, `method`, `best_metric`, `datasets`, `has_code`, `code_url`, `reproducible`, `vs_baseline`, `gap`, `verdict`, `verdict_reason`, `analyzed_at`) are preserved for backward compatibility with `verify_analyses.py` and downstream tools.
 
 ---
 
@@ -117,7 +159,7 @@ Record every detected violation type into `leakage_types[]` (identifiers "B"..."
 {
   "paper_id": "<id>",
   "audited_at": "<ISO-8601>",
-  "auditor": "paper-analyzer v2",
+  "auditor": "paper-analyzer v3",
   "probe_hits": [],
   "leakage_types": [],
   "validation_level": "UNKNOWN",
@@ -134,14 +176,20 @@ Record every detected violation type into `leakage_types[]` (identifiers "B"..."
 
 ---
 
-## Autonomous Rejection for Low-Quality Papers (User Delegated — AGENTS.md §11)
-If analysis reveals the paper FAILS criteria → add to `01_Diabetes_Research/rejected.json` with a specific reason, `by: "Codex"`, set `status: "rejected"`. DO NOT delete folder.
+## Advisory Action Recommendations (Governed by `docs/agent/DECISION_AUTHORITY.md`)
+- If analysis reveals that a paper has fatal methodological violations, severe leakage, retraction, or falls outside the research scope:
+  - Formulate an advisory recommendation (`recommended_action: "reject_with_human_review"` or `"exclude_from_current_scope"`).
+  - Explicitly document the factual grounds in `candidate_assessment` and `summary.json.verdict_reason`.
+  - **DO NOT autonomously write to `01_Diabetes_Research/rejected.json` or delete folders.**
+  - Irreversible repository actions require explicit human authorization.
+
+---
 
 ## Constraints
 - `analysis.html` is self-contained (inline CSS, no CDN), in Vietnamese, retaining EN technical terms.
 - **Header** block MUST include the Horizon badge from `prediction_horizon`.
-- **8 HTML BLOCKS REMAIN UNCHANGED** — rob_audit DOES NOT appear in analysis.html.
-- DO NOT fabricate numbers. Missing → `UNKNOWN`.
+- **8 HTML BLOCKS REMAIN UNCHANGED** — rob_audit and claim provenance do not alter the 8-block HTML template.
+- DO NOT fabricate numbers or locations. Missing → `UNKNOWN` or `null`.
 - DO NOT overwrite existing `analysis.html` → create `analysis.v2.html`.
 - DO NOT touch `01_Diabetes_Research/chosed_papers/` autonomously.
 
@@ -155,3 +203,4 @@ If analysis reveals the paper FAILS criteria → add to `01_Diabetes_Research/re
 |------|--------|--------|
 | 2026-09-21 | v2: Added RoB mini-audit step (probes CP1–CP6 + O11), leakage taxonomy from LEAKAGE_MAP. Added `rob_audit` key to summary.json. Added `rob_audit.json` output. 8 HTML blocks unchanged, webapp-read fields unchanged. | agent (chore/skills-upgrade) |
 | 2026-09-22 | fix: Restored Vietnamese diacritics (lost due to PowerShell Out-File CP437). Use Python UTF-8 write. | agent (fix/encoding) |
+| 2026-09-23 | v3: Formalized evidence candidate semantics, multi-dimensional reproducibility, and claim-level provenance per EVIDENCE_POLICY.md and PAPER_SCHEMA.md. Replaced autonomous rejection with advisory recommendations under DECISION_AUTHORITY.md. | agent (chore/skills-upgrade) |

@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ClaimProvenance",
+  "description": "Canonical schema for claim-level evidence provenance in literature research",
+  "type": "object",
+  "required": [
+    "claim",
+    "source",
+    "doi",
+    "location",
+    "support",
+    "confidence"
+  ],
+  "properties": {
+    "claim": {
+      "type": "string",
+      "description": "Specific factual proposition or finding asserted"
+    },
+    "source": {
+      "type": "string",
+      "description": "Short bibliographic citation or paper identifier"
+    },
+    "doi": {
+      "type": ["string", "null"],
+      "description": "Digital Object Identifier of the source if available, or null"
+    },
+    "location": {
+      "type": "object",
+      "description": "Specific location of evidence within the source document",
+      "required": [
+        "section",
+        "table",
+        "page"
+      ],
+      "properties": {
+        "section": {
+          "type": ["string", "null"],
+          "description": "Section or subsection name/number, or null if unlocated"
+        },
+        "table": {
+          "type": ["string", "null"],
+          "description": "Table or figure identifier, or null if not in a table"
+        },
+        "page": {
+          "type": ["string", "integer", "null"],
+          "description": "Publication page number or range, or null if unlocated"
+        }
+      },
+      "additionalProperties": false
+    },
+    "support": {
+      "type": "string",
+      "enum": [
+        "direct",
+        "partial",
+        "contextual",
+        "unsupported"
+      ],
+      "description": "Degree of material support provided by the inspected source"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "description": "Confidence level in source identity, location, and attribution"
+    }
+  },
+  "additionalProperties": false
+}

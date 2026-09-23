@@ -1,0 +1,238 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PaperRecord",
+  "description": "Canonical paper record contract for literature research and candidate evaluation",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Full title of the paper"
+    },
+    "doi": {
+      "type": ["string", "null"],
+      "description": "Digital Object Identifier if assigned, or null"
+    },
+    "year": {
+      "type": ["integer", "null"],
+      "description": "Publication year"
+    },
+    "source": {
+      "type": "string",
+      "description": "Catalog or provenance source (e.g., crossref, openalex, pubmed)"
+    },
+    "candidate_roles": {
+      "type": "array",
+      "description": "Assessed candidate roles for literature evaluation",
+      "items": {
+        "type": "string",
+        "enum": [
+          "evidence_candidate",
+          "reproduction_candidate"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "candidate_assessment": {
+      "type": "object",
+      "description": "Structured justification and limitations for each candidate role",
+      "properties": {
+        "evidence_candidate": {
+          "type": "object",
+          "required": [
+            "eligible",
+            "reasons",
+            "limitations"
+          ],
+          "properties": {
+            "eligible": {
+              "type": "boolean",
+              "description": "Whether the paper satisfies evidence candidate criteria"
+            },
+            "reasons": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Factual justifications supporting evidence value"
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Methodological limitations or risk of bias constraints"
+            }
+          },
+          "additionalProperties": false
+        },
+        "reproduction_candidate": {
+          "type": "object",
+          "required": [
+            "eligible",
+            "reasons",
+            "limitations"
+          ],
+          "properties": {
+            "eligible": {
+              "type": "boolean",
+              "description": "Whether the paper satisfies reproduction candidate criteria"
+            },
+            "reasons": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Factual justifications supporting reproducibility feasibility"
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Missing operational details, private data, or closed code constraints"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "integrity": {
+      "type": "object",
+      "description": "Bibliographic identity and registry verification status",
+      "required": [
+        "identity_verified",
+        "retraction_status",
+        "metadata_conflicts"
+      ],
+      "properties": {
+        "identity_verified": {
+          "type": "boolean",
+          "description": "True if DOI resolves and metadata matches authoritative registry"
+        },
+        "retraction_status": {
+          "type": "string",
+          "enum": [
+            "not_retracted",
+            "retracted",
+            "expression_of_concern",
+            "corrected",
+            "unclear"
+          ],
+          "description": "Publishing integrity status from registry updates"
+        },
+        "metadata_conflicts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Discrepancies identified during bibliographic verification"
+        }
+      },
+      "additionalProperties": false
+    },
+    "reproducibility": {
+      "type": "object",
+      "description": "Multi-dimensional assessment of experimental reproducibility feasibility",
+      "required": [
+        "dataset_access",
+        "code_access",
+        "methods_operationalized",
+        "variable_mapping_feasible",
+        "overall",
+        "notes"
+      ],
+      "properties": {
+        "dataset_access": {
+          "type": "string",
+          "enum": [
+            "public",
+            "controlled",
+            "unavailable",
+            "unclear",
+            "not_applicable"
+          ],
+          "description": "Accessibility tier of participant/cohort data"
+        },
+        "code_access": {
+          "type": "string",
+          "enum": [
+            "public",
+            "partial",
+            "unavailable",
+            "unclear",
+            "not_applicable"
+          ],
+          "description": "Accessibility tier of pipeline and model source code"
+        },
+        "methods_operationalized": {
+          "type": "string",
+          "enum": [
+            "sufficient",
+            "partial",
+            "insufficient",
+            "unclear"
+          ],
+          "description": "Sufficiency of mathematical formulas, algorithms, and parameters"
+        },
+        "variable_mapping_feasible": {
+          "type": "string",
+          "enum": [
+            "yes",
+            "partial",
+            "no",
+            "unclear"
+          ],
+          "description": "Feasibility of mapping feature schema to repository target data"
+        },
+        "overall": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unclear"
+          ],
+          "description": "Synthesized overall reproducibility feasibility"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Contextual details on access restrictions and requirements"
+        }
+      },
+      "additionalProperties": false
+    },
+    "claim_provenance": {
+      "type": "array",
+      "description": "Structured claims extracted from the paper with location provenance",
+      "items": {
+        "$ref": "claim_provenance.schema.json"
+      }
+    },
+    "recommended_action": {
+      "type": "string",
+      "enum": [
+        "promote",
+        "retain_in_pool",
+        "exclude_from_current_scope",
+        "reject_with_human_review",
+        "needs_more_review"
+      ],
+      "description": "Advisory recommendation produced by agent assessment"
+    },
+    "decision_state": {
+      "type": "string",
+      "enum": [
+        "unreviewed",
+        "recommendation_ready",
+        "human_approved",
+        "human_rejected"
+      ],
+      "description": "Formal governance state governed by human authorization"
+    }
+  },
+  "additionalProperties": true
+}
