@@ -113,10 +113,11 @@ every PDF that actually carried a packet.
 2. **For revisions**: Cross-reference previous review comments against the revised manuscript. Do
    **not** trust the response letter's "we added / we changed X" at face value — the source of truth is
    the revised body. When you have both the author response and the revised manuscript as text/`.docx`,
-   and the `/revise` companion skill is available, run the shared deterministic gate to catch a claimed-but-absent edit before you spend the round on it:
+   and optional companion workflow `/revise` is available in the current environment, run its shared deterministic gate to catch a claimed-but-absent edit before you spend the round on it:
 
    ```bash
-   python3 ${CLAUDE_SKILL_DIR}/../revise/scripts/check_response_claims.py \
+   # If optional companion /revise is available in the environment:
+   python check_response_claims.py \
      --response author_response.md --manuscript revised_manuscript.docx --strict
    ```
 

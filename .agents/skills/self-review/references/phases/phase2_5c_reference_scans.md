@@ -14,18 +14,19 @@ Numerical audits (2.5/2.5a/2.5b) cover in-text numbers; they do **not** cover re
    # equivalent CLI form (same result as invoking the skill).
    # verify_refs.py takes a positional input (the .bib path) and writes its audit
    # to <project-root>/qc/reference_audit.json (path derived from --project-root).
-   BIB="$(python3 -c "import yaml; print(yaml.safe_load(open('SSOT.yaml'))['truth']['refs_bib'])")"
-   python3 skills/verify-refs/scripts/verify_refs.py "$BIB" --project-root . --strict
+   BIB="$(python -c "import yaml; print(yaml.safe_load(open('SSOT.yaml'))['truth']['refs_bib'])")"
+   python .agents/skills/verify-refs/scripts/verify_refs.py "$BIB" --project-root . --strict
    ```
 
    When both reference QC and cross-reference QC are needed in one pass and
-   optional companion skill `/manage-refs` is installed, its master orchestration
+   optional companion workflow `/manage-refs` is available in the current environment, its master orchestration
    entry point can chain `check_citation_keys.py` → `verify_refs.py --strict` →
    `render_pandoc.sh` (optional) → `check_xref.py --strict` and write
    `qc/pre_submission_gate.json` as the single submission-readiness artifact:
 
    ```bash
-   bash "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/manage-refs/scripts/pre_submission_gate.sh" \
+   # If optional companion /manage-refs is available in the environment:
+   pre_submission_gate.sh \
        --md manuscript/manuscript.md \
        --bib manuscript/_src/refs.bib \
        --docx submission/<journal>/manuscript.docx \

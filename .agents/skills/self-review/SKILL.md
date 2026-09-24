@@ -80,10 +80,11 @@ by a pass it does not need.
    find . \( -path '*manuscript*' -o -path '*main_document*' \) -name '*.md' | grep -v node_modules
    ```
 
-   If more than one manuscript-like file exists, confirm which is the SSOT. If `/sync-submission` is installed, run its divergence gate:
+   If more than one manuscript-like file exists, confirm which is the SSOT. If optional companion workflow `/sync-submission` is available in the current environment, run its divergence gate:
 
    ```bash
-   python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/sync-submission/scripts/detect_copy_divergence.py" \
+   # If optional companion /sync-submission is available in the environment:
+   python detect_copy_divergence.py \
      --ssot <ssot>.md --copy <other-copy>.md
    ```
 
@@ -440,10 +441,11 @@ in-text citation — the early, no-build counterpart to `check_xref`'s `UNCITED`
 **DOCX stage (when a rendered DOCX exists** — circulation drafts, post-build pre-submission
 checks. Skip on early drafts with no build):
 
-If `/manage-refs` is installed, run its cross-reference check:
+If optional companion workflow `/manage-refs` is available in the current environment, run its cross-reference check:
 
 ```bash
-python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/manage-refs/scripts/check_xref.py" \
+# If optional companion /manage-refs is available in the environment:
+python check_xref.py \
   --md manuscript/manuscript.md --docx manuscript/manuscript_final.docx \
   --out qc/xref_audit.json [--allow-separate-attachments]
 ```

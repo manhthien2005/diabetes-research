@@ -44,10 +44,11 @@ DOCX build has occurred yet (early drafts).
    and the rendered DOCX (typically `manuscript/manuscript_final.docx` or the
    most recent circulation `.docx`).
 
-2. **Invoke the cross-reference check script** (if `/manage-refs` is installed):
+2. **Invoke the cross-reference check script** (if optional companion workflow `/manage-refs` is available in the current environment):
 
    ```bash
-   python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/manage-refs/scripts/check_xref.py" \
+   # If optional companion /manage-refs is available in the environment:
+   python check_xref.py \
      --md manuscript/manuscript.md \
      --docx manuscript/manuscript_final.docx \
      --out qc/xref_audit.json \

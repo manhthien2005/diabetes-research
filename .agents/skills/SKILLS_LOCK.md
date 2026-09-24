@@ -84,6 +84,10 @@
    - Invariant enforcement: Distinguishes canonical concepts from cycle-specific source variables, verifies timing (post-index leakage prevention), units, categorical coding, missing sentinels (e.g., 7777/9999), skip logic, outcome label construction, and prediction horizons (cross_sectional, early_detection, long_term_risk).
    - Score integrity & survey design: Prohibits mislabeling proxy clinical risk scores as validated official scores (FINDRISC, ADA Diabetes Risk Test); prevents survey design variables (weights, strata, PSUs) from being fed as ordinary predictive features.
    - Deterministic validation: Bundled `scripts/validate_variable_registry.py` and regression test suite.
+10. Round 13 (R13) residual portability closure:
+   - Path portability: Updated `self-review` reference scan command to resolve `.agents/skills/verify-refs/scripts/verify_refs.py` from repository root using portable Python invocation.
+   - Optional companion portability: Removed active upstream workstation path assumptions (`${CLAUDE_SKILL_DIR}`, `${MEDSCI_SKILLS_ROOT}`, and `$HOME/workspace/medsci-skills`) from optional companion invocations in `peer-review` (`/revise`) and `self-review` (`/sync-submission`, `/manage-refs`).
+   - Fallback preservation: Preserved standalone manual/repository fallback behaviors without adding local stubs, fake commands, or requiring upstream repository clones.
 
 ---
 
