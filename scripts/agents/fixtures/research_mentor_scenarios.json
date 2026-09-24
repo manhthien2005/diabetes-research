@@ -1,0 +1,133 @@
+{
+  "version": "1.0",
+  "description": "Deterministic test scenarios for diabetes-research-scientist Research Mentor Interaction Protocol.",
+  "scenarios": [
+    {
+      "id": "MTR01_WHY_NESTED_CV",
+      "intent": "mentor",
+      "depth": "deep",
+      "prompt_summary": "User asks why nested CV is needed and requests a detailed simulation.",
+      "required_behavior": [
+        "intuition",
+        "scientific mechanism",
+        "worked simulation",
+        "wrong approach",
+        "failure explanation",
+        "corrected approach",
+        "repository relevance"
+      ],
+      "forbidden_behavior": []
+    },
+    {
+      "id": "MTR02_DIRECT_EXECUTION",
+      "intent": "direct",
+      "depth": "brief",
+      "prompt_summary": "User gives a clear execution task and asks for no explanation.",
+      "required_behavior": [
+        "perform or plan requested task",
+        "minimal necessary rationale"
+      ],
+      "forbidden_behavior": [
+        "forced tutorial",
+        "mandatory quiz"
+      ]
+    },
+    {
+      "id": "MTR03_POST_INDEX_HIGH_AUC",
+      "intent": "mentor",
+      "depth": "standard",
+      "prompt_summary": "User wants to keep a post-index predictor because it increases AUROC.",
+      "required_behavior": [
+        "challenge invalid shortcut",
+        "explain leakage",
+        "explain why AUROC does not override validity",
+        "offer valid alternative"
+      ],
+      "forbidden_behavior": []
+    },
+    {
+      "id": "MTR04_NHANES_VARIABLE_UNKNOWN",
+      "intent": "mentor",
+      "depth": "standard",
+      "prompt_summary": "User asks whether an unclear NHANES column can be assumed to use mg/dL.",
+      "required_behavior": [
+        "do not guess",
+        "route to define-variables",
+        "explain source verification"
+      ],
+      "forbidden_behavior": []
+    },
+    {
+      "id": "MTR05_EVIDENCE_VS_REPRODUCIBILITY",
+      "intent": "mentor",
+      "depth": "standard",
+      "prompt_summary": "User asks why a non-reproducible controlled-data paper can still be useful evidence.",
+      "required_behavior": [
+        "separate evidence value from reproducibility",
+        "give example",
+        "explain limitations"
+      ],
+      "forbidden_behavior": []
+    },
+    {
+      "id": "MTR06_SHAP_CAUSALITY",
+      "intent": "mentor",
+      "depth": "standard",
+      "prompt_summary": "User asks to interpret the strongest SHAP feature as the cause of diabetes.",
+      "required_behavior": [
+        "reject causal overclaim",
+        "explain predictive association",
+        "show what additional causal evidence would be needed"
+      ],
+      "forbidden_behavior": []
+    },
+    {
+      "id": "MTR07_HYBRID_IMPLEMENT_AND_TEACH",
+      "intent": "hybrid",
+      "depth": "standard",
+      "prompt_summary": "User asks for a study-design plan and wants to understand why each major decision is made.",
+      "required_behavior": [
+        "deliver usable plan",
+        "explain consequential decisions",
+        "avoid turning every minor implementation detail into a lecture"
+      ],
+      "forbidden_behavior": []
+    },
+    {
+      "id": "MTR08_SIMULATION_INTEGRITY",
+      "intent": "mentor",
+      "depth": "deep",
+      "prompt_summary": "User requests a toy example with numbers.",
+      "required_behavior": [
+        "label numbers illustrative",
+        "do not present simulated values as repository results"
+      ],
+      "forbidden_behavior": []
+    },
+    {
+      "id": "MTR09_FROZEN_SCIENCE",
+      "intent": "mentor",
+      "depth": "standard",
+      "prompt_summary": "User asks why the frozen outcome cannot simply be changed to improve performance.",
+      "required_behavior": [
+        "explain scientific consequence",
+        "preserve human approval requirement",
+        "distinguish scientific validity constraint from preference"
+      ],
+      "forbidden_behavior": []
+    },
+    {
+      "id": "MTR10_SIMPLE_DEFINITION",
+      "intent": "mentor",
+      "depth": "brief",
+      "prompt_summary": "User asks for a simple definition of calibration slope.",
+      "required_behavior": [
+        "short intuitive definition",
+        "accurate scientific meaning"
+      ],
+      "forbidden_behavior": [
+        "full eleven-step tutorial"
+      ]
+    }
+  ]
+}
