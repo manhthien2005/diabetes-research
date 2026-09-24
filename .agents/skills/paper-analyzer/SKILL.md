@@ -14,6 +14,7 @@ inputs:
   - docs/agent/EVIDENCE_POLICY.md
   - docs/agent/PAPER_SCHEMA.md
   - docs/agent/DECISION_AUTHORITY.md
+  - .agents/skills/paper-analyzer/references/literature_review_formats.md
 outputs:
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/analysis.html
   - 01_Diabetes_Research/searched_papers/Layer_<n>/<paper_id>/summary.json
@@ -28,10 +29,46 @@ Transform 1 scientific PDF into a DEEP Vietnamese analysis + a machine-readable 
 ## Procedure
 1. **Read full text**: prioritize `extracted.md`. If missing → run `pdf-extract`.
 2. Read `metadata.json` + read papers in `01_Diabetes_Research/chosed_papers/Layer_<n>/` within the same layer.
-3. Render `analysis.html` following the **8 blocks** (AGENTS.md §6). DO NOT alter the structure.
+3. Render `analysis.html` following the **8 blocks** (AGENTS.md §6). When analyzing exactly one paper, incorporate the **Single-Paper Quick Review Table** (`references/literature_review_formats.md`) as the first substantive overview after paper identity. DO NOT alter the core structure.
 4. Record `summary.json` (schema below) — preserving backward-compatible fields and emitting candidate assessment, multi-dimensional reproducibility, claim-level provenance, and `rob_audit`.
 5. Record `rob_audit.json` (dedicated QC version).
 6. Set `analysis_status: "analyzed"` + confirm `prediction_horizon` in metadata.
+
+## Single-Paper Quick Review Table (Standardized Format)
+
+When analyzing exactly one paper, provide the **Single-Paper Quick Review Table** per `.agents/skills/paper-analyzer/references/literature_review_formats.md` as the first substantive overview layer immediately following paper identity.
+
+### Structural Contract
+- **Orientation**: `ROWS_ARE_INFORMATION_FIELDS`.
+- **Columns**: `| Field | Summary | Evidence / Location |`.
+- **Canonical Rows**: Contains all 48 required rows defined in `references/literature_review_formats.md`:
+  `Title`, `Authors`, `Year`, `Journal`, `DOI / PMID`, `Country / Setting`, `Research objective`, `Study design`, `Data source`, `Study period`, `Population`, `Sample size`, `Inclusion / Exclusion`, `Predictors / Exposures`, `Outcome / Target`, `Index time`, `Prediction horizon`, `Missing-data strategy`, `Statistical methods`, `Models`, `Validation strategy`, `Performance metrics`, `Calibration`, `Clinical utility`, `Survey design`, `Key findings`, `Quantitative results`, `Authors' conclusion`, `Comparison with prior evidence`, `Our evidence synthesis`, `Evidence-supported mechanism`, `Analytical hypothesis`, `Strengths`, `Limitations`, `Risk of bias / Leakage`, `Generalizability`, `Data availability`, `Code availability`, `Reproducibility`, `Relevance to our study`, `Evidence candidate`, `Reproduction candidate`, `Claims worth citing`, `What we can reuse`, `What we must NOT reuse`, `Research gaps`, `Future research`, `Bottom line`.
+
+### Presentation Priority & Flow
+1. **Paper identity** (Title, authors, year, journal, DOI, horizon badge)
+2. **Quick Review Table** (48-row vertical review table)
+3. **Detailed methodological analysis** (Pipeline, datasets, splits, modeling)
+4. **Risk of bias / leakage** (Probes CP1–CP6, O11, Types B–G)
+5. **Evidence assessment** (`evidence_candidate`, `reproduction_candidate`, 5D reproducibility)
+6. **Claim provenance** (Structured assertions with exact section/table/page)
+7. **Relevance to current research** (Project-grounded touchpoints)
+8. **Actionable research implications** (Reusable practices, anti-patterns to avoid, advisory recommendation)
+
+### Rigor and Integrity Rules
+- **Overview Layer, Not Replacement**: The quick review table provides rapid orientation; it does NOT replace deep narrative analysis, RoB mini-audit, or claim provenance extraction.
+- **Concise Summaries**: Populate cells with concise factual summaries rather than pasting lengthy text blocks.
+- **Source Terminology**: Preserve authentic source terminology when summarizing reported study facts.
+- **Missing Information**: Missing or unverified fields MUST use standardized sentinels: `Not reported`, `Not applicable`, `Not verified`, or `Unclear`. Never guess, extrapolate, or fabricate numbers, locations, or mechanisms.
+- **Separation of Author vs. Analyst**:
+  - `Authors' conclusion`: Strictly what the paper states.
+  - `Our evidence synthesis`: Independent critical appraisal by the research team.
+- **Separation of Mechanism vs. Hypothesis**:
+  - `Evidence-supported mechanism`: Directly supported by study data/measurements.
+  - `Analytical hypothesis`: Explicitly marked speculative explanation (`[Analyst hypothesis]`).
+- **Separation of Evidence vs. Reproducibility**:
+  - `Evidence candidate`: Independent clinical/scientific validity.
+  - `Reproduction candidate`: Practical code/data replication feasibility.
+- **Repository-Grounded Relevance**: Must explicitly link to repository assets (e.g., `Paper_01_NHANES_NoLab`, non-laboratory survey features) rather than generic remarks.
 
 ## Deep Analysis — Mandatory Rigorous Extraction
 Do not stop at generic descriptions. MUST extract:
@@ -204,3 +241,4 @@ Record every detected violation type into `leakage_types[]` (identifiers "B"..."
 | 2026-09-21 | v2: Added RoB mini-audit step (probes CP1–CP6 + O11), leakage taxonomy from LEAKAGE_MAP. Added `rob_audit` key to summary.json. Added `rob_audit.json` output. 8 HTML blocks unchanged, webapp-read fields unchanged. | agent (chore/skills-upgrade) |
 | 2026-09-22 | fix: Restored Vietnamese diacritics (lost due to PowerShell Out-File CP437). Use Python UTF-8 write. | agent (fix/encoding) |
 | 2026-09-23 | v3: Formalized evidence candidate semantics, multi-dimensional reproducibility, and claim-level provenance per EVIDENCE_POLICY.md and PAPER_SCHEMA.md. Replaced autonomous rejection with advisory recommendations under DECISION_AUTHORITY.md. | agent (chore/skills-upgrade) |
+| 2026-09-24 | v4: Added standardized Single-Paper Quick Review Table (48 rows, information fields as rows) per literature_review_formats.md. Separated author conclusions from evidence synthesis, and mechanisms from hypotheses. Preserved deep analysis, claim provenance, candidate roles, and decision authority. | agent (chore/skills-upgrade) |

@@ -88,6 +88,11 @@
    - Path portability: Updated `self-review` reference scan command to resolve `.agents/skills/verify-refs/scripts/verify_refs.py` from repository root using portable Python invocation.
    - Optional companion portability: Removed active upstream workstation path assumptions (`${CLAUDE_SKILL_DIR}`, `${MEDSCI_SKILLS_ROOT}`, and `$HOME/workspace/medsci-skills`) from optional companion invocations in `peer-review` (`/revise`) and `self-review` (`/sync-submission`, `/manage-refs`).
    - Fallback preservation: Preserved standalone manual/repository fallback behaviors without adding local stubs, fake commands, or requiring upstream repository clones.
+11. Round 13.2 (R13.2) standardized literature review formats:
+   - Paper-analyzer and paper-comparator patch: Added standardized single-paper quick-review table (48 rows, information-fields-as-rows) and multi-paper comparison matrix (47 dimensions, dimensions-as-rows, papers-as-columns, Cross-paper synthesis column) backed by shared reference `.agents/skills/paper-analyzer/references/literature_review_formats.md`.
+   - Comparability gate & rigor: Integrated 11-dimension Comparability Gate prohibiting raw metric comparisons across non-comparable prediction horizons (cross-sectional vs longitudinal), outcome definitions, or validation levels. Preserved anti-ranking rule and horizontal batching for >5 papers.
+   - Semantics and authority unchanged: Evidence candidate semantics (`evidence_candidate`), reproduction candidate semantics (`reproduction_candidate`), claim provenance levels (`direct`, `partial`, `contextual`, `unsupported`), confidence levels (`high`, `medium`, `low`), and human decision authority under `docs/agent/DECISION_AUTHORITY.md` remain strictly unchanged.
+
 
 ---
 
