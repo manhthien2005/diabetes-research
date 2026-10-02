@@ -79,42 +79,12 @@ jobs:
           cp "$DATASET_METADATA" /tmp/kaggle-brfss-dataset/dataset-metadata.json
           ls -lh /tmp/kaggle-brfss-dataset
 
-      - name: Ensure private Kaggle dataset is ready
+      - name: Confirm Kaggle dataset reference
         shell: bash
         run: |
           set -euo pipefail
-
-          EXISTING_FILES="$(kaggle datasets files "$DATASET_REF" 2>&1 || true)"
-          if echo "$EXISTING_FILES" | grep -q "LLCP2025XPT.zip"; then
-            echo "Dataset already exists and contains the verified source archive."
-          else
-            echo "Dataset is not readable yet; attempting initial private creation."
-            CREATE_OUTPUT="$(kaggle datasets create -p /tmp/kaggle-brfss-dataset 2>&1 || true)"
-            echo "$CREATE_OUTPUT"
-
-            if echo "$CREATE_OUTPUT" | grep -Eqi "already exists|conflict"; then
-              echo "Dataset slug already exists; continuing to readiness check."
-            fi
-          fi
-
-          READY=0
-          for attempt in $(seq 1 40); do
-            FILES="$(kaggle datasets files "$DATASET_REF" 2>&1 || true)"
-            echo "Dataset readiness attempt $attempt:"
-            echo "$FILES"
-
-            if echo "$FILES" | grep -q "LLCP2025XPT.zip"; then
-              READY=1
-              break
-            fi
-
-            sleep 15
-          done
-
-          if [ "$READY" -ne 1 ]; then
-            echo "Kaggle dataset did not become readable in time."
-            exit 1
-          fi
+          echo "Using existing private dataset: $DATASET_REF"
+          echo "Dataset page: https://www.kaggle.com/datasets/$DATASET_REF"
 
       - name: Push and run initial EDA notebook
         shell: bash
