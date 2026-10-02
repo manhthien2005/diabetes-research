@@ -76,17 +76,37 @@ jobs:
                   if p.is_absolute() or ".." in p.parts:
                       raise SystemExit(f"Unsafe archive path: {info.filename}")
 
-              xpt_files = [i for i in files if i.filename.lower().endswith(".xpt")]
-              if len(xpt_files) != 1:
-                  raise SystemExit(
-                      f"Safety stop: expected exactly one XPT file, found {len(xpt_files)}. "
-                      "Nothing will be cleaned or selectively extracted."
-                  )
-
               print("Archive members inspected:")
               for info in files:
-                  print(f" - {info.filename}: {info.file_size} bytes")
-              print(f"Selected XPT for extraction: {xpt_files[0].filename}")
+                  print(f" - {info.filename!r}: {info.file_size} bytes")
+
+              xpt_files = [
+                  i for i in files
+                  if Path(i.filename.strip()).suffix.lower() in {".xpt", ".xport"}
+              ]
+              if len(xpt_files) == 1:
+                  selected = xpt_files[0]
+              elif len(files) == 1:
+                  # CDC's archive is expected to contain one public-use payload.
+                  # If the filename has an unusual suffix, accept only the sole
+                  # file after recording its exact name and size in the inventory.
+                  selected = files[0]
+                  print(
+                      "Warning: sole archive payload does not use .xpt/.xport suffix; "
+                      "selecting it only because it is the only non-directory member."
+                  )
+              else:
+                  raise SystemExit(
+                      f"Safety stop: could not unambiguously identify one data payload "
+                      f"(files={len(files)}, xpt_like={len(xpt_files)}). Nothing extracted."
+                  )
+
+              if selected.file_size < 10_000_000:
+                  raise SystemExit(
+                      f"Safety stop: selected payload is unexpectedly small: "
+                      f"{selected.filename!r} ({selected.file_size} bytes)."
+                  )
+              print(f"Selected payload for extraction: {selected.filename!r}")
           PY
           cat "$CONTENTS_PATH"
 
@@ -101,10 +121,16 @@ jobs:
           out_dir = Path("02_Implementation/BRFSS_Survey/data/extracted")
           with ZipFile(zip_path) as zf:
               files = [i for i in zf.infolist() if not i.is_dir()]
-              xpt_files = [i for i in files if i.filename.lower().endswith(".xpt")]
-              if len(xpt_files) != 1:
-                  raise SystemExit("Safety stop: archive structure changed.")
-              member = xpt_files[0]
+              xpt_files = [
+                  i for i in files
+                  if Path(i.filename.strip()).suffix.lower() in {".xpt", ".xport"}
+              ]
+              if len(xpt_files) == 1:
+                  member = xpt_files[0]
+              elif len(files) == 1 and files[0].file_size >= 10_000_000:
+                  member = files[0]
+              else:
+                  raise SystemExit("Safety stop: archive structure changed or is ambiguous.")
               target = out_dir / Path(member.filename).name
               with zf.open(member) as src, target.open("wb") as dst:
                   while True:
