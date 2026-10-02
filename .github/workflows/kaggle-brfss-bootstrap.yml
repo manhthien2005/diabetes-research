@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: brfss-kaggle-bootstrap
+  cancel-in-progress: true
+
 jobs:
   publish-and-run-eda:
     runs-on: ubuntu-latest
