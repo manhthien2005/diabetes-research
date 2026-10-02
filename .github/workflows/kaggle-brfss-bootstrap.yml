@@ -86,7 +86,7 @@ jobs:
           echo "Using existing private dataset: $DATASET_REF"
           echo "Dataset page: https://www.kaggle.com/datasets/$DATASET_REF"
 
-      - name: Push and run initial EDA notebook
+      - name: Push and run fallback-safe EDA notebook
         shell: bash
         run: |
           set -euo pipefail
