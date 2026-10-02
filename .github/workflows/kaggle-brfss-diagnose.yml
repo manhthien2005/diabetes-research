@@ -1,0 +1,85 @@
+name: Diagnose Kaggle BRFSS Dataset
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - .github/workflows/kaggle-brfss-diagnose.yml
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      DATASET_REF: manhthien2005/brfss-2025-diabetes-survey
+      KERNEL_REF: manhthien2005/brfss-2025-data-exploration
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Kaggle CLI
+        run: |
+          python -m pip install --upgrade kaggle
+          kaggle --version
+
+      - name: Verify auth
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${KAGGLE_API_TOKEN:-}"
+          kaggle kernels list -m --page-size 1 >/dev/null
+          echo "AUTH_OK"
+
+      - name: List my datasets
+        shell: bash
+        run: |
+          set +e
+          echo "=== DATASETS_MINE ==="
+          kaggle datasets list -m -v
+          echo "exit=$?"
+
+      - name: Search my Kaggle content
+        shell: bash
+        run: |
+          set +e
+          echo "=== SEARCH_MINE ==="
+          kaggle search "BRFSS 2025" --mine --format json
+          echo "exit=$?"
+
+      - name: Inspect target dataset
+        shell: bash
+        run: |
+          set +e
+          echo "=== STATUS ==="
+          kaggle datasets status "$DATASET_REF" --format json
+          echo "status_exit=$?"
+
+          echo "=== FILES ==="
+          kaggle datasets files "$DATASET_REF" -v
+          echo "files_exit=$?"
+
+          echo "=== METADATA ==="
+          rm -rf /tmp/kmeta && mkdir -p /tmp/kmeta
+          kaggle datasets metadata "$DATASET_REF" -p /tmp/kmeta
+          echo "metadata_exit=$?"
+          find /tmp/kmeta -maxdepth 2 -type f -print -exec cat {} \;
+
+      - name: Inspect target notebook
+        shell: bash
+        run: |
+          set +e
+          echo "=== KERNEL STATUS ==="
+          kaggle kernels status "$KERNEL_REF"
+          echo "kernel_status_exit=$?"
+
+          echo "=== KERNEL PULL METADATA ==="
+          rm -rf /tmp/kernel && mkdir -p /tmp/kernel
+          kaggle kernels pull "$KERNEL_REF" -p /tmp/kernel -m
+          echo "kernel_pull_exit=$?"
+          find /tmp/kernel -maxdepth 2 -type f -name 'kernel-metadata.json' -print -exec cat {} \;
