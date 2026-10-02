@@ -91,7 +91,26 @@ jobs:
             kaggle datasets create -p /tmp/kaggle-brfss-dataset
           fi
 
-          kaggle datasets status "$DATASET_REF" || true
+          # The status endpoint may return 403 for newly-created private datasets,
+          # so readiness is verified by listing the uploaded file instead.
+          READY=0
+          for attempt in $(seq 1 40); do
+            FILES="$(kaggle datasets files "$DATASET_REF" 2>&1 || true)"
+            echo "Dataset readiness attempt $attempt:"
+            echo "$FILES"
+
+            if echo "$FILES" | grep -q "LLCP2025XPT.zip"; then
+              READY=1
+              break
+            fi
+
+            sleep 15
+          done
+
+          if [ "$READY" -ne 1 ]; then
+            echo "Kaggle dataset was created but did not become readable in time."
+            exit 1
+          fi
 
       - name: Push and run initial EDA notebook
         shell: bash
@@ -115,7 +134,10 @@ jobs:
             fi
 
             if echo "$STATUS" | grep -Eqi 'error|failed|cancel'; then
-              echo "Kaggle notebook failed."
+              echo "Kaggle notebook failed. Attempting to download available outputs/logs."
+              mkdir -p /tmp/kaggle-failed-output
+              kaggle kernels output "$KERNEL_REF" -p /tmp/kaggle-failed-output -o || true
+              find /tmp/kaggle-failed-output -maxdepth 2 -type f -printf '%p\t%s bytes\n' || true
               exit 1
             fi
 
