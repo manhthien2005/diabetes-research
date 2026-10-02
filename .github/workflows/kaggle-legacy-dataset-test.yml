@@ -16,7 +16,7 @@ jobs:
     env:
       KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
       KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-      DATASET_REF: manhthien2005/brfss-2025-diabetes-survey
+      DATASET_REF: manhthien2005/brfss-2025-survey
 
     steps:
       - uses: actions/setup-python@v5
@@ -47,4 +47,13 @@ jobs:
           echo "=== DATASET METADATA TARGET ==="
           rm -rf /tmp/kmeta && mkdir -p /tmp/kmeta
           kaggle datasets metadata "$DATASET_REF" -p /tmp/kmeta
-          echo "exit=$?"
+          echo "metadata_exit=$?"
+          find /tmp/kmeta -maxdepth 2 -type f -print -exec cat {} \;
+
+          echo "=== DATASET STATUS TARGET ==="
+          kaggle datasets status "$DATASET_REF"
+          echo "status_exit=$?"
+
+          echo "=== DATASETS LIST MINE ==="
+          kaggle datasets list -m -v
+          echo "list_exit=$?"
