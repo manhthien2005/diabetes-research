@@ -1,0 +1,159 @@
+name: Bootstrap BRFSS on Kaggle
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - .github/workflows/kaggle-brfss-bootstrap.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-and-run-eda:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      DATASET_REF: manhthien2005/brfss-2025-diabetes-survey
+      KERNEL_REF: manhthien2005/brfss-2025-data-exploration
+      ZIP_PATH: 02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip
+      DATASET_METADATA: 02_Implementation/BRFSS_Survey/kaggle/dataset/dataset-metadata.json
+      NOTEBOOK_DIR: 02_Implementation/BRFSS_Survey/kaggle/notebook
+
+    steps:
+      - name: Checkout branch without downloading all LFS objects
+        uses: actions/checkout@v4
+        with:
+          ref: implement/BRFSS_survey
+          fetch-depth: 1
+          lfs: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Kaggle CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade kaggle
+          kaggle --version
+
+      - name: Validate Kaggle token without printing it
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${KAGGLE_API_TOKEN:-}"
+          kaggle kernels list -m --page-size 1 >/dev/null
+          echo "Kaggle authentication succeeded."
+
+      - name: Pull only the BRFSS source ZIP from Git LFS
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs install
+          git lfs pull --include="$ZIP_PATH" --exclude=""
+
+          test -s "$ZIP_PATH"
+          ACTUAL_BYTES="$(stat -c '%s' "$ZIP_PATH")"
+          ACTUAL_SHA256="$(sha256sum "$ZIP_PATH" | awk '{print $1}')"
+
+          echo "ZIP bytes: $ACTUAL_BYTES"
+          echo "ZIP SHA-256: $ACTUAL_SHA256"
+
+          test "$ACTUAL_BYTES" = "64642184"
+          test "$ACTUAL_SHA256" = "d26a8b391aa2966b58dc2a3ffddf8da050e9f38eb143d0f5ca7b3d21ece08f98"
+
+      - name: Prepare Kaggle dataset upload directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/kaggle-brfss-dataset
+          mkdir -p /tmp/kaggle-brfss-dataset
+          cp "$ZIP_PATH" /tmp/kaggle-brfss-dataset/LLCP2025XPT.zip
+          cp "$DATASET_METADATA" /tmp/kaggle-brfss-dataset/dataset-metadata.json
+          ls -lh /tmp/kaggle-brfss-dataset
+
+      - name: Create or update private Kaggle dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          if kaggle datasets status "$DATASET_REF" >/dev/null 2>&1; then
+            echo "Dataset exists; creating a new synchronized version."
+            kaggle datasets version               -p /tmp/kaggle-brfss-dataset               -m "Sync verified CDC BRFSS 2025 source archive from GitHub"
+          else
+            echo "Dataset does not exist; creating it as private."
+            kaggle datasets create -p /tmp/kaggle-brfss-dataset
+          fi
+
+          kaggle datasets status "$DATASET_REF" || true
+
+      - name: Push and run initial EDA notebook
+        shell: bash
+        run: |
+          set -euo pipefail
+          kaggle kernels push -p "$NOTEBOOK_DIR" --timeout 7200
+
+      - name: Wait for Kaggle notebook to finish
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMPLETE=0
+
+          for attempt in $(seq 1 80); do
+            STATUS="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "Attempt $attempt: $STATUS"
+
+            if echo "$STATUS" | grep -Eqi 'complete|success'; then
+              COMPLETE=1
+              break
+            fi
+
+            if echo "$STATUS" | grep -Eqi 'error|failed|cancel'; then
+              echo "Kaggle notebook failed."
+              exit 1
+            fi
+
+            sleep 15
+          done
+
+          if [ "$COMPLETE" -ne 1 ]; then
+            echo "Kaggle notebook did not finish within the polling window."
+            exit 1
+          fi
+
+      - name: Download and show EDA outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/kaggle-eda-output
+          mkdir -p /tmp/kaggle-eda-output
+
+          kaggle kernels output "$KERNEL_REF"             -p /tmp/kaggle-eda-output             -o
+
+          echo "=== Kaggle output files ==="
+          find /tmp/kaggle-eda-output -maxdepth 2 -type f -printf '%p\t%s bytes\n'
+
+          echo "=== dataset_overview.json ==="
+          cat /tmp/kaggle-eda-output/dataset_overview.json
+
+          echo "=== target_distribution.csv ==="
+          cat /tmp/kaggle-eda-output/target_distribution.csv
+
+          echo "=== top 30 columns by missingness ==="
+          head -n 31 /tmp/kaggle-eda-output/column_summary.csv
+
+      - name: Preserve EDA summaries as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: brfss-2025-initial-eda
+          path: |
+            /tmp/kaggle-eda-output/dataset_overview.json
+            /tmp/kaggle-eda-output/target_distribution.csv
+            /tmp/kaggle-eda-output/column_summary.csv
+          if-no-files-found: error
