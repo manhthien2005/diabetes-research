@@ -1,0 +1,4 @@
+BRFSS 2025 archive inventory
+==============================
+
+LLCP2025.XPT 	799971280 bytes	compressed=64642060
