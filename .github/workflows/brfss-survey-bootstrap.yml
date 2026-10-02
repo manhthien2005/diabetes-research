@@ -1,0 +1,184 @@
+name: Bootstrap BRFSS 2025 survey data
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - .github/workflows/brfss-survey-bootstrap.yml
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: implement/BRFSS_survey
+          fetch-depth: 0
+          lfs: false
+
+      - name: Prepare directories
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p 02_Implementation/BRFSS_Survey/data/raw
+          mkdir -p 02_Implementation/BRFSS_Survey/data/extracted
+
+      - name: Download official CDC BRFSS 2025 SAS Transport archive
+        shell: bash
+        env:
+          CDC_URL: https://www.cdc.gov/brfss/annual_data/2025/files/LLCP2025XPT.zip
+          ZIP_PATH: 02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 5 --retry-delay 3 "$CDC_URL" --output "$ZIP_PATH"
+          test -s "$ZIP_PATH"
+          ls -lh "$ZIP_PATH"
+
+      - name: Verify archive checksum and inspect contents before extraction
+        shell: bash
+        env:
+          ZIP_PATH: 02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip
+          EXPECTED_SHA256: d26a8b391aa2966b58dc2a3ffddf8da050e9f38eb143d0f5ca7b3d21ece08f98
+          EXPECTED_BYTES: "64642184"
+          CONTENTS_PATH: 02_Implementation/BRFSS_Survey/data/ARCHIVE_CONTENTS.txt
+        run: |
+          set -euo pipefail
+          ACTUAL_SHA256="$(sha256sum "$ZIP_PATH" | awk '{print $1}')"
+          ACTUAL_BYTES="$(stat -c '%s' "$ZIP_PATH")"
+          echo "Expected SHA256: $EXPECTED_SHA256"
+          echo "Actual SHA256:   $ACTUAL_SHA256"
+          echo "Expected bytes:  $EXPECTED_BYTES"
+          echo "Actual bytes:    $ACTUAL_BYTES"
+          test "$ACTUAL_SHA256" = "$EXPECTED_SHA256"
+          test "$ACTUAL_BYTES" = "$EXPECTED_BYTES"
+
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          zip_path = Path("02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip")
+          out_path = Path("02_Implementation/BRFSS_Survey/data/ARCHIVE_CONTENTS.txt")
+          with ZipFile(zip_path) as zf:
+              infos = zf.infolist()
+              lines = ["BRFSS 2025 archive inventory", "=" * 30, ""]
+              for info in infos:
+                  lines.append(f"{info.filename}\t{info.file_size} bytes\tcompressed={info.compress_size}")
+              out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+              files = [i for i in infos if not i.is_dir()]
+              for info in files:
+                  p = Path(info.filename)
+                  if p.is_absolute() or ".." in p.parts:
+                      raise SystemExit(f"Unsafe archive path: {info.filename}")
+
+              xpt_files = [i for i in files if i.filename.lower().endswith(".xpt")]
+              if len(xpt_files) != 1:
+                  raise SystemExit(
+                      f"Safety stop: expected exactly one XPT file, found {len(xpt_files)}. "
+                      "Nothing will be cleaned or selectively extracted."
+                  )
+
+              print("Archive members inspected:")
+              for info in files:
+                  print(f" - {info.filename}: {info.file_size} bytes")
+              print(f"Selected XPT for extraction: {xpt_files[0].filename}")
+          PY
+          cat "$CONTENTS_PATH"
+
+      - name: Extract only the validated XPT payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          zip_path = Path("02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip")
+          out_dir = Path("02_Implementation/BRFSS_Survey/data/extracted")
+          with ZipFile(zip_path) as zf:
+              files = [i for i in zf.infolist() if not i.is_dir()]
+              xpt_files = [i for i in files if i.filename.lower().endswith(".xpt")]
+              if len(xpt_files) != 1:
+                  raise SystemExit("Safety stop: archive structure changed.")
+              member = xpt_files[0]
+              target = out_dir / Path(member.filename).name
+              with zf.open(member) as src, target.open("wb") as dst:
+                  while True:
+                      chunk = src.read(8 * 1024 * 1024)
+                      if not chunk:
+                          break
+                      dst.write(chunk)
+              print(f"Extracted {member.filename} -> {target}")
+          PY
+          find 02_Implementation/BRFSS_Survey/data -maxdepth 3 -type f -printf '%p\t%s bytes\n'
+
+      - name: Write source manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIP_PATH="02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip"
+          XPT_PATH="$(find 02_Implementation/BRFSS_Survey/data/extracted -maxdepth 1 -type f -iname '*.xpt' -print -quit)"
+          ZIP_SHA="$(sha256sum "$ZIP_PATH" | awk '{print $1}')"
+          XPT_SHA="$(sha256sum "$XPT_PATH" | awk '{print $1}')"
+          ZIP_BYTES="$(stat -c '%s' "$ZIP_PATH")"
+          XPT_BYTES="$(stat -c '%s' "$XPT_PATH")"
+          XPT_NAME="$(basename "$XPT_PATH")"
+
+          cat > 02_Implementation/BRFSS_Survey/README.md <<EOF
+          # BRFSS 2025 Survey Data
+
+          This directory contains the public-use **2025 Behavioral Risk Factor Surveillance System (BRFSS)** combined landline and cellphone dataset published by the U.S. CDC.
+
+          ## Source
+
+          - Official CDC dataset URL: https://www.cdc.gov/brfss/annual_data/2025/files/LLCP2025XPT.zip
+          - CDC survey documentation: https://www.cdc.gov/brfss/annual_data/annual_2025.html
+          - Format: SAS Transport (XPT)
+          - CDC reports: 356,158 records and 284 variables
+          - Archive SHA-256: `$ZIP_SHA`
+          - Archive size: `$ZIP_BYTES` bytes
+          - Extracted file: `$XPT_NAME`
+          - Extracted SHA-256: `$XPT_SHA`
+          - Extracted size: `$XPT_BYTES` bytes
+
+          ## Directory layout
+
+          - `data/raw/LLCP2025XPT.zip`: original ZIP archive, preserved byte-for-byte.
+          - `data/extracted/$XPT_NAME`: the single validated XPT payload extracted from the archive.
+          - `data/ARCHIVE_CONTENTS.txt`: archive inventory captured before extraction.
+
+          ## Cleaning decision
+
+          The ZIP archive is preserved unchanged. Before extraction, every archive member is inventoried and checked for unsafe paths. Extraction proceeds only when exactly one XPT payload is present. Only that XPT payload is materialized into `data/extracted/`; no unverified archive member is silently deleted.
+
+          ## Storage
+
+          The ZIP and extracted XPT are tracked with Git LFS because the extracted public-use dataset is larger than GitHub's normal per-file limit.
+          EOF
+
+      - name: Track dataset binaries with Git LFS
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs install
+          ZIP_PATH="02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip"
+          XPT_PATH="$(find 02_Implementation/BRFSS_Survey/data/extracted -maxdepth 1 -type f -iname '*.xpt' -print -quit)"
+          git lfs track "$ZIP_PATH"
+          git lfs track "$XPT_PATH"
+          git lfs ls-files || true
+
+      - name: Commit dataset and remove bootstrap workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/brfss-survey-bootstrap.yml
+          git add .gitattributes 02_Implementation/BRFSS_Survey
+          git status --short
+          git commit -m "data(brfss): add verified BRFSS 2025 survey dataset"
+          git push origin HEAD:implement/BRFSS_survey
