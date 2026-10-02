@@ -112,6 +112,8 @@ jobs:
               mkdir -p /tmp/kaggle-failed-output
               kaggle kernels output "$KERNEL_REF" -p /tmp/kaggle-failed-output -o || true
               find /tmp/kaggle-failed-output -maxdepth 2 -type f -printf '%p\t%s bytes\n' || true
+              echo "=== Kaggle failure log ==="
+              cat /tmp/kaggle-failed-output/*.log || kaggle kernels logs "$KERNEL_REF" || true
               exit 1
             fi
 
