@@ -6,6 +6,7 @@ on:
       - implement/BRFSS_survey
     paths:
       - .github/workflows/kaggle-brfss-bootstrap.yml
+      - 02_Implementation/BRFSS_Survey/kaggle/**
   workflow_dispatch:
 
 permissions:
@@ -48,22 +49,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
           test -n "${KAGGLE_USERNAME:-}"
           test -n "${KAGGLE_KEY:-}"
           test "$KAGGLE_USERNAME" = "manhthien2005"
-
-          # Explicitly ensure the newer token is not in the process environment.
-          unset KAGGLE_API_TOKEN || true
-
           kaggle kernels list -m --page-size 1 >/dev/null
-          kaggle datasets list -m -v || true
           echo "Legacy Kaggle authentication succeeded."
 
-      - name: Pull and verify BRFSS ZIP from Git LFS
+      - name: Pull and verify original CDC ZIP
         shell: bash
         run: |
           set -euo pipefail
-          unset KAGGLE_API_TOKEN || true
           git lfs install
           git lfs pull --include="$ZIP_PATH" --exclude=""
 
@@ -71,53 +67,102 @@ jobs:
           test "$(stat -c '%s' "$ZIP_PATH")" = "64642184"
           test "$(sha256sum "$ZIP_PATH" | awk '{print $1}')" = "d26a8b391aa2966b58dc2a3ffddf8da050e9f38eb143d0f5ca7b3d21ece08f98"
 
-      - name: Prepare Kaggle dataset payload
+      - name: Normalize CDC archive member name
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf /tmp/kaggle-brfss-dataset
-          mkdir -p /tmp/kaggle-brfss-dataset
-          cp "$ZIP_PATH" /tmp/kaggle-brfss-dataset/LLCP2025XPT.zip
+          rm -rf /tmp/brfss-normalize /tmp/kaggle-brfss-dataset
+          mkdir -p /tmp/brfss-normalize /tmp/kaggle-brfss-dataset
+
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          import hashlib
+
+          src_zip = Path("02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip")
+          normalized_xpt = Path("/tmp/brfss-normalize/LLCP2025.XPT")
+          normalized_zip = Path("/tmp/kaggle-brfss-dataset/LLCP2025XPT.zip")
+
+          with ZipFile(src_zip) as zf:
+              files = [i for i in zf.infolist() if not i.is_dir()]
+              if len(files) != 1:
+                  raise SystemExit(f"Expected exactly one payload; found {len(files)}")
+              member = files[0]
+              if member.filename != "LLCP2025.XPT ":
+                  raise SystemExit(f"Unexpected CDC member name: {member.filename!r}")
+              if member.file_size != 799_971_280:
+                  raise SystemExit(f"Unexpected XPT size: {member.file_size}")
+
+              with zf.open(member) as src, normalized_xpt.open("wb") as dst:
+                  while True:
+                      chunk = src.read(8 * 1024 * 1024)
+                      if not chunk:
+                          break
+                      dst.write(chunk)
+
+          if normalized_xpt.stat().st_size != 799_971_280:
+              raise SystemExit("Normalized XPT size mismatch")
+
+          h = hashlib.sha256()
+          with normalized_xpt.open("rb") as f:
+              for chunk in iter(lambda: f.read(8 * 1024 * 1024), b""):
+                  h.update(chunk)
+          print("Normalized XPT SHA-256:", h.hexdigest())
+
+          with ZipFile(normalized_zip, "w", compression=ZIP_DEFLATED, compresslevel=6) as zf:
+              zf.write(normalized_xpt, arcname="LLCP2025.XPT")
+
+          with ZipFile(normalized_zip) as zf:
+              files = [i for i in zf.infolist() if not i.is_dir()]
+              if len(files) != 1 or files[0].filename != "LLCP2025.XPT":
+                  raise SystemExit("Normalized ZIP verification failed")
+              if files[0].file_size != 799_971_280:
+                  raise SystemExit("Normalized ZIP payload size mismatch")
+
+          print("Normalized ZIP bytes:", normalized_zip.stat().st_size)
+          PY
+
           cp "$DATASET_METADATA" /tmp/kaggle-brfss-dataset/dataset-metadata.json
           ls -lh /tmp/kaggle-brfss-dataset
 
-      - name: Create or verify private Kaggle dataset
+      - name: Create and verify private Kaggle dataset
         shell: bash
         run: |
           set -euo pipefail
           unset KAGGLE_API_TOKEN || true
 
-          if kaggle datasets files "$DATASET_REF" -v >/tmp/kaggle_files.txt 2>/tmp/kaggle_files.err; then
-            echo "Dataset already exists."
+          if kaggle datasets files "$DATASET_REF" -v >/tmp/brfss-files.txt 2>/tmp/brfss-files.err; then
+            echo "Target dataset already exists:"
+            cat /tmp/brfss-files.txt
           else
-            echo "Dataset not readable yet; creating it."
-            cat /tmp/kaggle_files.err || true
+            echo "Creating BRFSS dataset from normalized archive."
+            cat /tmp/brfss-files.err || true
             kaggle datasets create -p /tmp/kaggle-brfss-dataset
           fi
 
           READY=0
           for attempt in $(seq 1 60); do
-            if kaggle datasets files "$DATASET_REF" -v >/tmp/kaggle_files.txt 2>/tmp/kaggle_files.err; then
-              cat /tmp/kaggle_files.txt
-              if grep -q "LLCP2025XPT.zip" /tmp/kaggle_files.txt; then
+            if kaggle datasets files "$DATASET_REF" -v >/tmp/brfss-files.txt 2>/tmp/brfss-files.err; then
+              cat /tmp/brfss-files.txt
+              if grep -Eq 'LLCP2025\.XPT|LLCP2025XPT\.zip' /tmp/brfss-files.txt; then
                 READY=1
                 break
               fi
             else
-              echo "Read-back attempt $attempt failed:"
-              cat /tmp/kaggle_files.err || true
+              echo "Read-back attempt $attempt:"
+              cat /tmp/brfss-files.err || true
             fi
             sleep 10
           done
 
           if [ "$READY" -ne 1 ]; then
-            echo "Dataset creation/read-back verification failed."
+            echo "BRFSS dataset did not become readable."
             exit 1
           fi
 
-          echo "Verified Kaggle dataset and LLCP2025XPT.zip via read-back API."
+          echo "Verified BRFSS Kaggle dataset via read-back API."
 
-      - name: Push and run EDA notebook with attached dataset
+      - name: Push and run EDA notebook
         shell: bash
         run: |
           set -euo pipefail
