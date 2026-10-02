@@ -131,7 +131,13 @@ jobs:
                   member = files[0]
               else:
                   raise SystemExit("Safety stop: archive structure changed or is ambiguous.")
-              target = out_dir / Path(member.filename).name
+              # CDC archive currently stores the payload as "LLCP2025.XPT " with
+              # a trailing space. Normalize only the filesystem name; copied bytes
+              # remain unchanged.
+              target_name = Path(member.filename.strip()).name
+              if not target_name:
+                  raise SystemExit("Safety stop: normalized payload filename is empty.")
+              target = out_dir / target_name
               with zf.open(member) as src, target.open("wb") as dst:
                   while True:
                       chunk = src.read(8 * 1024 * 1024)
