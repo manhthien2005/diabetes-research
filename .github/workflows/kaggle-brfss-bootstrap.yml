@@ -19,7 +19,7 @@ jobs:
     env:
       KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
       KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-      DATASET_REF: manhthien2005/brfss-2025-diabetes-survey
+      DATASET_REF: manhthien2005/brfss-2025-survey
       KERNEL_REF: manhthien2005/brfss-2025-data-exploration
       ZIP_PATH: 02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip
       DATASET_METADATA: 02_Implementation/BRFSS_Survey/kaggle/dataset/dataset-metadata.json
