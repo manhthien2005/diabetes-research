@@ -79,20 +79,24 @@ jobs:
           cp "$DATASET_METADATA" /tmp/kaggle-brfss-dataset/dataset-metadata.json
           ls -lh /tmp/kaggle-brfss-dataset
 
-      - name: Create or update private Kaggle dataset
+      - name: Ensure private Kaggle dataset is ready
         shell: bash
         run: |
           set -euo pipefail
-          if kaggle datasets status "$DATASET_REF" >/dev/null 2>&1; then
-            echo "Dataset exists; creating a new synchronized version."
-            kaggle datasets version               -p /tmp/kaggle-brfss-dataset               -m "Sync verified CDC BRFSS 2025 source archive from GitHub"
+
+          EXISTING_FILES="$(kaggle datasets files "$DATASET_REF" 2>&1 || true)"
+          if echo "$EXISTING_FILES" | grep -q "LLCP2025XPT.zip"; then
+            echo "Dataset already exists and contains the verified source archive."
           else
-            echo "Dataset does not exist; creating it as private."
-            kaggle datasets create -p /tmp/kaggle-brfss-dataset
+            echo "Dataset is not readable yet; attempting initial private creation."
+            CREATE_OUTPUT="$(kaggle datasets create -p /tmp/kaggle-brfss-dataset 2>&1 || true)"
+            echo "$CREATE_OUTPUT"
+
+            if echo "$CREATE_OUTPUT" | grep -Eqi "already exists|conflict"; then
+              echo "Dataset slug already exists; continuing to readiness check."
+            fi
           fi
 
-          # The status endpoint may return 403 for newly-created private datasets,
-          # so readiness is verified by listing the uploaded file instead.
           READY=0
           for attempt in $(seq 1 40); do
             FILES="$(kaggle datasets files "$DATASET_REF" 2>&1 || true)"
@@ -108,7 +112,7 @@ jobs:
           done
 
           if [ "$READY" -ne 1 ]; then
-            echo "Kaggle dataset was created but did not become readable in time."
+            echo "Kaggle dataset did not become readable in time."
             exit 1
           fi
 
