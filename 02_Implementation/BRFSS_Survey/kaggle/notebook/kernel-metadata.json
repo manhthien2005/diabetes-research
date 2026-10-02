@@ -1,0 +1,16 @@
+{
+  "id": "manhthien2005/brfss-2025-data-exploration",
+  "title": "BRFSS 2025 Data Exploration",
+  "code_file": "01_brfss_data_exploration.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": false,
+  "dataset_sources": [
+    "manhthien2005/brfss-2025-diabetes-survey"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
