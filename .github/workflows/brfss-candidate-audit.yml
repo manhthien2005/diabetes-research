@@ -28,6 +28,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install Python dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pandas
+
       - name: Pull verified CDC ZIP only
         shell: bash
         run: |
