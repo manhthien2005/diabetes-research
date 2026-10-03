@@ -1,0 +1,107 @@
+name: Audit BRFSS 2025 Candidate Variables
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - .github/workflows/brfss-candidate-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      XPT_PATH: 02_Implementation/BRFSS_Survey/data/extracted/LLCP2025.XPT
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: implement/BRFSS_survey
+          fetch-depth: 1
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Pull XPT only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs install
+          git lfs pull --include="$XPT_PATH" --exclude=""
+          test "$(stat -c '%s' "$XPT_PATH")" = "799971280"
+
+      - name: Audit candidate variables
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          path = Path("02_Implementation/BRFSS_Survey/data/extracted/LLCP2025.XPT")
+          df = pd.read_sas(path, format="xport", encoding="utf-8")
+
+          candidates = [
+              "DIABETE4",
+              "_AGEG5YR", "_SEX", "_RACEGR3", "_EDUCAG", "_INCOMG1", "EMPLOY1", "MARITAL",
+              "_BMI5", "_BMI5CAT",
+              "GENHLTH", "PHYSHLTH", "MENTHLTH", "_RFHLTH",
+              "_HLTHPL2", "PERSDOC3", "MEDCOST1", "CHECKUP1",
+              "_TOTINDA", "_RFSMOK3", "DRNKANY6", "_RFBING6", "SLEPTIM1",
+              "_RFHYPE6", "_RFCHOL3",
+              "_MICHD", "CVDSTRK3", "CHCKDNY2", "DIFFWALK",
+              "ASTHMA3", "ADDEPEV3", "HAVARTH4"
+          ]
+          leakage = [
+              "DIABAGE4", "INSULIN1", "CHKHEMO3", "EYEEXAM1", "DIABEYE1", "DIABEDU1"
+          ]
+
+          rows = []
+          for col in candidates + leakage:
+              exists = col in df.columns
+              if not exists:
+                  rows.append({
+                      "variable": col, "exists": False, "dtype": None,
+                      "missing_count": None, "missing_pct": None,
+                      "n_unique_nonnull": None
+                  })
+                  continue
+              s = df[col]
+              rows.append({
+                  "variable": col,
+                  "exists": True,
+                  "dtype": str(s.dtype),
+                  "missing_count": int(s.isna().sum()),
+                  "missing_pct": round(float(s.isna().mean() * 100), 4),
+                  "n_unique_nonnull": int(s.nunique(dropna=True)),
+              })
+
+          out = pd.DataFrame(rows)
+          out.to_csv("/tmp/candidate_variable_audit.csv", index=False)
+          print("=== CANDIDATE VARIABLE AUDIT ===")
+          print(out.to_csv(index=False))
+
+          print("=== TOP VALUE COUNTS ===")
+          for col in candidates + leakage:
+              if col not in df.columns:
+                  print(f"## {col}: NOT PRESENT")
+                  continue
+              print(f"## {col}")
+              print(df[col].value_counts(dropna=False).head(20).to_string())
+
+          print("=== DATASET SHAPE ===")
+          print(df.shape)
+          PY
+
+      - name: Upload audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: brfss-candidate-variable-audit
+          path: /tmp/candidate_variable_audit.csv
