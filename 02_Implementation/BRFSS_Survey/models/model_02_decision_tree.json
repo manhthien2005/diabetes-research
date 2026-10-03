@@ -1,6 +1,6 @@
 {
   "model_id": "model_02_decision_tree",
-  "status": "specified_pending_verified_run",
+  "status": "verified_frozen",
   "role": "single_tree_nonlinear_baseline",
   "literature_provenance": [
     {
@@ -36,5 +36,39 @@
   "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
   "test_split": "20% stratified internal holdout; random_state=42",
   "bootstrap_reps": 200,
-  "bootstrap_seed": 20251004
+  "bootstrap_seed": 20251004,
+  "kaggle_kernel_version": 15,
+  "github_actions_run_id": 37102035065,
+  "results": {
+    "cv_mean": {
+      "accuracy": 0.7851483965934632,
+      "precision": 0.30605933416545017,
+      "recall": 0.33136356812122625,
+      "specificity": 0.8660483534611766,
+      "f1": 0.3182017006761789,
+      "roc_auc": 0.5987399509712368,
+      "pr_auc": 0.20265611107398546
+    },
+    "test": {
+      "accuracy": 0.78615636130087,
+      "precision": 0.3102470994597467,
+      "recall": 0.3379643029425953,
+      "specificity": 0.8660543831587637,
+      "f1": 0.32351311414850387,
+      "roc_auc": 0.6020699144719784,
+      "pr_auc": 0.20533779176339034,
+      "brier_score": 0.21343462320702206,
+      "tn": 50355,
+      "fp": 7788,
+      "fn": 6862,
+      "tp": 3503
+    },
+    "complexity": {
+      "max_depth": 58,
+      "n_leaves": 42880,
+      "node_count": 85759,
+      "train_accuracy": 0.9996861668935266,
+      "train_roc_auc": 0.99999961079672
+    }
+  }
 }
