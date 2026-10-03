@@ -1,0 +1,34 @@
+{
+  "model_id": "model_07_gaussian_naive_bayes",
+  "status": "specified_pending_verified_run",
+  "role": "probabilistic_conditional_independence_baseline",
+  "literature_provenance": [
+    {
+      "paper_id": "P02",
+      "doi": "10.5888/pcd16.190109",
+      "use": "direct BRFSS Gaussian Naive Bayes precedent"
+    },
+    {
+      "paper_id": "FriedmanGeigerGoldszmidt1997",
+      "doi": "10.1023/A:1007465528199",
+      "use": "Naive Bayes / Bayesian classifier architecture reference"
+    }
+  ],
+  "estimator": {
+    "library": "scikit-learn",
+    "class": "GaussianNB",
+    "architecture": "Gaussian class-conditional naive Bayes classifier",
+    "params": {
+      "priors": null,
+      "var_smoothing": 1e-9
+    }
+  },
+  "dense_adapter": true,
+  "threshold": 0.5,
+  "resampling": "none",
+  "preprocessing": "frozen Part II ColumnTransformer plus representation-only dense conversion",
+  "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "test_split": "20% stratified internal holdout; random_state=42",
+  "bootstrap_reps": 200,
+  "bootstrap_seed": 20251009
+}
