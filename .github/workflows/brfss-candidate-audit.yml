@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      XPT_PATH: 02_Implementation/BRFSS_Survey/data/extracted/LLCP2025.XPT
+      ZIP_PATH: 02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip
 
     steps:
       - uses: actions/checkout@v4
@@ -28,13 +28,14 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Pull XPT only
+      - name: Pull verified CDC ZIP only
         shell: bash
         run: |
           set -euo pipefail
           git lfs install
-          git lfs pull --include="$XPT_PATH" --exclude=""
-          test "$(stat -c '%s' "$XPT_PATH")" = "799971280"
+          git lfs pull --include="$ZIP_PATH" --exclude=""
+          test "$(stat -c '%s' "$ZIP_PATH")" = "64642184"
+          test "$(sha256sum "$ZIP_PATH" | awk '{print $1}')" = "d26a8b391aa2966b58dc2a3ffddf8da050e9f38eb143d0f5ca7b3d21ece08f98"
 
       - name: Audit candidate variables
         shell: bash
@@ -45,8 +46,22 @@ jobs:
           from pathlib import Path
           import pandas as pd
 
-          path = Path("02_Implementation/BRFSS_Survey/data/extracted/LLCP2025.XPT")
-          df = pd.read_sas(path, format="xport", encoding="utf-8")
+          from zipfile import ZipFile
+
+          zip_path = Path("02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip")
+          xpt_path = Path("/tmp/LLCP2025.XPT")
+          with ZipFile(zip_path) as zf:
+              files = [i for i in zf.infolist() if not i.is_dir()]
+              if len(files) != 1:
+                  raise RuntimeError(f"Expected one XPT payload, found {len(files)}")
+              member = files[0]
+              if member.file_size != 799_971_280:
+                  raise RuntimeError(f"Unexpected XPT size: {member.file_size}")
+              with zf.open(member) as src, xpt_path.open("wb") as dst:
+                  for chunk in iter(lambda: src.read(8 * 1024 * 1024), b""):
+                      dst.write(chunk)
+
+          df = pd.read_sas(xpt_path, format="xport", encoding="utf-8")
 
           candidates = [
               "DIABETE4",
