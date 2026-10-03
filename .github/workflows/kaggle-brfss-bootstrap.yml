@@ -219,6 +219,10 @@ jobs:
           test -f /tmp/kaggle-eda-output/model_01_logistic_regression/cv_summary.csv
           test -f /tmp/kaggle-eda-output/model_01_logistic_regression/test_summary.csv
           test -f /tmp/kaggle-eda-output/model_01_logistic_regression/test_point_metrics.json
+          test -f /tmp/kaggle-eda-output/model_02_decision_tree/cv_summary.csv
+          test -f /tmp/kaggle-eda-output/model_02_decision_tree/test_summary.csv
+          test -f /tmp/kaggle-eda-output/model_02_decision_tree/test_point_metrics.json
+          test -f /tmp/kaggle-eda-output/model_02_decision_tree/tree_complexity.json
 
           echo "=== dataset_overview.json ==="
           cat /tmp/kaggle-eda-output/dataset_overview.json
@@ -232,6 +236,14 @@ jobs:
           cat /tmp/kaggle-eda-output/model_01_logistic_regression/test_summary.csv
           echo "=== Model 01 point metrics ==="
           cat /tmp/kaggle-eda-output/model_01_logistic_regression/test_point_metrics.json
+          echo "=== Model 02 CV summary ==="
+          cat /tmp/kaggle-eda-output/model_02_decision_tree/cv_summary.csv
+          echo "=== Model 02 test summary ==="
+          cat /tmp/kaggle-eda-output/model_02_decision_tree/test_summary.csv
+          echo "=== Model 02 point metrics ==="
+          cat /tmp/kaggle-eda-output/model_02_decision_tree/test_point_metrics.json
+          echo "=== Model 02 tree complexity ==="
+          cat /tmp/kaggle-eda-output/model_02_decision_tree/tree_complexity.json
 
       - name: Preserve EDA summaries
         uses: actions/upload-artifact@v4
@@ -242,4 +254,5 @@ jobs:
             /tmp/kaggle-eda-output/target_distribution.csv
             /tmp/kaggle-eda-output/column_summary.csv
             /tmp/kaggle-eda-output/model_01_logistic_regression/
+            /tmp/kaggle-eda-output/model_02_decision_tree/
           if-no-files-found: error
