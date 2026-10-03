@@ -1,6 +1,6 @@
 {
   "model_id": "model_01_logistic_regression",
-  "status": "specified_pending_verified_run",
+  "status": "verified_frozen",
   "role": "baseline_linear_classifier",
   "literature_provenance": [
     {
@@ -36,5 +36,32 @@
   "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
   "test_split": "20% stratified internal holdout; random_state=42",
   "bootstrap_reps": 200,
-  "bootstrap_seed": 20251003
+  "bootstrap_seed": 20251003,
+  "kaggle_kernel_version": 13,
+  "github_actions_run_id": 37099678206,
+  "results": {
+    "cv_mean": {
+      "accuracy": 0.8557389493418179,
+      "precision": 0.5723838232138461,
+      "recall": 0.18412038143049408,
+      "specificity": 0.9754739494139215,
+      "f1": 0.2786084351930481,
+      "roc_auc": 0.8226787757261075,
+      "pr_auc": 0.44063994277047785
+    },
+    "test": {
+      "accuracy": 0.8558270566941087,
+      "precision": 0.5714704159343879,
+      "recall": 0.18822961890979256,
+      "specificity": 0.9748378996611802,
+      "f1": 0.2831845562087234,
+      "roc_auc": 0.8261678122652486,
+      "pr_auc": 0.44663290841217973,
+      "brier_score": 0.1032526247772514,
+      "tn": 56680,
+      "fp": 1463,
+      "fn": 8414,
+      "tp": 1951
+    }
+  }
 }
