@@ -216,6 +216,9 @@ jobs:
           test -f /tmp/kaggle-eda-output/dataset_overview.json
           test -f /tmp/kaggle-eda-output/target_distribution.csv
           test -f /tmp/kaggle-eda-output/column_summary.csv
+          test -f /tmp/kaggle-eda-output/model_01_logistic_regression/cv_summary.csv
+          test -f /tmp/kaggle-eda-output/model_01_logistic_regression/test_summary.csv
+          test -f /tmp/kaggle-eda-output/model_01_logistic_regression/test_point_metrics.json
 
           echo "=== dataset_overview.json ==="
           cat /tmp/kaggle-eda-output/dataset_overview.json
@@ -223,6 +226,12 @@ jobs:
           cat /tmp/kaggle-eda-output/target_distribution.csv
           echo "=== top 30 columns by missingness ==="
           head -n 31 /tmp/kaggle-eda-output/column_summary.csv
+          echo "=== Model 01 CV summary ==="
+          cat /tmp/kaggle-eda-output/model_01_logistic_regression/cv_summary.csv
+          echo "=== Model 01 test summary ==="
+          cat /tmp/kaggle-eda-output/model_01_logistic_regression/test_summary.csv
+          echo "=== Model 01 point metrics ==="
+          cat /tmp/kaggle-eda-output/model_01_logistic_regression/test_point_metrics.json
 
       - name: Preserve EDA summaries
         uses: actions/upload-artifact@v4
@@ -232,4 +241,5 @@ jobs:
             /tmp/kaggle-eda-output/dataset_overview.json
             /tmp/kaggle-eda-output/target_distribution.csv
             /tmp/kaggle-eda-output/column_summary.csv
+            /tmp/kaggle-eda-output/model_01_logistic_regression/
           if-no-files-found: error
