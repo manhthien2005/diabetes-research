@@ -1,6 +1,6 @@
 {
   "model_id": "model_06_linear_svm",
-  "status": "specified_pending_verified_run",
+  "status": "verified_frozen",
   "role": "large_sample_linear_maximum_margin_classifier",
   "literature_provenance": [
     {
@@ -43,5 +43,41 @@
   "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
   "test_split": "20% stratified internal holdout; random_state=42",
   "bootstrap_reps": 200,
-  "bootstrap_seed": 20251008
+  "bootstrap_seed": 20251008,
+  "kaggle_kernel_ref": "manhthien2005/brfss-2025-model-06-linear-svm",
+  "kaggle_kernel_version": 1,
+  "github_actions_run_id": 37131823872,
+  "artifact_id": 11277256801,
+  "environment": {
+    "python": "3.13.15",
+    "pandas": "2.3.3",
+    "numpy": "2.1.3",
+    "scikit_learn": "1.6.1"
+  },
+  "results": {
+    "cv_mean": {
+      "accuracy": 0.8552645500604141,
+      "precision": 0.6135204074814078,
+      "recall": 0.1173845696819495,
+      "specificity": 0.9868125183874603,
+      "f1": 0.1970581926301763,
+      "roc_auc": 0.8220894287268997,
+      "pr_auc": 0.440848810515476
+    },
+    "test": {
+      "accuracy": 0.8559876218835757,
+      "precision": 0.6244389027431422,
+      "recall": 0.12079112397491558,
+      "specificity": 0.9870491718693566,
+      "f1": 0.20242522231204527,
+      "roc_auc": 0.8261580968770885,
+      "pr_auc": 0.44788405460506064,
+      "brier_score": null,
+      "tn": 57390,
+      "fp": 753,
+      "fn": 9113,
+      "tp": 1252,
+      "n_iter": 7
+    }
+  }
 }
