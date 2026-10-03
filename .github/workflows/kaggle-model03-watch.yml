@@ -1,0 +1,86 @@
+name: Watch BRFSS Model 03
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - .github/workflows/kaggle-model03-watch.yml
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      KERNEL_REF: manhthien2005/brfss-2025-data-exploration
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade kaggle
+
+      - name: Wait for existing Model 03 kernel
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          COMPLETE=0
+
+          for attempt in $(seq 1 180); do
+            STATUS="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "Attempt $attempt: $STATUS"
+
+            if echo "$STATUS" | grep -Eqi 'complete|success'; then
+              COMPLETE=1
+              break
+            fi
+
+            if echo "$STATUS" | grep -Eqi 'error|failed|cancel'; then
+              echo "Kaggle kernel failed."
+              rm -rf /tmp/model03-failed
+              mkdir -p /tmp/model03-failed
+              kaggle kernels output "$KERNEL_REF" -p /tmp/model03-failed -o || true
+              cat /tmp/model03-failed/*.log 2>/dev/null || true
+              exit 1
+            fi
+
+            sleep 15
+          done
+
+          test "$COMPLETE" = "1"
+
+      - name: Read back Model 03 outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/model03-output
+          mkdir -p /tmp/model03-output
+          kaggle kernels output "$KERNEL_REF" -p /tmp/model03-output -o
+
+          test -f /tmp/model03-output/model_03_random_forest/cv_summary.csv
+          test -f /tmp/model03-output/model_03_random_forest/test_summary.csv
+          test -f /tmp/model03-output/model_03_random_forest/test_point_metrics.json
+          test -f /tmp/model03-output/model_03_random_forest/forest_complexity.json
+
+          echo "=== MODEL 03 CV ==="
+          cat /tmp/model03-output/model_03_random_forest/cv_summary.csv
+          echo "=== MODEL 03 TEST ==="
+          cat /tmp/model03-output/model_03_random_forest/test_summary.csv
+          echo "=== MODEL 03 POINT ==="
+          cat /tmp/model03-output/model_03_random_forest/test_point_metrics.json
+          echo "=== MODEL 03 COMPLEXITY ==="
+          cat /tmp/model03-output/model_03_random_forest/forest_complexity.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: brfss-model-03-random-forest
+          path: /tmp/model03-output/model_03_random_forest/
+          if-no-files-found: error
