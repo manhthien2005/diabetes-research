@@ -1,0 +1,119 @@
+name: Run BRFSS Primary Model Comparison
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - 02_Implementation/BRFSS_Survey/kaggle/model_comparison/**
+      - .github/workflows/kaggle-brfss-model-comparison.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brfss-primary-model-comparison
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      KERNEL_REF: manhthien2005/brfss-2025-primary-model-comparison
+      DATASET_REF: manhthien2005/brfss-2025-survey
+      KERNEL_DIR: 02_Implementation/BRFSS_Survey/kaggle/model_comparison
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: implement/BRFSS_survey
+          fetch-depth: 1
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade kaggle
+
+      - name: Verify Kaggle access and dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          kaggle kernels list -m --page-size 1 >/dev/null
+          kaggle datasets status "$DATASET_REF"
+          kaggle datasets files "$DATASET_REF" -v | grep -F "LLCP2025.XPT"
+
+      - name: Push comparison notebook
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          kaggle kernels push -p "$KERNEL_DIR"
+
+      - name: Wait for completion
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          COMPLETE=0
+          for attempt in $(seq 1 300); do
+            STATUS="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "Attempt $attempt: $STATUS"
+
+            if echo "$STATUS" | grep -Eqi 'complete|success'; then
+              COMPLETE=1
+              break
+            fi
+
+            if echo "$STATUS" | grep -Eqi 'error|failed|cancel'; then
+              rm -rf /tmp/comparison-failed
+              mkdir -p /tmp/comparison-failed
+              kaggle kernels output "$KERNEL_REF" -p /tmp/comparison-failed -o || true
+              cat /tmp/comparison-failed/*.log 2>/dev/null || true
+              exit 1
+            fi
+            sleep 15
+          done
+          test "$COMPLETE" = "1"
+
+      - name: Read back comparison outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+
+          rm -rf /tmp/comparison-output
+          mkdir -p /tmp/comparison-output
+          kaggle kernels output "$KERNEL_REF" -p /tmp/comparison-output -o
+
+          OUT=/tmp/comparison-output/primary_7_model_comparison
+          test -f "$OUT/test_predictions.csv.gz"
+          test -f "$OUT/reconciliation.csv"
+          test -f "$OUT/point_metrics.csv"
+          test -f "$OUT/paired_difference_summary_vs_logistic.csv"
+          test -f "$OUT/paired_bootstrap_replicates_vs_logistic.csv"
+          test -f "$OUT/all_models_roc.png"
+          test -f "$OUT/all_models_pr.png"
+          test -f "$OUT/paired_delta_roc_auc.png"
+          test -f "$OUT/paired_delta_pr_auc.png"
+
+          echo "=== RECONCILIATION ==="
+          cat "$OUT/reconciliation.csv"
+          echo "=== POINT METRICS ==="
+          cat "$OUT/point_metrics.csv"
+          echo "=== PAIRED DIFFERENCES VS LOGISTIC ==="
+          cat "$OUT/paired_difference_summary_vs_logistic.csv"
+
+      - name: Preserve comparison outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: brfss-primary-seven-model-comparison
+          path: /tmp/comparison-output/primary_7_model_comparison/
+          if-no-files-found: error
