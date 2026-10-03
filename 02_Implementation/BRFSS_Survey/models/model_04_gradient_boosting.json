@@ -1,6 +1,6 @@
 {
   "model_id": "model_04_gradient_boosting",
-  "status": "specified_pending_verified_run",
+  "status": "verified_frozen",
   "role": "sequential_boosting_ensemble",
   "literature_provenance": [
     {
@@ -37,5 +37,40 @@
   "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
   "test_split": "20% stratified internal holdout; random_state=42",
   "bootstrap_reps": 200,
-  "bootstrap_seed": 20251006
+  "bootstrap_seed": 20251006,
+  "kaggle_kernel_ref": "manhthien2005/brfss-2025-model-04-gradient-boosting",
+  "kaggle_kernel_version": 1,
+  "github_actions_run_id": 37112614917,
+  "artifact_id": 11270850974,
+  "environment": {
+    "python": "3.13.15",
+    "pandas": "2.3.3",
+    "numpy": "2.1.3",
+    "scikit_learn": "1.6.1"
+  },
+  "results": {
+    "cv_mean": {
+      "accuracy": 0.8563739136529016,
+      "precision": 0.5875395521344695,
+      "recall": 0.17044520660895987,
+      "specificity": 0.9786600996779817,
+      "f1": 0.26421916609549295,
+      "roc_auc": 0.8228279066464728,
+      "pr_auc": 0.4447683866028299
+    },
+    "test": {
+      "accuracy": 0.8563525427687277,
+      "precision": 0.5859580052493438,
+      "recall": 0.17231066087795466,
+      "specificity": 0.97829489362434,
+      "f1": 0.26630880489077763,
+      "roc_auc": 0.8260155801805384,
+      "pr_auc": 0.4483169949856431,
+      "brier_score": 0.10313698175764141,
+      "tn": 56881,
+      "fp": 1262,
+      "fn": 8579,
+      "tp": 1786
+    }
+  }
 }
