@@ -1,0 +1,16 @@
+{
+  "id": "manhthien2005/brfss-2025-primary-model-comparison",
+  "title": "BRFSS 2025 — Paired Comparison of Seven Frozen Models",
+  "code_file": "primary_model_comparison.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": false,
+  "dataset_sources": [
+    "manhthien2005/brfss-2025-survey"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
