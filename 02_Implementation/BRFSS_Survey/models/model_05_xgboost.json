@@ -1,0 +1,51 @@
+{
+  "model_id": "model_05_xgboost",
+  "status": "specified_pending_verified_run",
+  "role": "regularized_gradient_boosted_tree_ensemble",
+  "literature_provenance": [
+    {
+      "paper_id": "P03",
+      "doi": "10.1177/21501319251400546",
+      "use": "direct BRFSS diabetes XGBoost precedent and 5-fold CV"
+    },
+    {
+      "paper_id": "P05",
+      "doi": "10.1371/journal.pone.0311222",
+      "use": "BRFSS 2021 XGBoost and GA-XGBoost precedent"
+    },
+    {
+      "paper_id": "ChenGuestrin2016",
+      "doi": "10.1145/2939672.2939785",
+      "use": "original XGBoost architecture"
+    }
+  ],
+  "estimator": {
+    "library": "xgboost",
+    "class": "XGBClassifier",
+    "architecture": "regularized gradient-boosted decision-tree ensemble",
+    "params": {
+      "objective": "binary:logistic",
+      "eval_metric": "logloss",
+      "booster": "gbtree",
+      "n_estimators": 100,
+      "learning_rate": 0.3,
+      "max_depth": 6,
+      "min_child_weight": 1,
+      "gamma": 0,
+      "subsample": 1,
+      "colsample_bytree": 1,
+      "reg_alpha": 0,
+      "reg_lambda": 1,
+      "tree_method": "hist",
+      "random_state": 42,
+      "n_jobs": -1
+    }
+  },
+  "threshold": 0.5,
+  "resampling": "none",
+  "preprocessing": "frozen Part II ColumnTransformer",
+  "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "test_split": "20% stratified internal holdout; random_state=42",
+  "bootstrap_reps": 200,
+  "bootstrap_seed": 20251007
+}
