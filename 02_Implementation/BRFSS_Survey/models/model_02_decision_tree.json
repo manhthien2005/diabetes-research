@@ -1,0 +1,40 @@
+{
+  "model_id": "model_02_decision_tree",
+  "status": "specified_pending_verified_run",
+  "role": "single_tree_nonlinear_baseline",
+  "literature_provenance": [
+    {
+      "paper_id": "P02",
+      "doi": "10.5888/pcd16.190109",
+      "use": "BRFSS Decision Tree classifier and held-out metrics"
+    },
+    {
+      "paper_id": "P03",
+      "doi": "10.1177/21501319251400546",
+      "use": "tree-based role, stratified split, 5-fold CV, overfitting context"
+    }
+  ],
+  "estimator": {
+    "library": "scikit-learn",
+    "class": "DecisionTreeClassifier",
+    "architecture": "CART-style binary classification tree",
+    "params": {
+      "criterion": "gini",
+      "splitter": "best",
+      "max_depth": null,
+      "min_samples_split": 2,
+      "min_samples_leaf": 1,
+      "max_features": null,
+      "class_weight": null,
+      "ccp_alpha": 0,
+      "random_state": 42
+    }
+  },
+  "threshold": 0.5,
+  "resampling": "none",
+  "preprocessing": "frozen Part II ColumnTransformer",
+  "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "test_split": "20% stratified internal holdout; random_state=42",
+  "bootstrap_reps": 200,
+  "bootstrap_seed": 20251004
+}
