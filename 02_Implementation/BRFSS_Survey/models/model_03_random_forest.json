@@ -1,6 +1,6 @@
 {
   "model_id": "model_03_random_forest",
-  "status": "specified_pending_verified_run",
+  "status": "verified_frozen",
   "role": "bagged_tree_ensemble",
   "literature_provenance": [
     {
@@ -38,5 +38,44 @@
   "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
   "test_split": "20% stratified internal holdout; random_state=42",
   "bootstrap_reps": 200,
-  "bootstrap_seed": 20251005
+  "bootstrap_seed": 20251005,
+  "kaggle_kernel_version": 16,
+  "kernel_push_workflow_run_id": 37102874542,
+  "verification_workflow_run_id": 37104369628,
+  "verification_artifact_id": 11267906581,
+  "results": {
+    "cv_mean": {
+      "accuracy": 0.8516080278895368,
+      "precision": 0.530122978327209,
+      "recall": 0.16962517688361306,
+      "specificity": 0.97319075309921,
+      "f1": 0.2570066798003895,
+      "roc_auc": 0.8019871425302121,
+      "pr_auc": 0.403660752395249
+    },
+    "test": {
+      "accuracy": 0.8510392946809132,
+      "precision": 0.5212992545260916,
+      "recall": 0.18890496864447662,
+      "specificity": 0.9690762430559139,
+      "f1": 0.2773174704341052,
+      "roc_auc": 0.8044953607113304,
+      "pr_auc": 0.40246501462675927,
+      "brier_score": 0.10760207758177587,
+      "tn": 56345,
+      "fp": 1798,
+      "fn": 8407,
+      "tp": 1958
+    },
+    "complexity": {
+      "mean_tree_depth": 55.03,
+      "median_tree_depth": 55,
+      "max_tree_depth": 64,
+      "mean_tree_leaves": 50462.17,
+      "median_tree_leaves": 50496.5,
+      "max_tree_leaves": 50986,
+      "train_accuracy": 0.9996715700048535,
+      "train_roc_auc": 0.999998471394525
+    }
+  }
 }
