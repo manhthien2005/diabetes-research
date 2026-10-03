@@ -1,0 +1,126 @@
+name: Run BRFSS Model 04
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - 02_Implementation/BRFSS_Survey/kaggle/model_04_gradient_boosting/**
+      - .github/workflows/kaggle-brfss-model04.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brfss-model-04-gradient-boosting
+  cancel-in-progress: true
+
+jobs:
+  run-model-04:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      KERNEL_REF: manhthien2005/brfss-2025-model-04-gradient-boosting
+      DATASET_REF: manhthien2005/brfss-2025-survey
+      KERNEL_DIR: 02_Implementation/BRFSS_Survey/kaggle/model_04_gradient_boosting
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: implement/BRFSS_survey
+          fetch-depth: 1
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade kaggle
+
+      - name: Verify Kaggle access and dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          kaggle kernels list -m --page-size 1 >/dev/null
+          kaggle datasets status "$DATASET_REF"
+          kaggle datasets files "$DATASET_REF" -v | grep -F "LLCP2025.XPT"
+
+      - name: Push Model 04 notebook
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          kaggle kernels push -p "$KERNEL_DIR"
+
+      - name: Wait for Model 04 completion
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+
+          COMPLETE=0
+          for attempt in $(seq 1 240); do
+            STATUS="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "Attempt $attempt: $STATUS"
+
+            if echo "$STATUS" | grep -Eqi 'complete|success'; then
+              COMPLETE=1
+              break
+            fi
+
+            if echo "$STATUS" | grep -Eqi 'error|failed|cancel'; then
+              echo "Model 04 Kaggle notebook failed."
+              rm -rf /tmp/model04-failed
+              mkdir -p /tmp/model04-failed
+              kaggle kernels output "$KERNEL_REF" -p /tmp/model04-failed -o || true
+              cat /tmp/model04-failed/*.log 2>/dev/null || true
+              exit 1
+            fi
+
+            sleep 15
+          done
+
+          test "$COMPLETE" = "1"
+
+      - name: Read back and verify Model 04 outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+
+          rm -rf /tmp/model04-output
+          mkdir -p /tmp/model04-output
+          kaggle kernels output "$KERNEL_REF" -p /tmp/model04-output -o
+
+          OUT=/tmp/model04-output/model_04_gradient_boosting
+          test -f "$OUT/environment_and_config.json"
+          test -f "$OUT/cv_folds.csv"
+          test -f "$OUT/cv_summary.csv"
+          test -f "$OUT/test_point_metrics.json"
+          test -f "$OUT/test_summary.csv"
+          test -f "$OUT/bootstrap_metrics.csv"
+          test -f "$OUT/roc_curve.png"
+          test -f "$OUT/precision_recall_curve.png"
+          test -f "$OUT/confusion_matrix.png"
+          test -f "$OUT/feature_importance_transformed.csv"
+
+          echo "=== MODEL 04 CONFIG ==="
+          cat "$OUT/environment_and_config.json"
+          echo "=== MODEL 04 CV ==="
+          cat "$OUT/cv_summary.csv"
+          echo "=== MODEL 04 TEST ==="
+          cat "$OUT/test_summary.csv"
+          echo "=== MODEL 04 POINT ==="
+          cat "$OUT/test_point_metrics.json"
+
+      - name: Preserve Model 04 outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: brfss-model-04-gradient-boosting
+          path: /tmp/model04-output/model_04_gradient_boosting/
+          if-no-files-found: error
