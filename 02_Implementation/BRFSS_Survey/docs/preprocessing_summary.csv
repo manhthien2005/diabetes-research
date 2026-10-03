@@ -1,0 +1,26 @@
+item,value
+target_definition,"DIABETE4 1 vs 3"
+primary_cohort_n,342539
+diabetes_n,51827
+no_diabetes_n,290712
+sample_diabetes_pct,15.1302
+raw_predictor_count,20
+complete_case_n,209145
+complete_case_pct,61.0573
+rows_lost_complete_case,133394
+rows_lost_complete_case_pct,38.9427
+train_n,274031
+test_n,68508
+train_diabetes_n,41462
+test_diabetes_n,10365
+train_diabetes_pct,15.1304
+test_diabetes_pct,15.1296
+transformed_feature_count,82
+test_size,0.20
+random_state,42
+cv_folds,5
+categorical_missing_strategy,"constant -1 category"
+numeric_missing_strategy,"median fit on training only"
+categorical_encoding,"one-hot; handle_unknown=ignore"
+numeric_scaling,"StandardScaler fit on training only"
+primary_resampling,"none"
