@@ -1,0 +1,16 @@
+{
+  "id": "manhthien2005/brfss-2025-model-04-gradient-boosting",
+  "title": "BRFSS 2025 — Model 04 Gradient Boosting",
+  "code_file": "model_04_gradient_boosting.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": false,
+  "dataset_sources": [
+    "manhthien2005/brfss-2025-survey"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
