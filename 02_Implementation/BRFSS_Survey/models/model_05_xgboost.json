@@ -1,6 +1,6 @@
 {
   "model_id": "model_05_xgboost",
-  "status": "specified_pending_verified_run",
+  "status": "verified_frozen",
   "role": "regularized_gradient_boosted_tree_ensemble",
   "literature_provenance": [
     {
@@ -47,5 +47,41 @@
   "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
   "test_split": "20% stratified internal holdout; random_state=42",
   "bootstrap_reps": 200,
-  "bootstrap_seed": 20251007
+  "bootstrap_seed": 20251007,
+  "kaggle_kernel_ref": "manhthien2005/brfss-2025-model-05-xgboost",
+  "kaggle_kernel_version": 1,
+  "github_actions_run_id": 37130981794,
+  "artifact_id": 11277330219,
+  "environment": {
+    "python": "3.13.15",
+    "pandas": "2.3.3",
+    "numpy": "2.1.3",
+    "scikit_learn": "1.6.1",
+    "xgboost": "3.4.1"
+  },
+  "results": {
+    "cv_mean": {
+      "accuracy": 0.8549908595962782,
+      "precision": 0.5599030439353581,
+      "recall": 0.19461211074916634,
+      "specificity": 0.9727220778336741,
+      "f1": 0.2888061666591438,
+      "roc_auc": 0.8228428163839336,
+      "pr_auc": 0.43791381830989956
+    },
+    "test": {
+      "accuracy": 0.8548198750510889,
+      "precision": 0.5573501231864221,
+      "recall": 0.19643029425952727,
+      "specificity": 0.9721892575202518,
+      "f1": 0.2904836638607505,
+      "roc_auc": 0.8262898793557036,
+      "pr_auc": 0.44171377834099224,
+      "brier_score": 0.10353841645250558,
+      "tn": 56526,
+      "fp": 1617,
+      "fn": 8329,
+      "tp": 2036
+    }
+  }
 }
