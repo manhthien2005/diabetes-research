@@ -1,0 +1,47 @@
+{
+  "model_id": "model_06_linear_svm",
+  "status": "specified_pending_verified_run",
+  "role": "large_sample_linear_maximum_margin_classifier",
+  "literature_provenance": [
+    {
+      "paper_id": "P02",
+      "doi": "10.5888/pcd16.190109",
+      "use": "direct BRFSS linear/RBF/polynomial SVM comparison"
+    },
+    {
+      "paper_id": "P03",
+      "doi": "10.1177/21501319251400546",
+      "use": "BRFSS diabetes SVM precedent and stratified 5-fold CV"
+    },
+    {
+      "paper_id": "CortesVapnik1995",
+      "doi": "10.1007/BF00994018",
+      "use": "support-vector network architecture"
+    }
+  ],
+  "estimator": {
+    "library": "scikit-learn",
+    "class": "LinearSVC",
+    "architecture": "soft-margin linear support vector classifier",
+    "params": {
+      "penalty": "l2",
+      "loss": "squared_hinge",
+      "dual": "auto",
+      "tol": 0.0001,
+      "C": 1,
+      "fit_intercept": true,
+      "class_weight": null,
+      "random_state": 42,
+      "max_iter": 10000
+    }
+  },
+  "decision_threshold": 0,
+  "probability_calibration": null,
+  "brier_score": "not_applicable_uncalibrated_margin",
+  "resampling": "none",
+  "preprocessing": "frozen Part II ColumnTransformer",
+  "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "test_split": "20% stratified internal holdout; random_state=42",
+  "bootstrap_reps": 200,
+  "bootstrap_seed": 20251008
+}
