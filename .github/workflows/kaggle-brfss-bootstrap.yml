@@ -6,7 +6,9 @@ on:
       - implement/BRFSS_survey
     paths:
       - .github/workflows/kaggle-brfss-bootstrap.yml
-      - 02_Implementation/BRFSS_Survey/kaggle/**
+      - 02_Implementation/BRFSS_Survey/kaggle/dataset/dataset-metadata.json
+      - 02_Implementation/BRFSS_Survey/kaggle/notebook/kernel-metadata.json
+      - 02_Implementation/BRFSS_Survey/kaggle/notebook/01_brfss_data_exploration.ipynb
   workflow_dispatch:
 
 permissions:
