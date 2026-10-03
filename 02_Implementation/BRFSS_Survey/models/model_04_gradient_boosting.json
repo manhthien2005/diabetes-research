@@ -1,0 +1,41 @@
+{
+  "model_id": "model_04_gradient_boosting",
+  "status": "specified_pending_verified_run",
+  "role": "sequential_boosting_ensemble",
+  "literature_provenance": [
+    {
+      "paper_id": "P03",
+      "doi": "10.1177/21501319251400546",
+      "use": "direct BRFSS diabetes Gradient Boosting precedent, stratified 5-fold CV and metric set"
+    },
+    {
+      "paper_id": "Friedman2001",
+      "doi": "10.1214/aos/1013203451",
+      "use": "original gradient boosting architecture"
+    }
+  ],
+  "estimator": {
+    "library": "scikit-learn",
+    "class": "GradientBoostingClassifier",
+    "architecture": "forward stage-wise additive regression-tree ensemble",
+    "params": {
+      "loss": "log_loss",
+      "learning_rate": 0.1,
+      "n_estimators": 100,
+      "subsample": 1,
+      "criterion": "friedman_mse",
+      "min_samples_split": 2,
+      "min_samples_leaf": 1,
+      "max_depth": 3,
+      "max_features": null,
+      "random_state": 42
+    }
+  },
+  "threshold": 0.5,
+  "resampling": "none",
+  "preprocessing": "frozen Part II ColumnTransformer",
+  "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "test_split": "20% stratified internal holdout; random_state=42",
+  "bootstrap_reps": 200,
+  "bootstrap_seed": 20251006
+}
