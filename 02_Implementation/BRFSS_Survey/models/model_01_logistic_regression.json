@@ -1,0 +1,40 @@
+{
+  "model_id": "model_01_logistic_regression",
+  "status": "specified_pending_verified_run",
+  "role": "baseline_linear_classifier",
+  "literature_provenance": [
+    {
+      "paper_id": "P02",
+      "doi": "10.5888/pcd16.190109",
+      "use": "BRFSS logistic regression classifier and held-out metrics"
+    },
+    {
+      "paper_id": "P03",
+      "doi": "10.1177/21501319251400546",
+      "use": "baseline role, stratified split, 5-fold CV, metric set"
+    },
+    {
+      "paper_id": "P01",
+      "doi": "10.1038/s41598-026-46927-7",
+      "use": "large-scale BRFSS logistic regression precedent and public code"
+    }
+  ],
+  "estimator": {
+    "library": "scikit-learn",
+    "class": "LogisticRegression",
+    "params": {
+      "penalty": "l2",
+      "C": 1,
+      "solver": "lbfgs",
+      "max_iter": 1000,
+      "class_weight": null
+    }
+  },
+  "threshold": 0.5,
+  "resampling": "none",
+  "preprocessing": "frozen Part II ColumnTransformer",
+  "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "test_split": "20% stratified internal holdout; random_state=42",
+  "bootstrap_reps": 200,
+  "bootstrap_seed": 20251003
+}
