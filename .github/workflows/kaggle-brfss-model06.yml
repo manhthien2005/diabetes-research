@@ -1,0 +1,126 @@
+name: Run BRFSS Model 06
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - 02_Implementation/BRFSS_Survey/kaggle/model_06_linear_svm/**
+      - .github/workflows/kaggle-brfss-model06.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brfss-model-06-linear-svm
+  cancel-in-progress: true
+
+jobs:
+  run-model-06:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      KERNEL_REF: manhthien2005/brfss-2025-model-06-linear-svm
+      DATASET_REF: manhthien2005/brfss-2025-survey
+      KERNEL_DIR: 02_Implementation/BRFSS_Survey/kaggle/model_06_linear_svm
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: implement/BRFSS_survey
+          fetch-depth: 1
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade kaggle
+
+      - name: Verify Kaggle access and dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          kaggle kernels list -m --page-size 1 >/dev/null
+          kaggle datasets status "$DATASET_REF"
+          kaggle datasets files "$DATASET_REF" -v | grep -F "LLCP2025.XPT"
+
+      - name: Push Model 06 notebook
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          kaggle kernels push -p "$KERNEL_DIR"
+
+      - name: Wait for Model 06 completion
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+
+          COMPLETE=0
+          for attempt in $(seq 1 240); do
+            STATUS="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
+            echo "Attempt $attempt: $STATUS"
+
+            if echo "$STATUS" | grep -Eqi 'complete|success'; then
+              COMPLETE=1
+              break
+            fi
+
+            if echo "$STATUS" | grep -Eqi 'error|failed|cancel'; then
+              echo "Model 06 Kaggle notebook failed."
+              rm -rf /tmp/model06-failed
+              mkdir -p /tmp/model06-failed
+              kaggle kernels output "$KERNEL_REF" -p /tmp/model06-failed -o || true
+              cat /tmp/model06-failed/*.log 2>/dev/null || true
+              exit 1
+            fi
+
+            sleep 15
+          done
+
+          test "$COMPLETE" = "1"
+
+      - name: Read back and verify Model 06 outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+
+          rm -rf /tmp/model06-output
+          mkdir -p /tmp/model06-output
+          kaggle kernels output "$KERNEL_REF" -p /tmp/model06-output -o
+
+          OUT=/tmp/model06-output/model_06_linear_svm
+          test -f "$OUT/environment_and_config.json"
+          test -f "$OUT/cv_folds.csv"
+          test -f "$OUT/cv_summary.csv"
+          test -f "$OUT/test_point_metrics.json"
+          test -f "$OUT/test_summary.csv"
+          test -f "$OUT/bootstrap_metrics.csv"
+          test -f "$OUT/roc_curve.png"
+          test -f "$OUT/precision_recall_curve.png"
+          test -f "$OUT/confusion_matrix.png"
+          test -f "$OUT/linear_coefficients.csv"
+
+          echo "=== MODEL 06 CONFIG ==="
+          cat "$OUT/environment_and_config.json"
+          echo "=== MODEL 06 CV ==="
+          cat "$OUT/cv_summary.csv"
+          echo "=== MODEL 06 TEST ==="
+          cat "$OUT/test_summary.csv"
+          echo "=== MODEL 06 POINT ==="
+          cat "$OUT/test_point_metrics.json"
+
+      - name: Preserve Model 06 outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: brfss-model-06-linear-svm
+          path: /tmp/model06-output/model_06_linear_svm/
+          if-no-files-found: error
