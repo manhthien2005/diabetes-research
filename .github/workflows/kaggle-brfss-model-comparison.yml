@@ -5,7 +5,7 @@ on:
     branches:
       - implement/BRFSS_survey
     paths:
-      - 02_Implementation/BRFSS_Survey/kaggle/model_comparison/**
+      - 02_Implementation/BRFSS_Survey/kaggle/primary_model_comparison/**
       - .github/workflows/kaggle-brfss-model-comparison.yml
   workflow_dispatch:
 
@@ -19,13 +19,13 @@ concurrency:
 jobs:
   compare:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 100
     env:
       KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
       KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
       KERNEL_REF: manhthien2005/brfss-2025-primary-model-comparison
       DATASET_REF: manhthien2005/brfss-2025-survey
-      KERNEL_DIR: 02_Implementation/BRFSS_Survey/kaggle/model_comparison
+      KERNEL_DIR: 02_Implementation/BRFSS_Survey/kaggle/primary_model_comparison
 
     steps:
       - uses: actions/checkout@v4
@@ -63,7 +63,7 @@ jobs:
           set -euo pipefail
           unset KAGGLE_API_TOKEN || true
           COMPLETE=0
-          for attempt in $(seq 1 300); do
+          for attempt in $(seq 1 360); do
             STATUS="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
             echo "Attempt $attempt: $STATUS"
 
@@ -93,27 +93,32 @@ jobs:
           mkdir -p /tmp/comparison-output
           kaggle kernels output "$KERNEL_REF" -p /tmp/comparison-output -o
 
-          OUT=/tmp/comparison-output/primary_7_model_comparison
-          test -f "$OUT/test_predictions.csv.gz"
-          test -f "$OUT/reconciliation.csv"
-          test -f "$OUT/point_metrics.csv"
-          test -f "$OUT/paired_difference_summary_vs_logistic.csv"
-          test -f "$OUT/paired_bootstrap_replicates_vs_logistic.csv"
-          test -f "$OUT/all_models_roc.png"
-          test -f "$OUT/all_models_pr.png"
-          test -f "$OUT/paired_delta_roc_auc.png"
-          test -f "$OUT/paired_delta_pr_auc.png"
+          OUT=/tmp/comparison-output/primary_benchmark_comparison
+          test -f "$OUT/paired_test_predictions.csv"
+          test -f "$OUT/regeneration_verification.csv"
+          test -f "$OUT/paired_bootstrap_model_metrics.csv"
+          test -f "$OUT/paired_bootstrap_differences.csv"
+          test -f "$OUT/mcnemar_pairwise.csv"
+          test -f "$OUT/roc_overlay.png"
+          test -f "$OUT/pr_overlay.png"
+          test -f "$OUT/comparison_manifest.json"
 
-          echo "=== RECONCILIATION ==="
-          cat "$OUT/reconciliation.csv"
-          echo "=== POINT METRICS ==="
-          cat "$OUT/point_metrics.csv"
-          echo "=== PAIRED DIFFERENCES VS LOGISTIC ==="
-          cat "$OUT/paired_difference_summary_vs_logistic.csv"
+          echo "=== REGENERATION VERIFICATION ==="
+          cat "$OUT/regeneration_verification.csv"
+          echo "=== PAIRED BOOTSTRAP DIFFERENCES (TOP-4 ROC-AUC) ==="
+          python - <<'PY'
+          import pandas as pd
+          p = "/tmp/comparison-output/primary_benchmark_comparison/paired_bootstrap_differences.csv"
+          df = pd.read_csv(p)
+          top = {"logistic_regression","gradient_boosting","xgboost","linear_svm"}
+          print(df[(df["metric"]=="roc_auc") & df["model_a"].isin(top) & df["model_b"].isin(top)].to_string(index=False))
+          PY
+          echo "=== MCNEMAR HOLM ==="
+          cat "$OUT/mcnemar_pairwise.csv"
 
       - name: Preserve comparison outputs
         uses: actions/upload-artifact@v4
         with:
-          name: brfss-primary-seven-model-comparison
-          path: /tmp/comparison-output/primary_7_model_comparison/
+          name: brfss-primary-model-comparison
+          path: /tmp/comparison-output/primary_benchmark_comparison/
           if-no-files-found: error
