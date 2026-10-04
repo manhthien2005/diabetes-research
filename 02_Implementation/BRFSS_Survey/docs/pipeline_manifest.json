@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "study_id": "brfss_2025_diabetes_status_internal_benchmark",
+  "task_type": "binary_classification",
+  "intended_use": "methodological internal benchmark of prespecified classifier configurations; not clinical deployment",
+  "target_population": "eligible adult respondents in the 2025 BRFSS public-use aggregate with DIABETE4 in {1,3}",
+  "outcome_definition": "self-reported diagnosed diabetes status: DIABETE4=1 vs DIABETE4=3",
+  "prediction_horizon": "cross_sectional",
+  "development_cohort": "BRFSS 2025 public-use aggregate; random 80% development partition",
+  "evaluation_cohort": "same-source random 20% held-out internal test partition",
+  "n_samples": 342539,
+  "n_events": 51827,
+  "n_features": 20,
+  "transformed_feature_count": 82,
+  "candidate_predictor_parameters": 82,
+  "predictor_availability_rule": "survey variables observed contemporaneously with outcome; diabetes-specific diagnosis/treatment fields excluded",
+  "missing_data_strategy": "BRFSS sentinel recoding; categorical explicit missing category; numeric training-only median imputation",
+  "preprocessing_stage": "inside_cv",
+  "feature_selection_stage": "literature_prespecified_before_modeling",
+  "resampling_stage": "none",
+  "hyperparameter_tuning": "none; seven prespecified fixed baseline configurations",
+  "cv_scheme": "held_out_test",
+  "internal_validation": "stratified 5-fold CV in development data plus held-out internal test",
+  "threshold_strategy": "prespecified_default",
+  "threshold_tuning_stage": "none",
+  "baseline_comparator": "logistic_regression",
+  "discrimination_metrics": [
+    "roc_auc",
+    "average_precision"
+  ],
+  "calibration_reported": true,
+  "calibration_metrics": [
+    "brier_score",
+    "calibration_curve",
+    "posthoc_reporting_intercept_slope"
+  ],
+  "clinical_utility": "not assessed; no clinical decision threshold or utility claim",
+  "subgroup_evaluation": [],
+  "external_validation": "none",
+  "external_validation_type": "none",
+  "population_representative_claimed": false,
+  "survey_design": {
+    "weight_variable": "_LLCPWT",
+    "strata_variable": "_STSTR",
+    "psu_variable": "_PSU",
+    "weights_used_in_training": false,
+    "population_representative_claimed": false,
+    "estimand_justification": "unweighted predictive performance in the analyzed respondent sample; population inference is out of scope"
+  },
+  "random_state": 42,
+  "canonical_notebook": "02_Implementation/BRFSS_Survey/kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb",
+  "frozen_prediction_artifact": "brfss-2025-canonical-audited-output",
+  "notes": [
+    "Historical artifact key pr_auc denotes sklearn Average Precision (AP).",
+    "No equivalence claim is made from non-significant paired contrasts.",
+    "External/temporal and subgroup validation are required before deployment claims."
+  ]
+}
