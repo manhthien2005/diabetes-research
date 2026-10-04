@@ -1,14 +1,16 @@
-# Primary Seven-Model Benchmark — Frozen Checkpoint
+# Primary Seven-Model Benchmark — Historical Pre-Comparison Checkpoint
 
 **Dataset:** BRFSS 2025  
 **Primary cohort:** 342,539 respondents  
 **Training set:** 274,031  
-**Untouched internal test set:** 68,508  
+**Held-out internal test set:** 68,508  
 **Predictors:** 20 frozen literature-grounded variables  
 **Primary resampling:** none  
 **Cross-validation:** Stratified 5-fold on training data only
 
-All seven primary model specifications have now been independently executed, verified, and frozen.
+> **Historical-stage artifact.** Paired comparison is now complete; use `../docs/primary_benchmark_summary.md` for final reporting. Legacy `AP` below means scikit-learn **Average Precision (AP)**.
+
+All seven primary model specifications were executed, verified, and frozen.
 
 ## Model set
 
@@ -24,7 +26,7 @@ All seven primary model specifications have now been independently executed, ver
 
 ## Frozen test-set metrics
 
-| Model | Accuracy | Precision | Recall | Specificity | F1 | ROC-AUC | PR-AUC | Brier |
+| Model | Accuracy | Precision | Recall | Specificity | F1 | ROC-AUC | AP | Brier |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | Logistic Regression | 0.8558 | 0.5715 | 0.1882 | 0.9748 | 0.2832 | 0.8262 | 0.4466 | 0.1033 |
 | Decision Tree | 0.7862 | 0.3102 | 0.3380 | 0.8661 | 0.3235 | 0.6021 | 0.2053 | 0.2134 |
@@ -44,7 +46,7 @@ The seven models show distinct operating behaviors:
 - Linear SVM is the most conservative classifier at its native zero-margin boundary, with high precision/specificity but low recall.
 - Decision Tree strongly overfits the training data and has weak held-out discrimination compared with the ensemble/linear baselines.
 
-These are **descriptive comparisons**, not yet claims of statistically significant superiority.
+These were the descriptive findings before paired comparison; current inferential interpretation is in the authoritative final audit.
 
 ## Why there is no single "best model" at this checkpoint
 
@@ -53,7 +55,7 @@ The models optimize different trade-offs at their frozen default decision thresh
 For example:
 - high recall and high specificity point in different directions;
 - ROC-AUC evaluates ranking independent of one threshold;
-- PR-AUC is particularly informative under class imbalance;
+- AP is particularly informative under class imbalance;
 - Brier score evaluates probability accuracy but is not available for the uncalibrated Linear SVM;
 - F1 emphasizes positive-class classification at the chosen threshold.
 
@@ -66,7 +68,7 @@ XGB ROC-AUC  = 0.82629
 SVM ROC-AUC  = 0.82616
 ```
 
-The next phase must assess whether such differences are materially/statistically distinguishable.
+The subsequent paired-analysis phase assessed whether such differences were clearly distinguishable.
 
 ## Primary benchmark is now closed
 
@@ -82,9 +84,9 @@ The following are frozen:
 
 No model in the primary benchmark may now be retuned based on these test results.
 
-## Next phase — paired model comparison
+## Subsequent phase — paired model comparison (completed)
 
-The statistically appropriate next step is to compare predictions on the **same test respondents**.
+The completed paired analysis compares predictions on the **same test respondents**.
 
 Required artifacts:
 1. per-respondent test label;
@@ -92,10 +94,10 @@ Required artifacts:
 3. probability or decision score for each model;
 4. deterministic respondent/test-row identifier.
 
-This will allow:
-- paired bootstrap differences in ROC-AUC / PR-AUC / F1;
+This enabled:
+- paired bootstrap differences in ROC-AUC / AP / F1;
 - McNemar tests for paired classification errors;
 - direct ROC/PR overlay plots;
 - threshold-independent comparison of the strongest models.
 
-Because earlier model notebooks did not all persist row-level predictions, these predictions must be regenerated from the **already-frozen configurations**. Regeneration is evaluation-only: it must not alter any model specification or test-set result.
+Row-level predictions were regenerated from the already-frozen configurations for evaluation only; no model specification or test-set point result was altered.

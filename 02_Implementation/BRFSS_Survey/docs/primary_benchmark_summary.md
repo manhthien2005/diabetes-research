@@ -21,7 +21,7 @@
 
 ## What the paired analysis changes
 
-The leading discrimination point estimates are essentially tied:
+The leading discrimination point estimates are very similar:
 
 `LR ≈ GB ≈ XGBoost ≈ Linear SVM` at ROC-AUC ≈ **0.826**.
 
@@ -46,15 +46,14 @@ Choice depends on the operating objective:
 - **highest precision/specificity but very low recall:** Linear SVM;
 - **highest recall/F1 at the default boundary:** Gaussian NB, at the cost of poor precision, lower discrimination and poor calibration.
 
-The primary scientific conclusion should therefore emphasize **trade-offs and statistical equivalence of the leading discrimination models**, not point-estimate ranking.
+The primary scientific conclusion should emphasize **trade-offs and the absence of a clearly detected ROC-AUC difference among the leading models**, not point-estimate ranking. This is not an equivalence claim.
 
 
 ## Pre-submission robustness note
 
 The historical artifact key `pr_auc` stores **scikit-learn Average Precision (AP)**. It is not trapezoidal PR-curve AUC.
 
-The frozen notebook used 200 paired stratified bootstrap replicates. A separate pre-submission robustness audit re-used the exact frozen prediction vectors:
-- 1,000-replicate all-seven-model bootstrap for metric stability;
+The frozen notebook used 200 paired stratified bootstrap replicates. A separate pre-submission robustness audit re-used the exact frozen prediction vectors without refitting:
 - 5,000-replicate paired bootstrap for LR vs Gradient Boosting / XGBoost / Linear SVM on ROC-AUC and AP.
 
 ROC-AUC conclusions were stable: none of the three leading challengers was clearly separated from Logistic Regression. The LR–XGBoost AP contrast is only ~0.0049 and sits close to the interval boundary; it is not used as evidence of overall model superiority.

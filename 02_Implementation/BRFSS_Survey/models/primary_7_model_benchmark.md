@@ -1,6 +1,8 @@
-# Primary Seven-Model Benchmark — Frozen Results
+# Primary Seven-Model Benchmark — Historical Freeze Record
 
-All seven primary models have been specified **before their final test evaluation** and are now frozen.
+> **Historical-stage artifact.** The paired comparison has since been completed. Current interpretation lives in `../docs/primary_benchmark_summary.md` and `../docs/STUDY_AUDIT.md`. Legacy `AP` values below are scikit-learn **Average Precision (AP)**.
+
+All seven primary models were specified before final evaluation and remain frozen.
 
 The same BRFSS 2025 modeling cohort, 20 predictors, 80/20 stratified split, and Part II preprocessing logic were used throughout.
 
@@ -18,7 +20,7 @@ KNN is not part of the primary full-cohort benchmark because exact nearest-neigh
 
 ## Held-out test metrics
 
-| Model | Accuracy | Precision | Recall | Specificity | F1 | ROC-AUC | PR-AUC | Brier |
+| Model | Accuracy | Precision | Recall | Specificity | F1 | ROC-AUC | AP | Brier |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | Logistic Regression | 0.8558 | 0.5715 | 0.1882 | 0.9748 | 0.2832 | 0.8262 | 0.4466 | 0.1033 |
 | Decision Tree | 0.7862 | 0.3102 | 0.3380 | 0.8661 | 0.3235 | 0.6021 | 0.2053 | 0.2134 |
@@ -42,16 +44,16 @@ Linear SVM           0.826158
 
 A difference of a few ten-thousandths must not be described as a meaningful performance difference solely because one number is numerically larger.
 
-The next comparison stage therefore uses **paired predictions on the same held-out respondents** and paired stratified bootstrap differences.
+The completed comparison uses **paired predictions on the same held-out respondents** and paired stratified bootstrap differences.
 
 ## Primary comparison rule
 
 Logistic Regression is used as the prespecified **reference baseline**, because it was Model 01 and its baseline role was established from the literature before the later model results were observed.
 
-For each other model, the comparison notebook will estimate paired differences versus Logistic Regression for:
+For each other model, the completed canonical comparison estimates paired differences versus Logistic Regression for:
 
 - ROC-AUC;
-- PR-AUC;
+- AP;
 - accuracy;
 - F1;
 - recall;
@@ -63,7 +65,7 @@ The bootstrap is paired: every replicate resamples respondent indices once and a
 
 ## No further tuning
 
-The comparison stage is post-hoc evaluation only.
+The completed comparison stage is evaluation only.
 
 It must not:
 - change hyperparameters;
