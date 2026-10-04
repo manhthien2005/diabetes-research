@@ -1,4 +1,4 @@
-name: Bootstrap BRFSS on Kaggle
+name: Run BRFSS 2025 Full Study
 
 on:
   push:
@@ -8,25 +8,25 @@ on:
       - .github/workflows/kaggle-brfss-bootstrap.yml
       - 02_Implementation/BRFSS_Survey/kaggle/dataset/dataset-metadata.json
       - 02_Implementation/BRFSS_Survey/kaggle/notebook/kernel-metadata.json
-      - 02_Implementation/BRFSS_Survey/kaggle/notebook/01_brfss_data_exploration.ipynb
+      - 02_Implementation/BRFSS_Survey/kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: brfss-kaggle-bootstrap
+  group: brfss-kaggle-full-study
   cancel-in-progress: true
 
 jobs:
-  publish-and-run-eda:
+  run-full-study:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 180
     env:
       KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
       KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
       DATASET_REF: manhthien2005/brfss-2025-survey
-      KERNEL_REF: manhthien2005/brfss-2025-data-exploration
+      KERNEL_REF: manhthien2005/brfss-2025-diabetes-classification
       ZIP_PATH: 02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip
       DATASET_METADATA: 02_Implementation/BRFSS_Survey/kaggle/dataset/dataset-metadata.json
       NOTEBOOK_DIR: 02_Implementation/BRFSS_Survey/kaggle/notebook
@@ -45,245 +45,97 @@ jobs:
           python-version: "3.11"
 
       - name: Install Kaggle CLI
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pip install --upgrade pip kaggle
-          kaggle --version
+        run: python -m pip install --upgrade pip kaggle
 
-      - name: Validate legacy Kaggle credentials
+      - name: Validate Kaggle access
         shell: bash
         run: |
           set -euo pipefail
           unset KAGGLE_API_TOKEN || true
           test -n "${KAGGLE_USERNAME:-}"
           test -n "${KAGGLE_KEY:-}"
-          test "$KAGGLE_USERNAME" = "manhthien2005"
           kaggle kernels list -m --page-size 1 >/dev/null
-          echo "Legacy Kaggle authentication succeeded."
+          kaggle datasets status "$DATASET_REF"
+          kaggle datasets files "$DATASET_REF" -v | grep -F "LLCP2025.XPT"
 
-      - name: Pull and verify original CDC ZIP
-        shell: bash
-        run: |
-          set -euo pipefail
-          git lfs install
-          git lfs pull --include="$ZIP_PATH" --exclude=""
-
-          test -s "$ZIP_PATH"
-          test "$(stat -c '%s' "$ZIP_PATH")" = "64642184"
-          test "$(sha256sum "$ZIP_PATH" | awk '{print $1}')" = "d26a8b391aa2966b58dc2a3ffddf8da050e9f38eb143d0f5ca7b3d21ece08f98"
-
-      - name: Normalize CDC archive member name
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf /tmp/brfss-normalize /tmp/kaggle-brfss-dataset
-          mkdir -p /tmp/brfss-normalize /tmp/kaggle-brfss-dataset
-
-          python - <<'PY'
-          from pathlib import Path
-          from zipfile import ZipFile, ZIP_DEFLATED
-          import hashlib
-
-          src_zip = Path("02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip")
-          normalized_xpt = Path("/tmp/brfss-normalize/LLCP2025.XPT")
-          normalized_zip = Path("/tmp/kaggle-brfss-dataset/LLCP2025XPT.zip")
-
-          with ZipFile(src_zip) as zf:
-              files = [i for i in zf.infolist() if not i.is_dir()]
-              if len(files) != 1:
-                  raise SystemExit(f"Expected exactly one payload; found {len(files)}")
-              member = files[0]
-              if member.filename != "LLCP2025.XPT ":
-                  raise SystemExit(f"Unexpected CDC member name: {member.filename!r}")
-              if member.file_size != 799_971_280:
-                  raise SystemExit(f"Unexpected XPT size: {member.file_size}")
-
-              with zf.open(member) as src, normalized_xpt.open("wb") as dst:
-                  while True:
-                      chunk = src.read(8 * 1024 * 1024)
-                      if not chunk:
-                          break
-                      dst.write(chunk)
-
-          if normalized_xpt.stat().st_size != 799_971_280:
-              raise SystemExit("Normalized XPT size mismatch")
-
-          h = hashlib.sha256()
-          with normalized_xpt.open("rb") as f:
-              for chunk in iter(lambda: f.read(8 * 1024 * 1024), b""):
-                  h.update(chunk)
-          print("Normalized XPT SHA-256:", h.hexdigest())
-
-          with ZipFile(normalized_zip, "w", compression=ZIP_DEFLATED, compresslevel=6) as zf:
-              zf.write(normalized_xpt, arcname="LLCP2025.XPT")
-
-          with ZipFile(normalized_zip) as zf:
-              files = [i for i in zf.infolist() if not i.is_dir()]
-              if len(files) != 1 or files[0].filename != "LLCP2025.XPT":
-                  raise SystemExit("Normalized ZIP verification failed")
-              if files[0].file_size != 799_971_280:
-                  raise SystemExit("Normalized ZIP payload size mismatch")
-
-          print("Normalized ZIP bytes:", normalized_zip.stat().st_size)
-          PY
-
-          cp "$DATASET_METADATA" /tmp/kaggle-brfss-dataset/dataset-metadata.json
-          ls -lh /tmp/kaggle-brfss-dataset
-
-      - name: Create and verify private Kaggle dataset
+      - name: Push canonical study notebook
         shell: bash
         run: |
           set -euo pipefail
           unset KAGGLE_API_TOKEN || true
+          kaggle kernels push -p "$NOTEBOOK_DIR" --timeout 10800
 
-          if kaggle datasets files "$DATASET_REF" -v >/tmp/brfss-files.txt 2>/tmp/brfss-files.err; then
-            echo "Target dataset already exists:"
-            cat /tmp/brfss-files.txt
-          else
-            echo "Creating BRFSS dataset from normalized archive."
-            cat /tmp/brfss-files.err || true
-            kaggle datasets create -p /tmp/kaggle-brfss-dataset
-          fi
-
-          READY=0
-          for attempt in $(seq 1 60); do
-            if kaggle datasets files "$DATASET_REF" -v >/tmp/brfss-files.txt 2>/tmp/brfss-files.err; then
-              cat /tmp/brfss-files.txt
-              if grep -Eq 'LLCP2025\.XPT|LLCP2025XPT\.zip' /tmp/brfss-files.txt; then
-                READY=1
-                break
-              fi
-            else
-              echo "Read-back attempt $attempt:"
-              cat /tmp/brfss-files.err || true
-            fi
-            sleep 10
-          done
-
-          if [ "$READY" -ne 1 ]; then
-            echo "BRFSS dataset did not become readable."
-            exit 1
-          fi
-
-          echo "Verified BRFSS Kaggle dataset via read-back API."
-
-      - name: Push and run EDA notebook
-        shell: bash
-        run: |
-          set -euo pipefail
-          unset KAGGLE_API_TOKEN || true
-          kaggle kernels push -p "$NOTEBOOK_DIR" --timeout 7200
-
-      - name: Wait for Kaggle notebook to finish
+      - name: Wait for canonical notebook
         shell: bash
         run: |
           set -euo pipefail
           unset KAGGLE_API_TOKEN || true
           COMPLETE=0
-
-          for attempt in $(seq 1 200); do
+          for attempt in $(seq 1 720); do
             STATUS="$(kaggle kernels status "$KERNEL_REF" 2>&1 || true)"
             echo "Attempt $attempt: $STATUS"
-
             if echo "$STATUS" | grep -Eqi 'complete|success'; then
               COMPLETE=1
               break
             fi
-
             if echo "$STATUS" | grep -Eqi 'error|failed|cancel'; then
-              echo "Kaggle notebook failed."
-              rm -rf /tmp/kaggle-failed-output
-              mkdir -p /tmp/kaggle-failed-output
-              kaggle kernels output "$KERNEL_REF" -p /tmp/kaggle-failed-output -o || true
-              cat /tmp/kaggle-failed-output/*.log 2>/dev/null || true
+              rm -rf /tmp/brfss-failed
+              mkdir -p /tmp/brfss-failed
+              kaggle kernels output "$KERNEL_REF" -p /tmp/brfss-failed -o || true
+              cat /tmp/brfss-failed/*.log 2>/dev/null || true
               exit 1
             fi
-
             sleep 15
           done
-
           test "$COMPLETE" = "1"
 
-      - name: Download and verify EDA outputs
+      - name: Read back and verify full-study outputs
         shell: bash
         run: |
           set -euo pipefail
           unset KAGGLE_API_TOKEN || true
-          rm -rf /tmp/kaggle-eda-output
-          mkdir -p /tmp/kaggle-eda-output
+          rm -rf /tmp/kaggle-study-output
+          mkdir -p /tmp/kaggle-study-output
+          kaggle kernels output "$KERNEL_REF" -p /tmp/kaggle-study-output -o
 
-          kaggle kernels output "$KERNEL_REF" -p /tmp/kaggle-eda-output -o
+          test -f /tmp/kaggle-study-output/dataset_overview.json
+          test -f /tmp/kaggle-study-output/preprocessing_summary.json
 
-          test -f /tmp/kaggle-eda-output/dataset_overview.json
-          test -f /tmp/kaggle-eda-output/target_distribution.csv
-          test -f /tmp/kaggle-eda-output/column_summary.csv
-          test -f /tmp/kaggle-eda-output/model_01_logistic_regression/cv_summary.csv
-          test -f /tmp/kaggle-eda-output/model_01_logistic_regression/test_summary.csv
-          test -f /tmp/kaggle-eda-output/model_01_logistic_regression/test_point_metrics.json
-          test -f /tmp/kaggle-eda-output/model_02_decision_tree/cv_summary.csv
-          test -f /tmp/kaggle-eda-output/model_02_decision_tree/test_summary.csv
-          test -f /tmp/kaggle-eda-output/model_02_decision_tree/test_point_metrics.json
-          test -f /tmp/kaggle-eda-output/model_02_decision_tree/tree_complexity.json
-          test -f /tmp/kaggle-eda-output/model_03_random_forest/cv_summary.csv
-          test -f /tmp/kaggle-eda-output/model_03_random_forest/test_summary.csv
-          test -f /tmp/kaggle-eda-output/model_03_random_forest/test_point_metrics.json
-          test -f /tmp/kaggle-eda-output/model_03_random_forest/forest_complexity.json
+          for d in             model_01_logistic_regression             model_02_decision_tree             model_03_random_forest             model_04_gradient_boosting             model_05_xgboost             model_06_linear_svm             model_07_gaussian_naive_bayes
+          do
+            test -f "/tmp/kaggle-study-output/$d/cv_summary.csv"
+            test -f "/tmp/kaggle-study-output/$d/test_summary.csv"
+            test -f "/tmp/kaggle-study-output/$d/test_point_metrics.json"
+          done
 
-          echo "=== dataset_overview.json ==="
-          cat /tmp/kaggle-eda-output/dataset_overview.json
-          echo "=== target_distribution.csv ==="
-          cat /tmp/kaggle-eda-output/target_distribution.csv
-          echo "=== top 30 columns by missingness ==="
-          head -n 31 /tmp/kaggle-eda-output/column_summary.csv
-          echo "=== Model 01 CV summary ==="
-          cat /tmp/kaggle-eda-output/model_01_logistic_regression/cv_summary.csv
-          echo "=== Model 01 test summary ==="
-          cat /tmp/kaggle-eda-output/model_01_logistic_regression/test_summary.csv
-          echo "=== Model 01 point metrics ==="
-          cat /tmp/kaggle-eda-output/model_01_logistic_regression/test_point_metrics.json
-          echo "=== Model 02 CV summary ==="
-          cat /tmp/kaggle-eda-output/model_02_decision_tree/cv_summary.csv
-          echo "=== Model 02 test summary ==="
-          cat /tmp/kaggle-eda-output/model_02_decision_tree/test_summary.csv
-          echo "=== Model 02 point metrics ==="
-          cat /tmp/kaggle-eda-output/model_02_decision_tree/test_point_metrics.json
-          echo "=== Model 02 tree complexity ==="
-          cat /tmp/kaggle-eda-output/model_02_decision_tree/tree_complexity.json
-          echo "=== Model 03 CV summary ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/cv_summary.csv
-          echo "=== Model 03 test summary ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/test_summary.csv
-          echo "=== Model 03 point metrics ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/test_point_metrics.json
-          echo "=== Model 03 forest complexity ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/forest_complexity.json
-          echo "=== Model 03 CV summary ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/cv_summary.csv
-          echo "=== Model 03 test summary ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/test_summary.csv
-          echo "=== Model 03 point metrics ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/test_point_metrics.json
-          echo "=== Model 03 forest complexity ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/forest_complexity.json
-          echo "=== Model 03 CV summary ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/cv_summary.csv
-          echo "=== Model 03 test summary ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/test_summary.csv
-          echo "=== Model 03 point metrics ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/test_point_metrics.json
-          echo "=== Model 03 forest complexity ==="
-          cat /tmp/kaggle-eda-output/model_03_random_forest/forest_complexity.json
+          OUT=/tmp/kaggle-study-output/model_comparison
+          test -f "$OUT/model_comparison.csv"
+          test -f "$OUT/paired_test_predictions.csv.gz"
+          test -f "$OUT/paired_bootstrap_model_metrics.csv"
+          test -f "$OUT/paired_bootstrap_differences.csv"
+          test -f "$OUT/mcnemar_pairwise_holm.csv"
+          test -f "$OUT/roc_comparison.png"
+          test -f "$OUT/pr_comparison.png"
+          test -f "$OUT/comparison_manifest.json"
 
-      - name: Preserve EDA summaries
+          echo "=== SEVEN-MODEL COMPARISON ==="
+          cat "$OUT/model_comparison.csv"
+          echo "=== TOP PAIRED DISCRIMINATION COMPARISONS ==="
+          python - <<'PY'
+          import pandas as pd
+          p = "/tmp/kaggle-study-output/model_comparison/paired_bootstrap_differences.csv"
+          df = pd.read_csv(p)
+          top = {"logistic_regression","gradient_boosting","xgboost","linear_svm"}
+          print(df[
+              df["model_a"].isin(top)
+              & df["model_b"].isin(top)
+              & df["metric"].isin(["roc_auc","pr_auc"])
+          ].to_string(index=False))
+          PY
+
+      - name: Preserve complete study outputs
         uses: actions/upload-artifact@v4
         with:
-          name: brfss-2025-initial-eda
-          path: |
-            /tmp/kaggle-eda-output/dataset_overview.json
-            /tmp/kaggle-eda-output/target_distribution.csv
-            /tmp/kaggle-eda-output/column_summary.csv
-            /tmp/kaggle-eda-output/model_01_logistic_regression/
-            /tmp/kaggle-eda-output/model_02_decision_tree/
-            /tmp/kaggle-eda-output/model_03_random_forest/
+          name: brfss-2025-full-study
+          path: /tmp/kaggle-study-output/
           if-no-files-found: error

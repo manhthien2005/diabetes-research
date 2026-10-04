@@ -1,7 +1,7 @@
 {
-  "id": "manhthien2005/brfss-2025-data-exploration",
-  "title": "BRFSS 2025 Data Exploration",
-  "code_file": "01_brfss_data_exploration.ipynb",
+  "id": "manhthien2005/brfss-2025-diabetes-classification",
+  "title": "BRFSS 2025 Diabetes Classification",
+  "code_file": "BRFSS_2025_Diabetes_Classification.ipynb",
   "language": "python",
   "kernel_type": "notebook",
   "is_private": true,
