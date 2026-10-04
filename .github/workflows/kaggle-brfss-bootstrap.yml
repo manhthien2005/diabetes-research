@@ -5,7 +5,6 @@ on:
     branches:
       - implement/BRFSS_survey
     paths:
-      - .github/workflows/kaggle-brfss-bootstrap.yml
       - 02_Implementation/BRFSS_Survey/kaggle/dataset/dataset-metadata.json
       - 02_Implementation/BRFSS_Survey/kaggle/notebook/kernel-metadata.json
       - 02_Implementation/BRFSS_Survey/kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb
@@ -158,15 +157,25 @@ jobs:
           cat "$OUT/model_comparison.csv"
           echo "=== TOP PAIRED DISCRIMINATION COMPARISONS ==="
           python - <<'PY'
-          import pandas as pd
+          import csv
+
           p = "/tmp/kaggle-study-output/model_comparison/paired_bootstrap_differences.csv"
-          df = pd.read_csv(p)
-          top = {"logistic_regression","gradient_boosting","xgboost","linear_svm"}
-          print(df[
-              df["model_a"].isin(top)
-              & df["model_b"].isin(top)
-              & df["metric"].isin(["roc_auc","pr_auc"])
-          ].to_string(index=False))
+          top = {"logistic_regression", "gradient_boosting", "xgboost", "linear_svm"}
+
+          with open(p, newline="", encoding="utf-8") as f:
+              rows = list(csv.DictReader(f))
+
+          for row in rows:
+              if (
+                  row["model_a"] in top
+                  and row["model_b"] in top
+                  and row["metric"] in {"roc_auc", "pr_auc"}
+              ):
+                  print(
+                      row["model_a"], "vs", row["model_b"], "|", row["metric"],
+                      "| delta=", row["point_difference_a_minus_b"],
+                      "| CI=[", row["ci95_lower"], ",", row["ci95_upper"], "]",
+                  )
           PY
 
       - name: Preserve complete study outputs

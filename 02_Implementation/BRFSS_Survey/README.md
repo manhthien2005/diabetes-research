@@ -6,6 +6,18 @@ This implementation contains the end-to-end BRFSS 2025 diabetes-classification s
 
 The primary task is **cross-sectional classification of self-reported diagnosed diabetes status**. It is not a future-incidence model, laboratory diagnosis model, or externally validated clinical risk score.
 
+## Final audit status
+
+**FINAL-READY / PASS.**
+
+The canonical Kaggle execution completed and a separate read-back audit verified:
+- all seven frozen point metrics reproduced within tolerance;
+- paired bootstrap and 21 Holm-corrected McNemar comparisons;
+- all required comparison/calibration figures;
+- a 93-file audited output artifact.
+
+Primary result: Logistic Regression, Gradient Boosting, XGBoost and Linear SVM are effectively tied on held-out ROC-AUC (~0.826); paired ROC-AUC comparisons do not clearly separate them. See `docs/STUDY_AUDIT.md` for the full audit.
+
 ## Single canonical notebook
 
 There is **one executable research notebook**:
