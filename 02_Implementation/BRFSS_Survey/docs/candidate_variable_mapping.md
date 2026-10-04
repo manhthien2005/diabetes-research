@@ -1,4 +1,4 @@
-# Literature-to-BRFSS 2025 Candidate Variable Mapping
+> **Historical stage record.** This file preserves the decision state at that point in the study. Any wording such as “next step,” “not frozen yet,” or a pending phase is superseded by the canonical notebook and `STUDY_AUDIT.md`. Do not use this file alone to infer the current protocol.\n\n# Literature-to-BRFSS 2025 Candidate Variable Mapping
 
 This document converts the literature review into an auditable BRFSS 2025 feature-selection plan. It is **not yet the final model feature set**.
 

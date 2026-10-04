@@ -1,4 +1,4 @@
-# BRFSS 2025 Coding Audit — Version 1
+> **Historical stage record.** This file preserves the decision state at that point in the study. Any wording such as “next step,” “not frozen yet,” or a pending phase is superseded by the canonical notebook and `STUDY_AUDIT.md`. Do not use this file alone to infer the current protocol.\n\n# BRFSS 2025 Coding Audit — Version 1
 
 This audit converts BRFSS response codes into an analysis-safe representation before final feature selection.
 

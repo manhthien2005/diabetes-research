@@ -1,4 +1,4 @@
-# Frozen Predictor Set — BRFSS 2025 Diabetes Classification
+> **Historical stage record.** This file preserves the decision state at that point in the study. Any wording such as “next step,” “not frozen yet,” or a pending phase is superseded by the canonical notebook and `STUDY_AUDIT.md`. Do not use this file alone to infer the current protocol.\n\n# Frozen Predictor Set — BRFSS 2025 Diabetes Classification
 
 **Status:** primary predictor set frozen for the first modeling pipeline.  
 **Target:** binary diagnosed-diabetes status from `DIABETE4=1` versus `DIABETE4=3`.  

@@ -1,4 +1,4 @@
-# Part II — Data Preparation
+> **Historical stage record.** This file preserves the decision state at that point in the study. Any wording such as “next step,” “not frozen yet,” or a pending phase is superseded by the canonical notebook and `STUDY_AUDIT.md`. Do not use this file alone to infer the current protocol.\n\n# Part II — Data Preparation
 
 **Status:** frozen Part II design; executable implementation lives in the single canonical notebook.  
 **Primary cohort:** 342,539 respondents.  
