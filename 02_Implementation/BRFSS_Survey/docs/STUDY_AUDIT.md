@@ -1,11 +1,11 @@
-# BRFSS 2025 Full-Study Audit — FINAL
+# BRFSS 2025 Full-Study Audit — Computational FINAL
 
 **Branch:** `implement/BRFSS_survey`  
 **Canonical notebook:** `kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb`  
 **Canonical Kaggle kernel:** `manhthien2005/brfss-2025-diabetes-classification`  
 **Audited output run:** GitHub Actions `37183093668`  
 **Audited artifact:** `brfss-2025-canonical-audited-output` (93 files)  
-**Status:** **FINAL-READY / PASS**
+**Status:** **COMPUTATIONAL BENCHMARK PASS** — internally validated, not externally/clinically validated
 
 ## 1. Executive audit
 
@@ -19,7 +19,7 @@
 | Split / CV | PASS | 80/20 stratified internal holdout; 5-fold CV only inside train |
 | CV reporting | PASS | Fold values + mean/SD/range; no naive 5-fold t-CI |
 | Model fairness | PASS | Same cohort, split and preprocessing contract across all seven fixed baselines |
-| Class imbalance reporting | PASS | Balanced Accuracy, PR-AUC, Recall, Precision and F1 included |
+| Class imbalance reporting | PASS | Balanced Accuracy, Average Precision (AP), Recall, Precision and F1 included |
 | Calibration | PASS | Brier for probability models + calibration plot; SVM Brier correctly omitted |
 | Frozen reproducibility | PASS | All seven frozen point metrics reproduced within 1e-6 |
 | Paired comparison | PASS | Respondent-paired bootstrap on the same 68,508 held-out respondents |
@@ -30,7 +30,7 @@
 
 ## 2. Frozen held-out benchmark
 
-| Model | Balanced Acc. | F1 | ROC-AUC | PR-AUC | Brier |
+| Model | Balanced Acc. | F1 | ROC-AUC | Average Precision (AP) | Brier |
 |---|---:|---:|---:|---:|---:|
 | Logistic Regression | 0.5815 | 0.2832 | 0.8262 | 0.4466 | 0.1033 |
 | Decision Tree | 0.6020 | 0.3235 | 0.6021 | 0.2053 | 0.2134 |
@@ -48,7 +48,7 @@ The paired bootstrap uses identical resampled respondents for every model.
 
 ### Discrimination
 
-| Challenger | Δ ROC-AUC (LR − challenger) | 95% paired CI | Δ PR-AUC | 95% paired CI | Conclusion |
+| Challenger | Δ ROC-AUC (LR − challenger) | 95% paired CI | Δ Average Precision (AP) | 95% paired CI | Conclusion |
 |---|---:|---:|---:|---:|---|
 | Random Forest | +0.02167 | [+0.01922, +0.02434] | +0.04417 | [+0.03877, +0.04950] | LR clearly better ranking/discrimination |
 | Gradient Boosting | +0.00015 | [−0.00111, +0.00136] | −0.00168 | [−0.00479, +0.00141] | No clear difference |
@@ -56,13 +56,13 @@ The paired bootstrap uses identical resampled respondents for every model.
 | Linear SVM | +0.00001 | [−0.00065, +0.00063] | −0.00125 | [−0.00305, +0.00037] | No clear difference |
 | Gaussian NB | +0.03760 | [+0.03452, +0.04050] | +0.08251 | [+0.07474, +0.08863] | LR clearly better ranking/discrimination |
 
-Decision Tree is also substantially below LR: Δ ROC-AUC = +0.22410 and Δ PR-AUC = +0.24130, with both paired CIs excluding zero.
+Decision Tree is also substantially below LR: Δ ROC-AUC = +0.22410 and Δ Average Precision (AP) = +0.24130, with both paired CIs excluding zero.
 
 ### Threshold behavior
 
 - XGBoost has slightly higher Balanced Accuracy/F1 than LR at the frozen boundaries.
 - LR has higher Balanced Accuracy/F1 than Gradient Boosting and Linear SVM at their frozen boundaries.
-- Gaussian NB has the highest Balanced Accuracy/F1 because it retrieves far more positive cases, but with much lower precision/specificity and substantially worse Brier/PR-AUC.
+- Gaussian NB has the highest Balanced Accuracy/F1 because it retrieves far more positive cases, but with much lower precision/specificity and substantially worse Brier/Average Precision (AP).
 - These operating-point differences do **not** imply corresponding differences in ranking discrimination.
 
 ## 4. Top-four discrimination conclusion
@@ -70,11 +70,11 @@ Decision Tree is also substantially below LR: Δ ROC-AUC = +0.22410 and Δ PR-AU
 For **Logistic Regression, Gradient Boosting, XGBoost and Linear SVM**:
 
 - every pairwise ROC-AUC difference has a 95% paired bootstrap CI crossing zero;
-- LR-vs-GB/XGB/SVM PR-AUC CIs cross zero;
+- LR-vs-GB/XGB/SVM Average Precision (AP) CIs cross zero;
 - McNemar + Holm finds **no significant accuracy difference for any pair among these four**;
 - small point-estimate differences such as XGBoost ROC-AUC 0.82629 vs LR 0.82617 are therefore not defensible as evidence of a superior overall classifier.
 
-Exploratory all-pairs bootstrap suggests some PR-AUC differences (for example GB vs XGB and XGB vs SVM), but these secondary all-pairs bootstrap intervals are not multiplicity-adjusted and should not be promoted to the primary conclusion.
+Exploratory all-pairs bootstrap suggests some Average Precision (AP) differences (for example GB vs XGB and XGB vs SVM), but these secondary all-pairs bootstrap intervals are not multiplicity-adjusted and should not be promoted to the primary conclusion.
 
 ## 5. Calibration audit
 
@@ -139,8 +139,19 @@ Published metrics are **not numerical reproduction targets** because cohort, tar
 
 ## 10. Final audit decision
 
-**PASS — FINAL-READY.**
+**PASS for the frozen computational/internal-validation benchmark.**
+
+This is a defensible methodological benchmark, not a validated clinical screening tool. External/temporal validation, subgroup/fairness evaluation, and clinically anchored utility analysis remain outside the frozen primary study and must precede any deployment claim.
 
 The canonical notebook completed successfully on Kaggle, reproduced all seven frozen results, generated paired statistical comparisons and all required visual outputs, and passed a separate read-back audit without rerunning training.
 
 Future work (survey-weighted inference, threshold optimization, class-resampling sensitivity, temporal/external validation, calibration slope/intercept, or decision-curve analysis) must be versioned as **new experiments** rather than retroactively modifying this frozen primary benchmark.
+
+
+## 11. Pre-submission statistical amendments
+
+- Legacy field `pr_auc` = scikit-learn **Average Precision (AP)**; it is not trapezoidal PR-curve area.
+- The absence of a detected paired difference is **not** evidence of statistical equivalence.
+- A 5,000-replicate paired-bootstrap robustness check on the frozen top-four prediction vectors preserved the ROC-AUC conclusion. LR vs XGBoost AP remained a very small, borderline contrast; it is not used to claim an overall winner.
+- Calibration intercept/slope were computed post hoc from frozen probability predictions as a reporting diagnostic only; no recalibration or model selection was performed.
+- A naive always-negative reference has test accuracy 0.8487 but Balanced Accuracy 0.50, demonstrating why accuracy alone is misleading under the observed imbalance.

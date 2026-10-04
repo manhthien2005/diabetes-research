@@ -8,7 +8,9 @@ The primary task is **cross-sectional classification of self-reported diagnosed 
 
 ## Final audit status
 
-**FINAL-READY / PASS.**
+**FINAL COMPUTATIONAL BENCHMARK / PASS.**
+
+This status means the frozen internal benchmark is reproducible and audit-clean. It does **not** mean the models are externally validated or ready for clinical deployment.
 
 The canonical Kaggle execution completed and a separate read-back audit verified:
 - all seven frozen point metrics reproduced within tolerance;
@@ -16,7 +18,7 @@ The canonical Kaggle execution completed and a separate read-back audit verified
 - all required comparison/calibration figures;
 - a 93-file audited output artifact.
 
-Primary result: Logistic Regression, Gradient Boosting, XGBoost and Linear SVM are effectively tied on held-out ROC-AUC (~0.826); paired ROC-AUC comparisons do not clearly separate them. See `docs/STUDY_AUDIT.md` for the full audit.
+Primary result: Logistic Regression, Gradient Boosting, XGBoost and Linear SVM have very similar held-out ROC-AUC (~0.826); paired ROC-AUC intervals do not clearly distinguish them. This is **not an equivalence claim**. The metric historically named `pr_auc` is sklearn **Average Precision (AP)**. See `docs/STUDY_AUDIT.md` and `docs/PRE_SUBMISSION_BOARD_REVIEW.md`.
 
 ## Single canonical notebook
 
