@@ -2,6 +2,10 @@
 
 This implementation contains the end-to-end BRFSS 2025 diabetes-classification study.
 
+## Scientific scope
+
+The primary task is **cross-sectional classification of self-reported diagnosed diabetes status**. It is not a future-incidence model, laboratory diagnosis model, or externally validated clinical risk score.
+
 ## Single canonical notebook
 
 There is **one executable research notebook**:

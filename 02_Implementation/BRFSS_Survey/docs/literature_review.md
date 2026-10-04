@@ -125,6 +125,12 @@ Uses the 253,680-record BRFSS-2015-derived dataset, a 70/30 split and SMOTE-ENN.
 
 **Use with caution:** the result should be audited for split/resampling behavior and is not a performance target for our project.
 
+## Protocol non-equivalence rule
+
+Published BRFSS metrics are not numerical targets for our benchmark. P01, P02, P03, P05, and P06 differ in outcome definitions, geography/year, missing-data handling, resampling, feature selection, splits, and tuning.
+
+Use literature to justify **design choices and model families**, not to require our scores to match paper tables.
+
 ## What the literature tells us to do
 
 ### Target construction
@@ -160,7 +166,7 @@ A defensible workflow is:
 P01 provides a useful precedent of <20% per-year missingness for candidate selection, while P03 uses MICE for moderate missingness.
 
 ### Imbalance
-The consistent lesson across P02–P05 is that any oversampling/undersampling must occur **inside training data only**. Our main benchmark should first report performance on the natural class distribution; resampling can be a secondary experiment.
+The consistent lesson across P02–P05 is that any oversampling/undersampling must occur **inside training data only**. The frozen primary benchmark intentionally uses the natural class distribution; any resampling study would be a separate sensitivity experiment.
 
 ### Evaluation
 For the class assignment, the most defensible common metrics are:

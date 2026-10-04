@@ -116,6 +116,11 @@ jobs:
           test -f "$OUT/mcnemar_pairwise_holm.csv"
           test -f "$OUT/roc_comparison.png"
           test -f "$OUT/pr_comparison.png"
+          test -f "$OUT/metric_matrix.png"
+          test -f "$OUT/precision_recall_tradeoff.png"
+          test -f "$OUT/calibration_comparison.png"
+          test -f "$OUT/aggregated_feature_diagnostics.csv"
+          test -f "$OUT/feature_diagnostic_matrix.png"
           test -f "$OUT/comparison_manifest.json"
 
           echo "=== SEVEN-MODEL COMPARISON ==="

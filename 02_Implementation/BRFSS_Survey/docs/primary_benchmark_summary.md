@@ -45,28 +45,10 @@ The fixed decision boundaries produce very different class behavior:
 
 Because these models share the same test respondents, small numerical differences should not be interpreted as meaningful until a **paired comparison** is performed on per-respondent predictions.
 
-## Next analysis gate
+## Paired-comparison status
 
-The next comparison notebook should refit each frozen model once on the full training set and export aligned test predictions:
+The paired comparison is now implemented **inside the canonical end-to-end notebook** and directly reuses the seven held-out prediction vectors generated earlier in that same execution.
 
-```text
-respondent_index
-true_label
-lr_score / lr_pred
-dt_score / dt_pred
-rf_score / rf_pred
-gb_score / gb_pred
-xgb_score / xgb_pred
-svm_margin / svm_pred
-gnb_score / gnb_pred
-```
+Primary inference compares each challenger against the prespecified Logistic Regression baseline using respondent-paired bootstrap differences. Exact McNemar tests across all 21 thresholded model pairs use Holm family-wise correction. All-pairs bootstrap outputs are retained as secondary/exploratory evidence.
 
-That aligned prediction table will enable:
-
-1. paired bootstrap confidence intervals for differences in ROC-AUC and PR-AUC;
-2. paired bootstrap differences for threshold metrics;
-3. McNemar tests for paired classification disagreements;
-4. consolidated ROC / precision-recall comparison plots;
-5. a defensible conclusion about whether tiny numerical differences among LR/GB/XGB/SVM are meaningful.
-
-No primary model will be retuned during this comparison step.
+No primary model is retuned during comparison.

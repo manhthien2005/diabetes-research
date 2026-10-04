@@ -75,6 +75,12 @@ Not selected because it is a calculated summary of `GENHLTH`. The original 5-lev
 - depressive-disorder history overlaps the broader `MENTHLTH` construct;
 - arthritis can overlap strongly with age and functional limitation, for which `DIFFWALK` is already retained.
 
+## Temporal ambiguity of concurrent health variables
+
+Variables such as hypertension, high cholesterol, coronary disease, stroke, kidney disease, walking difficulty, and healthcare access are retained for **cross-sectional status classification**. They are not direct target leakage, but their temporal order relative to diabetes diagnosis is unknown.
+
+They must therefore not be interpreted as causal factors or prospective predictors.
+
 ## Leakage exclusions are absolute
 
 The following are prohibited from the predictor matrix:

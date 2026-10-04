@@ -1,6 +1,6 @@
 # Part II — Data Preparation
 
-**Status:** implemented and verified on Kaggle.  
+**Status:** frozen Part II design; executable implementation lives in the single canonical notebook.  
 **Primary cohort:** 342,539 respondents.  
 **Primary predictors:** 20 frozen variables from Part I.
 
@@ -218,8 +218,10 @@ The following decisions are now frozen for the primary benchmark:
 | Primary resampling | None |
 | Test usage | Final evaluation only |
 
-## 11. What Part II does not do
+## 11. Relationship to the canonical notebook
 
-No classifier has been fitted yet.
+This document records the frozen Part II design. The executable implementation and all model comparisons now live in:
 
-Part II only defines the common data-processing framework. Part III will place this preprocessing logic inside each model pipeline and compare algorithms under the same train/test/CV protocol.
+`kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb`
+
+No separate preprocessing or model notebook is authoritative.
