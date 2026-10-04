@@ -1,0 +1,172 @@
+name: BRFSS Pre-Submission Gate
+
+on:
+  push:
+    branches:
+      - implement/BRFSS_survey
+    paths:
+      - .github/workflows/brfss-presubmission-gate.yml
+      - 02_Implementation/BRFSS_Survey/**
+      - 03_Final_Result/BRFSS_2025/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brfss-presubmission-gate
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: implement/BRFSS_survey
+          fetch-depth: 1
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run repository prediction-model rigor gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/brfss-presubmission
+          python .agents/skills/prediction-model-rigor/scripts/check_prediction_model_rigor.py \
+            --manifest 02_Implementation/BRFSS_Survey/docs/pipeline_manifest.json \
+            --strict \
+            --out /tmp/brfss-presubmission/prediction_model_rigor.json
+
+      - name: Validate canonical notebook and submission semantics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv
+          import json
+          import math
+          from pathlib import Path
+
+          root = Path("02_Implementation/BRFSS_Survey")
+          nb_dir = root / "kaggle" / "notebook"
+          notebooks = list(nb_dir.glob("*.ipynb"))
+          assert len(notebooks) == 1, f"Expected exactly one canonical notebook, found {len(notebooks)}"
+
+          nb_path = notebooks[0]
+          nb = json.loads(nb_path.read_text(encoding="utf-8"))
+          cells = nb.get("cells", [])
+          ids = [c.get("id") for c in cells]
+          assert all(ids), "Notebook contains cells without ids"
+          assert len(ids) == len(set(ids)), "Notebook contains duplicate cell ids"
+
+          code_cells = 0
+          for idx, cell in enumerate(cells):
+              if cell.get("cell_type") != "code":
+                  continue
+              code_cells += 1
+              compile("".join(cell.get("source", [])), f"{nb_path.name}:cell_{idx}", "exec")
+          assert code_cells >= 40, f"Unexpectedly few code cells: {code_cells}"
+
+          markdown = "\n".join(
+              "".join(c.get("source", []))
+              for c in cells
+              if c.get("cell_type") == "markdown"
+          )
+          assert "Development and Internal Evaluation" in markdown
+          assert "Average Precision (AP)" in markdown
+          assert "effectively tied" not in markdown.lower()
+          assert "trade-offs and statistical equivalence" not in markdown.lower()
+          assert "clinical screening tool" in markdown.lower()
+          assert "internal validation" in markdown.lower()
+
+          authoritative = [
+              root / "README.md",
+              root / "docs" / "STUDY_AUDIT.md",
+              root / "docs" / "primary_benchmark_summary.md",
+              root / "docs" / "PRE_SUBMISSION_BOARD_REVIEW.md",
+              root / "docs" / "REPORTING_READINESS.md",
+              Path("03_Final_Result/BRFSS_2025/REVIEWER_HANDOFF.md"),
+              Path("03_Final_Result/BRFSS_2025/FINAL_SUBMISSION_BRIEF.md"),
+          ]
+          for p in authoritative:
+              assert p.is_file(), f"Missing authoritative file: {p}"
+              t = p.read_text(encoding="utf-8").lower()
+              assert "effectively tied" not in t, f"Overclaim remains in {p}"
+              assert "trade-offs and statistical equivalence" not in t, f"Equivalence overclaim remains in {p}"
+
+          required_final = [
+              "03_Final_Result/BRFSS_2025/README.md",
+              "03_Final_Result/BRFSS_2025/REVIEWER_HANDOFF.md",
+              "03_Final_Result/BRFSS_2025/FINAL_SUBMISSION_BRIEF.md",
+              "03_Final_Result/BRFSS_2025/AUTHOR_COMPLETION_CHECKLIST.md",
+              "03_Final_Result/BRFSS_2025/supplement/calibration_intercept_slope.csv",
+              "03_Final_Result/BRFSS_2025/supplement/top4_paired_bootstrap_5000_robustness.csv",
+          ]
+          for p in map(Path, required_final):
+              assert p.is_file(), p
+
+          # Reject the known-invalid temporary 1,000-replicate audit files if they ever enter FINAL.
+          forbidden = [
+              Path("03_Final_Result/BRFSS_2025/supplement/bootstrap_1000_model_metrics_summary.csv"),
+              Path("03_Final_Result/BRFSS_2025/supplement/bootstrap_1000_pairwise_differences.csv"),
+          ]
+          assert not any(p.exists() for p in forbidden), "Invalid temporary bootstrap file entered FINAL package"
+
+          cal_path = Path("03_Final_Result/BRFSS_2025/supplement/calibration_intercept_slope.csv")
+          with cal_path.open(newline="", encoding="utf-8") as f:
+              cal = list(csv.DictReader(f))
+          assert len(cal) == 6, len(cal)
+          for r in cal:
+              prevalence = float(r["observed_prevalence"])
+              mean_pred = float(r["mean_predicted_probability"])
+              slope = float(r["calibration_slope"])
+              brier = float(r["brier_score"])
+              assert 0 <= prevalence <= 1
+              assert 0 <= mean_pred <= 1
+              assert math.isfinite(slope) and slope > 0
+              assert 0 <= brier <= 1
+
+          robust_path = Path("03_Final_Result/BRFSS_2025/supplement/top4_paired_bootstrap_5000_robustness.csv")
+          with robust_path.open(newline="", encoding="utf-8") as f:
+              robust = list(csv.DictReader(f))
+          assert len(robust) == 6, len(robust)
+          for r in robust:
+              assert r["model_a"] == "logistic_regression"
+              assert r["metric"] in {"roc_auc", "average_precision"}
+              assert int(r["bootstrap_reps"]) == 5000
+              lo = float(r["ci95_lower"])
+              pt = float(r["point_difference_a_minus_b"])
+              hi = float(r["ci95_upper"])
+              assert lo <= pt <= hi
+
+          manifest = json.loads((root / "docs" / "pipeline_manifest.json").read_text(encoding="utf-8"))
+          assert manifest["external_validation"] == "none"
+          assert manifest["survey_design"]["population_representative_claimed"] is False
+          assert manifest["threshold_tuning_stage"] == "none"
+
+          report = {
+              "status": "PASS",
+              "canonical_notebook_count": len(notebooks),
+              "code_cells_compiled": code_cells,
+              "final_package_files": len(required_final),
+              "calibration_models": len(cal),
+              "robustness_rows": len(robust),
+              "claim_scope": "internal cross-sectional methodological benchmark",
+          }
+          out = Path("/tmp/brfss-presubmission/submission_static_gate.json")
+          out.write_text(json.dumps(report, indent=2), encoding="utf-8")
+          print(json.dumps(report, indent=2))
+          PY
+
+      - name: Preserve gate reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: brfss-presubmission-gate-report
+          path: /tmp/brfss-presubmission/
+          if-no-files-found: error
