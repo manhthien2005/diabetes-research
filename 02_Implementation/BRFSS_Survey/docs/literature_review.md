@@ -54,7 +54,7 @@ Why it matters:
 - 80/20 stratified split;
 - SMOTE on training data only;
 - stratified 5-fold CV inside training data;
-- accuracy, precision, recall, balanced accuracy, F1, AUROC and PR-AUC;
+- accuracy, precision, recall, balanced accuracy, F1, AUROC and paper-reported PR-AUC;
 - SHAP interpretation;
 - detailed methods plus supplemental tables.
 
@@ -104,7 +104,7 @@ Why it matters:
 ### P07 — Chang et al. (2022), Healthcare Analytics
 **DOI:** 10.1016/j.health.2022.100118
 
-Uses the widely reused BRFSS-2015-derived health-indicator dataset and compares Decision Tree, Random Forest, KNN, Naive Bayes and Logistic Regression. The paper's appendix and settings make the experiment reasonably reconstructable, but no public analysis repository was located. The publisher page currently displays substantial citation uptake, making it useful as an established benchmark rather than our main reproducibility anchor.
+Uses the widely reused BRFSS-2015-derived health-indicator dataset and compares Decision Tree, Random Forest, KNN, Naive Bayes and Logistic Regression. The paper's appendix and settings make the experiment reasonably reconstructable, but no public analysis repository was located. It is retained as a supporting benchmark because of methodological relevance, not because of citation counts.
 
 ### P08 — Majcherek et al. (2025), PLOS ONE
 **DOI:** 10.1371/journal.pone.0328655
@@ -176,7 +176,7 @@ For the class assignment, the most defensible common metrics are:
 - Specificity;
 - F1;
 - ROC-AUC;
-- PR-AUC;
+- paper-reported PR-AUC;
 - Confusion matrix.
 
 P03 is the strongest direct template because it uses seven diverse models, stratified 5-fold CV, an untouched test set, and imbalance-aware metrics.
@@ -216,3 +216,17 @@ The initial candidate set should be derived primarily from P01, P02, P03 and P06
 8. Majcherek, D., Ciesielski, A., & Sobczak, P. (2025). *AI-driven analysis of diabetes risk determinants in U.S. adults: Exploring disease prevalence and health factors*. PLOS ONE, 20(9), e0328655. https://doi.org/10.1371/journal.pone.0328655
 9. Chike, et al. (2026). *An interpretable machine learning approach to predicting depression and diabetes*. Healthcare Analytics, 9, 100454. https://doi.org/10.1016/j.health.2026.100454
 10. Ullah, Z., et al. (2022). *Detecting High-Risk Factors and Early Diagnosis of Diabetes Using Machine Learning Methods*. Computational Intelligence and Neuroscience, 2022, 2557795. https://doi.org/10.1155/2022/2557795
+
+
+## Reporting-standard anchors
+
+For final reporting and pre-submission review, this study is also checked against:
+
+- **TRIPOD+AI (2024)** — reporting guidance for prediction-model studies using regression or machine learning; DOI `10.1136/bmj-2023-078378`.
+- **PROBAST+AI (2025)** — quality/risk-of-bias/applicability framework for regression and AI prediction models; DOI `10.1136/bmj-2024-082505`.
+
+These sources govern **reporting and risk-of-bias appraisal**, not the model roster or predictor selection.
+
+### Metric terminology amendment
+
+Several BRFSS papers report “PR-AUC.” In this repository, the historical key `pr_auc` is calculated with scikit-learn `average_precision_score`; the correct name for our value is **Average Precision (AP)**. Cross-paper numerical comparisons are therefore contextual unless the source metric implementation is verified as the same quantity.
