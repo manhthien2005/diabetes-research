@@ -47,6 +47,30 @@ jobs:
       - name: Install Kaggle CLI
         run: python -m pip install --upgrade pip kaggle
 
+      - name: Validate canonical notebook syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("02_Implementation/BRFSS_Survey/kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb")
+          nb = json.loads(path.read_text(encoding="utf-8"))
+
+          code_cells = 0
+          for idx, cell in enumerate(nb.get("cells", [])):
+              if cell.get("cell_type") != "code":
+                  continue
+              code_cells += 1
+              source = "".join(cell.get("source", []))
+              compile(source, f"{path.name}:cell_{idx}", "exec")
+
+          if code_cells < 40:
+              raise SystemExit(f"Unexpectedly few code cells: {code_cells}")
+          print(f"Notebook JSON and Python syntax OK: {code_cells} code cells")
+          PY
+
       - name: Validate Kaggle access
         shell: bash
         run: |
