@@ -58,8 +58,15 @@ jobs:
           path = Path("02_Implementation/BRFSS_Survey/kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb")
           nb = json.loads(path.read_text(encoding="utf-8"))
 
+          cells = nb.get("cells", [])
+          ids = [cell.get("id") for cell in cells]
+          if any(not cell_id for cell_id in ids):
+              raise SystemExit("Notebook contains cells without ids")
+          if len(ids) != len(set(ids)):
+              raise SystemExit("Notebook contains duplicate cell ids")
+
           code_cells = 0
-          for idx, cell in enumerate(nb.get("cells", [])):
+          for idx, cell in enumerate(cells):
               if cell.get("cell_type") != "code":
                   continue
               code_cells += 1
