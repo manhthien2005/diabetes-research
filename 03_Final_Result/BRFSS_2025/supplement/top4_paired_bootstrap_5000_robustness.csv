@@ -1,0 +1,7 @@
+model_a,model_b,metric,point_difference_a_minus_b,ci95_lower,ci95_upper,bootstrap_reps,design,seed
+logistic_regression,gradient_boosting,roc_auc,0.0001522320847101577,-0.0010025000614160562,0.0012723695879013775,5000,class-stratified paired respondent bootstrap,20251010
+logistic_regression,gradient_boosting,average_precision,-0.0016840865734632504,-0.00500307757510224,0.0013830803117739112,5000,class-stratified paired respondent bootstrap,20251010
+logistic_regression,xgboost,roc_auc,-0.00012206709045503583,-0.0015464019425001946,0.0013319470279204574,5000,class-stratified paired respondent bootstrap,20251010
+logistic_regression,xgboost,average_precision,0.00491913007118755,0.0001733031428321389,0.009648734268225809,5000,class-stratified paired respondent bootstrap,20251010
+logistic_regression,linear_svm,roc_auc,9.715388160191907e-06,-0.0006502417202678884,0.0006685310007042504,5000,class-stratified paired respondent bootstrap,20251010
+logistic_regression,linear_svm,average_precision,-0.0012511461928809142,-0.0027947343220572326,0.00026650882769658563,5000,class-stratified paired respondent bootstrap,20251010
