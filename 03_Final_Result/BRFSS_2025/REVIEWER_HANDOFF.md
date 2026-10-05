@@ -1,3 +1,5 @@
+> **Independent audit update (2026-10-04):** current interpretation and remaining limitations are in `03_Final_Result/BRFSS_2025/ASTRA_FINAL_AUDIT_VI.md`. The earlier PASS/score is historical evidence, not a certification.
+
 # Reviewer Handoff — BRFSS 2025 Diabetes Status Benchmark
 
 ## Review request
@@ -19,7 +21,7 @@ Please try to reject it first. Focus on:
 
 ## Exact study claim
 
-> Development and internal evaluation of seven **prespecified classifier configurations** for cross-sectional classification of **self-reported diagnosed diabetes status** in the BRFSS 2025 public-use sample.
+> Development and internal evaluation of seven **fixed classifier configurations** for cross-sectional classification of **self-reported diagnosed diabetes status** in the BRFSS 2025 public-use sample.
 
 The study does **not** claim:
 - future diabetes incidence prediction;
@@ -105,7 +107,7 @@ A 5,000-replicate robustness audit on frozen predictions reproduced this ROC-AUC
 8. Fixed/untuned configurations are not each algorithm family's optimum.
 9. Primary notebook bootstrap used 200 replicates; higher-repetition robustness is supplemental.
 10. No formal prospective sample-size calculation; the full eligible secondary cohort is used.
-11. CDC documents 284 variables while pandas exposes 283; source SHA-256 and all required study variables are verified.
+11. CDC landing page states 284; the raw XPT descriptors, official variable layout, and pandas all contain 283; source SHA-256 and all required study variables are verified.
 12. Ethics/funding/COI/registration/PPI statements require author/institution input before journal submission.
 
 ## Authoritative files
@@ -119,3 +121,16 @@ A 5,000-replicate robustness audit on frozen predictions reproduced this ROC-AUC
 - Bibliography: `02_Implementation/BRFSS_Survey/docs/references.bib`
 
 Per-model Markdown files under `models/` are historical freeze records. Their numeric results remain provenance artifacts, but current interpretation comes from the authoritative files above.
+
+
+## Independent design and uncertainty amendment (2026-10-04)
+
+Git records show LR results (`3e557b2`) before DT implementation (`20b29c9`), and DT results (`0b7cdfc`) before RF implementation (`c68cda0`). The RF rationale explicitly cites the DT test AUC. All documented learning parameters match executed code (XGBoost adds logging-only verbosity=0); no per-model hyperparameter/threshold tuning was found. However, joint prespecification before first test exposure is **not established**. LR is the transparent reporting reference, not a verified prospectively registered primary contrast. Read model comparisons as descriptive/exploratory.
+
+Predictor coverage and missingness were screened on the full file before splitting (`c0d2431` before `79c28c9`). This used future test covariate information. No supervised label-based selection code was found, and learned imputation/encoding/scaling remain isolated inside training/CV folds; this does not erase the design-stage exposure. Its optimism cannot be quantified from this already-exposed holdout. A fresh prespecified cohort is needed for confirmatory evaluation.
+
+Class-stratified bootstrap intervals condition on frozen fitted models, observed class counts and this internal respondent sample. They omit training variation, alternate splits, feature-design decisions and complex-survey design uncertainty. Holm correction applies to the 21 McNemar tests only, not to every bootstrap contrast. The six top-four ROC-AUC/AP contrasts are exploratory and unadjusted unless explicitly labelled otherwise. Absence of a detected difference is not equivalence.
+
+Raw XPT NAMESTR declares 283 unique variables; pandas preserves all names in order; the official variable layout also lists 283. The downloadable codebook has 282 named entries (omitting `ICFQSTVR`). The CDC landing page's 284 is inconsistent with these sources; no parser column loss was found. There are no duplicate full rows or duplicate `_STATE`+`SEQNO` identifiers, and no such identifier overlap across train/test. Identical coarse predictor patterns are not evidence of duplicate persons.
+
+The unchanged 20 predictors retain temporal ambiguity; `_RFCHOL3` missingness can include absent cholesterol measurement and is not assumed missing at random. An explicit missing category preserves this information but does not correct diagnosis/access ascertainment bias. The outcome does not distinguish diabetes types, even though the public file has additional diabetes-module variables.

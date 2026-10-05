@@ -1,3 +1,5 @@
+> **Cập nhật kiểm toán độc lập 04/10/2026:** xem `ASTRA_FINAL_AUDIT_VI.md`. Điểm trước sửa 69/100; các điểm PASS dưới đây chỉ mô tả kiểm tra tính toán. Mô hình được bổ sung tuần tự sau khi đã xem kết quả test của mô hình trước; toàn bộ tập biến được sàng lọc độ phủ trên dữ liệu đầy đủ trước split. Không có bằng chứng tuning hyperparameter theo test, nhưng không đủ căn cứ gọi đây là so sánh confirmatory được prespecify toàn bộ. Lịch sử này được giữ nguyên, không sửa bằng cách chia lại dữ liệu đã xem.
+
 # Giải thích toàn bộ BRFSS 2025 Full Study — Bản tiếng Việt
 
 > **Mục đích của file này:** giúp đọc và hiểu toàn bộ notebook Kaggle `BRFSS_2025_Diabetes_Classification.ipynb` mà không cần lần theo từng cell code.
@@ -106,15 +108,7 @@ Nếu file không đúng SHA-256 thì pipeline dừng.
 
 ### Một discrepancy vẫn được ghi nhận
 
-CDC ghi file XPT 2025 có **284 variables**, trong khi `pandas.read_sas()` expose **283 columns**.
-
-Điểm này được ghi như một **schema audit note**, nhưng không phải blocker vì:
-
-- target có đầy đủ;
-- 20 predictors đều tồn tại;
-- các biến leakage cần kiểm tra đều tồn tại;
-- SHA-256 của source đúng;
-- kết quả frozen reproduce được.
+CDC landing page ghi 284, nhưng header XPT, đủ 283 descriptor và variable layout chính thức đều xác nhận **283 biến**. pandas giữ đúng toàn bộ biến theo đúng thứ tự. Codebook liệt kê 282 tên và thiếu `ICFQSTVR`; đây là bất nhất tài liệu nguồn, không phải mất cột khi đọc. SHA-256 ZIP và XPT khớp bản tải trực tiếp CDC.
 
 ---
 
@@ -440,7 +434,7 @@ Còn uncertainty trên held-out test dùng bootstrap.
 
 Điểm quan trọng:
 
-> Đây là **7 cấu hình model cố định được prespecify**.
+> Đây là **7 cấu hình cố định được phát triển tuần tự**; chưa chứng minh cả roster được prespecify trước lần xem test đầu tiên.
 
 Nghiên cứu không tuyên bố:
 
@@ -703,7 +697,7 @@ Do đó study không dùng Accuracy đơn độc.
 | F1 | Cân bằng Precision và Recall |
 | ROC-AUC | Khả năng ranking positive cao hơn negative |
 | Average Precision | Chất lượng precision-recall trên nhiều thresholds |
-| Brier | Probability prediction có chính xác/calibrated không |
+| Brier | Sai số xác suất tổng thể; không đo riêng calibration |
 
 ## Lưu ý về “PR-AUC”
 
@@ -1036,7 +1030,7 @@ Pre-submission rigor gate chỉ trả đúng một minor flag:
 
 > `NO_EXTERNAL_VALIDATION`
 
-Đây là limitation chính còn lại.
+Đây là một limitation; còn có test exposure trong lịch sử phát triển, sàng lọc độ phủ biến trước split, bất định có điều kiện và thiếu fitted-model exports.
 
 ---
 
@@ -1245,7 +1239,7 @@ Current source of truth là:
 | No clinical DCA | Chưa claim clinical net benefit |
 | Fixed baselines | Không đại diện performance tối ưu của từng algorithm |
 | 200 primary bootstrap reps | Robustness 5,000 reps dùng cho top-4 discrimination checks |
-| Schema 284 vs 283 | Được document, không ảnh hưởng selected fields đã verify |
+| Schema 284 vs 283 | Đã giải thích: payload/layout283; landing page284; không mất cột |
 
 ---
 
@@ -1256,7 +1250,7 @@ Current source of truth là:
 | Dataset lớn | 342k modeling respondents |
 | Một protocol chung | Fairer model comparison |
 | Leakage control | Preprocessing nằm trong pipeline/CV |
-| Không tune test | Giảm optimistic bias |
+| Không thấy tuning hyperparameter/threshold | Không loại trừ ảnh hưởng của test exposure trong thiết kế tuần tự |
 | Nhiều metric | Không bị Accuracy đánh lừa |
 | Calibration included | Không chỉ nhìn discrimination |
 | Paired comparisons | Đúng vì model predict cùng respondents |
@@ -1276,7 +1270,7 @@ Câu trả lời nên là:
 
 > **Study chỉ thực hiện internal validation trên cùng nguồn BRFSS 2025. Vì vậy chưa chứng minh model generalize theo thời gian, địa lý hoặc sang population khác.**
 
-Đây cũng là minor flag duy nhất của prediction-model rigor gate:
+Gate khai báo chỉ nhận diện flag dưới đây; điều đó không có nghĩa nghiên cứu chỉ có một vấn đề:
 
 `NO_EXTERNAL_VALIDATION`
 
@@ -1284,7 +1278,7 @@ Câu trả lời nên là:
 
 # 45. Một câu để nhớ toàn bộ study
 
-> **Nghiên cứu dùng BRFSS 2025 để xây dựng một benchmark thống nhất cho 7 cấu hình classifier nhằm phân loại trạng thái tự báo cáo đã được chẩn đoán tiểu đường. Sau khi kiểm soát leakage và đánh giá trên cùng 68,508 respondents, Logistic Regression, Gradient Boosting, XGBoost và Linear SVM có discrimination gần như giống nhau về ROC-AUC (~0.826), trong khi các model khác thể hiện các trade-off rất khác về Recall, Precision, F1 và calibration. Kết quả ủng hộ cách diễn giải theo trade-off thay vì tuyên bố một model thắng tuyệt đối, và toàn bộ kết luận chỉ giới hạn ở internal cross-sectional benchmark chứ chưa phải clinical deployment.**
+> **Nghiên cứu dùng BRFSS 2025 để xây dựng một benchmark thống nhất cho 7 cấu hình classifier nhằm phân loại trạng thái tự báo cáo đã được chẩn đoán tiểu đường. Với preprocessing được cô lập trong training/folds nhưng còn giới hạn lựa chọn biến và test exposure đã nêu, khi đánh giá trên cùng 68,508 respondents, Logistic Regression, Gradient Boosting, XGBoost và Linear SVM có discrimination gần như giống nhau về ROC-AUC (~0.826), trong khi các model khác thể hiện các trade-off rất khác về Recall, Precision, F1 và calibration. Kết quả ủng hộ cách diễn giải theo trade-off thay vì tuyên bố một model thắng tuyệt đối, và toàn bộ kết luận chỉ giới hạn ở descriptive internal cross-sectional benchmark chứ chưa phải clinical deployment.**
 
 ---
 
@@ -1307,7 +1301,7 @@ Câu trả lời nên là:
 
 # 47. Trạng thái cuối cùng
 
-**Computational / methodological benchmark: PASS.**
+**Metric tính lại khớp; methodological limitations vẫn còn.**
 
 **External/clinical validation: CHƯA CÓ.**
 
@@ -1339,3 +1333,13 @@ a2a0ba498919fa8c96a1bf8b491ee81b496b5f32
 ```
 
 Các tài liệu giải thích bổ sung được thêm sau freeze chỉ làm rõ cách đọc/reporting, không thay đổi frozen model predictions hay numerical benchmark.
+
+## Chi tiết supplement sau kiểm toán độc lập
+
+Calibration dùng hồi quy logistic `y ~ intercept + slope × logit(p)` với `p` chặn tại `[10^-6, 1-10^-6]`. Intercept này không phải calibration-in-the-large (CITL, slope cố định bằng1). LR có CITL−0.00323, GB−0.00276. Slope DT/RF/GNB nhạy với mức chặn; Brier là sai số xác suất tổng thể, không phải thước đo calibration thuần túy.
+
+Bootstrap5.000 cũ được tái lập chính xác với PCG64, seed20251010, không shuffle chỉ số sau lấy mẫu. Ba stream bổ sung cho thấy AP LR–XGB sát ranh giới; khoảng đồng thời Bonferroni cho6contrast chứa0. Không coi đây là superiority hay equivalence được xác nhận. Khoảng bootstrap cố định mô hình và class counts, không bao gồm biến thiên huấn luyện hay survey-design uncertainty.
+
+P03 gộp pregnancy-related diabetes vào positive và prediabetes vào negative; khác target của ta. Fold isolation của MICE/selection/SMOTE trong P03 chưa được chứng minh. `SLEPTIM1` có precedent trực tiếp ở appendix P02, không được xác minh từ P03; `PERSDOC3` được giữ như lựa chọn domain healthcare-access của study. Xem bảng chứng cứ biến và literatureclaims mới. Các hình dùng cho báo cáo nằm ở `supplement/astra_figures/`, đã sửa nhãn AP và số bin calibration thực tế.
+
+Ngày phỏng vấn (`IDATE`) đã kiểm tra: **05/01/2025–16/03/2026** trong cả raw và eligible cohort, không có ngày không đọc được. Vì vậy BRFSS 2025 là tên bản phát hành khảo sát, không phải khẳng định mọi cuộc phỏng vấn diễn ra trong năm2025.

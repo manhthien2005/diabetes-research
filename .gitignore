@@ -75,3 +75,7 @@ Thumbs.db
 dist/
 build/
 *.egg-info/
+
+# Local audit downloads: respondent predictions and copyrighted source caches
+02_Implementation/BRFSS_Survey/qc/astra_statistics_source/
+02_Implementation/BRFSS_Survey/qc/astra_literature_sources/

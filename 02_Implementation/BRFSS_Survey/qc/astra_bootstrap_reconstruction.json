@@ -1,0 +1,53 @@
+{
+  "rng": "numpy.random.default_rng (PCG64)",
+  "seed": 20251010,
+  "replicates": 5000,
+  "shuffle": false,
+  "quantile_method": "linear",
+  "paired_indices": true,
+  "results": [
+    {
+      "model_b": "gradient_boosting",
+      "metric": "roc_auc",
+      "ci95_lower": -0.0010025000614160562,
+      "ci95_upper": 0.0012723695879013775,
+      "max_abs_error": 7.741203511546502e-17
+    },
+    {
+      "model_b": "gradient_boosting",
+      "metric": "average_precision",
+      "ci95_lower": -0.00500307757510224,
+      "ci95_upper": 0.0013830803117739112,
+      "max_abs_error": 3.9898639947466563e-17
+    },
+    {
+      "model_b": "xgboost",
+      "metric": "roc_auc",
+      "ci95_lower": -0.0015464019425001946,
+      "ci95_upper": 0.0013319470279204574,
+      "max_abs_error": 9.454242944073599e-17
+    },
+    {
+      "model_b": "xgboost",
+      "metric": "average_precision",
+      "ci95_lower": 0.0001733031428321389,
+      "ci95_upper": 0.009648734268225809,
+      "max_abs_error": 3.889575293791747e-17
+    },
+    {
+      "model_b": "linear_svm",
+      "metric": "roc_auc",
+      "ci95_lower": -0.0006502417202678884,
+      "ci95_upper": 0.0006685310007042504,
+      "max_abs_error": 8.836247705756861e-17
+    },
+    {
+      "model_b": "linear_svm",
+      "metric": "average_precision",
+      "ci95_lower": -0.0027947343220572326,
+      "ci95_upper": 0.00026650882769658563,
+      "max_abs_error": 8.565197162635485e-17
+    }
+  ],
+  "note": "Reverse-engineered matching convention, not recovered original generation code."
+}

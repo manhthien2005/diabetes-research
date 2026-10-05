@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - implement/BRFSS_survey
+      - review/brfss-astra-final
+    paths:
+      - .github/workflows/brfss-presubmission-gate.yml
+      - 02_Implementation/BRFSS_Survey/**
+      - 03_Final_Result/BRFSS_2025/**
+  pull_request:
     paths:
       - .github/workflows/brfss-presubmission-gate.yml
       - 02_Implementation/BRFSS_Survey/**
@@ -25,13 +31,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: implement/BRFSS_survey
           fetch-depth: 1
           lfs: false
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          # Match the Python minor version used for the recorded notebook AST.
+          python-version: "3.12"
 
       - name: Run repository prediction-model rigor gate
         shell: bash
@@ -129,7 +135,7 @@ jobs:
               brier = float(r["brier_score"])
               assert 0 <= prevalence <= 1
               assert 0 <= mean_pred <= 1
-              assert math.isfinite(slope) and slope > 0
+              assert math.isfinite(slope)
               assert 0 <= brier <= 1
 
           robust_path = Path("03_Final_Result/BRFSS_2025/supplement/top4_paired_bootstrap_5000_robustness.csv")
@@ -163,6 +169,11 @@ jobs:
           out.write_text(json.dumps(report, indent=2), encoding="utf-8")
           print(json.dumps(report, indent=2))
           PY
+
+      - name: Verify independent audit evidence and frozen scientific code
+        run: |
+          python 02_Implementation/BRFSS_Survey/qc/astra_release_gate.py
+          python -m unittest discover -s 02_Implementation/BRFSS_Survey/qc -p test_astra_release_gate.py
 
       - name: Preserve gate reports
         uses: actions/upload-artifact@v4

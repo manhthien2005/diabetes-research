@@ -1,0 +1,24 @@
+{
+  "canonical_notebook": "02_Implementation/BRFSS_Survey/kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb",
+  "scientific_code_ast_sha256": "5941f7580a9639454785e11203c24b076fcd9710e80d760b055709d2286251d4",
+  "baseline_head": "aa2e53cd0826475e76be7921ffa01497efbe7fc3",
+  "immutable_reference_sha": "a2a0ba498919fa8c96a1bf8b491ee81b496b5f32",
+  "execution_run": 37183093668,
+  "execution_head": "b2e658a8f87a622b575df743e229dc943d35936c",
+  "artifact_id": 11295688140,
+  "artifact_name": "brfss-2025-canonical-audited-output",
+  "artifact_archive_sha256": "90e875e4bf45cd2dff98f824ccc84d7847a77c93cdf39e59c5d4de59099fb058",
+  "prediction_sha256": "f4a44d130ef7c33b0d276d55dc504fec105f35c94da8666b97568729923e0969",
+  "immutable_files_sha256": {
+    "02_Implementation/BRFSS_Survey/models/model_01_logistic_regression.json": "3813f6de1d97174706ee0be00860510d32cb336dbd1717e2a5573d1f3d779370",
+    "02_Implementation/BRFSS_Survey/models/model_02_decision_tree.json": "522dbb95a0c09b44f94e18a2921d0ea6cbea07841736d9622f1848548043ca77",
+    "02_Implementation/BRFSS_Survey/models/model_03_random_forest.json": "7d5cff57924e1106e48dc6a5ebe75efa5934ae2c615eba06731b19bd3be575e7",
+    "02_Implementation/BRFSS_Survey/models/model_04_gradient_boosting.json": "bce85e727ae7c8a12f299d0eaced0fb8bd27bf1a9544b1190b8bf98644944c9a",
+    "02_Implementation/BRFSS_Survey/models/model_05_xgboost.json": "658c5f2031c271bbf9a0634611155df59549791580aeac57cd89c82a08fc17f6",
+    "02_Implementation/BRFSS_Survey/models/model_06_linear_svm.json": "f7de78fb029f10093954110c695f6775297df58b1d290d58b2ed7707febb7419",
+    "02_Implementation/BRFSS_Survey/models/model_07_gaussian_naive_bayes.json": "be043a649342bfe6fad7fdfd16e90ad4c567cf96d47bae5ce4c873d0bbf3cf73",
+    "03_Final_Result/BRFSS_2025/supplement/calibration_intercept_slope.csv": "381f1e866a0c28cc3db463ee3d437cc23328653a13530422d2fa6f94ab2b6ae0",
+    "03_Final_Result/BRFSS_2025/supplement/top4_paired_bootstrap_5000_robustness.csv": "40fceddaec71edd09f3abca1c2646ae643d22fd82cc1263687805720e6334ca2"
+  },
+  "ast_signature_python_minor": "3.12"
+}

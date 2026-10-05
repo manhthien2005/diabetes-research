@@ -1,0 +1,132 @@
+{
+  "models": [
+    {
+      "file": "02_Implementation/BRFSS_Survey/models/model_01_logistic_regression.json",
+      "estimator": "LogisticRegression",
+      "cell_id": "cell-036",
+      "parameters": {
+        "penalty": "l2",
+        "C": 1.0,
+        "solver": "lbfgs",
+        "max_iter": 1000,
+        "class_weight": null
+      },
+      "frozen_parameters_match": true,
+      "additional_execution_parameters": {}
+    },
+    {
+      "file": "02_Implementation/BRFSS_Survey/models/model_02_decision_tree.json",
+      "estimator": "DecisionTreeClassifier",
+      "cell_id": "cell-048",
+      "parameters": {
+        "criterion": "gini",
+        "splitter": "best",
+        "max_depth": null,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "max_features": null,
+        "class_weight": null,
+        "ccp_alpha": 0.0,
+        "random_state": 42
+      },
+      "frozen_parameters_match": true,
+      "additional_execution_parameters": {}
+    },
+    {
+      "file": "02_Implementation/BRFSS_Survey/models/model_03_random_forest.json",
+      "estimator": "RandomForestClassifier",
+      "cell_id": "cell-062",
+      "parameters": {
+        "n_estimators": 100,
+        "criterion": "gini",
+        "max_depth": null,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "max_features": "sqrt",
+        "bootstrap": true,
+        "class_weight": null,
+        "ccp_alpha": 0.0,
+        "random_state": 42,
+        "n_jobs": -1
+      },
+      "frozen_parameters_match": true,
+      "additional_execution_parameters": {}
+    },
+    {
+      "file": "02_Implementation/BRFSS_Survey/models/model_04_gradient_boosting.json",
+      "estimator": "GradientBoostingClassifier",
+      "cell_id": "cell-079",
+      "parameters": {
+        "loss": "log_loss",
+        "learning_rate": 0.1,
+        "n_estimators": 100,
+        "subsample": 1.0,
+        "criterion": "friedman_mse",
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "max_depth": 3,
+        "max_features": null,
+        "random_state": 42
+      },
+      "frozen_parameters_match": true,
+      "additional_execution_parameters": {}
+    },
+    {
+      "file": "02_Implementation/BRFSS_Survey/models/model_05_xgboost.json",
+      "estimator": "XGBClassifier",
+      "cell_id": "cell-092",
+      "parameters": {
+        "objective": "binary:logistic",
+        "eval_metric": "logloss",
+        "booster": "gbtree",
+        "n_estimators": 100,
+        "learning_rate": 0.3,
+        "max_depth": 6,
+        "min_child_weight": 1,
+        "gamma": 0.0,
+        "subsample": 1.0,
+        "colsample_bytree": 1.0,
+        "reg_alpha": 0.0,
+        "reg_lambda": 1.0,
+        "tree_method": "hist",
+        "random_state": 42,
+        "n_jobs": -1,
+        "verbosity": 0
+      },
+      "frozen_parameters_match": true,
+      "additional_execution_parameters": {
+        "verbosity": 0
+      }
+    },
+    {
+      "file": "02_Implementation/BRFSS_Survey/models/model_06_linear_svm.json",
+      "estimator": "LinearSVC",
+      "cell_id": "cell-105",
+      "parameters": {
+        "penalty": "l2",
+        "loss": "squared_hinge",
+        "dual": "auto",
+        "tol": 0.0001,
+        "C": 1.0,
+        "fit_intercept": true,
+        "class_weight": null,
+        "random_state": 42,
+        "max_iter": 10000
+      },
+      "frozen_parameters_match": true,
+      "additional_execution_parameters": {}
+    },
+    {
+      "file": "02_Implementation/BRFSS_Survey/models/model_07_gaussian_naive_bayes.json",
+      "estimator": "GaussianNB",
+      "cell_id": "cell-118",
+      "parameters": {
+        "priors": null,
+        "var_smoothing": 1e-09
+      },
+      "frozen_parameters_match": true,
+      "additional_execution_parameters": {}
+    }
+  ],
+  "interpretation": "All documented learning parameters match. XGBoost adds verbosity=0 (logging only). Not proof of joint prespecification or cross-platform bitwise reproducibility."
+}

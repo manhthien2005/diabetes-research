@@ -1,0 +1,2631 @@
+[
+  {
+    "key": "nayem2026divide",
+    "url": "https://api.crossref.org/works/10.1038%2Fs41598-026-46927-7",
+    "sha256": "0181a1c43586ee8f9e54467a943932d86df57bcefcddbc1e6037db1f83fc848f",
+    "title": [
+      "Divide and recombine approaches for fitting logistic regression to large-scale health surveillance data: application to diabetes risk prediction in BRFSS"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "given": "Md. Mahadi Hassan",
+        "family": "Nayem",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Soma Chowdhury",
+        "family": "Biswas",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Scientific Reports"
+    ],
+    "volume": "16",
+    "issue": "1",
+    "page": null,
+    "article_number": "15980",
+    "published": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          3
+        ]
+      ]
+    },
+    "published_online": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          3
+        ]
+      ]
+    },
+    "published_print": null,
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://www.nature.com/articles/s41598-026-46927-7",
+        "content-type": "text/html",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://www.nature.com/articles/s41598-026-46927-7.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://www.nature.com/articles/s41598-026-46927-7.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "xie2019brfss",
+    "url": "https://api.crossref.org/works/10.5888%2Fpcd16.190109",
+    "status": "UNVERIFIED",
+    "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+    "key": "muhammad2025tennessee",
+    "url": "https://api.crossref.org/works/10.1177%2F21501319251400546",
+    "sha256": "2de194b54f47e91d6d4790f04abda98610afd5cee4e82821f823cb84d3108058",
+    "title": [
+      "Exploring Explainable Machine Learning for Predicting and Interpreting Self-Reported Diabetes among Tennessee Adults: Insights from the 2023 Behavioral Risk Factor Surveillance System (BRFSS)"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "ORCID": "https://orcid.org/0000-0003-2551-887X",
+        "authenticated-orcid": false,
+        "given": "Mustapha Aliyu",
+        "family": "Muhammad",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Biostatistics and Epidemiology Department, College of Public Health, East Tennessee State University, Johnson City, Tennessee, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Jamilu",
+        "family": "Sani",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Demography and Social Statistics, Federal University Birnin Kebbi, Birnin Kebbi, Kebbi State, Nigeria"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0006-5991-4052",
+        "authenticated-orcid": false,
+        "given": "Mohamed Mustaf",
+        "family": "Ahmed",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Faculty of Medicine and Health Sciences, SIMAD University, Mogadishu, Somalia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Journal of Primary Care &amp; Community Health"
+    ],
+    "volume": "16",
+    "issue": null,
+    "page": null,
+    "article_number": "21501319251400546",
+    "published": {
+      "date-parts": [
+        [
+          2025,
+          7
+        ]
+      ]
+    },
+    "published_online": {
+      "date-parts": [
+        [
+          2025,
+          12
+        ]
+      ]
+    },
+    "published_print": {
+      "date-parts": [
+        [
+          2025,
+          7
+        ]
+      ]
+    },
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://journals.sagepub.com/doi/pdf/10.1177/21501319251400546",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://journals.sagepub.com/doi/full-xml/10.1177/21501319251400546",
+        "content-type": "application/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://journals.sagepub.com/doi/pdf/10.1177/21501319251400546",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "chowdhury2024imbalance",
+    "url": "https://api.crossref.org/works/10.1016%2Fj.health.2023.100297",
+    "sha256": "af61b9b92d8721cfe2678d9c31fe86e0bd58e002fd4a2a24fd2c2d8e046589b7",
+    "title": [
+      "An investigation of machine learning algorithms and data augmentation techniques for diabetes diagnosis using class imbalanced BRFSS dataset"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "given": "Mohammad Mihrab",
+        "family": "Chowdhury",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Ragib Shahariar",
+        "family": "Ayon",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Md Sakhawat",
+        "family": "Hossain",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Healthcare Analytics"
+    ],
+    "volume": "5",
+    "issue": null,
+    "page": "100297",
+    "article_number": "100297",
+    "published": {
+      "date-parts": [
+        [
+          2024,
+          6
+        ]
+      ]
+    },
+    "published_online": null,
+    "published_print": {
+      "date-parts": [
+        [
+          2024,
+          6
+        ]
+      ]
+    },
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S2772442523001648?httpAccept=text/xml",
+        "content-type": "text/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S2772442523001648?httpAccept=text/plain",
+        "content-type": "text/plain",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "li2024gaxgboost",
+    "url": "https://api.crossref.org/works/10.1371%2Fjournal.pone.0311222",
+    "sha256": "9c57f12444714b8ac994e2a79e51d7e07b632baa8a1dde13358c1b32146c60c1",
+    "title": [
+      "Diabetes prediction model based on GA-XGBoost and stacking ensemble algorithm"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "given": "Wenguang",
+        "family": "Li",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0006-4045-0104",
+        "authenticated-orcid": true,
+        "given": "Yan",
+        "family": "Peng",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Ke",
+        "family": "Peng",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "PLOS ONE"
+    ],
+    "volume": "19",
+    "issue": "9",
+    "page": "e0311222",
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          2024,
+          9,
+          30
+        ]
+      ]
+    },
+    "published_online": {
+      "date-parts": [
+        [
+          2024,
+          9,
+          30
+        ]
+      ]
+    },
+    "published_print": null,
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://dx.plos.org/10.1371/journal.pone.0311222",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "aich2026copula",
+    "url": "https://api.crossref.org/works/10.1038%2Fs41598-026-41874-9",
+    "sha256": "84c7acfecdbc88d63b892faa7eb10b95647dea102b0be9f4c2b87a6b88615edf",
+    "title": [
+      "A copula based supervised filter for feature selection in machine learning driven diabetes risk prediction"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "given": "Agnideep",
+        "family": "Aich",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Md. Monzur",
+        "family": "Murshed",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Sameera",
+        "family": "Hewage",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Amanda",
+        "family": "Mayeaux",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Scientific Reports"
+    ],
+    "volume": "16",
+    "issue": "1",
+    "page": null,
+    "article_number": "12132",
+    "published": {
+      "date-parts": [
+        [
+          2026,
+          3,
+          5
+        ]
+      ]
+    },
+    "published_online": {
+      "date-parts": [
+        [
+          2026,
+          3,
+          5
+        ]
+      ]
+    },
+    "published_print": null,
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://www.nature.com/articles/s41598-026-41874-9",
+        "content-type": "text/html",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://www.nature.com/articles/s41598-026-41874-9.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://www.nature.com/articles/s41598-026-41874-9.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "chang2022assessment",
+    "url": "https://api.crossref.org/works/10.1016%2Fj.health.2022.100118",
+    "sha256": "f49338b439dc605ee13944b99dc4162894e5f0f30502c9f693e3ed2a58c6e81b",
+    "title": [
+      "An assessment of machine learning models and algorithms for early prediction and diagnosis of diabetes using health indicators"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-8012-5852",
+        "authenticated-orcid": false,
+        "given": "Victor",
+        "family": "Chang",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Meghana Ashok",
+        "family": "Ganatra",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Karl",
+        "family": "Hall",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Lewis",
+        "family": "Golightly",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Qianwen Ariel",
+        "family": "Xu",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Healthcare Analytics"
+    ],
+    "volume": "2",
+    "issue": null,
+    "page": "100118",
+    "article_number": "100118",
+    "published": {
+      "date-parts": [
+        [
+          2022,
+          11
+        ]
+      ]
+    },
+    "published_online": null,
+    "published_print": {
+      "date-parts": [
+        [
+          2022,
+          11
+        ]
+      ]
+    },
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S2772442522000582?httpAccept=text/xml",
+        "content-type": "text/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S2772442522000582?httpAccept=text/plain",
+        "content-type": "text/plain",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "majcherek2025aidriven",
+    "url": "https://api.crossref.org/works/10.1371%2Fjournal.pone.0328655",
+    "sha256": "8ea300df4605341c90bf0c13efee70e7b7e1504ee77a243ad7d89e83eb96ab36",
+    "title": [
+      "AI-driven analysis of diabetes risk determinants in U.S. adults: Exploring disease prevalence and health factors"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "ORCID": "https://orcid.org/0000-0003-4352-5643",
+        "authenticated-orcid": true,
+        "given": "Dawid",
+        "family": "Majcherek",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Antoni",
+        "family": "Ciesielski",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Paweł",
+        "family": "Sobczak",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "PLOS One"
+    ],
+    "volume": "20",
+    "issue": "9",
+    "page": "e0328655",
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          2025,
+          9,
+          3
+        ]
+      ]
+    },
+    "published_online": {
+      "date-parts": [
+        [
+          2025,
+          9,
+          3
+        ]
+      ]
+    },
+    "published_print": null,
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://dx.plos.org/10.1371/journal.pone.0328655",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "chike2026interpretable",
+    "url": "https://api.crossref.org/works/10.1016%2Fj.health.2026.100454",
+    "sha256": "98a694e900040f799133e279b5c9926992066bc25916f9ef243e32a1f9a1d1d8",
+    "title": [
+      "An interpretable machine learning approach to predicting depression and diabetes"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "ORCID": "https://orcid.org/0000-0003-3167-4713",
+        "authenticated-orcid": false,
+        "given": "Onyedikachi Emmanuel",
+        "family": "Chike",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Oluwaseun Samuel",
+        "family": "Oduniyi",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Judith Ijeoma",
+        "family": "Nwaiwu",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Healthcare Analytics"
+    ],
+    "volume": "9",
+    "issue": null,
+    "page": "100454",
+    "article_number": "100454",
+    "published": {
+      "date-parts": [
+        [
+          2026,
+          6
+        ]
+      ]
+    },
+    "published_online": null,
+    "published_print": {
+      "date-parts": [
+        [
+          2026,
+          6
+        ]
+      ]
+    },
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S2772442526000080?httpAccept=text/xml",
+        "content-type": "text/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S2772442526000080?httpAccept=text/plain",
+        "content-type": "text/plain",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "ullah2022highrisk",
+    "url": "https://api.crossref.org/works/10.1155%2F2022%2F2557795",
+    "sha256": "4117be6f290d02256b5e302ca08b100b0db9fee632d5d33f56a676b9db100192",
+    "title": [
+      "Detecting High-Risk Factors and Early Diagnosis of Diabetes Using Machine Learning Methods"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-6574-9969",
+        "authenticated-orcid": true,
+        "given": "Zahid",
+        "family": "Ullah",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Information Systems, Faculty of Computing and Information Technology, King Abdulaziz University, Jeddah, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2924-2030",
+        "authenticated-orcid": true,
+        "given": "Farrukh",
+        "family": "Saleem",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Systems, Faculty of Computing and Information Technology, King Abdulaziz University, Jeddah, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9149-2810",
+        "authenticated-orcid": true,
+        "given": "Mona",
+        "family": "Jamjoom",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Sciences, College of Computer and Information Sciences, Princess Nourah Bint Abdulrahman University, Riyadh, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2793-1238",
+        "authenticated-orcid": true,
+        "given": "Bahjat",
+        "family": "Fakieh",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Systems, Faculty of Computing and Information Technology, King Abdulaziz University, Jeddah, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-3226-5583",
+        "authenticated-orcid": true,
+        "given": "Faris",
+        "family": "Kateb",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Technology, Faculty of Computing and Information Technology, King Abdulaziz University, Jeddah, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6676-7456",
+        "authenticated-orcid": true,
+        "given": "Abdullah Marish",
+        "family": "Ali",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Faculty of Computing and Information Technology, King Abdulaziz University, Jeddah, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5090-4695",
+        "authenticated-orcid": true,
+        "given": "Babar",
+        "family": "Shah",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "College of Technological Innovation, Zayed University, Abu Dhabi, UAE"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Computational Intelligence and Neuroscience"
+    ],
+    "volume": "2022",
+    "issue": null,
+    "page": "1-10",
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          2022,
+          9,
+          29
+        ]
+      ]
+    },
+    "published_online": null,
+    "published_print": {
+      "date-parts": [
+        [
+          2022,
+          9,
+          29
+        ]
+      ]
+    },
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "http://downloads.hindawi.com/journals/cin/2022/2557795.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://downloads.hindawi.com/journals/cin/2022/2557795.xml",
+        "content-type": "application/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://downloads.hindawi.com/journals/cin/2022/2557795.pdf",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "friedman2001gradient",
+    "url": "https://api.crossref.org/works/10.1214%2Faos%2F1013203451",
+    "sha256": "5ecd22434cb470b9c2395be0147d48fa6e2e6e2a86d90e33f07a8cb2dcd8ec34",
+    "title": [
+      "Greedy function approximation: A gradient boosting machine."
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "given": "Jerome H.",
+        "family": "Friedman",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "The Annals of Statistics"
+    ],
+    "volume": "29",
+    "issue": "5",
+    "page": null,
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          2001,
+          10,
+          1
+        ]
+      ]
+    },
+    "published_online": null,
+    "published_print": {
+      "date-parts": [
+        [
+          2001,
+          10,
+          1
+        ]
+      ]
+    },
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "http://projecteuclid.org/download/pdf_1/euclid.aos/1013203451",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "chen2016xgboost",
+    "url": "https://api.crossref.org/works/10.1145%2F2939672.2939785",
+    "sha256": "4cf072f78c229539a793e2f7a5e3d34686b74307ae79dd4b26de9538c57c830f",
+    "title": [
+      "XGBoost"
+    ],
+    "subtitle": [
+      "A Scalable Tree Boosting System"
+    ],
+    "authors": [
+      {
+        "given": "Tianqi",
+        "family": "Chen",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "University of Washington, Seattle, WA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Carlos",
+        "family": "Guestrin",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "University of Washington, Seattle, WA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining"
+    ],
+    "volume": null,
+    "issue": null,
+    "page": "785-794",
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          2016,
+          8,
+          13
+        ]
+      ]
+    },
+    "published_online": {
+      "date-parts": [
+        [
+          2016,
+          8,
+          13
+        ]
+      ]
+    },
+    "published_print": {
+      "date-parts": [
+        [
+          2016,
+          8,
+          13
+        ]
+      ]
+    },
+    "relation": {
+      "is-referenced-by": [
+        {
+          "id-type": "doi",
+          "id": "10.1186/s13007-026-01545-2",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1007/s43621-026-03407-2",
+          "asserted-by": "object"
+        }
+      ],
+      "has-part": [
+        {
+          "id-type": "doi",
+          "id": "10.5194/acp-20-8063-2020",
+          "asserted-by": "object"
+        }
+      ]
+    },
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://dl.acm.org/doi/10.1145/2939672.2939785",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://dl.acm.org/doi/pdf/10.1145/2939672.2939785",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "syndication"
+      },
+      {
+        "URL": "https://dl.acm.org/doi/pdf/10.1145/2939672.2939785",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "cortes1995support",
+    "url": "https://api.crossref.org/works/10.1007%2Fbf00994018",
+    "sha256": "85464fce40a5b3ca839c8f84077d4113b196ee6d33b27c9a9485582fa0743ffe",
+    "title": [
+      "Support-vector networks"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "given": "Corinna",
+        "family": "Cortes",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Vladimir",
+        "family": "Vapnik",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Machine Learning"
+    ],
+    "volume": "20",
+    "issue": "3",
+    "page": "273-297",
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          1995,
+          9
+        ]
+      ]
+    },
+    "published_online": null,
+    "published_print": {
+      "date-parts": [
+        [
+          1995,
+          9
+        ]
+      ]
+    },
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/BF00994018.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/article/10.1007/BF00994018/fulltext.html",
+        "content-type": "text/html",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/BF00994018",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "friedman1997bayesian",
+    "url": "https://api.crossref.org/works/10.1023%2Fa%3A1007465528199",
+    "sha256": "c3d7f573f0591300a0684d0ed2a286809091ff2a529b9679387ce14d352b4983",
+    "title": [
+      "Bayesian Network Classifiers"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "given": "Nir",
+        "family": "Friedman",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Dan",
+        "family": "Geiger",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Moises",
+        "family": "Goldszmidt",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "Machine Learning"
+    ],
+    "volume": "29",
+    "issue": "2-3",
+    "page": "131-163",
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          1997,
+          11
+        ]
+      ]
+    },
+    "published_online": null,
+    "published_print": {
+      "date-parts": [
+        [
+          1997,
+          11
+        ]
+      ]
+    },
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "https://link.springer.com/content/pdf/10.1023/A:1007465528199.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://link.springer.com/article/10.1023/A:1007465528199/fulltext.html",
+        "content-type": "text/html",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://link.springer.com/content/pdf/10.1023/A:1007465528199.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "collins2024tripodai",
+    "url": "https://api.crossref.org/works/10.1136%2Fbmj-2023-078378",
+    "sha256": "46b86b18f43b43e39cdaf9008f13db2552bbcabdd56e991f527f1d2b9ebf3c3c",
+    "title": [
+      "TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-2772-2316",
+        "authenticated-orcid": false,
+        "given": "Gary S",
+        "family": "Collins",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Centre for Statistics in Medicine, UK EQUATOR Centre, Nuffield Department of Orthopaedics, Rheumatology, and Musculoskeletal Sciences, University of Oxford, Oxford OX3 7LD, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2118-004X",
+        "authenticated-orcid": false,
+        "given": "Karel G M",
+        "family": "Moons",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-0989-0623",
+        "authenticated-orcid": false,
+        "given": "Paula",
+        "family": "Dhiman",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Statistics in Medicine, UK EQUATOR Centre, Nuffield Department of Orthopaedics, Rheumatology, and Musculoskeletal Sciences, University of Oxford, Oxford OX3 7LD, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8699-0735",
+        "authenticated-orcid": false,
+        "given": "Richard D",
+        "family": "Riley",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Applied Health Research, College of Medical and Dental Sciences, University of Birmingham, Birmingham, UK"
+          },
+          {
+            "name": "National Institute for Health and Care Research (NIHR) Birmingham Biomedical Research Centre, Birmingham, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6657-2787",
+        "authenticated-orcid": false,
+        "given": "Andrew L",
+        "family": "Beam",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Epidemiology, Harvard T H Chan School of Public Health, Boston, MA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1613-7450",
+        "authenticated-orcid": false,
+        "given": "Ben",
+        "family": "Van Calster",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Development and Regeneration, KU Leuven, Leuven, Belgium"
+          },
+          {
+            "name": "Department of Biomedical Data Science, Leiden University Medical Centre, Leiden, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6349-7251",
+        "authenticated-orcid": false,
+        "given": "Marzyeh",
+        "family": "Ghassemi",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Electrical Engineering and Computer Science, Institute for Medical Engineering and Science, Massachusetts Institute of Technology, Cambridge, MA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-1286-0038",
+        "authenticated-orcid": false,
+        "given": "Xiaoxuan",
+        "family": "Liu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Inflammation and Ageing, College of Medical and Dental Sciences, University of Birmingham, Birmingham, UK"
+          },
+          {
+            "name": "University Hospitals Birmingham NHS Foundation Trust, Birmingham, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4026-4345",
+        "authenticated-orcid": false,
+        "given": "Johannes B",
+        "family": "Reitsma",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5529-1541",
+        "authenticated-orcid": false,
+        "given": "Maarten",
+        "family": "van Smeden",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-2729-0947",
+        "authenticated-orcid": false,
+        "given": "Anne-Laure",
+        "family": "Boulesteix",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute for Medical Information Processing, Biometry and Epidemiology, Faculty of Medicine, Ludwig-Maximilians-University of Munich and Munich Centre of Machine Learning, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5742-2840",
+        "authenticated-orcid": false,
+        "given": "Jennifer Catherine",
+        "family": "Camaradou",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Patient representative, Health Data Research UK patient and public involvement and engagement group"
+          },
+          {
+            "name": "Patient representative, University of East Anglia, Faculty of Health Sciences, Norwich Research Park, Norwich, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6712-6626",
+        "authenticated-orcid": false,
+        "given": "Leo Anthony",
+        "family": "Celi",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Beth Israel Deaconess Medical Center, Boston, MA, USA"
+          },
+          {
+            "name": "Laboratory for Computational Physiology, Massachusetts Institute of Technology, Cambridge, MA, USA"
+          },
+          {
+            "name": "Department of Biostatistics, Harvard T H Chan School of Public Health, Boston, MA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9612-7791",
+        "authenticated-orcid": false,
+        "given": "Spiros",
+        "family": "Denaxas",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Health Informatics, University College London, London, UK"
+          },
+          {
+            "name": "British Heart Foundation Data Science Centre, London, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7849-0087",
+        "authenticated-orcid": false,
+        "given": "Alastair K",
+        "family": "Denniston",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "National Institute for Health and Care Research (NIHR) Birmingham Biomedical Research Centre, Birmingham, UK"
+          },
+          {
+            "name": "Institute of Inflammation and Ageing, College of Medical and Dental Sciences, University of Birmingham, Birmingham, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4897-9356",
+        "authenticated-orcid": false,
+        "given": "Ben",
+        "family": "Glocker",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computing, Imperial College London, London, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7881-1207",
+        "authenticated-orcid": false,
+        "given": "Robert M",
+        "family": "Golub",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Northwestern University Feinberg School of Medicine, Chicago, IL, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4528-1312",
+        "authenticated-orcid": false,
+        "given": "Hugh",
+        "family": "Harvey",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Hardian Health, Haywards Heath, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1147-8491",
+        "authenticated-orcid": false,
+        "given": "Georg",
+        "family": "Heinze",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Section for Clinical Biometrics, Centre for Medical Data Science, Medical University of Vienna, Vienna, Austria"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4517-1562",
+        "authenticated-orcid": false,
+        "given": "Michael M",
+        "family": "Hoffman",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Princess Margaret Cancer Centre, University Health Network, Toronto, ON, Canada"
+          },
+          {
+            "name": "Department of Medical Biophysics, University of Toronto, Toronto, ON, Canada"
+          },
+          {
+            "name": "Department of Computer Science, University of Toronto, Toronto, ON, Canada"
+          },
+          {
+            "name": "Vector Institute for Artificial Intelligence, Toronto, ON, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5183-131X",
+        "authenticated-orcid": false,
+        "given": "André Pascal",
+        "family": "Kengne",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Medicine, University of Cape Town, Cape Town, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Emily",
+        "family": "Lam",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Patient representative, Health Data Research UK patient and public involvement and engagement group"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-0100-9659",
+        "authenticated-orcid": false,
+        "given": "Naomi",
+        "family": "Lee",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "National Institute for Health and Care Excellence, London, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1501-2947",
+        "authenticated-orcid": false,
+        "given": "Elizabeth W",
+        "family": "Loder",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The BMJ, London, UK"
+          },
+          {
+            "name": "Department of Neurology, Brigham and Women’s Hospital, Harvard Medical School, Boston, MA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4910-9368",
+        "authenticated-orcid": false,
+        "given": "Lena",
+        "family": "Maier-Hein",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Intelligent Medical Systems, German Cancer Research Centre, Heidelberg, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4423-6472",
+        "authenticated-orcid": false,
+        "given": "Bilal A",
+        "family": "Mateen",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Health Informatics, University College London, London, UK"
+          },
+          {
+            "name": "Wellcome Trust, London, UK"
+          },
+          {
+            "name": "Alan Turing Institute, London, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6476-2165",
+        "authenticated-orcid": false,
+        "given": "Melissa D",
+        "family": "McCradden",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Bioethics, Hospital for Sick Children Toronto, ON, Canada"
+          },
+          {
+            "name": "Genetics and Genome Biology, SickKids Research Institute, Toronto, ON, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-5471-5202",
+        "authenticated-orcid": false,
+        "given": "Lauren",
+        "family": "Oakden-Rayner",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Australian Institute for Machine Learning, University of Adelaide, Adelaide, SA, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6911-2367",
+        "authenticated-orcid": false,
+        "given": "Johan",
+        "family": "Ordish",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Medicines and Healthcare products Regulatory Agency, London, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-0044-3496",
+        "authenticated-orcid": false,
+        "given": "Richard",
+        "family": "Parnell",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Patient representative, Health Data Research UK patient and public involvement and engagement group"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-9076-8472",
+        "authenticated-orcid": false,
+        "given": "Sherri",
+        "family": "Rose",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Health Policy and Center for Health Policy, Stanford University, Stanford, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8980-2330",
+        "authenticated-orcid": false,
+        "given": "Karandeep",
+        "family": "Singh",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Learning Health Sciences, University of Michigan Medical School, Ann Arbor, MI, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-3037-122X",
+        "authenticated-orcid": false,
+        "given": "Laure",
+        "family": "Wynants",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Epidemiology, CAPHRI Care and Public Health Research Institute, Maastricht University, Maastricht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8708-7003",
+        "authenticated-orcid": false,
+        "given": "Patricia",
+        "family": "Logullo",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Statistics in Medicine, UK EQUATOR Centre, Nuffield Department of Orthopaedics, Rheumatology, and Musculoskeletal Sciences, University of Oxford, Oxford OX3 7LD, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "BMJ"
+    ],
+    "volume": "385",
+    "issue": null,
+    "page": "e078378",
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          2024,
+          4,
+          16
+        ]
+      ]
+    },
+    "published_online": {
+      "date-parts": [
+        [
+          2024,
+          4,
+          16
+        ]
+      ]
+    },
+    "published_print": null,
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "http://data.bmj.org/tdm/10.1136/bmj-2023-078378",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://syndication.highwire.org/content/doi/10.1136/bmj-2023-078378",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  },
+  {
+    "key": "moons2025probastai",
+    "url": "https://api.crossref.org/works/10.1136%2Fbmj-2024-082505",
+    "sha256": "fd15f4a01caf85240cb5be460c9c1b3dd011dfc541f0ae6e2ab38762aeebbd26",
+    "title": [
+      "PROBAST+AI: an updated quality, risk of bias, and applicability assessment tool for prediction models using regression or artificial intelligence methods"
+    ],
+    "subtitle": [],
+    "authors": [
+      {
+        "ORCID": "https://orcid.org/0000-0003-2118-004X",
+        "authenticated-orcid": false,
+        "given": "Karel G M",
+        "family": "Moons",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, 3508 GA Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7401-4593",
+        "authenticated-orcid": false,
+        "given": "Johanna A A",
+        "family": "Damen",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, 3508 GA Utrecht, Netherlands"
+          },
+          {
+            "name": "Cochrane Netherlands, University Medical Centre Utrecht, Utrecht University, Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4402-5379",
+        "authenticated-orcid": false,
+        "given": "Tabea",
+        "family": "Kaul",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, 3508 GA Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-7950-2980",
+        "authenticated-orcid": false,
+        "given": "Lotty",
+        "family": "Hooft",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, 3508 GA Utrecht, Netherlands"
+          },
+          {
+            "name": "Cochrane Netherlands, University Medical Centre Utrecht, Utrecht University, Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-7745-2887",
+        "authenticated-orcid": false,
+        "given": "Constanza",
+        "family": "Andaur Navarro",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, 3508 GA Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-0989-0623",
+        "authenticated-orcid": false,
+        "given": "Paula",
+        "family": "Dhiman",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Statistics in Medicine, UK EQUATOR Centre, Nuffield Department of Orthopaedics, Rheumatology and Musculoskeletal Sciences, University of Oxford, Oxford, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6657-2787",
+        "authenticated-orcid": false,
+        "given": "Andrew L",
+        "family": "Beam",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Epidemiology, Harvard T H Chan School of Public Health, Boston, MA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1613-7450",
+        "authenticated-orcid": false,
+        "given": "Ben",
+        "family": "Van Calster",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Development and Regeneration, KU Leuven, Leuven, Belgium"
+          },
+          {
+            "name": "Leuven Unit for Health Technology Assessment Research (LUHTAR), KU Leuven, Leuven, Belgium"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6712-6626",
+        "authenticated-orcid": false,
+        "given": "Leo Anthony",
+        "family": "Celi",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Biostatistics, Harvard T H Chan School of Public Health, Boston, MA, USA"
+          },
+          {
+            "name": "Laboratory for Computational Physiology, Massachusetts Institute of Technology, Cambridge, MA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9612-7791",
+        "authenticated-orcid": false,
+        "given": "Spiros",
+        "family": "Denaxas",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Health Informatics, University College London, London, UK"
+          },
+          {
+            "name": "British Heart Foundation Data Science Centre, Health Data Research Centre UK, London, United Kingdom"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7849-0087",
+        "authenticated-orcid": false,
+        "given": "Alastair K",
+        "family": "Denniston",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "College of Medicine and Health, University of Birmingham, Birmingham, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6349-7251",
+        "authenticated-orcid": false,
+        "given": "Marzyeh",
+        "family": "Ghassemi",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Electrical Engineering and Computer Science, Institute for Medical Engineering and Science, Massachusetts Institute of Technology, Cambridge, MA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1147-8491",
+        "authenticated-orcid": false,
+        "given": "Georg",
+        "family": "Heinze",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Clinical Biometrics, Centre for Medical Data Science, Medical University of Vienna, Vienna, Austria"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5183-131X",
+        "authenticated-orcid": false,
+        "given": "André Pascal",
+        "family": "Kengne",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Medicine, University of Cape Town, Cape Town, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4910-9368",
+        "authenticated-orcid": false,
+        "given": "Lena",
+        "family": "Maier-Hein",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Division of Intelligent Medical Systems, German Cancer Research Centre (DKFZ), Heidelberg, Germany"
+          },
+          {
+            "name": "National Centre for Tumour Diseases (NCT) Heidelberg, Heidelberg, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-1286-0038",
+        "authenticated-orcid": false,
+        "given": "Xiaoxuan",
+        "family": "Liu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "College of Medicine and Health, University of Birmingham, Birmingham, UK"
+          },
+          {
+            "name": "University Hospitals Birmingham NHS Foundation Trust, Birmingham, UK"
+          },
+          {
+            "name": "School of Health Sciences, College of Medicine and Health, University of Birmingham, Birmingham, UK"
+          },
+          {
+            "name": "NIHR Birmingham Biomedical Research Centre, Birmingham, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8708-7003",
+        "authenticated-orcid": false,
+        "given": "Patricia",
+        "family": "Logullo",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Statistics in Medicine, UK EQUATOR Centre, Nuffield Department of Orthopaedics, Rheumatology and Musculoskeletal Sciences, University of Oxford, Oxford, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6476-2165",
+        "authenticated-orcid": false,
+        "given": "Melissa D",
+        "family": "McCradden",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Bioethics, The Hospital for Sick Children, Toronto, ON, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-3610-4883",
+        "authenticated-orcid": false,
+        "given": "Nan",
+        "family": "Liu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Quantitative Medicine, Duke-NUS Medical School, Singapore, Singapore"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-5471-5202",
+        "authenticated-orcid": false,
+        "given": "Lauren",
+        "family": "Oakden-Rayner",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Australian Institute for Machine Learning, University of Adelaide, Adelaide, SA, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8980-2330",
+        "authenticated-orcid": false,
+        "given": "Karandeep",
+        "family": "Singh",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Learning Health Sciences, University of Michigan Medical School, Ann Arbor, MI, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2264-7174",
+        "authenticated-orcid": false,
+        "given": "Daniel S",
+        "family": "Ting",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Quantitative Medicine, Duke-NUS Medical School, Singapore, Singapore"
+          },
+          {
+            "name": "AI Office, Singapore Health Service, Duke-NUS Medical School, Singapore, Singapore"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-3037-122X",
+        "authenticated-orcid": false,
+        "given": "Laure",
+        "family": "Wynants",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Development and Regeneration, KU Leuven, Leuven, Belgium"
+          },
+          {
+            "name": "Department of Epidemiology, CAPHRI Care and Public Health Research Institute, Maastricht University, Maastricht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-9317-4995",
+        "authenticated-orcid": false,
+        "given": "Bada",
+        "family": "Yang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, 3508 GA Utrecht, Netherlands"
+          },
+          {
+            "name": "Cochrane Netherlands, University Medical Centre Utrecht, Utrecht University, Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4026-4345",
+        "authenticated-orcid": false,
+        "given": "Johannes B",
+        "family": "Reitsma",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, 3508 GA Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8699-0735",
+        "authenticated-orcid": false,
+        "given": "Richard D",
+        "family": "Riley",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Health Sciences, College of Medicine and Health, University of Birmingham, Birmingham, UK"
+          },
+          {
+            "name": "NIHR Birmingham Biomedical Research Centre, Birmingham, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-2772-2316",
+        "authenticated-orcid": false,
+        "given": "Gary S",
+        "family": "Collins",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Statistics in Medicine, UK EQUATOR Centre, Nuffield Department of Orthopaedics, Rheumatology and Musculoskeletal Sciences, University of Oxford, Oxford, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5529-1541",
+        "authenticated-orcid": false,
+        "given": "Maarten",
+        "family": "van Smeden",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Julius Centre for Health Sciences and Primary Care, University Medical Centre Utrecht, Utrecht University, 3508 GA Utrecht, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "container_title": [
+      "BMJ"
+    ],
+    "volume": "388",
+    "issue": null,
+    "page": "e082505",
+    "article_number": null,
+    "published": {
+      "date-parts": [
+        [
+          2025,
+          3,
+          24
+        ]
+      ]
+    },
+    "published_online": {
+      "date-parts": [
+        [
+          2025,
+          3,
+          24
+        ]
+      ]
+    },
+    "published_print": null,
+    "relation": {},
+    "update_to": null,
+    "primary_links": [
+      {
+        "URL": "http://data.bmj.org/tdm/10.1136/bmj-2024-082505",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://syndication.highwire.org/content/doi/10.1136/bmj-2024-082505",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "status": "retrieved"
+  }
+]

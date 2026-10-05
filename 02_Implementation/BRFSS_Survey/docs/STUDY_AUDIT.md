@@ -1,3 +1,5 @@
+> **Independent audit update (2026-10-04):** current interpretation and remaining limitations are in `03_Final_Result/BRFSS_2025/ASTRA_FINAL_AUDIT_VI.md`. The earlier PASS/score is historical evidence, not a certification.
+
 # BRFSS 2025 Full-Study Audit — Computational FINAL
 
 **Branch:** `implement/BRFSS_survey`  
@@ -11,7 +13,7 @@
 
 | Area | Status | Final conclusion |
 |---|---|---|
-| Dataset provenance | PASS + non-blocking schema note | XPT size and SHA-256 match the frozen source; CDC documents 284 variables while pandas exposes 283 |
+| Dataset provenance | PASS + non-blocking schema note | XPT size and SHA-256 match the frozen source; CDC landing page states 284; the raw XPT descriptors, official variable layout, and pandas all contain 283 |
 | Target | PASS | `DIABETE4=1` vs `3`; self-reported diagnosed-diabetes status classification |
 | Feature leakage | PASS | Diagnosis/treatment-specific downstream variables are excluded |
 | Temporal interpretation | PASS with limitation | Concurrent comorbidities can classify status but are not causal/prospective predictors |
@@ -87,7 +89,7 @@ Brier scores:
 5. Decision Tree: **0.21343**
 6. Gaussian NB: **0.25229**
 
-The calibration plot is consistent with the Brier ranking: LR/GB/XGB are comparatively well behaved; Decision Tree and especially Gaussian NB show poor probability calibration at the upper end.
+Brier measures overall probabilistic error, not calibration alone. The separately inspected calibration curves show that LR/GB/XGB are comparatively well behaved; Decision Tree and especially Gaussian NB show poor probability calibration at the upper end.
 
 Linear SVM is excluded because its raw margin is not a probability.
 
@@ -132,7 +134,7 @@ Published metrics are **not numerical reproduction targets** because cohort, tar
 - 15.13% is the **unweighted modeling-sample proportion**, not U.S. diabetes prevalence.
 - The random 20% holdout is **internal validation**, not external validation.
 - Concurrent health conditions must not be interpreted as causal or prospective risk factors.
-- The study compares **prespecified baseline configurations**, not the theoretical maximum performance of algorithm families.
+- The study compares **fixed baseline configurations**, not the theoretical maximum performance of algorithm families.
 - Default/frozen thresholds explain much of the Recall/Precision trade-off.
 - No primary model or threshold was retuned after observing the held-out test set.
 - The CDC 284-vs-pandas-283 schema-count discrepancy remains documented; all target and selected study variables were explicitly present and verified, so it is non-blocking for the frozen study.
@@ -145,7 +147,7 @@ This is a defensible methodological benchmark, not a validated clinical screenin
 
 The canonical notebook completed successfully on Kaggle, reproduced all seven frozen results, generated paired statistical comparisons and all required visual outputs, and passed a separate read-back audit without rerunning training.
 
-Future work (survey-weighted inference, threshold optimization, class-resampling sensitivity, temporal/external validation, calibration slope/intercept, or decision-curve analysis) must be versioned as **new experiments** rather than retroactively modifying this frozen primary benchmark.
+Future work (survey-weighted inference, threshold optimization, class-resampling sensitivity, temporal/external validation, model recalibration, or decision-curve analysis) must be versioned as **new experiments** rather than retroactively modifying this frozen primary benchmark.
 
 
 ## 11. Pre-submission statistical amendments
@@ -155,3 +157,16 @@ Future work (survey-weighted inference, threshold optimization, class-resampling
 - A 5,000-replicate paired-bootstrap robustness check on the frozen top-four prediction vectors preserved the ROC-AUC conclusion. LR vs XGBoost AP remained a very small, borderline contrast; it is not used to claim an overall winner.
 - Calibration intercept/slope were computed post hoc from frozen probability predictions as a reporting diagnostic only; no recalibration or model selection was performed.
 - A naive always-negative reference has test accuracy 0.8487 but Balanced Accuracy 0.50, demonstrating why accuracy alone is misleading under the observed imbalance.
+
+
+## Independent design and uncertainty amendment (2026-10-04)
+
+Git records show LR results (`3e557b2`) before DT implementation (`20b29c9`), and DT results (`0b7cdfc`) before RF implementation (`c68cda0`). The RF rationale explicitly cites the DT test AUC. All documented learning parameters match executed code (XGBoost adds logging-only verbosity=0); no per-model hyperparameter/threshold tuning was found. However, joint prespecification before first test exposure is **not established**. LR is the transparent reporting reference, not a verified prospectively registered primary contrast. Read model comparisons as descriptive/exploratory.
+
+Predictor coverage and missingness were screened on the full file before splitting (`c0d2431` before `79c28c9`). This used future test covariate information. No supervised label-based selection code was found, and learned imputation/encoding/scaling remain isolated inside training/CV folds; this does not erase the design-stage exposure. Its optimism cannot be quantified from this already-exposed holdout. A fresh prespecified cohort is needed for confirmatory evaluation.
+
+Class-stratified bootstrap intervals condition on frozen fitted models, observed class counts and this internal respondent sample. They omit training variation, alternate splits, feature-design decisions and complex-survey design uncertainty. Holm correction applies to the 21 McNemar tests only, not to every bootstrap contrast. The six top-four ROC-AUC/AP contrasts are exploratory and unadjusted unless explicitly labelled otherwise. Absence of a detected difference is not equivalence.
+
+Raw XPT NAMESTR declares 283 unique variables; pandas preserves all names in order; the official variable layout also lists 283. The downloadable codebook has 282 named entries (omitting `ICFQSTVR`). The CDC landing page's 284 is inconsistent with these sources; no parser column loss was found. There are no duplicate full rows or duplicate `_STATE`+`SEQNO` identifiers, and no such identifier overlap across train/test. Identical coarse predictor patterns are not evidence of duplicate persons.
+
+The unchanged 20 predictors retain temporal ambiguity; `_RFCHOL3` missingness can include absent cholesterol measurement and is not assumed missing at random. An explicit missing category preserves this information but does not correct diagnosis/access ascertainment bias. The outcome does not distinguish diabetes types, even though the public file has additional diabetes-module variables.

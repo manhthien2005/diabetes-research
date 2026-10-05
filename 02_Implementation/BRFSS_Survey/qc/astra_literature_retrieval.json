@@ -1,0 +1,79 @@
+[
+  {
+    "key": "nayem_full",
+    "url": "https://www.nature.com/articles/s41598-026-46927-7",
+    "status": 200,
+    "chars": 95642,
+    "sha256": "eef632ea5fc1fd11ffd91cc724314845666f95a3b488ff25b36a7913a630d879",
+    "requires_content_verification": true
+  },
+  {
+    "key": "aich_full",
+    "url": "https://www.nature.com/articles/s41598-026-41874-9",
+    "status": 200,
+    "chars": 100892,
+    "sha256": "8f308188239821cf98d846f4730edc052712b322981d353f6dfe7dce32e0d26b",
+    "requires_content_verification": true
+  },
+  {
+    "key": "ullah_full",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9536939/",
+    "status": 200,
+    "chars": 46665,
+    "sha256": "13b893d4abd1e86028c6532fe3e3fafc96dbd9496f6c297995fa4b187aad4b40",
+    "requires_content_verification": true
+  },
+  {
+    "key": "li_full",
+    "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0311222",
+    "status": 200,
+    "chars": 74733,
+    "sha256": "9dcf5cb1bbceda27e1a63995f8558f9d0f060be1c9345d680178255093fd8ec2",
+    "requires_content_verification": true
+  },
+  {
+    "key": "majcherek_full",
+    "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0328655",
+    "status": 200,
+    "chars": 61401,
+    "sha256": "89fa48ca40ccbf0afd5152c3ea3c4f8217a0ed1b9f8da4078f2858f0238f3fb6",
+    "requires_content_verification": true
+  },
+  {
+    "key": "cdc_2025",
+    "url": "https://www.cdc.gov/brfss/annual_data/annual_2025.html",
+    "status": 200,
+    "chars": 7582,
+    "sha256": "ee41b1f292d9a58b886ceaa149a9b24fc9a3139acaab925e78c8ad738022c85d",
+    "requires_content_verification": true
+  },
+  {
+    "key": "probast_full",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11931409/",
+    "status": 200,
+    "chars": 165,
+    "sha256": "f79fb1d1e71d41fe14c2120b6da610eaa51865ef34a031590e791dd839954dc2",
+    "requires_content_verification": true
+  },
+  {
+    "key": "xie_full",
+    "url": "https://www.cdc.gov/pcd/issues/2019/19_0109.htm",
+    "status": 200,
+    "chars": 30935,
+    "sha256": "a256a69c188880c1d8ab46334a408955546e521f7d5c5e8070b5032301e09ed2",
+    "requires_content_verification": true
+  },
+  {
+    "key": "muhammad_pdf",
+    "url": "https://journals.sagepub.com/doi/pdf/10.1177/21501319251400546?download=true",
+    "status": "UNVERIFIED",
+    "error": "HTTPSConnectionPool(host='journals.sagepub.com', port=443): Max retries exceeded with url: /doi/pdf/10.1177/21501319251400546?download=true (Caused by NameResolutionError(\"HTTPSConnection(host='journals.sagepub.com', port=443): Failed to resolve 'journals.sagepub.com' ([Errno 11001] getaddrinfo failed)\"))"
+  },
+  {
+    "key": "tripod_supplement",
+    "url": "https://www.tripod-statement.org/wp-content/uploads/2024/04/TRIPODAI-Supplement.pdf",
+    "status": 200,
+    "bytes": 1112205,
+    "sha256": "c19b0b939e85123277962444d6e58a360d6cd4f51957fa2004c8c415db1bdecf"
+  }
+]

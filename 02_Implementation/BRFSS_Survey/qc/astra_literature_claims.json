@@ -1,0 +1,223 @@
+{
+  "date": "2026-10-04",
+  "reference_identity_count": 16,
+  "claims": [
+    {
+      "id": "CDC01",
+      "claim": "356158 records;47 states plusDC,Guam,PuertoRico;CA,MS,NV,USVI absent",
+      "source_url": "https://www.cdc.gov/brfss/annual_data/annual_2025.html",
+      "location": {
+        "section": "2025 BRFSS Survey Data and Documentation; Data Files",
+        "table": null,
+        "page": null
+      },
+      "support_level": "direct",
+      "remaining_limitation": ""
+    },
+    {
+      "id": "CDC02",
+      "claim": "RawXPT and layout contain283 fields,codebook282 named entries;landing-page284 is inconsistent",
+      "source_url": "https://www.cdc.gov/brfss/annual_data/2025/llcp_varlayout_25_onecolumn.html",
+      "location": {
+        "section": "Variable Layout",
+        "table": null,
+        "page": null
+      },
+      "support_level": "direct",
+      "remaining_limitation": "Raw-header and source hashes in astra_data_evidence.json; no CDC correction asserted."
+    },
+    {
+      "id": "P01",
+      "claim": "RawBRFSS2014-2024,age40+,2498880 respondents; sixteen predictors; prediabetes negative in published text",
+      "source_url": "https://www.nature.com/articles/s41598-026-46927-7",
+      "location": {
+        "section": "Application to BRFSS data / Data overview and variable selection / Outcome definition",
+        "table": "Table7",
+        "page": null
+      },
+      "support_level": "direct",
+      "remaining_limitation": "Published design differs; public-code discrepancy was previously reported and is not treated as resolved."
+    },
+    {
+      "id": "P02",
+      "claim": "BRFSS2014,138146 complete-case participants,27 variables;train-onlySMOTE and separate test",
+      "source_url": "https://www.cdc.gov/pcd/issues/2019/19_0109.htm",
+      "location": {
+        "section": "Methods / Data source and study participants / Machine learning models",
+        "table": null,
+        "page": null
+      },
+      "support_level": "direct",
+      "remaining_limitation": "Age restriction is not laboratory confirmation of type2; numerical results are not reproduction targets."
+    },
+    {
+      "id": "P02_SLEEP",
+      "claim": "Sleep duration is a documented predictor in Xie2019",
+      "source_url": "https://www.cdc.gov/pcd/issues/2019/19_0109.htm",
+      "location": {
+        "section": "Appendix",
+        "table": "Detailed Information About Selected Variables",
+        "page": null
+      },
+      "support_level": "direct",
+      "remaining_limitation": "Study grouped sleep; current study treats hours continuously."
+    },
+    {
+      "id": "P03_LABEL",
+      "claim": "Positive includes pregnancy-related diabetes;negative includes prediabetes/borderline",
+      "source_url": "https://journals.sagepub.com/doi/10.1177/21501319251400546",
+      "location": {
+        "section": "Methods / Study Variables",
+        "table": null,
+        "page": null
+      },
+      "support_level": "direct",
+      "remaining_limitation": "Not our1-versus3 target."
+    },
+    {
+      "id": "P03_PIPE",
+      "claim": "Training-onlySMOTE and RFE are stated; earlierMICE/backward selection and within-fold isolation are not fully established",
+      "source_url": "https://journals.sagepub.com/doi/10.1177/21501319251400546",
+      "location": {
+        "section": "Methods / Data Processing and Analysis / Feature Selection / Model Training and Evaluation",
+        "table": null,
+        "page": null
+      },
+      "support_level": "partial",
+      "remaining_limitation": "Do not certify a leakage-safe implementation; no public analysis code verified."
+    },
+    {
+      "id": "P03_SLEEP",
+      "claim": "Prior feature table citesP03 as directSLEPTIM1 precedent",
+      "source_url": "https://journals.sagepub.com/doi/10.1177/21501319251400546",
+      "location": {
+        "section": "Methods / Study Variables",
+        "table": null,
+        "page": null
+      },
+      "support_level": "unsupported",
+      "remaining_limitation": "No sleep variable found in main text; supplement retrieval unavailable; use verifiedP02 precedent instead."
+    },
+    {
+      "id": "P04",
+      "claim": "Augmentation-method context;metadata verified",
+      "source_url": "https://doi.org/10.1016/j.health.2023.100297",
+      "location": {
+        "section": null,
+        "table": null,
+        "page": null
+      },
+      "support_level": "contextual",
+      "remaining_limitation": "Full implementation ordering not verified; remove affirmative leakage-safe claim."
+    },
+    {
+      "id": "P05",
+      "claim": "BRFSS2021;sampling and feature-selection methods;workflow does not establish split-first isolation",
+      "source_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0311222",
+      "location": {
+        "section": "3.1 Technical route;3.3.1 Data source;Data preprocessing",
+        "table": null,
+        "page": null
+      },
+      "support_level": "partial",
+      "remaining_limitation": "Record count after deletion exceeds stated rawN;no numerical agreement claim."
+    },
+    {
+      "id": "P06",
+      "claim": "CuratedBRFSS2015-derived253680 cohort and copula feature-selection context",
+      "source_url": "https://www.nature.com/articles/s41598-026-41874-9",
+      "location": {
+        "section": "Materials and methods",
+        "table": null,
+        "page": null
+      },
+      "support_level": "contextual",
+      "remaining_limitation": "Different target/protocol; cited for domains rather than exact2025 coding."
+    },
+    {
+      "id": "P07",
+      "claim": "Supporting literature identity verified;not a primary methodological or numerical result anchor",
+      "source_url": "https://doi.org/10.1016/j.health.2022.100118",
+      "location": {
+        "section": null,
+        "table": null,
+        "page": null
+      },
+      "support_level": "contextual",
+      "remaining_limitation": "No positive evidentiary weight assigned to unverified performance claims or full-pipeline reproducibility."
+    },
+    {
+      "id": "P08",
+      "claim": "Supporting literature identity verified;not a primary methodological or numerical result anchor",
+      "source_url": "https://doi.org/10.1371/journal.pone.0328655",
+      "location": {
+        "section": null,
+        "table": null,
+        "page": null
+      },
+      "support_level": "contextual",
+      "remaining_limitation": "No positive evidentiary weight assigned to unverified performance claims or full-pipeline reproducibility."
+    },
+    {
+      "id": "P09",
+      "claim": "Supporting literature identity verified;not a primary methodological or numerical result anchor",
+      "source_url": "https://doi.org/10.1016/j.health.2026.100454",
+      "location": {
+        "section": null,
+        "table": null,
+        "page": null
+      },
+      "support_level": "contextual",
+      "remaining_limitation": "No positive evidentiary weight assigned to unverified performance claims or full-pipeline reproducibility."
+    },
+    {
+      "id": "P10",
+      "claim": "Supporting literature identity verified;not a primary methodological or numerical result anchor",
+      "source_url": "https://doi.org/10.1155/2022/2557795",
+      "location": {
+        "section": null,
+        "table": null,
+        "page": null
+      },
+      "support_level": "contextual",
+      "remaining_limitation": "No positive evidentiary weight assigned to unverified performance claims or full-pipeline reproducibility."
+    },
+    {
+      "id": "TRIPOD",
+      "claim": "27 main items and52 subitems;code-sharing and full fitted-model reporting are different requirements",
+      "source_url": "https://www.tripod-statement.org/wp-content/uploads/2024/04/TRIPODAI-Supplement.pdf",
+      "location": {
+        "section": "SupplementaryTable1/2",
+        "table": null,
+        "page": null
+      },
+      "support_level": "direct",
+      "remaining_limitation": "Checklist reporting is not risk-of-bias certification."
+    },
+    {
+      "id": "PROBAST",
+      "claim": "Separate development-quality,evaluation-risk-of-bias and applicability assessments",
+      "source_url": "https://www.probast.org/probast_ai/downloads/",
+      "location": {
+        "section": "PROBAST+AI tool",
+        "table": null,
+        "page": null
+      },
+      "support_level": "direct",
+      "remaining_limitation": "Use domain concepts;not a formally completed certification."
+    },
+    {
+      "id": "SURVEY_NEXT",
+      "claim": "Survey-aware classifier evaluation addresses a different population estimand",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/39140488/",
+      "location": {
+        "section": "Abstract",
+        "table": null,
+        "page": null
+      },
+      "support_level": "contextual",
+      "remaining_limitation": "Relevant future work, not validation of the present unweighted benchmark."
+    }
+  ],
+  "fulltext_retrieval_note": "HTTP200 does not establish content access;probast_full capture is a165-character access page and not evidence.Official PROBAST site and tool used. SAGE main article read via web;DOCX supplement remains unavailable."
+}

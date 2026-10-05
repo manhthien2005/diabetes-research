@@ -1,0 +1,15 @@
+{
+  "source_prediction_sha256": "f4a44d130ef7c33b0d276d55dc504fec105f35c94da8666b97568729923e0969",
+  "model_refitting": false,
+  "threshold_tuning": false,
+  "outputs_sha256": {
+    "calibration.png": "ba50fc2894dcd48992fdc807a4fa57e8a1a6219597cdc6b63b6e2ea194683860",
+    "calibration_bins.csv": "bd8a0412c1b6b70752026a4fbf06438f992aa8f71fad4c30405c2f61131a6cfd",
+    "confusion_matrices.png": "ab39c87e57710505e29c6c2f411a622f9cf3157ed2f822311949c48fa646a910",
+    "discrimination.png": "30c50ee040abde7166b1fc9868d65c9843b548219a57b52b5d94b3e5f3db104c",
+    "feature_diagnostics.png": "3a99bee76f11024507dc29900dc51a9812c6ef899f02f7b9cb8101907c79f468",
+    "metric_matrix.png": "b64b032466c9a9806d999ed36ec06cd8b29d0cb2a37a6b56cbfd5d117e52b9cc",
+    "operating_points.png": "6fdd662bbaaf9ee6a8b14054065b070a2a2494040dfeea08ff292d0c93296228"
+  },
+  "csv_hash_convention": "SHA-256 of bytes with CRLF normalized to LF"
+}

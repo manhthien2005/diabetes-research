@@ -1,0 +1,14 @@
+{
+  "raw": {
+    "minimum": "2025-01-05",
+    "maximum": "2026-03-16",
+    "unparseable": 0,
+    "n": 356158
+  },
+  "eligible": {
+    "minimum": "2025-01-05",
+    "maximum": "2026-03-16",
+    "unparseable": 0,
+    "n": 342539
+  }
+}

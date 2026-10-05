@@ -1,23 +1,25 @@
+> **Independent audit update (2026-10-04):** current interpretation and remaining limitations are in `03_Final_Result/BRFSS_2025/ASTRA_FINAL_AUDIT_VI.md`. The earlier PASS/score is historical evidence, not a certification.
+
 # BRFSS 2025 Pre-Submission Board Review
 
 **Review mode:** hostile/internal peer review before external submission  
 **Study type being defended:** methodological development + internal evaluation benchmark  
 **Not being defended:** clinical deployment, prospective risk prediction, population prevalence, causal inference, or external validation
 
-## Board verdict
+## Earlier board verdict (historical; current verdict: MAJOR REVISION)
 
 | Question | Verdict |
 |---|---|
 | Is there a fatal data-leakage or target-definition flaw? | **No identified fatal flaw** |
 | Are frozen metrics reproducible? | **Yes** |
-| Is the seven-model comparison internally fair? | **Yes, as a comparison of prespecified configurations** |
+| Is the seven-model comparison internally fair? | **Same data/pipeline, but sequential design prevents a confirmatory fairness claim** |
 | Can the study claim one universally superior algorithm? | **No** |
 | Can the study claim U.S.-population performance? | **No** |
 | Can the study claim clinical screening utility? | **No** |
 | Is it ready for expert methodological review? | **Yes** |
 | Is it ready for clinical deployment claims? | **No** |
 
-### Internal score
+### Earlier internal score (superseded by independent69→82/100)
 
 | Domain | Score / 10 | Board comment |
 |---|---:|---|
@@ -62,7 +64,7 @@
 
 **Objection sustained.**
 
-**Fix:** results are explicitly a benchmark of **seven prespecified configurations**, not an estimate of each algorithm family's attainable optimum. No “best algorithm” claim is permitted.
+**Fix:** results are explicitly a benchmark of **seven fixed configurations**, not an estimate of each algorithm family's attainable optimum. No “best algorithm” claim is permitted.
 
 ### 5. “Accuracy is almost the majority-class baseline.”
 
@@ -95,7 +97,7 @@ The point difference versus Logistic Regression is only about **0.00012**. Paire
 The frozen notebook used 200 replicates. This is adequate for coarse descriptive intervals but weak for very small borderline contrasts.
 
 **Fix/robustness:** the exact frozen respondent-level predictions were re-audited with:
-- 1,000 paired stratified replicates across all seven models for stability;
+- the temporary 1,000-replicate audit was rejected for invalid threshold metrics and supplies no evidence;
 - 5,000 paired stratified replicates for LR vs GB/XGBoost/Linear-SVM ROC-AUC and AP.
 
 Top-four ROC-AUC conclusions were unchanged. The LR–XGBoost AP difference is small and close to the boundary; it is not promoted to an overall superiority claim.
@@ -112,7 +114,7 @@ Key results:
 - Decision Tree: intercept **−1.3948**, slope **0.0433**
 - Gaussian NB: intercept **−1.6963**, slope **0.0970**
 
-These support the existing calibration-curve/Brier interpretation. They are reporting diagnostics, not post-hoc recalibration.
+These joint regression coefficients use epsilon1e-6 clipping; intercept is not CITL, and DT/RF/GNB slopes are clipping-sensitive. See supplement/README.md. They complement probability-error and calibration-curve evidence. They are reporting diagnostics, not post-hoc recalibration.
 
 ### 12. “Where is decision-curve analysis?”
 
@@ -144,12 +146,25 @@ No. The final report labels coefficients and impurity-based importances as **mod
 4. Self-reported cross-sectional outcome.
 5. No formal prospective sample-size calculation; full eligible secondary cohort was used.
 6. Public aggregate excludes several 2025 jurisdictions.
-7. Primary model configurations were prespecified/fixed rather than tuned under nested CV.
+7. Primary model configurations were fixed rather than tuned under nested CV.
 8. Primary bootstrap used 200 reps; high-repetition sensitivity is supplementary.
-9. CDC documents 284 XPT variables while pandas exposes 283; all study variables are present and source SHA-256 is verified.
+9. CDC landing page states 284; raw XPT and official variable layout both contain 283; all study variables are present and source SHA-256 is verified.
 
-## Board decision
+## Earlier board decision (superseded for submission readiness)
 
 **ACCEPTABLE FOR EXPERT REVIEW AS A REPRODUCIBLE INTERNAL BENCHMARK, WITH CLAIMS RESTRICTED TO THAT SCOPE.**
 
 A manuscript that upgrades the claim to “clinical risk prediction,” “nationally representative performance,” “fair deployment,” or “clinical utility” should receive **major revision/rejection** until the corresponding analyses are performed.
+
+
+## Independent design and uncertainty amendment (2026-10-04)
+
+Git records show LR results (`3e557b2`) before DT implementation (`20b29c9`), and DT results (`0b7cdfc`) before RF implementation (`c68cda0`). The RF rationale explicitly cites the DT test AUC. All documented learning parameters match executed code (XGBoost adds logging-only verbosity=0); no per-model hyperparameter/threshold tuning was found. However, joint prespecification before first test exposure is **not established**. LR is the transparent reporting reference, not a verified prospectively registered primary contrast. Read model comparisons as descriptive/exploratory.
+
+Predictor coverage and missingness were screened on the full file before splitting (`c0d2431` before `79c28c9`). This used future test covariate information. No supervised label-based selection code was found, and learned imputation/encoding/scaling remain isolated inside training/CV folds; this does not erase the design-stage exposure. Its optimism cannot be quantified from this already-exposed holdout. A fresh prespecified cohort is needed for confirmatory evaluation.
+
+Class-stratified bootstrap intervals condition on frozen fitted models, observed class counts and this internal respondent sample. They omit training variation, alternate splits, feature-design decisions and complex-survey design uncertainty. Holm correction applies to the 21 McNemar tests only, not to every bootstrap contrast. The six top-four ROC-AUC/AP contrasts are exploratory and unadjusted unless explicitly labelled otherwise. Absence of a detected difference is not equivalence.
+
+Raw XPT NAMESTR declares 283 unique variables; pandas preserves all names in order; the official variable layout also lists 283. The downloadable codebook has 282 named entries (omitting `ICFQSTVR`). The CDC landing page's 284 is inconsistent with these sources; no parser column loss was found. There are no duplicate full rows or duplicate `_STATE`+`SEQNO` identifiers, and no such identifier overlap across train/test. Identical coarse predictor patterns are not evidence of duplicate persons.
+
+The unchanged 20 predictors retain temporal ambiguity; `_RFCHOL3` missingness can include absent cholesterol measurement and is not assumed missing at random. An explicit missing category preserves this information but does not correct diagnosis/access ascertainment bias. The outcome does not distinguish diabetes types, even though the public file has additional diabetes-module variables.

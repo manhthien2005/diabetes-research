@@ -1,0 +1,301 @@
+{
+  "audited_head": "aa2e53cd0826475e76be7921ffa01497efbe7fc3",
+  "date": "2026-10-04",
+  "stage": "POST_FIX",
+  "rubric": [
+    {
+      "domain": "research_question_and_scope",
+      "maximum": 8,
+      "before": 6,
+      "after": 7,
+      "rationale": "Scope narrowed to descriptive internal comparison; limited clinical novelty remains."
+    },
+    {
+      "domain": "dataset_provenance_and_integrity",
+      "maximum": 8,
+      "before": 7,
+      "after": 8,
+      "rationale": "Official hashes,283-variable header/layout, identity/split and interview dates resolved."
+    },
+    {
+      "domain": "target_and_predictor_validity",
+      "maximum": 10,
+      "before": 7,
+      "after": 8,
+      "rationale": "20 recodes/units verified; literature attribution corrected; timing/ascertainment unresolved."
+    },
+    {
+      "domain": "leakage_and_pipeline_rigor",
+      "maximum": 12,
+      "before": 7,
+      "after": 8,
+      "rationale": "Fold-isolated learned steps verified; sequential design and pre-split covariate screening remain."
+    },
+    {
+      "domain": "model_design_and_comparability",
+      "maximum": 10,
+      "before": 8,
+      "after": 8,
+      "rationale": "Seven fixed learning configurations verified; untuned-family and overfitting limits remain."
+    },
+    {
+      "domain": "validation_and_statistics",
+      "maximum": 14,
+      "before": 8,
+      "after": 9,
+      "rationale": "Bootstrap/McNemar reproduced; clipping/multiplicity/conditional uncertainty explicit; no independent validation."
+    },
+    {
+      "domain": "metrics_imbalance_and_calibration",
+      "maximum": 10,
+      "before": 7,
+      "after": 9,
+      "rationale": "AP, naive baseline and calibration verified; corrected figures; no clinical thresholds."
+    },
+    {
+      "domain": "literature_and_evidence_quality",
+      "maximum": 8,
+      "before": 5,
+      "after": 7,
+      "rationale": "16 identities verified and load-bearing claims corrected; some full texts/supplements remain unverified."
+    },
+    {
+      "domain": "reproducibility_and_code_quality",
+      "maximum": 8,
+      "before": 6,
+      "after": 7,
+      "rationale": "Source/hash/environment/reconstruction/gates improved; no serialized fitted pipelines or durable artifact guarantee."
+    },
+    {
+      "domain": "reporting_and_interpretation",
+      "maximum": 8,
+      "before": 5,
+      "after": 7,
+      "rationale": "52-subitem audit and characteristics/dates added; author declarations/journal manuscript remain."
+    },
+    {
+      "domain": "claim_discipline_and_limitations",
+      "maximum": 4,
+      "before": 3,
+      "after": 4,
+      "rationale": "Unsupported inference removed; numerical and scientific validity separated."
+    }
+  ],
+  "score_before": 69,
+  "fatal_count": 0,
+  "issues": [
+    {
+      "id": "A01",
+      "severity": "MAJOR",
+      "domain": "design",
+      "finding": "Joint prespecification and untouched one-time testing are not established: model additions followed earlier held-out results.",
+      "evidence": "Git 3e557b2,20b29c9,0b7cdfc,c68cda0; models/model_03_random_forest.md Why this model matters",
+      "scientific_risk": "Development choices may have been informed by earlier test performance; cannot claim confirmatory algorithm comparison.",
+      "decision": "Disclose sequential development; preserve results; new untouched cohort needed for confirmatory comparison.",
+      "fix": "Removed joint-prespecification/untouched-test claims in current reporting; documented sequential Git evidence.",
+      "verification": "Git chronology and RF rationale; code unchanged gate.",
+      "remaining_limitation": "Earlier test-result exposure cannot be reversed; independent prospectively specified cohort needed.",
+      "status": "accepted_limitation"
+    },
+    {
+      "id": "A02",
+      "severity": "MAJOR",
+      "domain": "selection",
+      "finding": "Predictor coverage/missingness screening preceded partitioning and used full-cohort distributions.",
+      "evidence": "Git c0d2431 before79c28c9; docs/final_feature_set.md five screens; candidate/coding audits",
+      "scientific_risk": "Unsupervised test-covariate information entered feature design; no evidence of supervised target-based filtering, but pristine isolation overclaimed.",
+      "decision": "Disclose limited test-covariate exposure; do not retrospectively reselect variables.",
+      "fix": "Disclosed full-cohort coverage screening before partition and separated it from fold-isolated preprocessing.",
+      "verification": "Feature freeze c0d2431 precedes split79c28c9; code/data audit.",
+      "remaining_limitation": "Optimism from design-stage exposure cannot be quantified with the same holdout.",
+      "status": "accepted_limitation"
+    },
+    {
+      "id": "A03",
+      "severity": "MAJOR",
+      "domain": "literature",
+      "finding": "P03 outcome definition differs and preprocessing/fold isolation is overstated; P02-P05 shared leakage-safe-method claim unsupported.",
+      "evidence": "literature_review.md P03,Imbalance,Evaluation; Muhammad2025 Methods Study Variables/Data Preprocessing; Li2024 section3.1",
+      "scientific_risk": "Invalid methodological justification and cross-study equivalence.",
+      "decision": "Correct claim-level provenance, explicitly separate reported methods from verified implementation.",
+      "fix": "Corrected Muhammad outcome, P02-P05 isolation claims, SLEPTIM1/PERSDOC3 provenance; inaccessible evidence marked unverified.",
+      "verification": "astra_literature_claims.json;16-reference identity audit; primary sources.",
+      "remaining_limitation": "P04 full text and P03 supplement unavailable; no certification of their pipelines; papers are non-equivalent.",
+      "status": "corrected"
+    },
+    {
+      "id": "A04",
+      "severity": "MAJOR",
+      "domain": "statistical_reproducibility",
+      "finding": "Calibration clipping and estimation equations absent; original 5000 generation code and RNG semantics absent.",
+      "evidence": "supplement/README.md; astra_statistics_evidence.json/calibration_best_match",
+      "scientific_risk": "Tree/GNB slopes change materially with clipping; exact old bootstrap endpoints cannot be assumed reproduced.",
+      "decision": "Document joint regression epsilon1e-6 versus CITL; add executable verification and separately labeled robustness results.",
+      "fix": "Added calibration equation/epsilon/SE/CITL distinction and original5000 bootstrap reconstruction.",
+      "verification": "Six bootstrap intervals match within1e-16; joint calibration coefficients/SE within5e-9.",
+      "remaining_limitation": "Original generation source not recovered; tree/GNB calibration is clipping-sensitive; conditional inference only.",
+      "status": "corrected"
+    },
+    {
+      "id": "A05",
+      "severity": "MINOR",
+      "domain": "statistics",
+      "finding": "Small LR-XGB AP contrast lacks an explicit family-wise/multiplicity and Monte Carlo caveat.",
+      "evidence": "supplement/top4_paired_bootstrap_5000_robustness.csv; astra_statistics_robustness.csv",
+      "scientific_risk": "Exploratory borderline positive interval may be overread as robust superiority.",
+      "decision": "Report unadjusted analysis and three-seed robustness; show exploratory six-contrast simultaneous intervals; no equivalence.",
+      "fix": "Added three5000-replicate streams and exploratory six-contrast Bonferroni sensitivity.",
+      "verification": "astra_statistics_robustness.csv; LR-XGB adjusted diagnostic intervals cross0.",
+      "remaining_limitation": "No confirmatory multiplicity-controlled superiority or equivalence established.",
+      "status": "corrected"
+    },
+    {
+      "id": "A06",
+      "severity": "MINOR",
+      "domain": "provenance",
+      "finding": "Board review cites rejected 1000-bootstrap stability outputs.",
+      "evidence": "PRE_SUBMISSION_BOARD_REVIEW.md objection10 versus supplement/README.md Excluded temporary audit files",
+      "scientific_risk": "Invalid outputs remain verbally load-bearing despite absent files.",
+      "decision": "Remove assertion from current board interpretation; preserve exclusion history.",
+      "fix": "Removed rejected1000-replicate stability assertion from current board review.",
+      "verification": "Release gate verifies known-invalid files absent from FINAL; current interpretation excludes them.",
+      "remaining_limitation": "Historical invalid artifacts are not evidence.",
+      "status": "corrected"
+    },
+    {
+      "id": "A07",
+      "severity": "MINOR",
+      "domain": "data",
+      "finding": "283 columns incorrectly left as possible parser loss.",
+      "evidence": "astra_data_evidence.json xpt_header/layout/codebook",
+      "scientific_risk": "Unnecessary uncertainty on data integrity.",
+      "decision": "Document283 raw descriptors=283 layout;282 codebook entries omitsICFQSTVR;landing page says284.",
+      "fix": "Resolved283 columns at binary header/layout level and282 codebook entries; added exact interview dates.",
+      "verification": "astra_data_evidence.json;astra_interview_dates.json.",
+      "remaining_limitation": "CDC landing-page284 remains an external documentation inconsistency; no CDC correction claimed.",
+      "status": "corrected"
+    },
+    {
+      "id": "A08",
+      "severity": "MINOR",
+      "domain": "survey",
+      "finding": "Conditional respondent bootstrap limitations not fully stated.",
+      "evidence": "notebook cells42,134;survey_design manifest",
+      "scientific_risk": "Intervals exclude retraining, split selection, design-based and population uncertainty.",
+      "decision": "Define finite-sample unweighted estimand and conditional interval scope; weighted/design-aware work stays separate.",
+      "fix": "Defined unweighted sample estimand and conditional respondent-bootstrap limits.",
+      "verification": "Manifest/current brief/supplement; survey fields absent from predictor matrix.",
+      "remaining_limitation": "No survey-design population inference; separate weighted analysis could strengthen a future paper.",
+      "status": "accepted_limitation"
+    },
+    {
+      "id": "A09",
+      "severity": "MINOR",
+      "domain": "reporting",
+      "finding": "Reporting checklist PASS collapses subitems; participant characteristics and reusable fitted models missing.",
+      "evidence": "REPORTING_READINESS.md items20,22,23;93-file artifact has no estimators",
+      "scientific_risk": "Cannot claim TRIPOD+AI completeness or direct reuse of trained models.",
+      "decision": "Add subitem audit and aggregate characteristics; state fitted-model availability gap.",
+      "fix": "Added52-subitem audit,20-predictor overall/train/test characteristics and exact dates; corrected model-reuse claim.",
+      "verification": "26 PRESENT,13 PARTIAL,5 MISSING,8 NA;93-file execution artifact has no serialized estimators.",
+      "remaining_limitation": "Author declarations, subgroup reporting and fitted-model availability remain incomplete.",
+      "status": "partially_corrected"
+    },
+    {
+      "id": "A10",
+      "severity": "MINOR",
+      "domain": "visualization",
+      "finding": "Frozen metric matrix prints legacy pr_auc field; calibration title implies ten bins even when ties reduce bins.",
+      "evidence": "notebook cell138;archived metric_matrix.png/calibration_comparison.png",
+      "scientific_risk": "AP confused with trapezoidal area; discrete-model calibration oversimplified.",
+      "decision": "Create corrected publication figures from frozen predictions, display actual populated-bin counts; keep originals.",
+      "fix": "Added6 corrected publication figures with AP labels, actual calibration bins, fixed-threshold and feature caveats.",
+      "verification": "Numerical figure inputs verified; all6 PNGs visually inspected; hashes in figure manifest.",
+      "remaining_limitation": "Original figures retained historically; binning is descriptive; coefficients/importance are not causal.",
+      "status": "corrected"
+    },
+    {
+      "id": "A11",
+      "severity": "MINOR",
+      "domain": "ci",
+      "finding": "Pre-submission workflow checks out implement branch even when another revision is dispatched.",
+      "evidence": "github/workflows/brfss-presubmission-gate.yml checkout ref",
+      "scientific_risk": "Review branch changes can be skipped while gate passes another revision.",
+      "decision": "Use event checkout; add review-branch trigger and evidence validation.",
+      "fix": "Workflow now checks requested revision; review branch trigger and offline evidence gate added.",
+      "verification": "Focused regression tests and local execution of original/static and strengthened checks.",
+      "remaining_limitation": "No remote workflow run claimed; nothing pushed.",
+      "status": "corrected"
+    },
+    {
+      "id": "A12",
+      "severity": "MINOR",
+      "domain": "interpretation",
+      "finding": "Brier used loosely as calibration ranking and gate PASS called audit-clean.",
+      "evidence": "STUDY_AUDIT.md calibration;README.md Final audit status;Vietnamese guide",
+      "scientific_risk": "Brier combines calibration/discrimination; mechanical checks do not prove scientific validity.",
+      "decision": "Qualify Brier and gate statements; supersede prior scores with independent audit.",
+      "fix": "Separated Brier probability error from calibration and mechanical PASS from scientific approval; superseded prior scores.",
+      "verification": "Current brief,reporting-readiness,guide and audit reports reviewed.",
+      "remaining_limitation": "Scientific design concerns survive successful computation.",
+      "status": "corrected"
+    },
+    {
+      "id": "A13",
+      "severity": "MINOR",
+      "domain": "author_declarations",
+      "finding": "Author/institution ethics, funding,COI,registration,PPI,contributions and target-journal manuscript remain incomplete.",
+      "evidence": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "scientific_risk": "Actual submission cannot be certified.",
+      "decision": "Keep AUTHOR_REQUIRED; no invented declarations; report readiness honestly.",
+      "fix": "Kept declarations explicitly AUTHOR_REQUIRED and removed submission-ready certification.",
+      "verification": "AUTHOR_COMPLETION_CHECKLIST.md and52-item audit.",
+      "remaining_limitation": "Only authors/institution can supply ethics,COI,funding,protocol/registration,PPI,contributions; journal manuscript needed.",
+      "status": "author_required"
+    },
+    {
+      "id": "A14",
+      "severity": "IMPROVEMENT",
+      "domain": "artifact_reproducibility",
+      "finding": "Artifact download/hash/environment instructions should be durable and explicit.",
+      "evidence": "run37183093668 artifact11295688140;astra_statistics_evidence.json",
+      "scientific_risk": "GitHub artifacts may expire; code/configs alone do not reproduce exact historical execution.",
+      "decision": "Add manifest, retrieval command, versions and expiry limitation; no raw respondent predictions inGit.",
+      "fix": "Added source hashes,execution/local versions,retrieval and reconstruction instructions; download caches ignored.",
+      "verification": "Manifest/source download succeeded; local diagnostic reproduction succeeded.",
+      "remaining_limitation": "Artifact retention finite; durable fitted-model/prediction archive not created; exact model retraining not repeated.",
+      "status": "partially_corrected"
+    },
+    {
+      "id": "A15",
+      "severity": "IMPROVEMENT",
+      "domain": "clinical_value",
+      "finding": "Novelty/clinical usefulness of classifying an already answerable self-report is limited.",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md intended benchmark;existing BRFSS comparisons",
+      "scientific_risk": "New annual dataset alone is not algorithmic or clinical novelty.",
+      "decision": "Frame as reproducible educational/methodological benchmark; prioritize independently specified validation.",
+      "fix": "Narrowed novelty to common-pipeline benchmark; no arbitrary DCA or fairness experiment added.",
+      "verification": "Current brief and independent final verdict.",
+      "remaining_limitation": "Self-report outcome can be directly asked; clinical value and transportability remain unestablished.",
+      "status": "accepted_limitation"
+    }
+  ],
+  "scoring_note": "Subjective evidence-based readiness rubric, not a validated instrument or probability of acceptance. Original state scored before material reporting/code corrections.",
+  "score_after": 82,
+  "publication_verdict": "MAJOR REVISION",
+  "correctable_major_open": 0,
+  "methodological_major_remaining": 2,
+  "author_required_open": 1,
+  "counts_before": {
+    "FATAL": 0,
+    "MAJOR": 4,
+    "MINOR": 9,
+    "IMPROVEMENT": 2
+  },
+  "status_counts_after": {
+    "accepted_limitation": 4,
+    "corrected": 8,
+    "partially_corrected": 2,
+    "author_required": 1
+  }
+}

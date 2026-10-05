@@ -1,3 +1,5 @@
+> **Independent audit update (2026-10-04):** current interpretation and remaining limitations are in `03_Final_Result/BRFSS_2025/ASTRA_FINAL_AUDIT_VI.md`. The earlier PASS/score is historical evidence, not a certification.
+
 # BRFSS 2025 — FINAL Review Package
 
 This folder is the **entry point for senior-agent / reviewer audit** of the frozen BRFSS 2025 study.
@@ -31,3 +33,12 @@ Any future tuning, subgroup analysis, survey-weighted analysis, threshold optimi
 Not yet claimable as a deployable clinical prediction model because external/temporal validation, frozen subgroup/fairness evaluation, and clinically anchored utility analysis are absent.
 
 Before an actual journal submission, complete `AUTHOR_COMPLETION_CHECKLIST.md`.
+
+## Independent final audit (2026-10-04)
+
+Current submission verdict: **MAJOR REVISION**, score69→82/100. Two major design limitations remain disclosed.
+
+- [Vietnamese audit and scoring](ASTRA_FINAL_AUDIT_VI.md)
+- [Reviewer objection matrix](ASTRA_REVIEWER_MATRIX.md)
+- [Changes and scientific impact](ASTRA_CHANGELOG.md)
+- [Final branch, verification and author follow-up](ASTRA_FINAL_STATE.md)

@@ -1,0 +1,104 @@
+{
+  "checked_at_utc": "2026-10-05T02:57:44.481159+00:00",
+  "status": "PASS_WITH_DECLARED_SCIENTIFIC_LIMITATIONS",
+  "executed_checks": [
+    {
+      "check": "independent_release",
+      "command": [
+        "python",
+        "02_Implementation\\BRFSS_Survey\\qc\\astra_release_gate.py"
+      ],
+      "exit_code": 0,
+      "output": "{\n  \"status\": \"PASS\",\n  \"scientific_code_unchanged\": true,\n  \"frozen_files_verified\": 9,\n  \"interpretation\": \"Artifact consistency only; declared methodological limitations remain.\"\n}\n"
+    },
+    {
+      "check": "focused_tests",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "02_Implementation\\BRFSS_Survey\\qc",
+        "-p",
+        "test_astra_release_gate.py"
+      ],
+      "exit_code": 0,
+      "output": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.002s\n\nOK\n"
+    }
+  ],
+  "workflow_static": {
+    "status": "PASS",
+    "canonical_notebook_count": 1,
+    "code_cells_compiled": 57,
+    "final_package_files": 6,
+    "calibration_models": 6,
+    "robustness_rows": 6,
+    "claim_scope": "internal cross-sectional methodological benchmark"
+  },
+  "repository_tests": {
+    "agent_governance": {
+      "passed": 104,
+      "exit_code": 0
+    },
+    "skill_governance": {
+      "passed": 49,
+      "exit_code": 0,
+      "note": "Expected invalid-fixture diagnostics printed; overall unittest OK."
+    },
+    "focused_release": {
+      "passed": 7,
+      "exit_code": 0
+    },
+    "skill_mirror": {
+      "managed_skills": 14,
+      "exact_byte_parity": true,
+      "exit_code": 0
+    }
+  },
+  "rigor_gate": {
+    "exit_code": 0,
+    "remaining_advisory": "NO_EXTERNAL_VALIDATION",
+    "note": "Declarative static check does not detect sequential design/full-cohort screening; independent audit does."
+  },
+  "scope_gate": {
+    "exit_code": 0,
+    "major": 0,
+    "minor": 0
+  },
+  "scientific_reconstruction": {
+    "source_data_and_split": "exact source SHA and test respondent order/labels verified",
+    "paired_bootstrap_200_max_abs_error": 8.245085170166533e-11,
+    "bootstrap_5000_endpoint_max_abs_error": 9.454242944073599e-17,
+    "mcnemar_max_abs_error": 4.6629367034256575e-15,
+    "calibration_coefficients_SE_max_abs_error_bound": 5e-09,
+    "full_retraining_performed": false
+  },
+  "figures": {
+    "count": 6,
+    "visually_reviewed": true,
+    "source_and_output_hashes_checked": true
+  },
+  "reporting_counts": {
+    "PRESENT": 26,
+    "PARTIAL": 13,
+    "NA": 8,
+    "MISSING": 5
+  },
+  "reference_identity_counts": {
+    "OK": 16
+  },
+  "freeze_local_and_remote_sha": "a2a0ba498919fa8c96a1bf8b491ee81b496b5f32",
+  "remote_read_only_ref_check": "git ls-remote origin refs/heads/freeze/brfss-2025-final-review refs/heads/implement/BRFSS_survey; both unchanged",
+  "hygiene": {
+    "git_diff_check_exit_code": 0,
+    "json_parse_finite": true,
+    "qc_python_parse": true
+  },
+  "limitations": [
+    "No remote CI run; local workflow/static checks only.",
+    "No formal completed PROBAST signaling form or submission certification.",
+    "Two major design limitations and author declarations remain."
+  ],
+  "portability_fix": "Local release gate initially encountered Windows cp1252 reading UTF-8 evidence; explicit UTF-8 reads corrected and gate rerun successfully. CSV figure hashes also normalize CRLF to LF; staged Git blobs checked against manifest and regression test passed."
+}

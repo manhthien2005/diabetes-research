@@ -1,0 +1,506 @@
+{
+  "detector": "verify_refs",
+  "schema_version": 4,
+  "source": "02_Implementation/BRFSS_Survey/docs/references.bib",
+  "total_references": 16,
+  "counts": {
+    "OK": 16
+  },
+  "duplicate_findings": [],
+  "submission_safe": true,
+  "fully_verified": true,
+  "requires_manual_reference_check": false,
+  "records": [
+    {
+      "ref_id": "nayem2026divide",
+      "raw": "@article{nayem2026divide, author = {Nayem, Md. Mahadi Hassan and Biswas, Soma Chowdhury}, title = {Divide and recombine approaches for fitting logistic regression to large-scale health surveillance data: application to diabetes risk prediction in BRFSS}, journal = {Scientific Reports}, year = {2026}, volume = {16}, pages = {15980}, doi = {10.1038/s41598-026-46927-7} }",
+      "title_guess": "Divide and recombine approaches for fitting logistic regression to large-scale health surveillance data: application to diabetes risk prediction in BRFSS",
+      "doi": "10.1038/s41598-026-46927-7",
+      "pmid": "",
+      "year_guess": "2026",
+      "first_author_guess": "Nayem",
+      "cited_authors": [
+        "Nayem",
+        "Biswas"
+      ],
+      "actual_authors": [
+        "Nayem",
+        "Biswas"
+      ],
+      "cited_author_count": 2,
+      "actual_author_count": 2,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Divide and recombine approaches for fitting logistic regression to large-scale health surveillance data: application to ; year=2026; authors=2 (first=Nayem) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "xie2019brfss",
+      "raw": "@article{xie2019brfss, author = {Xie, Zidian and Nikolayeva, Olga and Luo, Jiebo and Li, Dongmei}, title = {Building Risk Prediction Models for Type 2 Diabetes Using Machine Learning Techniques}, journal = {Preventing Chronic Disease}, year = {2019}, volume = {16}, pages = {E130}, doi = {10.5888/pcd16.190109} }",
+      "title_guess": "Building Risk Prediction Models for Type 2 Diabetes Using Machine Learning Techniques",
+      "doi": "10.5888/pcd16.190109",
+      "pmid": "",
+      "year_guess": "2019",
+      "first_author_guess": "Xie",
+      "cited_authors": [
+        "Xie",
+        "Nikolayeva",
+        "Luo",
+        "Li"
+      ],
+      "actual_authors": [
+        "Xie",
+        "Nikolayeva",
+        "Luo",
+        "Li"
+      ],
+      "cited_author_count": 4,
+      "actual_author_count": 4,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Building Risk Prediction Models for Type 2 Diabetes Using Machine Learning Techniques; year=2019; authors=4 (first=Xie) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "muhammad2025tennessee",
+      "raw": "@article{muhammad2025tennessee, author = {Muhammad, Mustapha Aliyu and Sani, Jamilu and Ahmed, Mohamed Mustaf}, title = {Exploring Explainable Machine Learning for Predicting and Interpreting Self-Reported Diabetes among Tennessee Adults: Insights from the 2023 Behavioral Risk Factor Surveillance System (BRFSS)}, journal = {Journal of Primary Care \\& Community Health}, year = {2025}, volume = {16}, doi = {10.1177/21501319251400546} }",
+      "title_guess": "Exploring Explainable Machine Learning for Predicting and Interpreting Self-Reported Diabetes among Tennessee Adults: Insights from the 2023 Behavioral Risk Factor Surveillance System (BRFSS)",
+      "doi": "10.1177/21501319251400546",
+      "pmid": "",
+      "year_guess": "2025",
+      "first_author_guess": "Muhammad",
+      "cited_authors": [
+        "Muhammad",
+        "Sani",
+        "Ahmed"
+      ],
+      "actual_authors": [
+        "Muhammad",
+        "Sani",
+        "Ahmed"
+      ],
+      "cited_author_count": 3,
+      "actual_author_count": 3,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Exploring Explainable Machine Learning for Predicting and Interpreting Self-Reported Diabetes among Tennessee Adults: In; year=2025; authors=3 (first=Muhammad) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "chowdhury2024imbalance",
+      "raw": "@article{chowdhury2024imbalance, author = {Chowdhury, Mohammad Mihrab and Ayon, Ragib Shahariar and Hossain, Md Sakhawat}, title = {An investigation of machine learning algorithms and data augmentation techniques for diabetes diagnosis using class imbalanced BRFSS dataset}, journal = {Healthcare Analytics}, year = {2024}, volume = {5}, pages = {100297}, doi = {10.1016/j.health.2023.100297} }",
+      "title_guess": "An investigation of machine learning algorithms and data augmentation techniques for diabetes diagnosis using class imbalanced BRFSS dataset",
+      "doi": "10.1016/j.health.2023.100297",
+      "pmid": "",
+      "year_guess": "2024",
+      "first_author_guess": "Chowdhury",
+      "cited_authors": [
+        "Chowdhury",
+        "Ayon",
+        "Hossain"
+      ],
+      "actual_authors": [
+        "Chowdhury",
+        "Ayon",
+        "Hossain"
+      ],
+      "cited_author_count": 3,
+      "actual_author_count": 3,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=An investigation of machine learning algorithms and data augmentation techniques for diabetes diagnosis using class imba; year=2024; authors=3 (first=Chowdhury) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "li2024gaxgboost",
+      "raw": "@article{li2024gaxgboost, author = {Li, Wenguang and Peng, Yan and Peng, Ke}, title = {Diabetes prediction model based on GA-XGBoost and stacking ensemble algorithm}, journal = {PLOS ONE}, year = {2024}, volume = {19}, number = {9}, pages = {e0311222}, doi = {10.1371/journal.pone.0311222} }",
+      "title_guess": "Diabetes prediction model based on GA-XGBoost and stacking ensemble algorithm",
+      "doi": "10.1371/journal.pone.0311222",
+      "pmid": "",
+      "year_guess": "2024",
+      "first_author_guess": "Li",
+      "cited_authors": [
+        "Li",
+        "Peng",
+        "Peng"
+      ],
+      "actual_authors": [
+        "Li",
+        "Peng",
+        "Peng"
+      ],
+      "cited_author_count": 3,
+      "actual_author_count": 3,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Diabetes prediction model based on GA-XGBoost and stacking ensemble algorithm; year=2024; authors=3 (first=Li) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "aich2026copula",
+      "raw": "@article{aich2026copula, author = {Aich, Agnideep and Murshed, Md. Monzur and Hewage, Sameera and Mayeaux, Amanda}, title = {A copula based supervised filter for feature selection in machine learning driven diabetes risk prediction}, journal = {Scientific Reports}, year = {2026}, volume = {16}, pages = {12132}, doi = {10.1038/s41598-026-41874-9} }",
+      "title_guess": "A copula based supervised filter for feature selection in machine learning driven diabetes risk prediction",
+      "doi": "10.1038/s41598-026-41874-9",
+      "pmid": "",
+      "year_guess": "2026",
+      "first_author_guess": "Aich",
+      "cited_authors": [
+        "Aich",
+        "Murshed",
+        "Hewage",
+        "Mayeaux"
+      ],
+      "actual_authors": [
+        "Aich",
+        "Murshed",
+        "Hewage",
+        "Mayeaux"
+      ],
+      "cited_author_count": 4,
+      "actual_author_count": 4,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=A copula based supervised filter for feature selection in machine learning driven diabetes risk prediction; year=2026; authors=4 (first=Aich) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "chang2022assessment",
+      "raw": "@article{chang2022assessment, author = {Chang, Victor and Ganatra, Meghana Ashok and Hall, Karl and Golightly, Lewis and Xu, Qianwen Ariel}, title = {An assessment of machine learning models and algorithms for early prediction and diagnosis of diabetes using health indicators}, journal = {Healthcare Analytics}, year = {2022}, volume = {2}, pages = {100118}, doi = {10.1016/j.health.2022.100118} }",
+      "title_guess": "An assessment of machine learning models and algorithms for early prediction and diagnosis of diabetes using health indicators",
+      "doi": "10.1016/j.health.2022.100118",
+      "pmid": "",
+      "year_guess": "2022",
+      "first_author_guess": "Chang",
+      "cited_authors": [
+        "Chang",
+        "Ganatra",
+        "Hall",
+        "Golightly",
+        "Xu"
+      ],
+      "actual_authors": [
+        "Chang",
+        "Ganatra",
+        "Hall",
+        "Golightly",
+        "Xu"
+      ],
+      "cited_author_count": 5,
+      "actual_author_count": 5,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=An assessment of machine learning models and algorithms for early prediction and diagnosis of diabetes using health indi; year=2022; authors=5 (first=Chang) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "majcherek2025aidriven",
+      "raw": "@article{majcherek2025aidriven, author = {Majcherek, Dawid and Ciesielski, Antoni and Sobczak, Paweł}, title = {AI-driven analysis of diabetes risk determinants in U.S. adults: Exploring disease prevalence and health factors}, journal = {PLOS ONE}, year = {2025}, volume = {20}, number = {9}, pages = {e0328655}, doi = {10.1371/journal.pone.0328655} }",
+      "title_guess": "AI-driven analysis of diabetes risk determinants in U.S. adults: Exploring disease prevalence and health factors",
+      "doi": "10.1371/journal.pone.0328655",
+      "pmid": "",
+      "year_guess": "2025",
+      "first_author_guess": "Majcherek",
+      "cited_authors": [
+        "Majcherek",
+        "Ciesielski",
+        "Sobczak"
+      ],
+      "actual_authors": [
+        "Majcherek",
+        "Ciesielski",
+        "Sobczak"
+      ],
+      "cited_author_count": 3,
+      "actual_author_count": 3,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=AI-driven analysis of diabetes risk determinants in U.S. adults: Exploring disease prevalence and health factors; year=2025; authors=3 (first=Majcherek) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "chike2026interpretable",
+      "raw": "@article{chike2026interpretable, author = {Chike, Onyedikachi Emmanuel and Oduniyi, Oluwaseun Samuel and Nwaiwu, Judith Ijeoma}, title = {An interpretable machine learning approach to predicting depression and diabetes}, journal = {Healthcare Analytics}, year = {2026}, volume = {9}, pages = {100454}, doi = {10.1016/j.health.2026.100454} }",
+      "title_guess": "An interpretable machine learning approach to predicting depression and diabetes",
+      "doi": "10.1016/j.health.2026.100454",
+      "pmid": "",
+      "year_guess": "2026",
+      "first_author_guess": "Chike",
+      "cited_authors": [
+        "Chike",
+        "Oduniyi",
+        "Nwaiwu"
+      ],
+      "actual_authors": [
+        "Chike",
+        "Oduniyi",
+        "Nwaiwu"
+      ],
+      "cited_author_count": 3,
+      "actual_author_count": 3,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=An interpretable machine learning approach to predicting depression and diabetes; year=2026; authors=3 (first=Chike) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "ullah2022highrisk",
+      "raw": "@article{ullah2022highrisk, author = {Ullah, Zahid and Saleem, Farrukh and Jamjoom, Mona and Fakieh, Bahjat and Kateb, Faris and Ali, Abdullah Marish and Shah, Babar}, title = {Detecting High-Risk Factors and Early Diagnosis of Diabetes Using Machine Learning Methods}, journal = {Computational Intelligence and Neuroscience}, year = {2022}, volume = {2022}, pages = {2557795}, doi = {10.1155/2022/2557795} }",
+      "title_guess": "Detecting High-Risk Factors and Early Diagnosis of Diabetes Using Machine Learning Methods",
+      "doi": "10.1155/2022/2557795",
+      "pmid": "",
+      "year_guess": "2022",
+      "first_author_guess": "Ullah",
+      "cited_authors": [
+        "Ullah",
+        "Saleem",
+        "Jamjoom",
+        "Fakieh",
+        "Kateb",
+        "Ali",
+        "Shah"
+      ],
+      "actual_authors": [
+        "Ullah",
+        "Saleem",
+        "Jamjoom",
+        "Fakieh",
+        "Kateb",
+        "Ali",
+        "Shah"
+      ],
+      "cited_author_count": 7,
+      "actual_author_count": 7,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Detecting High-Risk Factors and Early Diagnosis of Diabetes Using Machine Learning Methods; year=2022; authors=7 (first=Ullah) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "friedman2001gradient",
+      "raw": "@article{friedman2001gradient, author = {Friedman, Jerome H.}, title = {Greedy Function Approximation: A Gradient Boosting Machine}, journal = {The Annals of Statistics}, year = {2001}, volume = {29}, number = {5}, pages = {1189--1232}, doi = {10.1214/aos/1013203451} }",
+      "title_guess": "Greedy Function Approximation: A Gradient Boosting Machine",
+      "doi": "10.1214/aos/1013203451",
+      "pmid": "",
+      "year_guess": "2001",
+      "first_author_guess": "Friedman",
+      "cited_authors": [
+        "Friedman"
+      ],
+      "actual_authors": [
+        "Friedman"
+      ],
+      "cited_author_count": 1,
+      "actual_author_count": 1,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Greedy function approximation: A gradient boosting machine.; year=2001; authors=1 (first=Friedman) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "chen2016xgboost",
+      "raw": "@inproceedings{chen2016xgboost, author = {Chen, Tianqi and Guestrin, Carlos}, title = {XGBoost: A Scalable Tree Boosting System}, booktitle = {Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, year = {2016}, pages = {785--794}, doi = {10.1145/2939672.2939785} }",
+      "title_guess": "XGBoost: A Scalable Tree Boosting System",
+      "doi": "10.1145/2939672.2939785",
+      "pmid": "",
+      "year_guess": "2016",
+      "first_author_guess": "Chen",
+      "cited_authors": [
+        "Chen",
+        "Guestrin"
+      ],
+      "actual_authors": [
+        "Chen",
+        "Guestrin"
+      ],
+      "cited_author_count": 2,
+      "actual_author_count": 2,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=XGBoost; year=2016; authors=2 (first=Chen) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "cortes1995support",
+      "raw": "@article{cortes1995support, author = {Cortes, Corinna and Vapnik, Vladimir}, title = {Support-Vector Networks}, journal = {Machine Learning}, year = {1995}, volume = {20}, pages = {273--297}, doi = {10.1007/BF00994018} }",
+      "title_guess": "Support-Vector Networks",
+      "doi": "10.1007/bf00994018",
+      "pmid": "",
+      "year_guess": "1995",
+      "first_author_guess": "Cortes",
+      "cited_authors": [
+        "Cortes",
+        "Vapnik"
+      ],
+      "actual_authors": [
+        "Cortes",
+        "Vapnik"
+      ],
+      "cited_author_count": 2,
+      "actual_author_count": 2,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Support-vector networks; year=1995; authors=2 (first=Cortes) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "friedman1997bayesian",
+      "raw": "@article{friedman1997bayesian, author = {Friedman, Nir and Geiger, Dan and Goldszmidt, Moises}, title = {Bayesian Network Classifiers}, journal = {Machine Learning}, year = {1997}, volume = {29}, number = {2-3}, pages = {131--163}, doi = {10.1023/A:1007465528199} }",
+      "title_guess": "Bayesian Network Classifiers",
+      "doi": "10.1023/a:1007465528199",
+      "pmid": "",
+      "year_guess": "1997",
+      "first_author_guess": "Friedman",
+      "cited_authors": [
+        "Friedman",
+        "Geiger",
+        "Goldszmidt"
+      ],
+      "actual_authors": [
+        "Friedman",
+        "Geiger",
+        "Goldszmidt"
+      ],
+      "cited_author_count": 3,
+      "actual_author_count": 3,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Bayesian Network Classifiers; year=1997; authors=3 (first=Friedman) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "collins2024tripodai",
+      "raw": "@article{collins2024tripodai, author = {Collins, Gary S. and Moons, Karel G. M. and Dhiman, Paula and Riley, Richard D. and Beam, Andrew L. and Van Calster, Ben and Ghassemi, Marzyeh and Liu, Xiaoxuan and Reitsma, Johannes B. and others}, title = {TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods}, journal = {The BMJ}, year = {2024}, volume = {385}, pages = {e078378}, doi = {10.1136/bmj-2023-078378} }",
+      "title_guess": "TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods",
+      "doi": "10.1136/bmj-2023-078378",
+      "pmid": "",
+      "year_guess": "2024",
+      "first_author_guess": "Collins",
+      "cited_authors": [
+        "Collins",
+        "Moons",
+        "Dhiman",
+        "Riley",
+        "Beam",
+        "Van Calster",
+        "Ghassemi",
+        "Liu",
+        "Reitsma"
+      ],
+      "actual_authors": [
+        "Collins",
+        "Moons",
+        "Dhiman",
+        "Riley",
+        "Beam",
+        "Van Calster",
+        "Ghassemi",
+        "Liu",
+        "Reitsma",
+        "van Smeden",
+        "Boulesteix",
+        "Camaradou",
+        "Celi",
+        "Denaxas",
+        "Denniston",
+        "Glocker",
+        "Golub",
+        "Harvey",
+        "Heinze",
+        "Hoffman",
+        "Kengne",
+        "Lam",
+        "Lee",
+        "Loder",
+        "Maier-Hein",
+        "Mateen",
+        "McCradden",
+        "Oakden-Rayner",
+        "Ordish",
+        "Parnell",
+        "Rose",
+        "Singh",
+        "Wynants",
+        "Logullo"
+      ],
+      "cited_author_count": 9,
+      "actual_author_count": 34,
+      "audit_truncated": true,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning m; year=2024; authors=34 (first=Collins) | NOTE: intentional truncate (9 of 34; declared by `and others` or `_audit_truncated`) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "moons2025probastai",
+      "raw": "@article{moons2025probastai, author = {Moons, Karel G. M. and Damen, Johanna A. A. and Kaul, Tabea and Hooft, Lotty and Andaur Navarro, Constanza and Dhiman, Paula and Beam, Andrew L. and Van Calster, Ben and Celi, Leo Anthony and Denaxas, Spiros and others}, title = {PROBAST+AI: an updated quality, risk of bias, and applicability assessment tool for prediction models using regression or artificial intelligence methods}, journal = {The BMJ}, year = {2025}, volume = {388}, pages = {e082505}, doi = {10.1136/bmj-2024-082505} }",
+      "title_guess": "PROBAST+AI: an updated quality, risk of bias, and applicability assessment tool for prediction models using regression or artificial intelligence methods",
+      "doi": "10.1136/bmj-2024-082505",
+      "pmid": "",
+      "year_guess": "2025",
+      "first_author_guess": "Moons",
+      "cited_authors": [
+        "Moons",
+        "Damen",
+        "Kaul",
+        "Hooft",
+        "Andaur Navarro",
+        "Dhiman",
+        "Beam",
+        "Van Calster",
+        "Celi",
+        "Denaxas"
+      ],
+      "actual_authors": [
+        "Moons",
+        "Damen",
+        "Kaul",
+        "Hooft",
+        "Andaur Navarro",
+        "Dhiman",
+        "Beam",
+        "Van Calster",
+        "Celi",
+        "Denaxas",
+        "Denniston",
+        "Ghassemi",
+        "Heinze",
+        "Kengne",
+        "Maier-Hein",
+        "Liu",
+        "Logullo",
+        "McCradden",
+        "Liu",
+        "Oakden-Rayner",
+        "Singh",
+        "Ting",
+        "Wynants",
+        "Yang",
+        "Reitsma",
+        "Riley",
+        "Collins",
+        "van Smeden"
+      ],
+      "cited_author_count": 10,
+      "actual_author_count": 28,
+      "audit_truncated": true,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=PROBAST+AI: an updated quality, risk of bias, and applicability assessment tool for prediction models using regression o; year=2025; authors=28 (first=Moons) | NOTE: intentional truncate (10 of 28; declared by `and others` or `_audit_truncated`) | source=crossref",
+      "note": ""
+    }
+  ]
+}

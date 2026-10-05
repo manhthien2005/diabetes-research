@@ -1,0 +1,325 @@
+{
+  "standard": "TRIPOD+AI 2024",
+  "source": "https://www.tripod-statement.org/wp-content/uploads/2024/04/TRIPODAI-Supplement.pdf",
+  "scope": "Current repository package, not a completed journal manuscript; internal development/evaluation. NA is scope-dependent, not fulfillment.",
+  "counts": {
+    "PRESENT": 26,
+    "PARTIAL": 13,
+    "NA": 8,
+    "MISSING": 5
+  },
+  "items": [
+    {
+      "item": "1",
+      "status": "PRESENT",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / title",
+      "assessment": "Development/internal evaluation, population and self-reported outcome named."
+    },
+    {
+      "item": "2",
+      "status": "PARTIAL",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / structured summary",
+      "assessment": "Separate TRIPOD+AI abstract checklist and journal word limit not completed."
+    },
+    {
+      "item": "3a",
+      "status": "PRESENT",
+      "evidence": "docs/literature_review.md; FINAL_SUBMISSION_BRIEF.md / objective",
+      "assessment": "Cross-sectional methodological context; limited clinical novelty stated."
+    },
+    {
+      "item": "3b",
+      "status": "PRESENT",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / intended use",
+      "assessment": "Research/educational benchmark; no intended clinical care pathway."
+    },
+    {
+      "item": "3c",
+      "status": "PARTIAL",
+      "evidence": "docs/final_feature_set.md / race interpretation",
+      "assessment": "Structural disparities acknowledged; detailed inequality synthesis missing."
+    },
+    {
+      "item": "4",
+      "status": "PRESENT",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / objective",
+      "assessment": "Development and internal evaluation explicitly distinguished."
+    },
+    {
+      "item": "5a",
+      "status": "PRESENT",
+      "evidence": "qc/astra_data_evidence.json / official_zip,jurisdictions",
+      "assessment": "Public CDC survey; same-source partitions; coverage limits stated."
+    },
+    {
+      "item": "5b",
+      "status": "PRESENT",
+      "evidence": "qc/astra_interview_dates.json / raw,eligible",
+      "assessment": "IDATE range2025-01-05 through2026-03-16 for raw and eligible samples; zero unparseable dates. Release year differs from interview calendar range."
+    },
+    {
+      "item": "6a",
+      "status": "PRESENT",
+      "evidence": "qc/astra_data_evidence.json / jurisdictions",
+      "assessment": "47 states, DC, Guam and Puerto Rico; public general-population survey."
+    },
+    {
+      "item": "6b",
+      "status": "PRESENT",
+      "evidence": "qc/astra_data_evidence.json / target_counts,cohort",
+      "assessment": "DIABETE4 1 versus 3; other codes excluded; counts verified."
+    },
+    {
+      "item": "6c",
+      "status": "NA",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / scope",
+      "assessment": "No treatment/intervention protocol in this descriptive survey benchmark."
+    },
+    {
+      "item": "7",
+      "status": "PARTIAL",
+      "evidence": "notebook / Part II; qc/astra_data_evidence.json",
+      "assessment": "Special codes and aggregate QA verified; subgroup-specific QA not performed."
+    },
+    {
+      "item": "8a",
+      "status": "PARTIAL",
+      "evidence": "notebook / target; qc/astra_data_evidence.json",
+      "assessment": "Self-reported diagnosed status at interview; no subgroup measurement-invariance assessment."
+    },
+    {
+      "item": "8b",
+      "status": "NA",
+      "evidence": "CDC codebook / DIABETE4",
+      "assessment": "Respondent survey answer; no study-specific clinician adjudication."
+    },
+    {
+      "item": "8c",
+      "status": "PARTIAL",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / design limitations",
+      "assessment": "Contemporaneous self-report; no independent blinded outcome assessment established."
+    },
+    {
+      "item": "9a",
+      "status": "PRESENT",
+      "evidence": "docs/final_feature_set.md; qc/astra_variable_audit.md",
+      "assessment": "Literature domains plus full-cohort coverage screening disclosed; no claim of prospective feature freeze."
+    },
+    {
+      "item": "9b",
+      "status": "PARTIAL",
+      "evidence": "qc/astra_variable_audit.md; CDC codebook",
+      "assessment": "All 20 definitions/units/recodes checked; timing relative to diabetes diagnosis unknown."
+    },
+    {
+      "item": "9c",
+      "status": "NA",
+      "evidence": "CDC codebook / selected variables",
+      "assessment": "Standardized respondent-reported and calculated variables; no study-specific adjudicators."
+    },
+    {
+      "item": "10",
+      "status": "PARTIAL",
+      "evidence": "notebook / Sample-size rationale",
+      "assessment": "Full available cohort, 41462 development events and 82 transformed columns; no formal precision/sample-size calculation."
+    },
+    {
+      "item": "11",
+      "status": "PRESENT",
+      "evidence": "notebook / Part II; qc/astra_data_characteristics.csv",
+      "assessment": "Numeric median within train/folds, categorical missing class; target exclusions explicit."
+    },
+    {
+      "item": "12a",
+      "status": "PRESENT",
+      "evidence": "notebook / split and CV; qc/astra_data_evidence.json / split",
+      "assessment": "Stratified 80/20 seed42, five folds on training; earlier-result exposure disclosed."
+    },
+    {
+      "item": "12b",
+      "status": "PRESENT",
+      "evidence": "notebook / ColumnTransformer; qc/astra_variable_audit.md",
+      "assessment": "Four scaled numeric, sixteen one-hot categorical predictors."
+    },
+    {
+      "item": "12c",
+      "status": "PRESENT",
+      "evidence": "models/model_01 through model_07 JSON; notebook model sections",
+      "assessment": "All seven approaches individually documented; exact configurations independently matched. Fixed comparison, no optimizer search."
+    },
+    {
+      "item": "12d",
+      "status": "PARTIAL",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / survey limitations",
+      "assessment": "No state/cluster heterogeneity assessment; only aggregate internal performance."
+    },
+    {
+      "item": "12e",
+      "status": "PRESENT",
+      "evidence": "supplement/README.md; qc/astra_statistics_evidence.json",
+      "assessment": "Metrics, conditional bootstrap, multiplicity, calibration equations and interpretation explicit."
+    },
+    {
+      "item": "12f",
+      "status": "NA",
+      "evidence": "supplement/README.md",
+      "assessment": "No updating or recalibration of model predictions."
+    },
+    {
+      "item": "12g",
+      "status": "PRESENT",
+      "evidence": "notebook / metric_point; qc/astra_statistics_audit.py",
+      "assessment": "predict_proba or SVM decision_function; frozen paired scores verified."
+    },
+    {
+      "item": "13",
+      "status": "PRESENT",
+      "evidence": "notebook / resampling contract",
+      "assessment": "No class rebalancing/weighting; original class distribution and rationale retained."
+    },
+    {
+      "item": "14",
+      "status": "PARTIAL",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / limitations",
+      "assessment": "No fairness analysis or intervention; no fairness/deployment claim."
+    },
+    {
+      "item": "15",
+      "status": "PRESENT",
+      "evidence": "notebook / THRESHOLD; supplement/README.md",
+      "assessment": "Probability0.5 or SVM native margin0; conventional comparison boundary, no clinical optimum asserted."
+    },
+    {
+      "item": "16",
+      "status": "PRESENT",
+      "evidence": "qc/astra_data_characteristics.csv; FINAL_SUBMISSION_BRIEF.md",
+      "assessment": "Same source/definitions/eligibility; random partition, not external evaluation."
+    },
+    {
+      "item": "17",
+      "status": "MISSING",
+      "evidence": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "AUTHOR_REQUIRED: institutional ethics/waiver and consent determination."
+    },
+    {
+      "item": "18a",
+      "status": "MISSING",
+      "evidence": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "AUTHOR_REQUIRED: funding and funder role."
+    },
+    {
+      "item": "18b",
+      "status": "MISSING",
+      "evidence": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "AUTHOR_REQUIRED: all-author financial/nonfinancial disclosures."
+    },
+    {
+      "item": "18c",
+      "status": "PARTIAL",
+      "evidence": "Git history; AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "Repository stages available; authors must state whether a prospective protocol existed."
+    },
+    {
+      "item": "18d",
+      "status": "MISSING",
+      "evidence": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "AUTHOR_REQUIRED: registration details or explicit unregistered statement."
+    },
+    {
+      "item": "18e",
+      "status": "PRESENT",
+      "evidence": "supplement/README.md; qc/astra_evidence_manifest.json",
+      "assessment": "CDC source/hash; execution-artifact retrieval and expiry limitation."
+    },
+    {
+      "item": "18f",
+      "status": "PRESENT",
+      "evidence": "canonical notebook; qc audit scripts; supplement/README.md",
+      "assessment": "Analysis code, versions, seeds and diagnostic procedures available."
+    },
+    {
+      "item": "19",
+      "status": "MISSING",
+      "evidence": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "AUTHOR_REQUIRED: involvement details or confirmed absence."
+    },
+    {
+      "item": "20a",
+      "status": "PRESENT",
+      "evidence": "qc/astra_data_evidence.json / target_counts,cohort,split",
+      "assessment": "Full attrition/event counts independently reproduced; no longitudinal follow-up."
+    },
+    {
+      "item": "20b",
+      "status": "PARTIAL",
+      "evidence": "qc/astra_data_characteristics.csv",
+      "assessment": "All20 predictors overall/train/test including missingness; exact dates supplied separately; cross-demographic summaries absent."
+    },
+    {
+      "item": "20c",
+      "status": "PRESENT",
+      "evidence": "qc/astra_data_characteristics.csv",
+      "assessment": "Matched development/evaluation descriptive distributions provided."
+    },
+    {
+      "item": "21",
+      "status": "PRESENT",
+      "evidence": "qc/astra_data_evidence.json / cohort,split; frozen cv_folds.csv",
+      "assessment": "Full/train/test event counts and CV fold counts available; no tuning sample."
+    },
+    {
+      "item": "22",
+      "status": "PARTIAL",
+      "evidence": "models/*.json; notebook; supplement/README.md",
+      "assessment": "Code/configurations rebuild models, but fitted pipelines not serialized; direct exact historical predictions on new people unavailable."
+    },
+    {
+      "item": "23a",
+      "status": "PARTIAL",
+      "evidence": "qc/astra_statistics_point_metrics.csv; supplement/*.csv; astra_figures",
+      "assessment": "Overall estimates/CIs/plots available; key-subgroup CIs absent; conditional uncertainty only."
+    },
+    {
+      "item": "23b",
+      "status": "NA",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / limitations",
+      "assessment": "Cluster heterogeneity not examined; not evidence of homogeneous performance."
+    },
+    {
+      "item": "24",
+      "status": "NA",
+      "evidence": "supplement/README.md",
+      "assessment": "No model updating performed."
+    },
+    {
+      "item": "25",
+      "status": "PRESENT",
+      "evidence": "ASTRA_FINAL_AUDIT_VI.md; FINAL_SUBMISSION_BRIEF.md",
+      "assessment": "No universal winner/equivalence; fairness and applicability not established."
+    },
+    {
+      "item": "26",
+      "status": "PRESENT",
+      "evidence": "ASTRA_FINAL_AUDIT_VI.md; FINAL_SUBMISSION_BRIEF.md",
+      "assessment": "Sequential design, coverage screening, missingness, self-report, weighting and uncertainty explicitly limited."
+    },
+    {
+      "item": "27a",
+      "status": "NA",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / non-intended use",
+      "assessment": "No clinical implementation proposed; current preprocessing is not a deployment safety protocol."
+    },
+    {
+      "item": "27b",
+      "status": "NA",
+      "evidence": "FINAL_SUBMISSION_BRIEF.md / non-intended use",
+      "assessment": "Research-only benchmark; clinical end-user requirements not specified."
+    },
+    {
+      "item": "27c",
+      "status": "PRESENT",
+      "evidence": "ASTRA_FINAL_AUDIT_VI.md / next recommendation",
+      "assessment": "Independent protocol and temporal/geographic validation before transportability/utility claims."
+    }
+  ]
+}

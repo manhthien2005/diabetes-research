@@ -1,63 +1,22 @@
-# TRIPOD+AI / PROBAST+AI Pre-Submission Readiness
+# Independent reporting and risk-of-bias readiness
 
-This is a repository-level pre-assessment for the BRFSS 2025 study. It is **not** an official certification by the TRIPOD or PROBAST groups.
+Current assessment: **MAJOR REVISION before journal submission**. The previous aggregate PASS checklist is superseded; its original content remains in Git at `aa2e53c`. This is an advisory assessment, not TRIPOD/PROBAST certification.
 
-TRIPOD+AI (BMJ 2024) supersedes TRIPOD 2015 for prediction-model reporting and contains 27 main items / 52 subitems. PROBAST+AI (BMJ 2025) separates model-development quality from model-evaluation risk of bias and covers participants/data, predictors, outcome, and analysis.
+The complete [52-subitem TRIPOD+AI assessment](../qc/astra_reporting_matrix.md) distinguishes PRESENT, PARTIAL, MISSING and scope-dependent NA. Machine-readable evidence is in `../qc/astra_reporting_matrix.json`. The participant table now covers all 20 predictors overall/train/test; it does not supply demographic-group performance. Configurations and training code are available, but fitted pipelines were not saved. An analysis-code PASS cannot satisfy model-reuse item22.
 
-## TRIPOD+AI coverage
-
-| Item area | Status | Repository evidence / gap |
+| PROBAST+AI concept | Development-quality concern | Evaluation risk-of-bias / applicability concern |
 |---|---|---|
-| 1 Title | PASS | Final title identifies development/internal evaluation, BRFSS 2025 respondents and outcome |
-| 2 Abstract | PASS in final brief | Structured summary provided in `03_Final_Result/BRFSS_2025/FINAL_SUBMISSION_BRIEF.md` |
-| 3 Background/intended use | PASS | Intended/non-intended use explicit |
-| 4 Objectives | PASS | Seven-configuration internal benchmark |
-| 5 Data | PASS | CDC BRFSS 2025 provenance, integrity and representativeness limits documented |
-| 6 Participants | PASS | Eligibility and attrition flow documented |
-| 7 Data preparation | PASS | Special-code handling + fold-safe preprocessing documented |
-| 8 Outcome | PASS with limitation | `DIABETE4=1` vs `3`; self-report/cross-sectional limitations explicit |
-| 9 Predictors | PASS with limitation | 20 definitions/evidence sources; temporal ambiguity explicit |
-| 10 Sample size | PARTIAL | Full eligible cohort used; no prospective formal sample-size calculation |
-| 11 Missing data | PASS | Analytical missingness + imputation strategy documented |
-| 12 Analytical methods | PASS | Split, CV, models, metrics, paired comparison, calibration documented |
-| 13 Class imbalance | PASS | No resampling in primary study; natural test prevalence retained |
-| 14 Fairness | PARTIAL | No primary subgroup/fairness analysis; no fairness/deployment claim |
-| 15 Model output/threshold | PASS | Probability thresholds 0.5; SVM native margin 0; no test tuning |
-| 16 Development vs evaluation | PASS | Same-source internal holdout explicitly identified |
-| 17 Ethics | **AUTHOR REQUIRED** | Public de-identified CDC data are documented; institutional ethics/waiver determination must be supplied by authors/institution |
-| 18a Funding | **AUTHOR REQUIRED** | Do not infer or fabricate |
-| 18b Conflicts | **AUTHOR REQUIRED** | Do not infer or fabricate |
-| 18c Protocol | PARTIAL | Repository freezes study design, but a prospectively registered protocol is not established |
-| 18d Registration | **AUTHOR REQUIRED** | Registration status must be stated by authors |
-| 18e Data sharing | PASS | Public CDC source + exact hash/provenance |
-| 18f Code sharing | PASS | Canonical notebook + configs + audit workflows |
-| 19 Patient/public involvement | **AUTHOR REQUIRED** | Must state involvement or explicitly state none |
-| 20 Participants/results | PASS / PARTIAL | Flow, n/events, missingness reported; full demographic characteristics table is not a primary artifact |
-| 21 Analysis counts | PASS | Full/train/test n and events reported |
-| 22 Model specification | PASS | Rebuildable estimator/preprocessing configs and code |
-| 23 Performance | PARTIAL | Overall metrics + CIs present; key subgroup CIs absent |
-| 24 Model updating | N/A | No updating/recalibration performed |
-| 25 Interpretation | PASS | Trade-offs and literature context explicit |
-| 26 Limitations | PASS | Major applicability/statistical limits explicit |
-| 27 Usability/future work | PASS for non-deployment scope | Deployment is explicitly unsupported; required future validation stated |
+| Participants/data | Source, counts and identities verified; full eligible public cohort | Limited jurisdiction coverage; survey nonresponse; unweighted estimates apply to analyzed sample, not the population |
+| Predictors | Recoding and fold-isolated learned preprocessing verified | Full-cohort coverage screening exposed test-covariate distributions; concurrent features may reflect diagnosis/treatment/access, not antecedent risk |
+| Outcome | Explicit DIABETE4 1 versus3, standardized self-report | Recall/diagnosis-access misclassification; no laboratory reference; not Type 2-specific; no independent blinded ascertainment |
+| Analysis | Same split, reproducible fixed configurations and paired calculations | Sequential additions after earlier test results; jointly prespecified comparison not established. Single internal split, conditional bootstrap and no subgroup/cluster evaluation |
 
-## PROBAST+AI-style pre-assessment
+Analysis-domain concern is **high for a confirmatory model-selection or clinical-validation claim**. A qualified descriptive comparison remains interpretable. No overall low-risk rating is justified. This is a concept-based appraisal, not a completed official PROBAST+AI signaling-question form; inaccessible supplemental materials were not treated as verified source evidence.
 
-| Domain | Development quality / evaluation concern | Rationale |
-|---|---|---|
-| Participants & data | Some applicability concern | Large public survey, but unweighted sample estimand and incomplete 2025 jurisdiction coverage |
-| Predictors | Some applicability concern | Standardized BRFSS variables; several concurrent comorbidities have uncertain temporal ordering |
-| Outcome | Some applicability concern | Explicit self-reported diagnosed status; no laboratory confirmation and no Type 1/Type 2 distinction |
-| Analysis | Generally strong internal rigor, limited transportability | No detected preprocessing leakage/test tuning; large event count; baseline comparator; discrimination + calibration; single-source internal holdout only |
+Author/institution statements remain AUTHOR_REQUIRED: ethics/waiver, funding, conflicts, protocol/registration, patient/public involvement and contributions. No declarations have been inferred from public-data availability. Journal abstract requirements and journal-specific manuscript assembly remain reporting gaps.
 
-### Overall interpretation
+Clinical decision-curve analysis is not justified without a decision and defensible thresholds. Subgroup evaluation would strengthen a future transportability study, but this audit does not add a fairness experiment or infer fair deployment from aggregate metrics.
 
-- **No identified major leakage violation** in the frozen internal benchmark.
-- **External validity is unresolved**, not “low risk.”
-- **Clinical applicability is deliberately not claimed.**
-- A future deployment-oriented study should add external/temporal validation, subgroup performance, calibration-in-new-data, and clinically anchored utility analysis.
+Standards: [TRIPOD+AI, BMJ2024](https://doi.org/10.1136/bmj-2023-078378); [PROBAST+AI, BMJ2025](https://doi.org/10.1136/bmj-2024-082505).
 
-## Current reporting standard references
-
-- Collins GS et al. TRIPOD+AI statement. *BMJ*. 2024;385:e078378. DOI: `10.1136/bmj-2023-078378`.
-- Moons KGM et al. PROBAST+AI. *BMJ*. 2025;388:e082505. DOI: `10.1136/bmj-2024-082505`.
+Interview dates independently recovered from `IDATE`: 5January2025–16March2026, in both raw and eligible cohorts, with no unparseable dates. BRFSS 2025 identifies the annual survey release, not an exclusively2025 interview calendar. Evidence: `qc/astra_interview_dates.json`.

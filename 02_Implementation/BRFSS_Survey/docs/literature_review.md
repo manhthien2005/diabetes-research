@@ -5,13 +5,7 @@
 
 ## Screening rule
 
-A paper is retained only when it is materially relevant to **BRFSS + diabetes + machine learning/statistical prediction** and satisfies at least one reproducibility condition:
-
-1. public analysis code, preferably with a persistent archive;
-2. public data plus sufficiently detailed methods/supplemental material to rebuild the pipeline; or
-3. a stable publisher/DOI record with explicit BRFSS variables, target definition, and evaluation protocol.
-
-Recent papers are **not penalized for low citation counts**. For this project, stable DOI/PMID/publisher provenance and reproducibility are more useful than raw citation count.
+This is a purpose-selected contextual bibliography, not a systematic review. Scientific evidence value and practical reproducibility are assessed separately. A relevant study can inform a claim despite unavailable code; it cannot certify an executable pipeline without implementation evidence. DOI/title verification does not establish methodological validity. Citation counts are not an evidence-quality gate.
 
 ## Core papers to ground our study
 
@@ -27,7 +21,7 @@ Why it matters:
 - explicit DIABETE4 outcome discussion;
 - public R code and persistent Zenodo archive.
 
-**Reproducibility audit note:** the published article says prediabetes was classified as non-diabetic, but the current public R script recodes only DIABETE4=1 as Yes and DIABETE4=3 as No, with all other responses becoming NA before complete-case deletion. We must reproduce and reconcile this discrepancy rather than copying either definition blindly.
+**Prior reproducibility note (public-code discrepancy not independently reverified in this final audit):** the published article says prediabetes was classified as non-diabetic, but the current public R script recodes only DIABETE4=1 as Yes and DIABETE4=3 as No, with all other responses becoming NA before complete-case deletion. We must reproduce and reconcile this discrepancy rather than copying either definition blindly.
 
 **Use in our project:** primary anchor for literature-grounded variable selection and raw-BRFSS design.
 
@@ -58,7 +52,7 @@ Why it matters:
 - SHAP interpretation;
 - detailed methods plus supplemental tables.
 
-**Use in our project:** primary methodological template for model comparison and evaluation.
+**Use in our project:** contextual precedent for model families and metric breadth. Methods / Study Variables includes pregnancy-related diabetes as positive and prediabetes/borderline as negative, unlike our cohort. Methods / Data Processing and Analysis describes MICE and backward elimination before the ML stage. SMOTE is described as training-only and RFE as training-data-only, but fold isolation of imputation, selection and SMOTE is not established by the article. This is not a verified leakage-safe template.
 
 ### P04 — Chowdhury et al. (2024), Healthcare Analytics
 **DOI:** 10.1016/j.health.2023.100297
@@ -66,10 +60,10 @@ Why it matters:
 Why it matters:
 - directly addresses class imbalance in BRFSS diabetes classification;
 - compares SMOTE-N, ENN, SMOTE-Tomek and SMOTE-ENN;
-- explicitly emphasizes applying augmentation to training data to avoid leakage;
+- discusses data augmentation; exact split/fold ordering remains unverified here;
 - public CDC data and open article.
 
-**Use in our project:** reference for whether/when to add a secondary imbalance experiment. It does **not** justify resampling before train/test separation.
+**Use in our project:** contextual reference for possible imbalance experiments; not verified as an implementation template. It does **not** justify resampling before train/test separation.
 
 ### P05 — Li, Peng & Peng (2024), PLOS ONE
 **DOI:** 10.1371/journal.pone.0311222  
@@ -166,7 +160,7 @@ A defensible workflow is:
 P01 provides a useful precedent of <20% per-year missingness for candidate selection, while P03 uses MICE for moderate missingness.
 
 ### Imbalance
-The consistent lesson across P02–P05 is that any oversampling/undersampling must occur **inside training data only**. The frozen primary benchmark intentionally uses the natural class distribution; any resampling study would be a separate sensitivity experiment.
+Our methodological requirement is that any oversampling/undersampling occur **inside each training fold only**. P02 explicitly reports train-only SMOTE; P03 states train-only SMOTE but does not establish fold isolation of all learned steps. P05 section 3.1 does not establish split-before-selection/resampling. P04 full-text implementation has not been independently verified in this audit; it cannot certify our pipeline. The frozen primary benchmark intentionally uses the natural class distribution; any resampling study would be a separate sensitivity experiment.
 
 ### Evaluation
 For the class assignment, the most defensible common metrics are:
@@ -179,7 +173,7 @@ For the class assignment, the most defensible common metrics are:
 - paper-reported PR-AUC;
 - Confusion matrix.
 
-P03 is the strongest direct template because it uses seven diverse models, stratified 5-fold CV, an untouched test set, and imbalance-aware metrics.
+P03 provides model-family and metric context. Its reported train/test split is not sufficient evidence that all prior imputation, screening and resampling were fold-isolated. Numerical comparison also fails outcome equivalence.
 
 ## Reproducibility priority
 
@@ -189,7 +183,7 @@ P03 is the strongest direct template because it uses seven diverse models, strat
 
 **Detailed-method anchors**
 - P02 — CDC article + full variable appendix.
-- P03 — detailed methods + supplemental tables.
+- P03 — main-text methods verified; supplementary DOCX was inaccessible in this audit.
 - P04 — detailed imbalance pipeline.
 - P05 — open methods + public BRFSS-2021 input data.
 
@@ -198,7 +192,7 @@ P03 is the strongest direct template because it uses seven diverse models, strat
 
 ## Immediate consequence for BRFSS 2025
 
-Before choosing the final 15–25 predictors, create a candidate dictionary where every variable records:
+The historical selection stage used a candidate dictionary where every variable records:
 
 `BRFSS_2025_code | description | literature_support | missing_pct | core/optional | leakage_risk | include/exclude | rationale`
 
@@ -230,3 +224,10 @@ These sources govern **reporting and risk-of-bias appraisal**, not the model ros
 ### Metric terminology amendment
 
 Several BRFSS papers report “PR-AUC.” In this repository, the historical key `pr_auc` is calculated with scikit-learn `average_precision_score`; the correct name for our value is **Average Precision (AP)**. Cross-paper numerical comparisons are therefore contextual unless the source metric implementation is verified as the same quantity.
+
+
+## Independent audit provenance and updated context
+
+See `../qc/astra_literature_claims.json` for claim-level support and `../qc/astra_literature_run/qc/reference_audit.json` for 16/16 DOI identity matches. Identity verification is not verification of all scientific claims, code execution, or absence of retraction. P07–P10 remain contextual and are not numerical performance targets. Full-text uncertainty is retained explicitly.
+
+Survey-weighted evaluation deserves a separately specified follow-up if the estimand becomes population performance: [Evaluating Binary Outcome Classifiers Estimated from Survey Data](https://pubmed.ncbi.nlm.nih.gov/39140488/) directly studies weighted assessment; [Screening for diabetes mellitus in the US population using neural network-based modeling and complex survey designs](https://pubmed.ncbi.nlm.nih.gov/42095565/) provides recent methodological context. These are future-work sources, not claims that this benchmark implements their methods.
