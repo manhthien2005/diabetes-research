@@ -1,0 +1,21 @@
+{
+  "raw_result": "supervisor_framework_naming.json",
+  "automatic_exit_code": 1,
+  "adjudication": "FALSE_POSITIVES_NOT_STUDY_DEFECTS",
+  "items": [
+    {
+      "verdict": "BASE_MISSING",
+      "resolution": "Not applicable: TRIPOD+AI 2024 supersedes TRIPOD 2015. Vendored checklist introduction and official guideline govern over detector table which wrongly treats it as an additive extension.",
+      "evidence": [
+        ".agents/skills/check-reporting/references/checklists/TRIPOD_AI.md:12",
+        ".agents/skills/check-reporting/scripts/check_framework_naming.py:47"
+      ]
+    },
+    {
+      "verdict": "CITE_MISSING",
+      "resolution": "First occurrence is the full bibliographic reference R3, including authors, journal/year and linked DOI in the same reference entry. Sentence-based citation-marker heuristic is not appropriate for a reference-list title."
+    }
+  ],
+  "code_changed": false,
+  "consensus_reopened": false
+}

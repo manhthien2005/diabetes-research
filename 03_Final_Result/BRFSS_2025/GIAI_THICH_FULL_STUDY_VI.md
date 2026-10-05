@@ -1,4 +1,18 @@
-> **Cập nhật kiểm toán độc lập 04/10/2026:** xem `ASTRA_FINAL_AUDIT_VI.md`. Điểm trước sửa 69/100; các điểm PASS dưới đây chỉ mô tả kiểm tra tính toán. Mô hình được bổ sung tuần tự sau khi đã xem kết quả test của mô hình trước; toàn bộ tập biến được sàng lọc độ phủ trên dữ liệu đầy đủ trước split. Không có bằng chứng tuning hyperparameter theo test, nhưng không đủ căn cứ gọi đây là so sánh confirmatory được prespecify toàn bộ. Lịch sử này được giữ nguyên, không sửa bằng cách chia lại dữ liệu đã xem.
+> **Bản học và báo cáo với giảng viên hướng dẫn — cập nhật 05/10/2026.** Đồng thuận hiện hành: **MINOR REVISION FOR STATED SCOPE**. Không có FATAL/MAJOR scientific-validity defect chưa giải quyết được chứng minh bởi evidence hiện tại; điều này không chứng minh mọi bias đều vắng mặt. Điểm lịch sử 69→82 không dùng như readiness score. Xem [đồng thuận](FINAL_CONSENSUS.md).
+
+## Cách đọc để hiểu, không cần học thuộc code
+
+| Thời gian | Đọc gì | Sau khi đọc phải trả lời được |
+|---|---|---|
+| 10 phút | [Báo cáo ngắn cho thầy](BAO_CAO_GVHD_VI.md) | Bài hỏi gì, đã làm gì, tìm thấy gì, giới hạn gì? |
+| 30–45 phút | Mục 1–12, 20–28, 37 và 48 của tài liệu này | Nhãn, pipeline, metric và uncertainty có nghĩa gì? |
+| Khi cần giải thích sâu | Mục 13–19, 29–36 và phụ lục 49–50 | Vì sao các model cho kết quả khác nhau; evidence nằm ở đâu? |
+
+Đây là **nghiên cứu thực nghiệm trên dữ liệu khảo sát** (*survey data*), có tổng quan phương pháp làm nền. Nó chưa phải một bài *literature survey/systematic review* với quy trình tìm kiếm, tuyển chọn và tổng hợp tài liệu đầy đủ. Mục tiêu hiện tại là một báo cáo nghiên cứu nhỏ có thể giải thích và kiểm tra, chưa phải bộ hồ sơ nộp journal.
+
+**Câu hỏi trung tâm:** với cùng dữ liệu và preprocessing, bảy cấu hình classifier khác nhau thế nào về ranking, hành vi tại ngưỡng quyết định và chất lượng xác suất? Giá trị nằm ở benchmark chung và cách diễn giải có căn cứ; chưa phải thuật toán mới hay bằng chứng lợi ích lâm sàng.
+
+Quy ước: dấu chấm trong bảng số gốc là dấu thập phân, dấu phẩy phân cách hàng nghìn; một số đoạn giải thích dùng quy ước tiếng Việt và ghi rõ đơn vị/phần trăm. “Dương/âm” là **nhãn khảo sát**, không phải kết quả xét nghiệm xác nhận.
 
 # Giải thích toàn bộ BRFSS 2025 Full Study — Bản tiếng Việt
 
@@ -121,12 +135,14 @@ Biến mục tiêu:
 | Giá trị BRFSS | Ý nghĩa | Xử lý |
 |---:|---|---|
 | 1 | Đã được chẩn đoán diabetes | Positive = 1 |
-| 3 | Không có diabetes | Negative = 0 |
+| 3 | Trả lời “không” với câu hỏi đã được thông báo mắc diabetes | Negative = 0 |
 | 2 | Diabetes chỉ trong thai kỳ | Loại |
 | 4 | Prediabetes / borderline | Loại |
 | 7 | Don't know | Loại |
 | 9 | Refused | Loại |
 | Missing | Không có thông tin | Loại |
+
+Không có outcome adjudication độc lập bằng xét nghiệm hay clinician trong study này. Nhãn và predictors được lấy từ câu trả lời/biến tính sẵn của survey; study không thiết kế một quy trình blinded outcome assessment riêng. Không suy rằng interviewer hoặc respondent được làm mù với diagnosis.
 
 ## Participant flow
 
@@ -163,7 +179,7 @@ Trong cohort cuối:
 
 | Không phải | Vì sao |
 |---|---|
-| Dự đoán diabetes trong tương lai | Không có prediction horizon |
+| Dự đoán diabetes trong tương lai | Horizon cross-sectional (Δt = 0), không có follow-up tương lai |
 | Dự đoán Type 2 riêng biệt | `DIABETE4` không phân biệt Type 1/Type 2 |
 | Chẩn đoán y khoa | Outcome là self-report, không phải glucose/HbA1c |
 | Phân tích causal | Dữ liệu cross-sectional |
@@ -202,15 +218,46 @@ Mỗi candidate variable được kiểm tra theo các nhóm tiêu chí:
 | Lifestyle | smoking, exercise |
 | General health | self-rated health |
 | Body composition | BMI |
-| Healthcare access | insurance / cost-related access |
+| Healthcare access | `PERSDOC3`: có một, nhiều hoặc không có người cung cấp chăm sóc cá nhân |
 | Cardiometabolic | hypertension, cholesterol |
 | Comorbidity | coronary disease, stroke, kidney disease |
 | Functional status | difficulty walking |
 | Mental/physical health | unhealthy-day variables |
 
-Danh sách exact variables nằm trong:
+## Danh sách đúng 20 predictors
 
-`docs/final_feature_set.md`
+| Biến | Nghĩa dễ hiểu | Thiếu trong cohort (%) | Xử lý |
+|---|---|---:|---|
+| `_AGEG5YR` | Nhóm tuổi | 1.864 | Missing category + one-hot |
+| `_SEX` | Giới tính ghi nhận | 0.000 | Missing category + one-hot |
+| `_RACEGR3` | Nhóm chủng tộc/dân tộc | 2.313 | Missing category + one-hot |
+| `_EDUCAG` | Học vấn | 0.582 | Missing category + one-hot |
+| `_INCOMG1` | Nhóm thu nhập | 19.879 | Missing category + one-hot |
+| `EMPLOY1` | Việc làm | 1.967 | Missing category + one-hot |
+| `_BMI5` | Chỉ số khối cơ thể | 9.097 | Median + scale |
+| `GENHLTH` | Sức khỏe tự đánh giá | 0.254 | Missing category + one-hot |
+| `PHYSHLTH` | Số ngày sức khỏe thể chất không tốt | 2.285 | Median + scale |
+| `MENTHLTH` | Số ngày sức khỏe tinh thần không tốt | 1.772 | Median + scale |
+| `_TOTINDA` | Hoạt động thể lực lúc rảnh | 0.262 | Missing category + one-hot |
+| `_RFSMOK3` | Hút thuốc hiện tại | 5.804 | Missing category + one-hot |
+| `SLEPTIM1` | Số giờ ngủ mỗi 24 giờ | 7.647 | Median + scale |
+| `_RFHYPE6` | Đã được thông báo tăng huyết áp | 1.146 | Missing category + one-hot |
+| `_RFCHOL3` | Đã được thông báo cholesterol cao | 12.665 | Missing category + one-hot |
+| `_MICHD` | Tiền sử bệnh mạch vành/nhồi máu cơ tim | 1.051 | Missing category + one-hot |
+| `CVDSTRK3` | Tiền sử đột quỵ | 0.289 | Missing category + one-hot |
+| `CHCKDNY2` | Tiền sử bệnh thận | 0.352 | Missing category + one-hot |
+| `DIFFWALK` | Khó đi bộ/leo cầu thang | 4.483 | Missing category + one-hot |
+| `PERSDOC3` | Có người cung cấp chăm sóc cá nhân | 0.970 | Missing category + one-hot |
+
+Tỷ lệ thiếu tính sau recoding, trên **342.539** người đủ điều kiện; khác mẫu số full raw dùng trong screening lịch sử. Healthcare access ở đây là `PERSDOC3`; insurance và cost-related access không nằm trong final 20.
+
+`_BMI5` phải chia 100 để có kg/m². `PHYSHLTH`/`MENTHLTH` có 88 nghĩa 0 ngày, không phải 88 ngày; 77/99 thành missing. Tuổi, income và education được one-hot, không coi mã 1–7 là các khoảng cách số học đều nhau. `_MICHD` mã 1 là có bệnh, trong khi `_RFHYPE6` mã 2 mới là có: không suy ý nghĩa từ con số mã nếu chưa đọc codebook.
+
+`PERSDOC3` là lựa chọn domain của study, không có exact-variable support đã xác lập từ P02/P03. `SLEPTIM1` có căn cứ trực tiếp trong appendix Xie2019, không quy cho P03. Race/ethnicity là nhóm khảo sát xã hội, không phải nguyên nhân sinh học; có đưa vào model không đồng nghĩa đã kiểm tra fairness.
+
+Nguồn: [variable audit](../../02_Implementation/BRFSS_Survey/qc/astra_variable_audit.md), [đặc điểm toàn cohort/train/test](../../02_Implementation/BRFSS_Survey/qc/astra_data_characteristics.csv).
+
+
 
 ---
 
@@ -272,44 +319,28 @@ Pipeline chuyển các special codes phù hợp thành missing trước modeling
 
 ---
 
-# 8. Train/Test Split
+# 8. Train/test split và điều gì thực sự được cô lập
 
-| Partition | n | Vai trò |
-|---|---:|---|
-| Train | 274,031 | preprocessing fitting + CV + model training |
-| Test | 68,508 | final held-out internal evaluation |
+| Partition | N | Nhãn dương | Nhãn âm | Vai trò |
+|---|---:|---:|---:|---|
+| Train | 274,031 | 41,462 | 232,569 | Fit preprocessing, CV và fit model |
+| Test | 68,508 | 10,365 | 58,143 | Đánh giá nội bộ các cấu hình đã fit |
 
-Thiết kế:
+Split stratified 80/20, seed 42 giữ gần cùng tỷ lệ nhãn giữa hai partition; seed giúp tái tạo split, không bảo đảm thiết kế không bias. Cùng một test set được dùng cho cả bảy model.
 
-```python
-train_test_split(
-    ...,
-    test_size=0.20,
-    stratify=y,
-    random_state=42
-)
-```
+**Cần phân biệt ba tầng:**
 
-## Vì sao stratify?
+| Tầng | Evidence hiện tại |
+|---|---|
+| Học median, encoder, scaler và estimator | Chỉ trong train; trong CV thì chỉ trong training fold |
+| Tối ưu hyperparameter/ngưỡng bằng test | Không tìm thấy bằng chứng thực hiện |
+| Thiết kế study trước khi nhìn test | Chưa đủ bằng chứng rằng cả roster/configurations/contrast family được khóa chung trước lần nhìn test đầu tiên |
 
-Positive class chỉ khoảng 15%.
+A01 là **incomplete evidence of prospective joint prespecification / test exposure**, mức MINOR theo consensus. LR đã được mô tả là baseline trước khi có LR results (`03806f3` trước `3e557b2`). DT results (`0b7cdfc`) có trước triển khai RF (`c68cda0`); rationale RF viện dẫn DT test AUC. Điều này chứng minh tiếp xúc kết quả và ảnh hưởng lên cách giải thích, chưa chứng minh family/configuration được chọn vì kết quả test.
 
-Stratification giúp train và test giữ gần cùng class proportion.
+A02 là **pre-split covariate-coverage inspection**: xem độ phủ/missingness trước split (`c0d2431` trước `79c28c9`). Counterfactual train-only ở vòng review trước cho thấy cả 31 non-leakage candidates đều dưới ngưỡng missingness 20% ở full data lẫn train. Riêng income là 19,9490% full raw và 19,8547% train. Giữ nguyên các lựa chọn định tính về domain/redundancy/leakage thì vẫn cùng 20 predictors. Ngưỡng missingness đơn độc không sinh ra đúng 20 biến; nó cho qua 31 biến.
 
-## Test set có dùng tune model không?
-
-**Không.**
-
-Test không dùng để:
-
-- chọn hyperparameter;
-- optimize threshold;
-- chọn feature;
-- fit imputation;
-- fit scaler;
-- fit encoder.
-
-Sau khi model specification được cố định, test được dùng cho final evaluation và paired comparisons.
+Vì vậy không nói “test hoàn toàn chưa từng ảnh hưởng thiết kế”, cũng không nói “đã chứng minh adaptive model selection”. Point estimates được giữ như exploratory/descriptive internal benchmark; không phải confirmatory comparison có joint prespecification đã xác lập.
 
 ---
 
@@ -346,7 +377,7 @@ Trong CV, chúng được fit lại riêng trong mỗi training fold.
 ## Kết quả
 
 - 20 raw predictors
-- Sau preprocessing: khoảng **82 columns**
+- Trong fit trên toàn bộ training set: **82 columns**; vocabulary ở từng CV fold do fold đó học
 
 ---
 
@@ -523,7 +554,7 @@ Decision Tree là ví dụ rất rõ rằng:
 
 Random Forest dùng nhiều decision trees rồi aggregate.
 
-Nó giảm variance so với single Decision Tree.
+Bagging và ngẫu nhiên hóa cây nhằm giảm variance so với một cây đơn. Trong kết quả này RF có test AUC cao hơn DT; study không đo riêng variance reduction để xác nhận cơ chế.
 
 | Metric | Giá trị |
 |---|---:|
@@ -621,7 +652,7 @@ SVM cực conservative:
 
 # 19. Model 07 — Gaussian Naive Bayes
 
-GNB giả định features có conditional Gaussian behavior trong từng class.
+GNB giả định các features độc lập có điều kiện theo class và mỗi feature có phân phối Gaussian trong từng class.
 
 Với one-hot variables, assumption này không hoàn hảo.
 
@@ -663,7 +694,7 @@ Nhưng phải trả giá bằng:
 
 Negative class ≈ 84.87%.
 
-Nếu model ngu ngốc luôn predict:
+Nếu một baseline luôn predict:
 
 > “Không diabetes”
 
@@ -699,6 +730,21 @@ Do đó study không dùng Accuracy đơn độc.
 | Average Precision | Chất lượng precision-recall trên nhiều thresholds |
 | Brier | Sai số xác suất tổng thể; không đo riêng calibration |
 
+
+## Đọc confusion matrix của LR bằng số người
+
+| Nhãn khảo sát | Model dự đoán dương | Model dự đoán âm | Tổng |
+|---|---:|---:|---:|
+| Dương | TP = 1.951 | FN = 8.414 | 10.365 |
+| Âm | FP = 1.463 | TN = 56.680 | 58.143 |
+| Tổng | 3.414 | 65.094 | 68.508 |
+
+Recall = 1.951 / 10.365 = **18,82%**: trong nhóm nhãn dương, model nhận đúng bao nhiêu. Precision = 1.951 / 3.414 = **57,15%**: trong nhóm model báo dương, bao nhiêu người mang nhãn dương. Accuracy = (1.951 + 56.680) / 68.508 = **85,58%**. Các mẫu số khác nhau nên ba tỷ lệ không mâu thuẫn.
+
+ROC-AUC 0,8262 có nghĩa xác suất score của một người nhãn dương cao hơn một người nhãn âm chọn ngẫu nhiên vào khoảng 82,62%, với ties tính nửa điểm; **không phải** phát hiện đúng 82,62% ca bệnh tại threshold 0,5. AP 0,4466 cũng không có nghĩa precision tại threshold đó bằng 44,66%.
+
+Có thể xếp đúng thứ tự dù nhiều scores vẫn dưới 0,5; khi ấy AUC khá cao nhưng recall ở 0,5 thấp. Hạ threshold thường tăng recall và số positive calls, đồng thời giảm specificity; precision không bắt buộc giảm đơn điệu trên mọi mẫu. Study chưa tối ưu threshold và không được thử trên test để chọn điểm đẹp.
+
 ## Lưu ý về “PR-AUC”
 
 Trong historical artifact có field:
@@ -732,6 +778,8 @@ Study dùng:
 - pre-submission calibration intercept;
 - calibration slope.
 
+Với một nhóm được dự đoán quanh 20%, calibration tốt nghĩa tỷ lệ nhãn dương quan sát của nhóm gần 20%. Đây là ví dụ minh họa, không phải một kết quả subgroup mới của study. AUC chủ yếu quan tâm thứ tự; calibration quan tâm mức xác suất.
+
 ## Calibration supplement
 
 | Model | Intercept | Slope | Brier |
@@ -743,12 +791,12 @@ Study dùng:
 | Decision Tree | -1.3948 | 0.0433 | 0.2134 |
 | Gaussian NB | -1.6963 | 0.0970 | 0.2523 |
 
-Một model calibration lý tưởng thường hướng tới:
+Trong logistic calibration regression này, mốc tham chiếu là:
 
 - intercept ≈ 0;
 - slope ≈ 1.
 
-LR / GB / XGB tốt hơn nhiều so với DT / GNB.
+Các joint slopes của DT/GNB xa 1 hơn rõ so với LR/GB/XGB ở clipping convention này. Một intercept/slope gần mốc tham chiếu vẫn không bảo đảm calibration tốt ở mọi vùng score hay subgroup.
 
 ---
 
@@ -768,7 +816,9 @@ Primary notebook dùng:
 
 Nhờ đó có distribution để tính percentile interval.
 
-Primary notebook dùng **200 bootstrap replicates**.
+Primary notebook dùng **200 bootstrap replicates**. Ví dụ LR ROC-AUC 0,8262 có khoảng 95% [0,8219; 0,8296] từ bảng test summary lịch sử. Không nhầm khoảng của một model với khoảng **chênh lệch paired** giữa hai model.
+
+Bootstrap không tạo người mới hay thông tin mới. Nó mô phỏng việc lấy lại respondents trong sample hiện có. “Khoảng 95%” mô tả thủ tục ước lượng uncertainty với các giả định đã nêu; không phải xác suất 95% một model thắng model khác.
 
 Pre-submission audit nhận thấy 200 reps có thể hơi ít cho những difference cực nhỏ.
 
@@ -807,24 +857,13 @@ Sau đó tính:
 
 ---
 
-# 25. Logistic Regression được chọn làm baseline comparison
+# 25. Vì sao dùng Logistic Regression làm tham chiếu?
 
-Không phải vì LR “thắng”.
+LR đơn giản, sinh xác suất và có tiền lệ trong BRFSS literature. Vai trò baseline đã xuất hiện trong implementation commit trước LR results. Đây là căn cứ phù hợp để dùng LR làm mốc giải thích.
 
-Mà vì:
+Điều đó **không chứng minh** toàn bộ family of statistical contrasts đã được prespecify trước khi thấy test. Nhóm LR/GB/XGBoost/Linear SVM là nhóm có ROC-AUC quan sát cao nhất và phần so sánh chuyên sâu của nhóm này mang tính exploratory.
 
-- Model 01;
-- transparent;
-- literature precedent mạnh;
-- specification baseline được xác định trước.
-
-Primary paired comparison:
-
-> challenger − hoặc LR − challenger
-
-tùy format artifact.
-
-Điểm quan trọng là direction luôn được ghi rõ.
+Các bảng 5.000-replicate trong tài liệu này luôn dùng **LR trừ comparator**. Dương nghĩa LR cao hơn về metric đang xét; âm nghĩa thấp hơn. Không suy kết luận giữa GB và XGBoost từ interval LR–GB: đó là một contrast khác.
 
 ---
 
@@ -881,11 +920,13 @@ Nó không đủ để kết luận:
 
 > Logistic Regression là universal winner.
 
+Khoảng này **chưa hiệu chỉnh multiplicity**. Ba robustness streams có lower endpoints dương nhưng rất gần 0; sáu-contrast Bonferroni sensitivity cho interval LR–XGB AP chứa 0 ở cả ba. Không nói đã quan sát sign flip của unadjusted interval, cũng không biến tail fraction thành prespecified p-value.
+
 ---
 
 # 28. McNemar Test
 
-Bootstrap dùng continuous/ranking metrics.
+Bootstrap trong notebook đánh giá các metrics; supplement 5.000-replicate tập trung ROC-AUC và AP.
 
 McNemar tập trung vào:
 
@@ -923,6 +964,12 @@ Notebook tạo nhiều biểu đồ để không phải chỉ đọc bảng số
 | Model-specific diagnostics | Xem behavior riêng từng estimator |
 
 ---
+
+Để trình bày với thầy, ưu tiên ba hình đã được kiểm tra ở vòng audit trước:
+
+- [ROC/PR](supplement/astra_figures/discrimination.png): các đường dẫn đầu sát nhau; không đo thắng thua chỉ bằng mắt.
+- [Confusion matrices](supplement/astra_figures/confusion_matrices.png): đọc số FN/FP, không chỉ màu. Màu chuẩn hóa theo nhãn quan sát; chữ là số đếm.
+- [Calibration](supplement/astra_figures/calibration.png): so với đường chéo; các đường dùng tối đa 10 quantile bins, ties có thể làm ít bins hơn. Đoạn nối giữa hai điểm không chứng minh calibration ở mọi điểm trung gian.
 
 # 30. Feature importance nên hiểu như nào?
 
@@ -962,9 +1009,11 @@ Các paper không dùng protocol giống nhau.
 | P05 | Resampling + GA-XGBoost/stacking |
 | P06 | Curated 2015-derived dataset, target khác |
 
-Do đó không được hỏi:
+Câu hỏi thường gặp là:
 
-> “Tại sao AUC của study mình không bằng AUC paper?”
+> “AUC paper khác cao hơn có phải chứng minh model của họ tốt hơn không?”
+
+Có thể đặt câu hỏi này, nhưng chỉ so số AUC giữa các thiết kế khác nhau không đủ trả lời.
 
 Metric giữa paper chỉ dùng để:
 
@@ -1004,33 +1053,13 @@ Nếu sau này muốn claim population-level performance:
 
 ---
 
-# 33. Vì sao study không có external validation?
+# 33. External validation có bắt buộc cho báo cáo này không?
 
-Current design:
+Train và test đều lấy từ cùng BRFSS 2025, nên đây là **internal evaluation**. Random holdout không biến thành external validation vì có nhiều người hoặc vì chưa fit estimator trên test.
 
-```text
-BRFSS 2025
-   ├── 80% train
-   └── 20% internal test
-```
+Với scope benchmark phương pháp nội bộ, thiếu external validation là **giới hạn applicability**, không phải MAJOR tự động hay điều kiện bắt buộc để được báo cáo kết quả hiện tại. Muốn nói mô hình dùng tốt ở năm/quần thể khác thì cần evidence tương ứng; muốn triển khai lâm sàng còn cần đánh giá quyết định sử dụng, ngưỡng, fairness và lợi ích/tác hại.
 
-Cả train và test cùng source/year.
-
-Do đó đây là:
-
-> **internal validation**
-
-không phải:
-
-- temporal validation;
-- geographic external validation;
-- independent cohort validation.
-
-Pre-submission rigor gate chỉ trả đúng một minor flag:
-
-> `NO_EXTERNAL_VALIDATION`
-
-Đây là một limitation; còn có test exposure trong lịch sử phát triển, sàng lọc độ phủ biến trước split, bất định có điều kiện và thiếu fitted-model exports.
+Đừng giải thích với thầy rằng “study chưa hợp lệ vì thiếu external”. Cách nói đúng là “study trả lời câu hỏi nội bộ này; khả năng chuyển sang bối cảnh khác chưa được kiểm tra”.
 
 ---
 
@@ -1090,7 +1119,7 @@ Development set có khoảng:
 - 20 raw predictors;
 - 82 transformed columns.
 
-Do đó data sparsity không phải vấn đề chính.
+Cỡ mẫu tổng thể lớn, nhưng không tự chứng minh đủ precision cho mọi model, subgroup hoặc câu hỏi. Các nhóm hiếm vẫn có thể ít dữ liệu; chưa có phân tích subgroup để kết luận về điều đó.
 
 Tuy nhiên study vẫn ghi:
 
@@ -1106,7 +1135,7 @@ Không có một model “best” cho mọi mục tiêu.
 
 | Mục tiêu | Model đáng chú ý |
 |---|---|
-| Đơn giản + discrimination tốt + calibration tốt | Logistic Regression |
+| Baseline đơn giản; AUC gần nhóm dẫn đầu, joint intercept/slope gần 0/1 trong mẫu này | Logistic Regression |
 | Brier thấp nhất / AP point estimate cao nhất | Gradient Boosting |
 | ROC-AUC point estimate cao nhất | XGBoost |
 | Precision / specificity cao | Linear SVM |
@@ -1116,7 +1145,7 @@ Không có một model “best” cho mọi mục tiêu.
 
 ## Câu kết luận quan trọng nhất
 
-> **Một Logistic Regression rất đơn giản đạt khả năng ranking gần như tương đương về mặt observed ROC-AUC với GB/XGBoost/Linear SVM trong internal test này; độ phức tạp model lớn hơn không tự động mang lại discrimination tốt hơn.**
+> **Một Logistic Regression rất đơn giản đạt khả năng ranking gần nhau về mặt observed ROC-AUC với GB/XGBoost/Linear SVM trong internal test này; độ phức tạp model lớn hơn không tự động mang lại discrimination tốt hơn.**
 
 Nhưng cần nhớ:
 
@@ -1124,58 +1153,32 @@ Nhưng cần nhớ:
 
 ---
 
-# 38. Đâu là model nên chọn?
+# 38. Từ kết quả này có thể chọn model nào?
 
-Study không nên chọn model theo một metric duy nhất.
+Nếu cần một **mốc trình bày phương pháp**, LR là lựa chọn dễ giải thích: ranking gần nhóm dẫn đầu, có xác suất và regularization rõ. Đây không phải lựa chọn model để đưa vào chăm sóc bệnh nhân.
 
-Ví dụ:
+Không thể nói “cần recall thì chọn GNB” từ bảng ngưỡng mặc định. LR/GB/XGB có thể thay đổi recall/precision khi đổi threshold; study chưa so các model tại cùng sensitivity, specificity hoặc cùng chi phí sai sót. Tương tự, SVM precision cao tại margin 0 không chứng minh SVM tốt nhất tại mọi ngưỡng.
 
-- cần interpretability → LR;
-- cần high recall → GNB behavior đáng chú ý nhưng calibration/precision yếu;
-- cần probability tốt → LR/GB/XGB phù hợp hơn;
-- cần precision cao tại frozen boundary → SVM;
-- cần balanced clinical operating point → phải **define clinical objective trước**, rồi threshold optimization trong development data.
-
-Do đó current study kết thúc ở:
-
-> **benchmark + trade-off interpretation**
-
-chứ chưa phải:
-
-> model deployment selection.
+Nếu có câu hỏi lâm sàng mới, cần định nghĩa hành động, chi phí FP/FN, lựa chọn ngưỡng trong development data và đánh giá bằng thiết kế phù hợp. Đó là thí nghiệm mới; không tối ưu trên frozen test này.
 
 ---
 
-# 39. Reproducibility
+# 39. Tái lập được gì, và tests chứng minh đến đâu?
 
-Study có:
-
-| Thành phần | Có |
+| Thành phần | Trạng thái đã xác minh |
 |---|---|
-| Source hash | ✅ |
-| Fixed random seed | ✅ |
-| Model configs | ✅ |
-| One canonical notebook | ✅ |
-| Frozen result artifacts | ✅ |
-| Git history | ✅ |
-| Kaggle canonical execution | ✅ |
-| Read-back audit | ✅ |
-| Pre-submission gate | ✅ |
-| Prediction-model rigor manifest | ✅ |
+| Source data | Có SHA-256 và kiểm tra đối chiếu nguồn CDC |
+| Thiết kế có thể đọc lại | Có code, recoding, configs, seeds, Git history |
+| Frozen predictions và numerical supplements | Có artifacts; calibration và bootstrap đã được tái tính khớp |
+| Huấn luyện lại toàn bộ trong audit | Chưa thực hiện; tái tính metric không phải refit |
+| Fitted model objects | Chưa có serialized pipelines để nạp và dự đoán trực tiếp |
+| Lưu trữ lâu dài | GitHub execution artifacts có thời hạn; chưa bảo đảm truy cập vĩnh viễn |
 
-Final pre-submission gate kiểm tra:
+Con số **160 tests PASS trong vòng audit trước** gồm 104 agent/governance tests, 49 skill tests và 7 BRFSS release-gate tests mới. Phần lớn kiểm tra hệ thống và hợp đồng artifact; không phải 160 phép kiểm định giá trị khoa học của BRFSS.
 
-- đúng 1 notebook;
-- 57 code cells compile;
-- submission package tồn tại;
-- calibration supplement hợp lệ;
-- 5,000 bootstrap supplement hợp lệ;
-- wording không overclaim;
-- external validation status khai báo đúng.
+Chúng giúp phát hiện cấu trúc sai, giá trị không hữu hạn, duplicate contrasts, thay đổi code hoặc file ngoài dự kiến và workflow kiểm tra sai revision. Chúng không tự chứng minh absence of selection bias, external validity, fairness, clinical utility hay nhân quả. Điểm 69→82 lịch sử đã bị rút khỏi vai trò readiness score vì không có attribution deduction theo finding.
 
-Gate cuối:
-
-> **SUCCESS**
+Nếu anh chỉ cần báo cáo với thầy: có thể dùng các bảng/biểu đồ đã kiểm tra cùng source map. Nếu sau này chia sẻ để người khác tái lập: cần thêm kế hoạch lưu artifact bền vững và nêu rõ giới hạn fitted-model availability.
 
 ---
 
@@ -1216,12 +1219,7 @@ Một số file lịch sử có thể còn câu:
 
 Những câu đó không phải current state.
 
-Current source of truth là:
-
-1. canonical notebook;
-2. final audit;
-3. final benchmark summary;
-4. pre-submission board review.
+Source of truth cho tính toán là canonical notebook và frozen artifacts. Diễn giải review hiện tại theo `FINAL_CONSENSUS.md`; các audit trước là hồ sơ lịch sử, không phải verdict đang áp dụng.
 
 ---
 
@@ -1260,25 +1258,23 @@ Current source of truth là:
 
 ---
 
-# 44. Điểm yếu lớn nhất của study
+# 44. Điểm yếu quan trọng nhất tùy câu hỏi của thầy
 
-Nếu reviewer hỏi:
+Nếu hỏi **giá trị khoa học mới**, điểm yếu là novelty còn vừa phải: đã có nhiều nghiên cứu BRFSS/diabetes classifiers; dataset mới và bảy model chưa đủ chứng minh một phương pháp mới.
 
-> “Điểm yếu lớn nhất là gì?”
+Nếu hỏi **ý nghĩa lâm sàng**, nhãn là tự báo cáo đã được thông báo mắc bệnh, vốn có thể hỏi trực tiếp; study chưa chứng minh giá trị thay thế xét nghiệm hay phát hiện người chưa được chẩn đoán.
 
-Câu trả lời nên là:
+Nếu hỏi **tính khái quát**, test cùng nguồn dữ liệu, không survey-design inference và chưa phân tích subgroup nên chưa thể chuyển kết luận sang quần thể khác.
 
-> **Study chỉ thực hiện internal validation trên cùng nguồn BRFSS 2025. Vì vậy chưa chứng minh model generalize theo thời gian, địa lý hoặc sang population khác.**
+Nếu hỏi **kỷ luật thiết kế**, cần trình bày đúng A01/A02 ở mục 8, không giấu test exposure cũng không phóng đại thành contamination đã chứng minh.
 
-Gate khai báo chỉ nhận diện flag dưới đây; điều đó không có nghĩa nghiên cứu chỉ có một vấn đề:
-
-`NO_EXTERNAL_VALIDATION`
+Đối với một nghiên cứu nhỏ để học và báo cáo, đóng góp có thể bảo vệ là kiểm tra một pipeline chung và minh họa vì sao metric/ngưỡng/calibration dẫn đến kết luận khác nhau. Mức đóng góp có phù hợp yêu cầu của thầy hay không cần được trao đổi, chưa có bảo đảm xuất bản.
 
 ---
 
 # 45. Một câu để nhớ toàn bộ study
 
-> **Nghiên cứu dùng BRFSS 2025 để xây dựng một benchmark thống nhất cho 7 cấu hình classifier nhằm phân loại trạng thái tự báo cáo đã được chẩn đoán tiểu đường. Với preprocessing được cô lập trong training/folds nhưng còn giới hạn lựa chọn biến và test exposure đã nêu, khi đánh giá trên cùng 68,508 respondents, Logistic Regression, Gradient Boosting, XGBoost và Linear SVM có discrimination gần như giống nhau về ROC-AUC (~0.826), trong khi các model khác thể hiện các trade-off rất khác về Recall, Precision, F1 và calibration. Kết quả ủng hộ cách diễn giải theo trade-off thay vì tuyên bố một model thắng tuyệt đối, và toàn bộ kết luận chỉ giới hạn ở descriptive internal cross-sectional benchmark chứ chưa phải clinical deployment.**
+> **Nghiên cứu dùng BRFSS 2025 để xây dựng một benchmark thống nhất cho 7 cấu hình classifier nhằm phân loại trạng thái tự báo cáo đã được chẩn đoán tiểu đường. Với preprocessing được cô lập trong training/folds nhưng còn giới hạn lựa chọn biến và test exposure đã nêu, khi đánh giá trên cùng 68,508 respondents, Logistic Regression, Gradient Boosting, XGBoost và Linear SVM có ROC-AUC quan sát gần nhau (~0.826), trong khi các model khác thể hiện các trade-off rất khác về Recall, Precision, F1 và calibration. Kết quả ủng hộ cách diễn giải theo trade-off thay vì tuyên bố một model thắng tuyệt đối, và toàn bộ kết luận chỉ giới hạn ở descriptive internal cross-sectional benchmark chứ chưa phải clinical deployment.**
 
 ---
 
@@ -1301,13 +1297,15 @@ Gate khai báo chỉ nhận diện flag dưới đây; điều đó không có n
 
 # 47. Trạng thái cuối cùng
 
-**Metric tính lại khớp; methodological limitations vẫn còn.**
+**Đồng thuận: MINOR REVISION FOR STATED SCOPE.**
+
+Metric/calibration/bootstrap đã được tái tính khớp ở vòng audit trước; giới hạn vẫn được giữ. Không có unresolved FATAL/MAJOR scientific-validity defect được chứng minh. Chưa submission-ready không ngăn việc trình bày minh bạch một báo cáo học thuật với thầy.
 
 **External/clinical validation: CHƯA CÓ.**
 
 Study hiện phù hợp để:
 
-- senior agent audit;
+- đọc hiểu và báo cáo với giảng viên hướng dẫn;
 - methodological peer review;
 - viết manuscript về internal benchmark;
 - làm nền cho experiment tiếp theo.
@@ -1336,10 +1334,77 @@ Các tài liệu giải thích bổ sung được thêm sau freeze chỉ làm r�
 
 ## Chi tiết supplement sau kiểm toán độc lập
 
-Calibration dùng hồi quy logistic `y ~ intercept + slope × logit(p)` với `p` chặn tại `[10^-6, 1-10^-6]`. Intercept này không phải calibration-in-the-large (CITL, slope cố định bằng1). LR có CITL−0.00323, GB−0.00276. Slope DT/RF/GNB nhạy với mức chặn; Brier là sai số xác suất tổng thể, không phải thước đo calibration thuần túy.
+Calibration dùng hồi quy logistic `y ~ intercept + slope × logit(p)` với `p` chặn tại `[10^-6, 1-10^-6]`. Intercept này không phải calibration-in-the-large (CITL, slope cố định bằng1). LR có CITL−0.00323, GB−0.00276. Slope DT/RF/GNB nhạy với mức chặn; Brier là trung bình `(p − y)²`, tức sai số xác suất tổng thể, không phải thước đo calibration thuần túy. Joint intercept và slope được fit đồng thời bằng logistic MLE không penalty; CITL giữ slope = 1. SVM bị loại khỏi phép tính này vì chỉ có margin. Không áp dụng hệ số calibration để thay primary predictions.
 
 Bootstrap5.000 cũ được tái lập chính xác với PCG64, seed20251010, không shuffle chỉ số sau lấy mẫu. Ba stream bổ sung cho thấy AP LR–XGB sát ranh giới; khoảng đồng thời Bonferroni cho6contrast chứa0. Không coi đây là superiority hay equivalence được xác nhận. Khoảng bootstrap cố định mô hình và class counts, không bao gồm biến thiên huấn luyện hay survey-design uncertainty.
 
 P03 gộp pregnancy-related diabetes vào positive và prediabetes vào negative; khác target của ta. Fold isolation của MICE/selection/SMOTE trong P03 chưa được chứng minh. `SLEPTIM1` có precedent trực tiếp ở appendix P02, không được xác minh từ P03; `PERSDOC3` được giữ như lựa chọn domain healthcare-access của study. Xem bảng chứng cứ biến và literatureclaims mới. Các hình dùng cho báo cáo nằm ở `supplement/astra_figures/`, đã sửa nhãn AP và số bin calibration thực tế.
 
 Ngày phỏng vấn (`IDATE`) đã kiểm tra: **05/01/2025–16/03/2026** trong cả raw và eligible cohort, không có ngày không đọc được. Vì vậy BRFSS 2025 là tên bản phát hành khảo sát, không phải khẳng định mọi cuộc phỏng vấn diễn ra trong năm2025.
+
+
+# 48. Những câu thầy có thể hỏi, và cách trả lời
+
+| Câu hỏi | Câu trả lời có thể bảo vệ |
+|---|---|
+| Em đang giải bài toán gì? | Phân loại câu trả lời tự báo cáo đã được thông báo mắc đái tháo đường trong BRFSS 2025, tại cùng thời điểm khảo sát. |
+| Đã biết nhãn rồi, tại sao còn dự đoán? | Nhãn đã biết được dùng để học và đánh giá một benchmark phương pháp. Em chưa chứng minh cần dùng model thay việc hỏi trực tiếp; clinical usefulness vẫn là giới hạn. |
+| Có phải phát hiện sớm type 2 không? | Không. `DIABETE4` không xác nhận type 2 bằng xét nghiệm và cohort không theo dõi mắc mới. |
+| Đóng góp mới là gì? | So sánh bảy cấu hình trên cùng pipeline/sample, đọc nhiều metrics và kiểm tra numerical reproducibility. Chưa có thuật toán mới hay chứng minh vượt state of the art. |
+| Vì sao chọn 20 biến? | Literature/domain, coverage, tránh biến trực tiếp tiết lộ nhãn và giảm redundancy. Không có supervised performance-based selector đã được tìm thấy. |
+| Cùng pipeline có thực sự công bằng? | Nó kiểm soát nhiều khác biệt giữa các model, nhưng có thể hợp model này hơn model khác; GNB trên one-hot là ví dụ. Không đại diện cấu hình tối ưu của mọi family. |
+| Vì sao accuracy cao mà recall thấp? | Phần lớn mẫu là âm. LR đúng nhiều nhãn âm, nhưng ở ngưỡng 0,5 chỉ nhận 1.951/10.365 nhãn dương. |
+| GNB recall cao thì chọn GNB được không? | Chưa. Nó cũng có 15.658 FP. Cần mục tiêu và so sánh operating points phù hợp, không chọn từ default recall đơn lẻ. |
+| Có overfit không? | DT training accuracy gần 1 nhưng test AUC khoảng 0,602; đó là dấu hiệu rõ của overfitting. Không suy rằng mọi cây hay mọi DT tối ưu đều kém. |
+| LR có thắng XGBoost không? | AP chênh nhỏ theo một exploratory contrast; AUC chưa phân biệt rõ. Không có overall superiority. |
+| Vì sao không dùng SMOTE? | Giữ class distribution của sample và giảm một yếu tố thay đổi trong benchmark. Không khẳng định SMOTE luôn sai hoặc luôn làm giảm hiệu năng. |
+| Có data leakage không? | Learned preprocessing được cô lập trong train/folds; không thấy tuning theo test. Có A01 test exposure và A02 pre-split coverage inspection, nhưng chưa chứng minh contamination/feature impact như cách gọi MAJOR trước đây. |
+| Chưa external validation thì có báo cáo được không? | Có, với scope internal benchmark và giới hạn rõ. Chưa thể claim transportability hay triển khai. |
+| 160 tests đã đủ chứng minh nghiên cứu đúng chưa? | Chưa. Chúng hỗ trợ engineering/reproducibility; validity còn phụ thuộc thiết kế, nhãn, uncertainty và phạm vi claim. |
+| Tiếp theo làm gì? | Xin thầy xác định mục tiêu đóng góp tiếp theo; khóa câu hỏi/protocol trước khi chạy thí nghiệm mới, không thêm model chỉ để tăng số lượng. |
+
+## Tự kiểm tra trước buổi gặp
+
+Không nhìn tài liệu, anh thử giải thích: nhãn dương/âm là gì; 356.158 giảm còn 342.539 vì sao; median được học ở đâu; vì sao AUC và recall khác nhau; paired bootstrap lấy lại thứ gì; vì sao không có universal winner. Nếu vướng câu nào, đọc lại mục tương ứng thay vì học thuộc mọi parameter.
+
+# 49. Cấu hình và cơ chế của bảy model
+
+| Model | Cách hiểu ngắn | Cấu hình chính đã thực thi |
+|---|---|---|
+| LR | Cộng các đóng góp tuyến tính trên log-odds, rồi chuyển thành xác suất; L2 hạn chế hệ số quá lớn | `penalty=l2`, `C=1`, `solver=lbfgs`, `max_iter=1000` |
+| DT | Chia dữ liệu theo chuỗi điều kiện; cây sâu có thể học chi tiết riêng của train | `criterion=gini`, `max_depth=None`, `min_samples_leaf=1`, seed 42 |
+| RF | Nhiều cây fit trên bootstrap samples, ngẫu nhiên tập features ở mỗi split rồi gộp dự đoán | 100 cây, `max_features=sqrt`, `max_depth=None`, `bootstrap=True`, seed 42 |
+| GB | Thêm cây nhỏ tuần tự theo hướng giảm loss của ensemble | 100 cây, depth 3, `learning_rate=0.1`, `loss=log_loss`, seed 42 |
+| XGBoost | Boosted trees với regularization và tối ưu quá trình fit | 100 cây, depth 6, `learning_rate=0.3`, `reg_lambda=1`, `tree_method=hist`, seed 42 |
+| Linear SVM | Tìm ranh giới tuyến tính với margin; margin không phải probability | `C=1`, `loss=squared_hinge`, `dual=auto`, `max_iter=10000`, seed 42 |
+| GNB | Dùng xác suất lớp và phân phối từng feature, giả định độc lập có điều kiện | `priors=None`, `var_smoothing=1e-9` |
+
+Đây là tóm tắt, không thay cho configs đầy đủ trong `../../02_Implementation/BRFSS_Survey/models/model_01_...json` đến `model_07_...json`. XGBoost còn có `verbosity=0` trong executable code, chỉ kiểm soát logging. Không thực hiện hyperparameter search để tối ưu từng family trong benchmark này.
+
+## CV khác test và bootstrap như thế nào?
+
+| Thao tác | Có fit lại model không? | Dùng dữ liệu nào? | Mục đích |
+|---|---|---|---|
+| 5-fold CV | Có, mỗi training fold fit pipeline riêng | Chỉ development set | Mô tả độ biến thiên giữa folds trong development |
+| Fit cuối rồi test | Có một fit trên toàn development; test chỉ predict | Development → internal test | Đo performance của fitted configuration |
+| Bootstrap supplement | Không | Frozen test labels/scores | Ước lượng uncertainty có điều kiện và paired differences |
+| Calibration diagnostic | Fit hồi quy đánh giá `y` theo logit(score), không refit classifier | Frozen test probabilities | Đo mức lệch calibration; không tạo primary results mới |
+
+Fit hồi quy calibration trên test là một phép **đánh giá**. Nếu dùng chính hệ số đó để chỉnh probability rồi coi test ấy là đánh giá độc lập của model đã chỉnh, câu hỏi và thiết kế sẽ khác; study không làm bước đó.
+
+# 50. Nguồn để anh mở khi cần chứng minh một con số
+
+| Claim / câu hỏi | Evidence cụ thể |
+|---|---|
+| Cohort, nhãn, số loại | [Data evidence](../../02_Implementation/BRFSS_Survey/qc/astra_data_evidence.json), keys `target_counts`, `cohort`, `split` |
+| Ngày phỏng vấn | [Dates](../../02_Implementation/BRFSS_Survey/qc/astra_interview_dates.json) |
+| Đúng 20 biến, đơn vị và special codes | [Variable audit](../../02_Implementation/BRFSS_Survey/qc/astra_variable_audit.md) và codebook entries |
+| Recoding, split, học preprocessing | [Canonical notebook](../../02_Implementation/BRFSS_Survey/kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb), Part II và model pipelines |
+| Metrics/confusion counts | [Point metrics](../../02_Implementation/BRFSS_Survey/qc/astra_statistics_point_metrics.csv), hàng của từng model |
+| Calibration intercept/slope | [Calibration CSV](supplement/calibration_intercept_slope.csv); [công thức](supplement/README.md) |
+| Six paired contrasts | [5.000-replicate CSV](supplement/top4_paired_bootstrap_5000_robustness.csv) |
+| Holm McNemar | [McNemar CSV](../../02_Implementation/BRFSS_Survey/qc/astra_statistics_mcnemar.csv) |
+| Câu nào được claim sau review? | [Final consensus](FINAL_CONSENSUS.md) |
+| Literature hỗ trợ tới đâu? | [Claim-level evidence](../../02_Implementation/BRFSS_Survey/qc/astra_literature_claims.json); không coi paper citation là chứng nhận pipeline |
+
+Nguồn ngoài: [CDC BRFSS 2025](https://www.cdc.gov/brfss/annual_data/annual_2025.html); [Xie et al. 2019, Methods và Appendix](https://www.cdc.gov/pcd/issues/2019/19_0109.htm); [Li et al. 2024](https://doi.org/10.1371/journal.pone.0311222); [TRIPOD+AI 2024](https://doi.org/10.1136/bmj-2023-078378). Vai trò và bibliographic details của ba bài tham khảo chính nằm trong báo cáo ngắn. Các paper khác ở mục 31 chỉ là bối cảnh từ literature audit đã có, không mở rộng thành một systematic review.

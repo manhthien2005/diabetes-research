@@ -1,10 +1,19 @@
-> **Independent audit update (2026-10-04):** current interpretation and remaining limitations are in `03_Final_Result/BRFSS_2025/ASTRA_FINAL_AUDIT_VI.md`. The earlier PASS/score is historical evidence, not a certification.
+> **Current interpretation (2026-10-05): MINOR REVISION FOR STATED SCOPE.** See [FINAL_CONSENSUS.md](FINAL_CONSENSUS.md). Earlier MAJOR REVISION and 69→82 scoring are historical and superseded. Current purpose: understanding the study and reporting to a supervisor; no journal selected.
 
 # BRFSS 2025 — FINAL Review Package
 
 This folder is the **entry point for senior-agent / reviewer audit** of the frozen BRFSS 2025 study.
 
-## Read in this order
+## For the researcher and supervisor
+
+1. [Báo cáo ngắn bằng tiếng Việt](BAO_CAO_GVHD_VI.md) — question, design, results, limitations and discussion with the supervisor.
+2. [Giải thích toàn bộ study](GIAI_THICH_FULL_STUDY_VI.md) — guided reading, exact predictors, concrete metric examples, model mechanics and oral-defense questions.
+3. [Final two-reviewer consensus](FINAL_CONSENSUS.md) — current verdict and claim boundary.
+4. [Documentation/reporting check](../../02_Implementation/BRFSS_Survey/qc/supervisor_reporting_review.md) — internal working audit, not a journal checklist or a scientific readiness score.
+
+This is an empirical benchmark using survey data, not a completed systematic literature survey. A supervisor-facing report is available; a journal manuscript and author declarations remain separate future work.
+
+## Technical and historical review files
 
 1. **REVIEWER_HANDOFF.md** — exact scope, source-of-truth map, known limitations, what should be challenged.
 2. **FINAL_SUBMISSION_BRIEF.md** — concise paper-style scientific summary.
@@ -34,9 +43,9 @@ Not yet claimable as a deployable clinical prediction model because external/tem
 
 Before an actual journal submission, complete `AUTHOR_COMPLETION_CHECKLIST.md`.
 
-## Independent final audit (2026-10-04)
+## Historical independent audit (2026-10-04)
 
-Current submission verdict: **MAJOR REVISION**, score69→82/100. Two major design limitations remain disclosed.
+The files below preserve the earlier MAJOR REVISION verdict and 69→82/100 score. The subsequent two-reviewer consensus supersedes that judgment: A01 and A02 are MINOR for the stated scope; no unresolved FATAL/MAJOR scientific-validity defect is demonstrated. The historical score is not a defensible readiness score because finding-level deductions were not recorded. Do not quote it as current certification.
 
 - [Vietnamese audit and scoring](ASTRA_FINAL_AUDIT_VI.md)
 - [Reviewer objection matrix](ASTRA_REVIEWER_MATRIX.md)

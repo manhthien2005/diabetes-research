@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-05",
+  "purpose": "Verify documentation transcription and unchanged frozen study; not new statistical analysis",
+  "source_head": "757c8bd2efe68e539c255119b124738f3fdd0648",
+  "checks": [
+    {
+      "check": "report_model_table",
+      "status": "PASS",
+      "details": "34 numeric cells match existing metric CSV at four decimals; SVM Brier explicitly absent."
+    },
+    {
+      "check": "guide_model_tables",
+      "status": "PASS",
+      "details": "50 point metrics matched frozen-derived aggregate CSV at four decimals."
+    },
+    {
+      "check": "guide_calibration_table",
+      "status": "PASS",
+      "details": "18 displayed values match immutable supplement at four decimals."
+    },
+    {
+      "check": "teaching_confusion_example",
+      "status": "PASS",
+      "details": "Counts and displayed denominator logic match LR frozen counts; examples use survey labels."
+    },
+    {
+      "check": "all_20_predictors",
+      "status": "PASS",
+      "details": "20 missingness percentages matched eligible-cohort audit, not full-raw denominator."
+    },
+    {
+      "check": "report_paired_auc",
+      "status": "PASS",
+      "details": "Nine rounded numbers match the existing three paired ROC-AUC contrasts; no bootstrap rerun."
+    },
+    {
+      "check": "local_document_links",
+      "status": "PASS",
+      "details": "33 clickable local links resolve."
+    },
+    {
+      "check": "reporting_map_integrity",
+      "status": "PASS",
+      "details": "52 unique official subitems, counts and both document identities verified; not a scientific quality score."
+    },
+    {
+      "check": "core_reference_metadata",
+      "status": "PASS",
+      "details": "Three existing bibliography entries verified via reference-audit tool; no duplicate identifiers. Claim scope reviewed separately."
+    }
+  ],
+  "repository_verification": {
+    "skill_mirror": "14 managed skills exact byte parity",
+    "agent_tests": 104,
+    "skill_tests": 49,
+    "release_gate_tests": 7,
+    "release_gate": "PASS; scientific code unchanged; nine immutable files verified",
+    "test_output_note": "Negative-fixture diagnostics are expected in the skill tests; unittest result OK."
+  },
+  "naming_detector": "Raw fail retained; manual source-backed false-positive adjudication recorded",
+  "new_model_analysis": false,
+  "full_retraining": false,
+  "historical_audits_modified": false
+}

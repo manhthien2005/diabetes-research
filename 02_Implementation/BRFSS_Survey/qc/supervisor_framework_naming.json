@@ -1,0 +1,24 @@
+{
+  "detector": "check_framework_naming",
+  "manuscript": "03_Final_Result\\BRFSS_2025\\BAO_CAO_GVHD_VI.md",
+  "claims": [
+    {
+      "verdict": "BASE_MISSING",
+      "severity": "Major",
+      "detail": "the extension 'TRIPOD+AI' is used but the base instrument 'TRIPOD' is never named standalone (name and cite both)",
+      "where": "TRIPOD+AI"
+    },
+    {
+      "verdict": "CITE_MISSING",
+      "severity": "Minor",
+      "detail": "first use of 'TRIPOD+AI' has no citation marker in its sentence",
+      "where": "TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods."
+    }
+  ],
+  "summary": {
+    "n_claims": 2,
+    "n_major": 1,
+    "n_flag": 1,
+    "verdict": "MAJOR_CANDIDATE"
+  }
+}

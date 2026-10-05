@@ -1,0 +1,515 @@
+{
+  "target_manuscript": "BAO_CAO_GVHD_VI.md",
+  "target_path": "03_Final_Result/BRFSS_2025/BAO_CAO_GVHD_VI.md",
+  "target_version": "v1",
+  "source_sha256": "a568089efab2",
+  "companion_source": {
+    "path": "03_Final_Result/BRFSS_2025/GIAI_THICH_FULL_STUDY_VI.md",
+    "sha256": "d6ac864a8a5f13d651634ebea92b66c7d494eb7a30c5803ff83b06dbebccd29c"
+  },
+  "date": "2026-10-05",
+  "standard": "TRIPOD+AI 2024",
+  "assessment_type": "internal_reporting_map_for_supervisor_report_not_journal_manuscript",
+  "source": "https://www.tripod-statement.org/wp-content/uploads/2024/04/TRIPODAI-Supplement.pdf",
+  "assessed_by": "Codex, direct documentation review; no new independent reviewer",
+  "scope": "User prioritizes understanding and supervisor discussion; no target journal. Frozen science and agreed adjudication unchanged.",
+  "historical_matrix": "astra_reporting_matrix.json (historical package assessment; preserved)",
+  "counts": {
+    "PRESENT": 28,
+    "PARTIAL": 11,
+    "NA": 8,
+    "MISSING": 5
+  },
+  "compliance_pct": 63.6,
+  "percentage_interpretation": "Reporting coverage only, never scientific quality, readiness or publication probability.",
+  "critical_items": {
+    "input_outcome_timing": "PRESENT with explicit cross-sectional/unknown-antecedence limits",
+    "development_evaluation": "PRESENT with A01/A02 limitations; no pristine prespecification claim",
+    "performance_calibration": "PRESENT for aggregate sample; subgroup gap retained"
+  },
+  "items": [
+    {
+      "item": "1",
+      "status": "PRESENT",
+      "location": "Report title",
+      "assessment": "Development/internal evaluation, population and self-reported outcome named."
+    },
+    {
+      "item": "2",
+      "status": "PARTIAL",
+      "location": "Report sections 1–6 (not a structured journal abstract)",
+      "assessment": "Supervisor report is intentionally not a journal abstract. TRIPOD+AI for Abstracts and journal word limit remain future tasks; do not fabricate journal compliance."
+    },
+    {
+      "item": "3a",
+      "status": "PRESENT",
+      "location": "Report 1; Guide 31",
+      "assessment": "Cross-sectional methodological context; limited clinical novelty stated."
+    },
+    {
+      "item": "3b",
+      "status": "PRESENT",
+      "location": "Report 1–2; Guide 4,38",
+      "assessment": "Research/educational benchmark; no intended clinical care pathway."
+    },
+    {
+      "item": "3c",
+      "status": "PARTIAL",
+      "location": "Guide 5,32,34",
+      "assessment": "Social and ascertainment interpretation is explicit; a detailed sourced inequality synthesis is not provided."
+    },
+    {
+      "item": "4",
+      "status": "PRESENT",
+      "location": "Report 1",
+      "assessment": "Development and internal evaluation explicitly distinguished."
+    },
+    {
+      "item": "5a",
+      "status": "PRESENT",
+      "location": "Report 2; Guide 2,32",
+      "assessment": "Public CDC survey; same-source partitions; coverage limits stated."
+    },
+    {
+      "item": "5b",
+      "status": "PRESENT",
+      "location": "Report 2; Guide dates paragraph",
+      "assessment": "IDATE range2025-01-05 through2026-03-16 for raw and eligible samples; zero unparseable dates. Release year differs from interview calendar range."
+    },
+    {
+      "item": "6a",
+      "status": "PRESENT",
+      "location": "Report 2",
+      "assessment": "47 states, DC, Guam and Puerto Rico; public general-population survey."
+    },
+    {
+      "item": "6b",
+      "status": "PRESENT",
+      "location": "Report 2; Guide 3",
+      "assessment": "DIABETE4 1 versus 3; other codes excluded; counts verified."
+    },
+    {
+      "item": "6c",
+      "status": "NA",
+      "location": "Report 2; no intervention protocol",
+      "assessment": "No treatment/intervention protocol in this descriptive survey benchmark."
+    },
+    {
+      "item": "7",
+      "status": "PARTIAL",
+      "location": "Guide 7–9; linked variable/data evidence",
+      "assessment": "Shared recoding and aggregate source checks are described. Demographic-specific data-quality checks were not performed."
+    },
+    {
+      "item": "8a",
+      "status": "PARTIAL",
+      "location": "Report 2; Guide 3–4",
+      "assessment": "Outcome and cross-sectional horizon are explicit; subgroup measurement invariance is unassessed and no laboratory confirmation is claimed."
+    },
+    {
+      "item": "8b",
+      "status": "NA",
+      "location": "Guide 3; no clinician adjudication",
+      "assessment": "Respondent survey answer; no study-specific clinician adjudication."
+    },
+    {
+      "item": "8c",
+      "status": "PRESENT",
+      "location": "Guide 3 blinding statement",
+      "assessment": "Explicitly reports that no study-specific blinded outcome assessment was designed; no interviewer blinding is inferred. Reporting presence does not establish blinding."
+    },
+    {
+      "item": "9a",
+      "status": "PRESENT",
+      "location": "Guide 5,8",
+      "assessment": "Full-data coverage inspection and qualitative selection are disclosed. Prior counterfactual retained the same 20 conditional on qualitative choices; threshold alone admits 31."
+    },
+    {
+      "item": "9b",
+      "status": "PARTIAL",
+      "location": "Guide 5–7; linked variable audit",
+      "assessment": "All 20 constructs and missingness documented, full recodes linked. Antecedence to diagnosis remains unknown and is explicitly limited."
+    },
+    {
+      "item": "9c",
+      "status": "NA",
+      "location": "Guide 3,5; survey/coded variables",
+      "assessment": "Standardized respondent-reported and calculated variables; no study-specific adjudicators."
+    },
+    {
+      "item": "10",
+      "status": "PARTIAL",
+      "location": "Guide 36",
+      "assessment": "All eligible records used; 274031 development records and 41462 events documented. No formal precision or model-specific sample-size calculation."
+    },
+    {
+      "item": "11",
+      "status": "PRESENT",
+      "location": "Report 2; Guide 5,7,9",
+      "assessment": "Numeric median within train/folds, categorical missing class; target exclusions explicit."
+    },
+    {
+      "item": "12a",
+      "status": "PRESENT",
+      "location": "Report 2; Guide 8,11,49",
+      "assessment": "Training/fold isolation distinguished from A01 test exposure; no categorical claim of demonstrated adaptive model selection."
+    },
+    {
+      "item": "12b",
+      "status": "PRESENT",
+      "location": "Guide 5,9",
+      "assessment": "Four scaled numeric, sixteen one-hot categorical predictors."
+    },
+    {
+      "item": "12c",
+      "status": "PRESENT",
+      "location": "Guide 13–19,49; seven frozen model JSON files",
+      "assessment": "All seven approaches separately described with principal parameters; exact immutable configurations linked. No family-wide optimization claim."
+    },
+    {
+      "item": "12d",
+      "status": "PARTIAL",
+      "location": "Report 5; Guide 32–34",
+      "assessment": "Absence of state/cluster heterogeneity evaluation disclosed; the analysis itself remains unavailable."
+    },
+    {
+      "item": "12e",
+      "status": "PRESENT",
+      "location": "Report 3–4; Guide 20–28, supplement README",
+      "assessment": "Metrics, conditional bootstrap, multiplicity, calibration equations and interpretation explicit."
+    },
+    {
+      "item": "12f",
+      "status": "NA",
+      "location": "Report 4; Guide 49",
+      "assessment": "No updating or recalibration of model predictions."
+    },
+    {
+      "item": "12g",
+      "status": "PRESENT",
+      "location": "Guide 18,21,49",
+      "assessment": "predict_proba or SVM decision_function; frozen paired scores verified."
+    },
+    {
+      "item": "13",
+      "status": "PRESENT",
+      "location": "Report 2; Guide 10",
+      "assessment": "No class rebalancing/weighting; original class distribution and rationale retained."
+    },
+    {
+      "item": "14",
+      "status": "PRESENT",
+      "location": "Guide 34,38; Report 5",
+      "assessment": "Explicitly reports no subgroup/fairness evaluation or fairness intervention; no fairness claim. This fulfills disclosure of approaches used (none), not evidence of fairness."
+    },
+    {
+      "item": "15",
+      "status": "PRESENT",
+      "location": "Report 2–3; Guide 21,38",
+      "assessment": "Probability0.5 or SVM native margin0; conventional comparison boundary, no clinical optimum asserted."
+    },
+    {
+      "item": "16",
+      "status": "PRESENT",
+      "location": "Report 2; Guide 8; linked characteristics CSV",
+      "assessment": "Same source/definitions/eligibility; random partition, not external evaluation."
+    },
+    {
+      "item": "17",
+      "status": "MISSING",
+      "location": "AUTHOR_COMPLETION_CHECKLIST.md; no author determination supplied",
+      "assessment": "Author/institution ethics and consent determination remains unknown; no waiver or approval invented. Not a prerequisite for reading the internal report."
+    },
+    {
+      "item": "18a",
+      "status": "MISSING",
+      "location": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "Funding and funder role require author confirmation; not inferred as none."
+    },
+    {
+      "item": "18b",
+      "status": "MISSING",
+      "location": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "All-author disclosures require confirmation; not inferred as none."
+    },
+    {
+      "item": "18c",
+      "status": "PARTIAL",
+      "location": "FINAL_CONSENSUS.md; AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "Git history and prespecification uncertainty disclosed. Existence/location of any prospective protocol still requires authors."
+    },
+    {
+      "item": "18d",
+      "status": "MISSING",
+      "location": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "Registration or confirmed unregistered status requires authors."
+    },
+    {
+      "item": "18e",
+      "status": "PRESENT",
+      "location": "Guide 39,50; supplement README",
+      "assessment": "Source URLs, hashes, artifact retrieval and finite retention disclosed. Durable archive not created in this task."
+    },
+    {
+      "item": "18f",
+      "status": "PRESENT",
+      "location": "Guide 49–50; canonical notebook and supplement README",
+      "assessment": "Existing analysis code and reported environment/seeds linked. No new analysis code or model training in this documentation task."
+    },
+    {
+      "item": "19",
+      "status": "MISSING",
+      "location": "AUTHOR_COMPLETION_CHECKLIST.md",
+      "assessment": "PPI involvement or confirmed absence requires authors."
+    },
+    {
+      "item": "20a",
+      "status": "PRESENT",
+      "location": "Guide 3,8; Report 2",
+      "assessment": "Full attrition/event counts independently reproduced; no longitudinal follow-up."
+    },
+    {
+      "item": "20b",
+      "status": "PARTIAL",
+      "location": "Guide 5; linked characteristics CSV; Report 2",
+      "assessment": "All 20 predictor missingness values given; distributions across cohort/train/test linked. Cross-demographic summaries remain absent."
+    },
+    {
+      "item": "20c",
+      "status": "PRESENT",
+      "location": "Guide 50; linked overall/train/test characteristics CSV",
+      "assessment": "Matched development/evaluation descriptive distributions provided."
+    },
+    {
+      "item": "21",
+      "status": "PRESENT",
+      "location": "Guide 8,11,36; frozen CV fold summary",
+      "assessment": "Full/train/test event counts and CV fold counts available; no tuning sample."
+    },
+    {
+      "item": "22",
+      "status": "PARTIAL",
+      "location": "Guide 39,49",
+      "assessment": "Configurations and code permit retraining, not direct use of saved historical fitted pipelines. No serialized estimators available."
+    },
+    {
+      "item": "23a",
+      "status": "PARTIAL",
+      "location": "Report 3–4; Guide 13–29; linked frozen summaries",
+      "assessment": "Aggregate estimates, paired intervals, calibration and figure paths given. Subgroup confidence intervals absent; bootstrap conditional scope explicit."
+    },
+    {
+      "item": "23b",
+      "status": "NA",
+      "location": "Report 5; Guide 34",
+      "assessment": "Cluster heterogeneity not examined; not evidence of homogeneous performance."
+    },
+    {
+      "item": "24",
+      "status": "NA",
+      "location": "Guide 49; no updating",
+      "assessment": "No model updating performed."
+    },
+    {
+      "item": "25",
+      "status": "PRESENT",
+      "location": "Report 6; Guide 31,37–38",
+      "assessment": "Descriptive, metric-specific interpretation; no overall superiority/equivalence and no fairness or deployment claim."
+    },
+    {
+      "item": "26",
+      "status": "PRESENT",
+      "location": "Report 5; Guide 8,32–36,42,44",
+      "assessment": "Current consensus wording used. Historical numerical readiness scores withdrawn; limitations are not relabelled as proven major defects."
+    },
+    {
+      "item": "27a",
+      "status": "NA",
+      "location": "Guide 38; research-only intended use",
+      "assessment": "No clinical implementation proposed; current preprocessing is not a deployment safety protocol."
+    },
+    {
+      "item": "27b",
+      "status": "NA",
+      "location": "Guide 38; no clinical end users",
+      "assessment": "Research-only benchmark; clinical end-user requirements not specified."
+    },
+    {
+      "item": "27c",
+      "status": "PRESENT",
+      "location": "Report 6; Guide 48",
+      "assessment": "Supervisor discussion prioritizes defining the next question before experiments, not an automatic external-validation requirement for current scope."
+    }
+  ],
+  "action_items": [
+    {
+      "item": "2",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Supervisor report is intentionally not a journal abstract. TRIPOD+AI for Abstracts and journal word limit remain future tasks; do not fabricate journal compliance.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "3c",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Social and ascertainment interpretation is explicit; a detailed sourced inequality synthesis is not provided.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "7",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Shared recoding and aggregate source checks are described. Demographic-specific data-quality checks were not performed.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "8a",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Outcome and cross-sectional horizon are explicit; subgroup measurement invariance is unassessed and no laboratory confirmation is claimed.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "9b",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "All 20 constructs and missingness documented, full recodes linked. Antecedence to diagnosis remains unknown and is explicitly limited.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "10",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "All eligible records used; 274031 development records and 41462 events documented. No formal precision or model-specific sample-size calculation.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "12d",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Absence of state/cluster heterogeneity evaluation disclosed; the analysis itself remains unavailable.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "17",
+      "status": "MISSING",
+      "owner": "author",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Author/institution ethics and consent determination remains unknown; no waiver or approval invented. Not a prerequisite for reading the internal report.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "18a",
+      "status": "MISSING",
+      "owner": "author",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Funding and funder role require author confirmation; not inferred as none.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "18b",
+      "status": "MISSING",
+      "owner": "author",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "All-author disclosures require confirmation; not inferred as none.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "18c",
+      "status": "PARTIAL",
+      "owner": "author",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Git history and prespecification uncertainty disclosed. Existence/location of any prospective protocol still requires authors.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "18d",
+      "status": "MISSING",
+      "owner": "author",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Registration or confirmed unregistered status requires authors.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "19",
+      "status": "MISSING",
+      "owner": "author",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "PPI involvement or confirmed absence requires authors.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "20b",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "All 20 predictor missingness values given; distributions across cohort/train/test linked. Cross-demographic summaries remain absent.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "22",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Configurations and code permit retraining, not direct use of saved historical fitted pipelines. No serialized estimators available.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    },
+    {
+      "item": "23a",
+      "status": "PARTIAL",
+      "owner": "future_scope_or_reporting_decision",
+      "fixable_by_ai": false,
+      "required_for_current_supervisor_reading": false,
+      "suggested_fix": "Aggregate estimates, paired intervals, calibration and figure paths given. Subgroup confidence intervals absent; bootstrap conditional scope explicit.",
+      "resolution": "Retain disclosed gap; obtain author facts or define a future analysis/reporting scope. Do not invent findings."
+    }
+  ],
+  "consensus_verdict": "MINOR REVISION FOR STATED SCOPE",
+  "submission_ready": false,
+  "new_analysis": false,
+  "code_edits": false,
+  "framework_naming": {
+    "raw_result": "supervisor_framework_naming.json",
+    "automatic_exit_code": 1,
+    "adjudication": "FALSE_POSITIVES_NOT_STUDY_DEFECTS",
+    "items": [
+      {
+        "verdict": "BASE_MISSING",
+        "resolution": "Not applicable: TRIPOD+AI 2024 supersedes TRIPOD 2015. Vendored checklist introduction and official guideline govern over detector table which wrongly treats it as an additive extension.",
+        "evidence": [
+          ".agents/skills/check-reporting/references/checklists/TRIPOD_AI.md:12",
+          ".agents/skills/check-reporting/scripts/check_framework_naming.py:47"
+        ]
+      },
+      {
+        "verdict": "CITE_MISSING",
+        "resolution": "First occurrence is the full bibliographic reference R3, including authors, journal/year and linked DOI in the same reference entry. Sentence-based citation-marker heuristic is not appropriate for a reference-list title."
+      }
+    ],
+    "code_changed": false,
+    "consensus_reopened": false
+  }
+}
