@@ -8,8 +8,9 @@ This folder is the **entry point for senior-agent / reviewer audit** of the froz
 
 1. [Báo cáo ngắn bằng tiếng Việt](BAO_CAO_GVHD_VI.md) — question, design, results, limitations and discussion with the supervisor.
 2. [Giải thích toàn bộ study](GIAI_THICH_FULL_STUDY_VI.md) — guided reading, exact predictors, concrete metric examples, model mechanics and oral-defense questions.
-3. [Final two-reviewer consensus](FINAL_CONSENSUS.md) — current verdict and claim boundary.
-4. [Documentation/reporting check](../../02_Implementation/BRFSS_Survey/qc/supervisor_reporting_review.md) — internal working audit, not a journal checklist or a scientific readiness score.
+3. [Ma trận so sánh 7 model bằng tiếng Việt](outputs/model-matrix-20261007/MA_TRAN_7_MODEL_BRFSS_VI.xlsx) — mechanisms, actual configurations, nine test metrics, confusion counts, strengths and limits. Includes a guide to metrics and complete estimator settings.
+4. [Final two-reviewer consensus](FINAL_CONSENSUS.md) — current verdict and claim boundary.
+5. [Documentation/reporting check](../../02_Implementation/BRFSS_Survey/qc/supervisor_reporting_review.md) — internal working audit, not a journal checklist or a scientific readiness score.
 
 This is an empirical benchmark using survey data, not a completed systematic literature survey. A supervisor-facing report is available; a journal manuscript and author declarations remain separate future work.
 
