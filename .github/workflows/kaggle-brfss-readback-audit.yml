@@ -3,7 +3,7 @@ name: Audit BRFSS Canonical Outputs
 on:
   push:
     branches:
-      - implement/BRFSS_survey
+      - main
     paths:
       - .github/workflows/kaggle-brfss-readback-audit.yml
   workflow_dispatch:
@@ -22,12 +22,12 @@ jobs:
     env:
       KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
       KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-      KERNEL_REF: manhthien2005/brfss-2025-diabetes-classification
+      KERNEL_REF: phaninmnhthink16/brfss-2025-diabetes-classification
 
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: implement/BRFSS_survey
+          ref: ${{ github.sha }}
           fetch-depth: 1
           lfs: false
 

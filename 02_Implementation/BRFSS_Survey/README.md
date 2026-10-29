@@ -74,11 +74,13 @@ The 15.13% diabetes fraction is an **unweighted modeling-sample proportion**, no
 
 ## Kaggle / GitHub execution
 
-- Private dataset: https://www.kaggle.com/datasets/manhthien2005/brfss-2025-survey
-- Canonical kernel id: `manhthien2005/brfss-2025-diabetes-classification`
+- Publication dataset: https://www.kaggle.com/datasets/phaninmnhthink16/brfss-2025-survey
+- Publication kernel id: `phaninmnhthink16/brfss-2025-diabetes-classification`
 - Workflow: `.github/workflows/kaggle-brfss-bootstrap.yml`
 
 The workflow uses the existing legacy `KAGGLE_USERNAME` and `KAGGLE_KEY` GitHub secrets. Secret values are never committed.
+
+The verified-account publication configuration was updated on 2026-10-29. Manual runs check out their exact triggering commit. Before creating the public dataset, the workflow restores only the frozen source ZIP from Git LFS and verifies both ZIP and normalized XPT sizes and SHA-256 hashes. The notebook's executable code and historical result/provenance records remain unchanged. Publication and numerical reproduction must be confirmed from the new run and separate read-back audit.
 
 ## Directory layout
 

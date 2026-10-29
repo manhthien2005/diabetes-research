@@ -1,8 +1,8 @@
 {
   "title": "BRFSS 2025 Diabetes Survey",
   "subtitle": "Official CDC BRFSS 2025 public-use survey archive for diabetes ML research",
-  "description": "Official 2025 Behavioral Risk Factor Surveillance System (BRFSS) public-use SAS Transport archive published by the U.S. CDC. This Kaggle dataset is a private working copy for reproducible exploratory analysis and model development. Source documentation: https://www.cdc.gov/brfss/annual_data/annual_2025.html. License is marked as Other; users should follow the CDC's applicable public-use terms and documentation.",
-  "id": "manhthien2005/brfss-2025-survey",
+  "description": "Official 2025 Behavioral Risk Factor Surveillance System (BRFSS) public-use SAS Transport data published by the U.S. CDC. This public research copy preserves the original XPT payload byte-for-byte, with its filename normalized to LLCP2025.XPT. Source documentation: https://www.cdc.gov/brfss/annual_data/annual_2025.html. License is marked as Other; users should follow the CDC's applicable public-use terms and documentation.",
+  "id": "phaninmnhthink16/brfss-2025-survey",
   "licenses": [
     {
       "name": "other"
@@ -10,8 +10,8 @@
   ],
   "resources": [
     {
-      "path": "LLCP2025XPT.zip",
-      "description": "Original CDC BRFSS 2025 SAS Transport ZIP archive, preserved byte-for-byte."
+      "path": "LLCP2025.XPT",
+      "description": "Original CDC BRFSS 2025 SAS Transport payload, preserved byte-for-byte; SHA-256 d99262f8854f018a600c3538ee78e4308569af700abe6b92b36180336c24dec2."
     }
   ],
   "keywords": [

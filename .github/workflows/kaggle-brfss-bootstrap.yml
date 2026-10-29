@@ -3,7 +3,7 @@ name: Run BRFSS 2025 Full Study
 on:
   push:
     branches:
-      - implement/BRFSS_survey
+      - main
     paths:
       - 02_Implementation/BRFSS_Survey/kaggle/dataset/dataset-metadata.json
       - 02_Implementation/BRFSS_Survey/kaggle/notebook/kernel-metadata.json
@@ -24,8 +24,8 @@ jobs:
     env:
       KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
       KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-      DATASET_REF: manhthien2005/brfss-2025-survey
-      KERNEL_REF: manhthien2005/brfss-2025-diabetes-classification
+      DATASET_REF: phaninmnhthink16/brfss-2025-survey
+      KERNEL_REF: phaninmnhthink16/brfss-2025-diabetes-classification
       ZIP_PATH: 02_Implementation/BRFSS_Survey/data/raw/LLCP2025XPT.zip
       DATASET_METADATA: 02_Implementation/BRFSS_Survey/kaggle/dataset/dataset-metadata.json
       NOTEBOOK_DIR: 02_Implementation/BRFSS_Survey/kaggle/notebook
@@ -34,7 +34,7 @@ jobs:
       - name: Checkout branch without downloading all LFS objects
         uses: actions/checkout@v4
         with:
-          ref: implement/BRFSS_survey
+          ref: ${{ github.sha }}
           fetch-depth: 2
           lfs: false
 
@@ -144,9 +144,71 @@ jobs:
           unset KAGGLE_API_TOKEN || true
           test -n "${KAGGLE_USERNAME:-}"
           test -n "${KAGGLE_KEY:-}"
+          test "$KAGGLE_USERNAME" = "phaninmnhthink16"
           kaggle kernels list -m --page-size 1 >/dev/null
-          kaggle datasets status "$DATASET_REF"
-          kaggle datasets files "$DATASET_REF" -v | grep -F "LLCP2025.XPT"
+          echo "Authenticated with the expected verified Kaggle account."
+
+      - name: Restore and verify frozen source data
+        if: steps.study_change.outputs.run_kaggle == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs pull --include="$ZIP_PATH" --exclude=""
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import shutil
+          import zipfile
+          from pathlib import Path
+
+          archive = Path(os.environ["ZIP_PATH"])
+          expected_zip = "d26a8b391aa2966b58dc2a3ffddf8da050e9f38eb143d0f5ca7b3d21ece08f98"
+          expected_xpt = "d99262f8854f018a600c3538ee78e4308569af700abe6b92b36180336c24dec2"
+          def digest(path):
+              with path.open("rb") as stream:
+                  return hashlib.file_digest(stream, "sha256").hexdigest()
+
+          assert archive.stat().st_size == 64642184, "Frozen ZIP size mismatch"
+          assert digest(archive) == expected_zip, "Frozen ZIP checksum mismatch"
+          upload = Path(os.environ["RUNNER_TEMP"]) / "brfss-kaggle-dataset"
+          upload.mkdir(parents=True, exist_ok=True)
+          xpt = upload / "LLCP2025.XPT"
+          with zipfile.ZipFile(archive) as source:
+              members = [m for m in source.infolist() if m.filename.strip() == xpt.name]
+              assert len(members) == 1, "Expected exactly one frozen XPT member"
+              with source.open(members[0]) as src, xpt.open("wb") as dst:
+                  shutil.copyfileobj(src, dst)
+          assert xpt.stat().st_size == 799971280, "Frozen XPT size mismatch"
+          assert digest(xpt) == expected_xpt, "Frozen XPT checksum mismatch"
+          metadata = Path(os.environ["DATASET_METADATA"])
+          assert json.loads(metadata.read_text())["id"] == os.environ["DATASET_REF"]
+          shutil.copyfile(metadata, upload / "dataset-metadata.json")
+          print("Frozen ZIP and normalized XPT: size and SHA-256 verified.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"DATASET_UPLOAD_DIR={upload}\n")
+          PY
+
+      - name: Create public dataset in verified account
+        if: steps.study_change.outputs.run_kaggle == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset KAGGLE_API_TOKEN || true
+          if kaggle datasets status "$DATASET_REF"; then
+            echo "Dataset already exists; preserving its versions. Notebook verifies the input checksum."
+          else
+            kaggle datasets create -p "$DATASET_UPLOAD_DIR" --public --keep-tabular
+          fi
+          READY=0
+          for attempt in $(seq 1 40); do
+            if kaggle datasets files "$DATASET_REF" -v | grep -F "LLCP2025.XPT"; then
+              READY=1
+              break
+            fi
+            sleep 15
+          done
+          test "$READY" = "1"
 
       - name: Push canonical study notebook
         if: steps.study_change.outputs.run_kaggle == 'true'
