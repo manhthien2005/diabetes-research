@@ -1,0 +1,66 @@
+{
+  "record_type": "kaggle_account_migration_launch_record",
+  "updated_at_utc": "2026-10-29T09:37:43.356012+00:00",
+  "authorized_by": "Explicit user request on 2026-10-29; user supplied new username and confirmed two GitHub secrets updated.",
+  "source_commit": "621ffe48a35bb25420dd56812de095233c8800d0",
+  "source_branch": "codex/kaggle-verified-account",
+  "notebook_path": "02_Implementation/BRFSS_Survey/kaggle/notebook/BRFSS_2025_Diabetes_Classification.ipynb",
+  "notebook_git_blob_sha256": "05415f4c2ff1e6e0de81acf7661577d6e5b26cffde51a8ea42b83c7dec8f5822",
+  "scientific_notebook_unchanged": true,
+  "frozen_baseline": {
+    "audit_run_id": 37183093668,
+    "artifact_id": 11295688140,
+    "local_download_file_count": 93
+  },
+  "publication": {
+    "account": "phaninmnhthink16",
+    "dataset_url": "https://www.kaggle.com/datasets/phaninmnhthink16/brfss-2025-survey",
+    "notebook_url": "https://www.kaggle.com/code/phaninmnhthink16/brfss-2025-diabetes-classification",
+    "dataset_public_without_authentication": true,
+    "dataset_version": 1,
+    "notebook_version_id_observed_in_public_browser": 363444799,
+    "public_browser_observation": "Signed-out browser displayed notebook title, author, Copy & Edit link, and active execution status."
+  },
+  "execution": {
+    "run_id": 40849542506,
+    "url": "https://github.com/manhthien2005/diabetes-research/actions/runs/40849542506",
+    "source_commit": "621ffe48a35bb25420dd56812de095233c8800d0",
+    "status_at_recording": "in_progress",
+    "conclusion_at_recording": null,
+    "current_steps": [
+      "Wait for canonical notebook"
+    ]
+  },
+  "completed_remote_checks": [
+    "Set up job",
+    "Checkout branch without downloading all LFS objects",
+    "Set up Python",
+    "Detect executable study changes",
+    "Install Kaggle CLI",
+    "Validate canonical notebook syntax",
+    "Validate Kaggle access",
+    "Restore and verify frozen source data",
+    "Create public dataset in verified account",
+    "Push canonical study notebook"
+  ],
+  "local_validation": {
+    "managed_skill_mirror": "PASS; 14 managed skills",
+    "agent_governance_tests": "PASS; 104 tests",
+    "workflow_yaml_and_embedded_python": "PASS",
+    "notebook_code_cell_syntax": "PASS"
+  },
+  "reproduction_status": "pending; independent read-back audit is already running and will verify frozen metrics after notebook completion",
+  "historical_outputs_preserved": true,
+  "credentials_included": false,
+  "automatic_readback_audit": {
+    "run_id": 40850993335,
+    "url": "https://github.com/manhthien2005/diabetes-research/actions/runs/40850993335",
+    "source_commit": "6f76f2ba48c8dbca9ec8f2f79039c1e65df71566",
+    "status_at_recording": "in_progress",
+    "conclusion_at_recording": null,
+    "current_steps": [
+      "Download completed canonical outputs"
+    ]
+  },
+  "publication_scope_status": "PASS: API authentication, frozen source integrity, public dataset creation, public notebook push, and signed-out access verified"
+}
