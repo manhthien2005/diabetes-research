@@ -7,6 +7,11 @@ on:
     paths:
       - .github/workflows/kaggle-brfss-readback-audit.yml
   workflow_dispatch:
+    inputs:
+      wait_for_completion:
+        description: Wait for an already running canonical notebook before auditing
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -18,7 +23,7 @@ concurrency:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 180
     env:
       KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
       KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
@@ -43,9 +48,26 @@ jobs:
         run: |
           set -euo pipefail
           unset KAGGLE_API_TOKEN || true
-          STATUS="$(kaggle kernels status "$KERNEL_REF")"
-          echo "$STATUS"
-          echo "$STATUS" | grep -Eqi 'complete|success'
+          ATTEMPTS=1
+          if [ "${{ inputs.wait_for_completion }}" = "true" ]; then
+            ATTEMPTS=720
+          fi
+          COMPLETE=0
+          for attempt in $(seq 1 "$ATTEMPTS"); do
+            STATUS="$(kaggle kernels status "$KERNEL_REF")"
+            echo "Attempt $attempt: $STATUS"
+            if echo "$STATUS" | grep -Eqi 'complete|success'; then
+              COMPLETE=1
+              break
+            fi
+            if echo "$STATUS" | grep -Eqi 'error|failed|cancel'; then
+              exit 1
+            fi
+            if [ "$attempt" -lt "$ATTEMPTS" ]; then
+              sleep 15
+            fi
+          done
+          test "$COMPLETE" = "1"
 
           rm -rf /tmp/brfss-output
           mkdir -p /tmp/brfss-output
