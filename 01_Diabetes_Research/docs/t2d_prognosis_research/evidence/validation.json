@@ -1,0 +1,68 @@
+{
+  "record_type": "research_dossier_setup_validation",
+  "as_of": "2026-11-03",
+  "scope": "Initial research and learning package; not a prediction-model, clinical-validity or final-protocol audit.",
+  "result": "passed",
+  "checks": {
+    "json_parsing": {
+      "result": "passed",
+      "files_before_this_report": 4
+    },
+    "claim_provenance": {
+      "result": "passed",
+      "claims": 20,
+      "schema": "docs/agent/schemas/claim_provenance.schema.json",
+      "method": "Standard-library recursive validation of every keyword used in the current schema: type, required, properties, additionalProperties and enum; fails on unsupported keywords.",
+      "limitations": "The bundled Python interpreter does not include jsonschema; no dependency was installed. Structural validation does not verify truth of source claims."
+    },
+    "local_markdown_links": {
+      "result": "passed",
+      "checked": 24,
+      "missing": 0
+    },
+    "utf8_text": {
+      "result": "passed",
+      "replacement_characters_found": false
+    },
+    "reference_identity": {
+      "result": "PubMed and CrossRef metadata matched for 8 included literature records",
+      "details": "evidence/literature_scan.json",
+      "limitations": "Not an exhaustive correction/retraction or full risk-of-bias audit."
+    },
+    "repository_agents": {
+      "command": "python -m unittest discover -s scripts/agents -p test_*.py",
+      "exit_code": 0,
+      "tests": 104
+    },
+    "repository_skills": {
+      "command": "python -m unittest discover -s scripts/skills -p test_*.py",
+      "exit_code": 0,
+      "tests": 49,
+      "note": "Negative fixture cases intentionally print validation/parity errors; the suite result is OK."
+    },
+    "managed_skill_mirrors": {
+      "command": "python scripts/skills/research_skill_mirror.py --check",
+      "exit_code": 0,
+      "managed_skills": 14,
+      "result": "exact byte parity"
+    },
+    "git_whitespace": {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    "preexisting_tracked_edits": {
+      "result": "unchanged SHA256",
+      "files": {
+        "AGENTS.md": "82676D412966BD6819A6FEDFFDDF154647442AA96FBFAD160B973DC3C02BB275",
+        "README.md": "D2381164B40C679DDAF20D7E91E275B4DDFA455DE29BCF88950C680115DD11F4",
+        "docs/agent/REPOSITORY_MAP.md": "EF09D5C5BC66F152E5180EA606AD7067C8329B43F38FF3A8A05E133FBBEBA2A1"
+      }
+    }
+  },
+  "remaining_work": [
+    "Selected full-text methodological appraisal of the closest studies",
+    "Access and row-level dataset feasibility audit",
+    "Clinical-use and contribution assessment",
+    "Human decision on the final study scope"
+  ]
+}

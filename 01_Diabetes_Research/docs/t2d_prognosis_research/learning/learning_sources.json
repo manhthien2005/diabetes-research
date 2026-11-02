@@ -1,0 +1,171 @@
+{
+  "record_type": "educational_source_log",
+  "created_on": "2026-11-03",
+  "language": "en",
+  "purpose": "Primary-source reading log for introductory Vietnamese learning materials about incident type 2 diabetes prognosis and survival analysis.",
+  "scope_status": "Educational notes only; not a finalized protocol, dataset selection, model selection, or frozen prediction horizon.",
+  "working_horizon": {
+    "years": 5,
+    "status": "provisional_illustration_not_frozen"
+  },
+  "example_provenance": "All four-person tables and numerical teaching examples in the learning materials are explicitly fictional, authored for teaching, and are not empirical evidence or model results.",
+  "sources": [
+    {
+      "source_id": "learn_sksurv_intro",
+      "title": "Introduction to Survival Analysis with scikit-survival",
+      "url": "https://scikit-survival.readthedocs.io/en/stable/user_guide/00-introduction.html",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_software_documentation",
+      "access_status": "page_opened",
+      "read_locations": ["What is Survival Analysis?", "Survival Data"],
+      "what_was_read": "Right-censored observations retain information up to last follow-up; the survival target combines an observed duration with an event indicator.",
+      "used_for": ["LEARNING_PATH_VI.md", "GLOSSARY_VI.md", "LESSON_01_VI.md"],
+      "limits": "Methods teaching only; no example disease, sample size, or performance result is transferred to the proposed T2D research."
+    },
+    {
+      "source_id": "learn_sksurv_predictions",
+      "title": "Understanding Predictions in Survival Analysis",
+      "url": "https://scikit-survival.readthedocs.io/en/stable/user_guide/understanding_predictions.html",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_software_documentation",
+      "access_status": "page_opened",
+      "read_locations": ["Basic Quantities", "Predictions"],
+      "what_was_read": "Definitions of survival, hazard, cumulative hazard, and the role of covariates in Cox predictions. Hazard is treated as an instantaneous rate, not an absolute probability.",
+      "used_for": ["LEARNING_PATH_VI.md", "GLOSSARY_VI.md", "LESSON_01_VI.md"],
+      "limits": "The complement of a single-event survival estimate is not automatically an event-specific cumulative incidence in the presence of competing risks."
+    },
+    {
+      "source_id": "learn_sksurv_evaluation",
+      "title": "Evaluating Survival Models",
+      "url": "https://scikit-survival.readthedocs.io/en/stable/user_guide/evaluating-survival-models.html",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_software_documentation",
+      "access_status": "page_opened",
+      "read_locations": ["Opening metric overview", "Bias of Harrell's Concordance Index"],
+      "what_was_read": "C-index, censoring-related limitations, cumulative/dynamic AUC, and time-dependent/integrated Brier scores; discrimination does not establish calibration.",
+      "used_for": ["LEARNING_PATH_VI.md", "GLOSSARY_VI.md", "LESSON_01_VI.md"],
+      "limits": "No metric result or preferred estimator for a specific unselected dataset is asserted."
+    },
+    {
+      "source_id": "learn_sksurv_competing",
+      "title": "Analysis of Competing Risks",
+      "url": "https://scikit-survival.readthedocs.io/en/stable/user_guide/competing-risks.html",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_software_documentation",
+      "access_status": "page_opened",
+      "read_locations": ["Opening definition of competing risks", "Non-parametric Estimator of the Cumulative Incidence Function"],
+      "what_was_read": "A competing event can prevent an event of interest; ordinary censoring of competing events followed by one minus Kaplan-Meier does not yield the real-world event-specific cumulative incidence.",
+      "used_for": ["GLOSSARY_VI.md", "LESSON_01_VI.md"],
+      "limits": "A teaching caveat, not a mandatory finalized competing-risk analysis plan for the proposed research."
+    },
+    {
+      "source_id": "learn_lifelines_regression",
+      "title": "Survival regression",
+      "url": "https://lifelines.readthedocs.io/en/latest/Survival%20Regression.html",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_software_documentation",
+      "access_status": "page_opened",
+      "read_locations": ["Cox's proportional hazard model", "Fitting the regression: formulas and interactions", "Interpretation"],
+      "what_was_read": "Cox baseline hazard and covariate effects; formula-based interactions and spline support; interpretation of exponentiated coefficients as hazard ratios.",
+      "used_for": ["LEARNING_PATH_VI.md", "GLOSSARY_VI.md", "LESSON_01_VI.md"],
+      "limits": "Cox is introduced as a reference model, not selected as the final method."
+    },
+    {
+      "source_id": "learn_lifelines_ph",
+      "title": "Testing the proportional hazard assumptions",
+      "url": "https://lifelines.readthedocs.io/en/latest/jupyter_notebooks/Proportional%20hazard%20assumption.html",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_software_documentation",
+      "access_status": "page_opened",
+      "read_locations": ["Assumption checking discussion", "Modify the functional form"],
+      "what_was_read": "Functional-form misspecification and nonlinear predictor terms; spline example; distinction between nonlinear covariate effects and proportional hazards over time.",
+      "used_for": ["LEARNING_PATH_VI.md", "GLOSSARY_VI.md"],
+      "limits": "No assumption test was performed, and no conclusion about an unselected dataset is drawn."
+    },
+    {
+      "source_id": "learn_lifelines_interval",
+      "title": "Estimating univariate models: Interval censored data",
+      "url": "https://lifelines.readthedocs.io/en/latest/Survival%20analysis%20with%20lifelines.html#interval-censored-data",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_software_documentation",
+      "access_status": "page_opened",
+      "read_locations": ["Other types of censoring", "Interval censored data"],
+      "what_was_read": "Event times may be bounded between observation periods rather than exactly observed; interval-censored data require a different representation from ordinary right-censored data.",
+      "used_for": ["GLOSSARY_VI.md", "LESSON_01_VI.md"],
+      "limits": "The teaching table explicitly distinguishes recorded detection time from an interval-bounded state transition and does not claim to observe biological onset."
+    },
+    {
+      "source_id": "learn_sklearn_leakage",
+      "title": "Common pitfalls and recommended practices: Data leakage",
+      "url": "https://scikit-learn.org/stable/common_pitfalls.html#data-leakage",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_software_documentation",
+      "access_status": "page_opened",
+      "read_locations": ["12.2 Data leakage", "12.2.1 How to avoid data leakage", "12.2.2 Data leakage during pre-processing"],
+      "what_was_read": "Split before learned preprocessing; fit transformations and feature selection using training partitions only; pipelines help preserve separation in cross-validation and tuning.",
+      "used_for": ["LEARNING_PATH_VI.md", "GLOSSARY_VI.md", "LESSON_01_VI.md"],
+      "limits": "No code, dependencies, or model pipeline were introduced. Final-test tuning restrictions also follow repository EXPERIMENT_POLICY.md."
+    },
+    {
+      "source_id": "learn_tripod_official",
+      "title": "TRIPOD statement official website: TRIPOD+AI overview",
+      "url": "https://www.tripod-statement.org/",
+      "accessed_on": "2026-11-03",
+      "source_type": "official_reporting_guideline_website",
+      "access_status": "page_opened",
+      "read_locations": ["TRIPOD+AI overview", "Key Documents links"],
+      "what_was_read": "TRIPOD+AI provides a harmonized reporting checklist for regression and machine-learning prediction models and replaces the 2015 checklist.",
+      "used_for": ["LEARNING_PATH_VI.md", "GLOSSARY_VI.md"],
+      "limits": "Reporting guidance does not certify methodological validity or clinical readiness."
+    },
+    {
+      "source_id": "learn_tripod_statement",
+      "title": "TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11019967/",
+      "verification_url": "https://pubmed.ncbi.nlm.nih.gov/38626948/",
+      "doi": "10.1136/bmj-2023-078378",
+      "pmid": "38626948",
+      "accessed_on": "2026-11-03",
+      "source_type": "primary_reporting_guideline_publication",
+      "access_status": "full_text_page_opened_and_bibliographic_record_verified",
+      "read_locations": ["Article title and bibliographic identity", "Abstract and introductory guidance as exposed in browser/search extracts"],
+      "what_was_read": "The statement updates reporting guidance for prediction models regardless of regression or machine-learning methods; diagnostic and prognostic model purposes must be distinguished.",
+      "used_for": ["LEARNING_PATH_VI.md", "LESSON_01_VI.md"],
+      "limits": "Not a completed item-by-item TRIPOD+AI audit. DOI 10.1136/bmj.q902 is a correction notice and is not substituted for the main statement."
+    },
+    {
+      "source_id": "learn_deepsurv_primary",
+      "title": "DeepSurv: personalized treatment recommender system using a Cox proportional hazards deep neural network",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5828433/",
+      "verification_url": "https://pubmed.ncbi.nlm.nih.gov/29482517/",
+      "doi": "10.1186/s12874-018-0482-1",
+      "pmid": "29482517",
+      "accessed_on": "2026-11-03",
+      "source_type": "primary_methodological_publication",
+      "access_status": "primary_article_content_read_in_search_result_and_bibliographic_record_verified",
+      "read_locations": ["Background: Linear survival models", "Background: Nonlinear survival models", "Methods: DeepSurv"],
+      "what_was_read": "DeepSurv uses a neural network for the covariate log-risk function within a Cox proportional-hazards formulation. Nonlinear predictor effects do not by themselves remove PH.",
+      "used_for": ["LEARNING_PATH_VI.md", "GLOSSARY_VI.md"],
+      "limits": "No results, treatment recommendations, empirical superiority, or T2D performance claims are adopted. This is an architecture example, not a selected study or model."
+    }
+  ],
+  "access_notes": [
+    {
+      "attempted_url": "https://www.tripod-statement.org/tripod-ai/",
+      "accessed_on": "2026-11-03",
+      "observed_issue": "The browser tool redirected this route to a translated-abstract page. The official home page and verified main statement were used instead."
+    },
+    {
+      "attempted_url": "https://www.tripod-statement.org/wp-content/uploads/2024/04/TRIPODAI-Supplement.pdf",
+      "accessed_on": "2026-11-03",
+      "observed_issue": "Search excerpts were available, but direct opening timed out. The full supplement is not represented as fully read and is not required reading for the first lesson."
+    }
+  ],
+  "local_governance_read": [
+    "AGENTS.md",
+    ".agents/skills/design-study/SKILL.md",
+    "docs/agent/RESEARCH_CONTRACT.md",
+    "docs/agent/EXPERIMENT_POLICY.md",
+    "docs/agent/VARIABLE_CONTRACT.md: source hierarchy, role semantics, timing, outcome and horizon sections"
+  ]
+}

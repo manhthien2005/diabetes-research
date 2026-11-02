@@ -1,0 +1,193 @@
+{
+  "version": 1,
+  "as_of": "2026-11-03",
+  "scope": "Official dataset metadata only; no row-level data inspected or access applications submitted.",
+  "sources": [
+    {
+      "id": "D01",
+      "name": "NAGALA Dryad record",
+      "url": "https://datadryad.org/dataset/doi:10.5061/dryad.8q0p192",
+      "doi": "10.5061/dryad.8q0p192",
+      "accessed_on": "2026-11-03",
+      "reading_level": "dataset landing page and usage notes",
+      "access_status": "public file listing verified; row-level download not attempted",
+      "local_files_verified": false,
+      "location": {
+        "section": "Data files; Usage notes",
+        "table": null,
+        "page": null
+      },
+      "confirmed": "The official record lists Data set Int J Obesity.xlsx and describes a longitudinal cohort.",
+      "unknowns": [
+        "Variable coding and baseline exclusion implementation",
+        "Diabetes subtype ascertainment",
+        "Events and follow-up at the intended horizon",
+        "Suitability for the eventual target population"
+      ]
+    },
+    {
+      "id": "D02",
+      "name": "ARIC BioLINCC study record",
+      "url": "https://biolincc.nhlbi.nih.gov/studies/aric/",
+      "doi": null,
+      "accessed_on": "2026-11-03",
+      "reading_level": "Available Data; Design; request notice",
+      "access_status": "request route verified; permission not granted in this dossier",
+      "local_files_verified": false,
+      "location": {
+        "section": "Available Data; Design",
+        "table": null,
+        "page": null
+      },
+      "confirmed": "The record lists examination cycles and follow-up data available for request, with account login or registration.",
+      "unknowns": [
+        "Approval and delivered release",
+        "Incident diabetes definition and timing",
+        "Candidate predictor coverage",
+        "Eligible participants and events"
+      ]
+    },
+    {
+      "id": "D03",
+      "name": "ELSA data and documentation",
+      "url": "https://www.elsa-project.ac.uk/data-and-documentation",
+      "doi": null,
+      "accessed_on": "2026-11-03",
+      "reading_level": "Data info; Sample design; Data collection",
+      "access_status": "UK Data Service route verified; licensed files not inspected",
+      "local_files_verified": false,
+      "location": {
+        "section": "Sample design; Data collection",
+        "table": null,
+        "page": null
+      },
+      "confirmed": "The official documentation describes repeated interviews and health visits with blood samples; health-visit schedules vary by wave.",
+      "unknowns": [
+        "Usable wave pairs and biomarker definitions",
+        "Individual follow-up dates and subtype",
+        "Longitudinal selection and weighting",
+        "Eligible participants and events"
+      ]
+    },
+    {
+      "id": "D04",
+      "name": "DPP NIDDK programme and repository route",
+      "url": "https://www.niddk.nih.gov/about-niddk/research-areas/diabetes/diabetes-prevention-program-dpp",
+      "doi": null,
+      "accessed_on": "2026-11-03",
+      "reading_level": "DPP Study Design; Scientific Publications and Resources",
+      "access_status": "programme description and repository link verified; direct repository landing pages returned HTTP 403",
+      "local_files_verified": false,
+      "repository_urls_attempted": [
+        "https://repository.niddk.nih.gov/studies/dpp/",
+        "https://repository.niddk.nih.gov/study/38"
+      ],
+      "location": {
+        "section": "DPP Study Design; Scientific Publications and Resources",
+        "table": null,
+        "page": null
+      },
+      "confirmed": "DPP was a randomized trial with lifestyle, metformin and placebo groups; the official page links repository materials.",
+      "unknowns": [
+        "Current application conditions and delivered data release",
+        "Permission to use data",
+        "Predictor and endpoint coding",
+        "Handling interventions for the intended prediction target"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim": "The official NAGALA Dryad record lists an Excel data file from a longitudinal cohort study.",
+      "source": "D01 — NAGALA Dryad record",
+      "doi": "10.5061/dryad.8q0p192",
+      "location": {
+        "section": "Data files; Usage notes",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The ARIC BioLINCC record lists examination and follow-up data available for request and requires login or registration to start a request.",
+      "source": "D02 — ARIC BioLINCC study record",
+      "doi": null,
+      "location": {
+        "section": "Available Data; request notice",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "ELSA official documentation describes repeated interviews and health visits including blood samples, with health-visit schedules varying by wave.",
+      "source": "D03 — ELSA data and documentation",
+      "doi": null,
+      "location": {
+        "section": "Sample design; Data collection",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "DPP was a randomized trial including lifestyle intervention, metformin and placebo groups.",
+      "source": "D04 — NIDDK DPP programme",
+      "doi": null,
+      "location": {
+        "section": "DPP Study Design",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    }
+  ],
+  "retrieval_log": [
+    {
+      "on": "2026-11-03",
+      "method": "open",
+      "url": "https://datadryad.org/dataset/doi:10.5061/dryad.8q0p192",
+      "result": "landing page read"
+    },
+    {
+      "on": "2026-11-03",
+      "method": "open",
+      "url": "https://biolincc.nhlbi.nih.gov/studies/aric/",
+      "result": "landing page read"
+    },
+    {
+      "on": "2026-11-03",
+      "method": "open",
+      "url": "https://www.elsa-project.ac.uk/data-and-documentation",
+      "result": "documentation read"
+    },
+    {
+      "on": "2026-11-03",
+      "method": "open",
+      "url": "https://repository.niddk.nih.gov/studies/dpp/",
+      "result": "HTTP 403"
+    },
+    {
+      "on": "2026-11-03",
+      "method": "open",
+      "url": "https://repository.niddk.nih.gov/study/38",
+      "result": "HTTP 403"
+    },
+    {
+      "on": "2026-11-03",
+      "method": "search",
+      "query": "site.niddk.nih.gov diabetes prevention program randomized lifestyle metformin placebo",
+      "result": "official programme identified"
+    },
+    {
+      "on": "2026-11-03",
+      "method": "open",
+      "url": "https://www.niddk.nih.gov/about-niddk/research-areas/diabetes/diabetes-prevention-program-dpp",
+      "result": "programme design and repository resource link read"
+    }
+  ]
+}
