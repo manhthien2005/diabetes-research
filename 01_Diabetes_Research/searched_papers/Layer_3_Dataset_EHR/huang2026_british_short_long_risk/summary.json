@@ -1,0 +1,651 @@
+{
+  "paper_id": "huang2026_british_short_long_risk",
+  "title": "Improving Short- and Long-Term Type 2 Diabetes Risk Prediction for Middle-Aged British Adults",
+  "year": 2026,
+  "doi": "10.1111/dom.71289",
+  "source": "User-supplied publisher PDF; local extracted.md; publisher supplementary DOCX; cached fulltext XML and verified metadata",
+  "layer": 3,
+  "prediction_horizon": "long_term_risk",
+  "horizon_years": [
+    5,
+    10,
+    15
+  ],
+  "contribution": "Develops baseline clinical Cox tools for 5-, 10- and 15-year incident diabetes risk with WHII development and ELSA evaluation, comparing predictor selectors and presenting scores, groups and nomograms.",
+  "method": "Complete-case cohort; 70/30 WHII split; LASSO-Cox 10-fold/one-SE plus bootstrap stability, RSF permutation-vs-noise selection and best subset/AIC; all final models Cox; calibration, DCA and MICE sensitivity.",
+  "best_metric": "No single best model claimed. Table 2 p10579: ELSA 5-year C-index 0.878 (95% CI 0.844-0.908), LASSO-selected Cox; RSF-selected Cox 0.876 (0.843-0.908). These differ from continuous risk-score C-indices 0.800/0.801 in section 3.3.1 p10580.",
+  "datasets": [
+    "Whitehall II",
+    "English Longitudinal Study of Ageing"
+  ],
+  "has_code": null,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "Within the same cohorts/horizons the three Cox predictor sets had broadly similar performance. Do not numerically rank against QDiabetes across different cohorts. Same-layer dinh2019_data_driven_nhanes is cross-sectional label classification and not a longitudinal metric comparator.",
+  "gap": "Test/external-informed tool selection; complete-case selection; ELSA self-report; no competing risks; incomplete PH, code and external-calibration verification.",
+  "verdict": "maybe",
+  "verdict_reason": "Useful evidence and teaching reference for baseline prognosis with explicit limits; not a confirmed reproduction candidate or clinically validated implementation.",
+  "analyzed_at": "2026-11-03T20:20:43+07:00",
+  "candidate_roles": [
+    "evidence_candidate"
+  ],
+  "candidate_assessment": {
+    "evidence_candidate": {
+      "eligible": true,
+      "reasons": [
+        "Directly relevant longitudinal incident-risk design with clear baseline/horizons",
+        "Independent cohort origin and uncertainty/calibration reporting",
+        "Explicitly documents selection-induced optimism and other limitations"
+      ],
+      "limitations": [
+        "External evaluation participated in tool selection",
+        "Outcome ascertainment differs across cohorts",
+        "No clinical impact evaluation or competing-risk analysis"
+      ]
+    },
+    "reproduction_candidate": {
+      "eligible": false,
+      "reasons": [],
+      "limitations": [
+        "Access to controlled WHII/ELSA data not established for this project",
+        "Executable pipeline/code availability not established",
+        "RSF configuration, seeds, estimator details and numeric baseline survival incompletely verified"
+      ]
+    }
+  },
+  "reproducibility": {
+    "dataset_access": "controlled",
+    "code_access": "unclear",
+    "methods_operationalized": "partial",
+    "variable_mapping_feasible": "partial",
+    "overall": "low",
+    "notes": [
+      "Data Availability Statement p10583 requires applications to custodians; no access obtained or presumed",
+      "Code not reported in inspected main text/tables; has_code null avoids inventing a negative fact",
+      "Main equations visually checked; they do not alone specify absolute risk without baseline survival and centering",
+      "Current project dataset not fixed; civil-service SES mapping may not transfer"
+    ]
+  },
+  "integrity": {
+    "identity_verified": true,
+    "retraction_status": "unclear",
+    "metadata_conflicts": []
+  },
+  "integrity_note": "Identity verification inherited from local metadata/source records and matched user PDF. No network registry or exhaustive integrity check in this local-only task.",
+  "claim_provenance": [
+    {
+      "claim": "All three final candidate prediction models were Cox regression models, using predictor sets selected by LASSO-Cox, random survival forests or best subset selection.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.5.1.2 Building the Prediction Model",
+        "table": null,
+        "page": 10576
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "WHII Phase 3 (1991-1994) was baseline and follow-up ended by Phase 9 (2007-2009); ELSA used Wave 2 (2004-2005) to Wave 10 (2021-2023).",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.2 Study Sample",
+        "table": null,
+        "page": 10575
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The WHII analytic sample contained 6431 people: 4502 training and 1929 test participants.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.1.1 Characteristics of Included Participants in WHII",
+        "table": null,
+        "page": 10577
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "WHII had 547 training and 235 test diabetes events; median follow-up was 16.1 years in both sets.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "Supplementary Table S5",
+        "table": "Table S5",
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The ELSA analytic sample contained 2190 participants, 255 incident diabetes cases and median follow-up of 14.2 years.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.2.1 Characteristics of Included Participants in External ELSA Dataset",
+        "table": null,
+        "page": 10579
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "LASSO used 10-fold cross-validation with a one-standard-error penalty choice, 1000 training-set bootstrap samples and a >=70% inclusion threshold.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.5.1.1 Selection of Key Predictors",
+        "table": null,
+        "page": 10576
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The LASSO, RSF and best-subset procedures selected 9, 13 and 12 conceptual predictors respectively.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.1.2 Selection of Key Variables",
+        "table": null,
+        "page": 10577
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "In ELSA at 5 years, time-dependent C-indices were 0.878 (95% CI 0.844-0.908) for LASSO-selected Cox, 0.876 (0.843-0.908) for RSF-selected Cox and 0.867 (0.829-0.902) for best-subset-selected Cox.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.2.2 Discrimination",
+        "table": "Table 2",
+        "page": 10579
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "In ELSA at 10 years, C-indices were 0.820 (0.786-0.849), 0.822 (0.790-0.851) and 0.808 (0.773-0.839) for LASSO-, RSF- and best-subset-selected Cox respectively.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.2.2 Discrimination",
+        "table": "Table 2",
+        "page": 10579
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "ELSA continuous risk-score C-indices were 0.800 (0.773-0.827) for LASSO and 0.801 (0.774-0.827) for RSF; risk-group C-indices were 0.737 (0.715-0.759) and 0.727 (0.707-0.748).",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.3.1 Risk Score and Risk Group",
+        "table": null,
+        "page": 10580
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "WHII Test calibration slopes were 0.968 (0.857-1.079), 0.986 (0.872-1.100) and 0.896 (0.791-1.002) for LASSO-, RSF- and best-subset-selected models.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "Supplementary Table S9",
+        "table": "Table S9",
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "WHII Test five-year O/E ratios were 0.866 (0.537-1.218), 0.857 (0.530-1.248) and 0.852 (0.530-1.194) for LASSO-, RSF- and best-subset-selected models.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "Supplementary Table S9",
+        "table": "Table S9",
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "DCA thresholds of 25%, 50% and 75% were prespecified for comparison because universally accepted intervention or screening thresholds were unavailable for the examined horizons.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.5.1.4 Comparison of Three Candidate Models",
+        "table": null,
+        "page": 10577
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "At the ELSA 15-year 25% threshold, reported net benefits were 0.026, 0.023 and 0.021 for RSF-, LASSO- and best-subset-selected models.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.2.3 Decision Curve Analysis",
+        "table": null,
+        "page": 10579
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Candidate performance in WHII Test and ELSA informed selection of the primary prediction tools; the authors acknowledged selection-induced optimism.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.5.1.4-2.5.1.5; 4.3 Strengths and Limitations",
+        "table": null,
+        "page": "10577, 10583"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The RSF-selected Cox model had VIF values of 15.24 for TyG and 13.12 for TG.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.3 Transforming Models Into Prediction Tools; Supplement Table S14",
+        "table": "Table S14 Panel B",
+        "page": 10579
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The primary analysis used complete cases; Table S2 reports exclusion of 1057 (14.1%) of 7488 participants for missing at least one candidate predictor.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.2 Study Sample; Supplement Table S2",
+        "table": "Table S2",
+        "page": 10575
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "MICE sensitivity analysis generated 20 WHII datasets, included predictor variables, follow-up time and event status, pooled coefficients using Rubin rules and evaluated risk scores externally in ELSA.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.5.3 Sensitivity Analysis",
+        "table": null,
+        "page": 10577
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "After WHII imputation, ELSA risk-score C-indices were 0.798 (0.771-0.826) and 0.799 (0.772-0.826) for LASSO- and RSF-selected models.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "3.4 Sensitivity Analysis",
+        "table": null,
+        "page": 10580
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The authors acknowledged self-reported diabetes in ELSA, possible complete-case selection bias and absence of competing-risk analysis.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "4.3 Strengths and Limitations",
+        "table": null,
+        "page": 10583
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "WHII and ELSA supporting data were not publicly available according to the paper and could be accessed on application to their respective custodians.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "Data Availability Statement",
+        "table": null,
+        "page": 10583
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The tool has already been demonstrated to reduce diabetes incidence when implemented in clinical care.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "5 Conclusions",
+        "table": null,
+        "page": 10583
+      },
+      "support": "unsupported",
+      "confidence": "high"
+    },
+    {
+      "claim": "RSF was the final prediction model and was shown to outperform Cox.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.5.1.2 Building the Prediction Model",
+        "table": null,
+        "page": 10576
+      },
+      "support": "unsupported",
+      "confidence": "high"
+    },
+    {
+      "claim": "Including baseline fasting glucose necessarily leaks the future incident-diabetes label.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "2.2 Study Sample; 2.3 Candidate Predictors; 2.4 Outcome",
+        "table": null,
+        "page": 10575
+      },
+      "support": "unsupported",
+      "confidence": "high"
+    }
+  ],
+  "recommended_action": "retain_in_pool",
+  "decision_state": "recommendation_ready",
+  "rob_audit": {
+    "probe_hits": [
+      "CP1"
+    ],
+    "leakage_types": [
+      "E"
+    ],
+    "validation_level": "external",
+    "calibration_reported": true,
+    "survey_design_handled": null,
+    "prevalence_realistic": true,
+    "evidence_ref": "2.5.1.4-5 p10577; 4.3 p10583; Table S9",
+    "confidence": "high"
+  },
+  "validation_caveat": "External-source, selection-influenced evaluation; no confirmed untouched final test for the selected tools.",
+  "metrics": [
+    {
+      "dataset": "WHII Test",
+      "model": "LASSO-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 5,
+      "value": 0.753,
+      "ci95": [
+        0.647,
+        0.843
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "WHII Test",
+      "model": "LASSO-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 10,
+      "value": 0.792,
+      "ci95": [
+        0.737,
+        0.843
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "WHII Test",
+      "model": "LASSO-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 15,
+      "value": 0.806,
+      "ci95": [
+        0.772,
+        0.838
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "WHII Test",
+      "model": "RSF-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 5,
+      "value": 0.764,
+      "ci95": [
+        0.657,
+        0.853
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "WHII Test",
+      "model": "RSF-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 10,
+      "value": 0.792,
+      "ci95": [
+        0.736,
+        0.844
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "WHII Test",
+      "model": "RSF-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 15,
+      "value": 0.804,
+      "ci95": [
+        0.77,
+        0.836
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "WHII Test",
+      "model": "best-subset-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 5,
+      "value": 0.747,
+      "ci95": [
+        0.635,
+        0.843
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "WHII Test",
+      "model": "best-subset-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 10,
+      "value": 0.788,
+      "ci95": [
+        0.731,
+        0.841
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "WHII Test",
+      "model": "best-subset-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 15,
+      "value": 0.802,
+      "ci95": [
+        0.768,
+        0.836
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "LASSO-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 5,
+      "value": 0.878,
+      "ci95": [
+        0.844,
+        0.908
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "LASSO-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 10,
+      "value": 0.82,
+      "ci95": [
+        0.786,
+        0.849
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "LASSO-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 15,
+      "value": 0.784,
+      "ci95": [
+        0.753,
+        0.814
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "RSF-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 5,
+      "value": 0.876,
+      "ci95": [
+        0.843,
+        0.908
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "RSF-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 10,
+      "value": 0.822,
+      "ci95": [
+        0.79,
+        0.851
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "RSF-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 15,
+      "value": 0.785,
+      "ci95": [
+        0.756,
+        0.813
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "best-subset-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 5,
+      "value": 0.867,
+      "ci95": [
+        0.829,
+        0.902
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "best-subset-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 10,
+      "value": 0.808,
+      "ci95": [
+        0.773,
+        0.839
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    },
+    {
+      "dataset": "ELSA",
+      "model": "best-subset-selected Cox",
+      "metric": "time-dependent C-index",
+      "horizon_years": 15,
+      "value": 0.77,
+      "ci95": [
+        0.737,
+        0.802
+      ],
+      "table": "Table 2",
+      "printed_page": 10579,
+      "pdf_page": 6
+    }
+  ],
+  "source_reading": {
+    "main": "All 12 PDF pages and extracted.md inspected; main metrics checked against printed Table 2",
+    "supplement": "Text and 29 physical DOCX tables covering S1-S23/panels inspected selectively; 34 drawings not fully audited",
+    "manual_images": "Figure 1 and both main score equations visually checked in PDF render",
+    "page_convention": "Printed pages 10574-10585; PDF page = printed page minus 10573; supplement page null where unverified",
+    "network_activity": "None"
+  },
+  "unresolved": [
+    "All 34 supplement drawings not visually audited",
+    "PH/Schoenfeld check not found",
+    "Exact event-date/interval assignment",
+    "ELSA pre-complete-case selection denominator",
+    "External calibration slope/intercept",
+    "Executable code, random seed, RSF configuration and exact numerical baseline survival"
+  ]
+}

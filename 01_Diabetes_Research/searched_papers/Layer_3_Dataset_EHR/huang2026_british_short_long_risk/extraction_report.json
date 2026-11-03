@@ -1,0 +1,35 @@
+{
+  "paper": "huang2026_british_short_long_risk",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 226.6,
+  "pages": 12,
+  "failed_pages": [],
+  "source_text_chars": 64648,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 8,
+  "qa": {
+    "out_chars": 64753,
+    "n_markdown_tables": 2,
+    "source_table_captions": 2,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 2,
+    "text_density": 1.002,
+    "score": 100,
+    "warnings": []
+  },
+  "manual_review": {
+    "reviewed_on": "2026-11-03",
+    "report": "extraction_manual_review.md",
+    "raw_extraction_backup": "extracted.prev.md",
+    "equations_corrected": 2,
+    "original_figure_links_added": 2,
+    "supplement_drawings_transcribed": false,
+    "automated_score_is_not_manual_accuracy": true,
+    "current_extracted_sha256": "12e6538dfa046e1f466c3aa295e071195a75ab8b97105e81b434b70635437c43"
+  }
+}

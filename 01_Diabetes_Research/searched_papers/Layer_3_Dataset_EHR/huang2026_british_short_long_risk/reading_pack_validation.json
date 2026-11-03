@@ -1,0 +1,37 @@
+{
+  "validated_on": "2026-11-03",
+  "status": "passed",
+  "source_pdf_pages": 12,
+  "source_pdf_sha256": "b360e3a2210dd230ee796beeecd595bdb5939570dc4d7bfc31ee4890b24284c1",
+  "original_user_file_byte_identical": true,
+  "paper_records_schema_validated": [
+    "metadata.json",
+    "summary.json"
+  ],
+  "canonical_claims_validated": 24,
+  "table2_metric_cells_checked": 18,
+  "html_blocks": 8,
+  "quick_review_fields_in_canonical_order": 48,
+  "local_links_checked": 50,
+  "broken_local_links": [],
+  "automated_repository_checks": {
+    "agent_unit_tests": 104,
+    "skill_unit_tests": 49,
+    "managed_skill_parity": 14,
+    "all_passed": true
+  },
+  "reference_identity": {
+    "doi": "10.1111/dom.71289",
+    "crossref_cached_response_and_publisher_xml_match": true,
+    "full_paper_reference_list_audited": false
+  },
+  "manual_visual_checks": "See extraction_manual_review.md; HTML desktop preview visually checked; no supplementary-image completeness claim",
+  "html_sha256": "052643e712b564084dab9b063a12b812b2cdc55f9a9012911feadee405efd3c5",
+  "limits": [
+    "Automated extraction score is not an accuracy guarantee",
+    "Supplementary drawings not all independently reviewed",
+    "No dataset access, model training, clinical validation or paper promotion performed"
+  ],
+  "preexisting_unrelated_dirty_files_preserved": true,
+  "whitespace_check_scope": "Authored artifacts; raw publisher XML and directly extracted supplementary text retain source whitespace"
+}

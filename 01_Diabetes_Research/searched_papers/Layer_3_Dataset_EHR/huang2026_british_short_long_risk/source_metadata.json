@@ -1,0 +1,737 @@
+{
+  "retrieved_on": "2026-11-03",
+  "crossref": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          19
+        ]
+      ],
+      "date-time": "2026-10-19T04:41:18Z",
+      "timestamp": 1792384878506,
+      "version": "4.4.0"
+    },
+    "reference-count": 43,
+    "publisher": "Wiley",
+    "issue": "11",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              26
+            ]
+          ],
+          "date-time": "2026-08-26T00:00:00Z",
+          "timestamp": 1787702400000
+        },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "http://creativecommons.org/licenses/by/4.0/"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              26
+            ]
+          ],
+          "date-time": "2026-08-26T00:00:00Z",
+          "timestamp": 1787702400000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "http://doi.wiley.com/10.1002/tdm_license_1.1"
+      }
+    ],
+    "funder": [
+      {
+        "DOI": "10.13039/100010269",
+        "name": "Wellcome Trust",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "221854/Z/20/Z"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "221854/Z/20/Z"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/100010269",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100000265",
+        "name": "Medical Research Council",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "R024227"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "R024227"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100000265",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      },
+      {
+        "DOI": "10.13039/501100000265",
+        "name": "Medical Research Council",
+        "doi-asserted-by": "publisher",
+        "award": [
+          "S011676"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "S011676"
+            ]
+          }
+        ],
+        "id": [
+          {
+            "id": "10.13039/501100000265",
+            "id-type": "DOI",
+            "asserted-by": "publisher"
+          }
+        ]
+      }
+    ],
+    "content-domain": {
+      "domain": [
+        "dom-pubs.onlinelibrary.wiley.com"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [
+      "Diabetes Obesity Metabolism"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2026,
+          11
+        ]
+      ]
+    },
+    "abstract": "<jats:title>ABSTRACT</jats:title>\n                  <jats:sec>\n                    <jats:title>Aims</jats:title>\n                    <jats:p>Diabetes prediction tools are valuable for prevention and resource planning. Few tools exist to predict long‐term diabetes risk for British adults. We aim to develop and validate a diabetes prediction tool for short‐ and long‐term risk.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Materials and Methods</jats:title>\n                    <jats:p>\n                      Prediction model development (Training,\n                      <jats:italic>n</jats:italic>\n                       = 4502) and internal validation (Test,\n                      <jats:italic>n</jats:italic>\n                       = 1929) used Whitehall II data (WHII); external validation used English Longitudinal Study of Ageing (ELSA) data, with incident diabetes as outcome. Predictors were selected using LASSO‐Cox, random survival forests (RSF) and best subset selection. Three candidate Cox models were built from these predictor sets and compared. Performance was assessed with\n                      <jats:italic>C</jats:italic>\n                      ‐indices, calibration and decision curve analysis (DCA). A continuous risk score and quartile‐based risk groups were derived; a nomogram was created.\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>\n                      Across WHII Test (235 events) and ELSA (255 events), three models showed broadly similar discrimination, calibration and DCA patterns. LASSO‐ and RSF‐selected models performed comparably and slightly better than best subset. LASSO and RSF both selected ethnicity, body mass index, waist‐to‐height ratio, height, triglyceride‐glucose index, fasting glucose, family history of diabetes and socioeconomic status; LASSO additionally selected smoking, whereas RSF also included age, triglycerides, high‐density lipoprotein cholesterol, systolic and diastolic blood pressure. In ELSA, risk‐score\n                      <jats:italic>C</jats:italic>\n                      ‐indices (95% CIs) were 0.800 (0.773–0.827) for the LASSO‐selected model and 0.801 (0.774–0.827) for the RSF‐selected model; risk‐group\n                      <jats:italic>C</jats:italic>\n                      ‐indices were 0.737 (0.715–0.759) and 0.727 (0.707–0.748), respectively.\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusions</jats:title>\n                    <jats:p>We developed and externally validated a tool to estimate 5‐, 10‐ and 15‐year diabetes risk in British middle‐aged adults, which may support primary care decision‐making.</jats:p>\n                  </jats:sec>",
+    "DOI": "10.1111/dom.71289",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2026,
+          8,
+          27
+        ]
+      ],
+      "date-time": "2026-08-27T02:25:06Z",
+      "timestamp": 1787797506000
+    },
+    "page": "10574-10585",
+    "update-policy": "https://doi.org/10.1002/crossmark_policy",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Improving Short‐ and Long‐Term Type 2 Diabetes Risk Prediction for Middle‐Aged British Adults"
+    ],
+    "prefix": "10.1111",
+    "volume": "28",
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0009-0001-3445-5316",
+        "authenticated-orcid": false,
+        "given": "Cunrong",
+        "family": "Huang",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Epidemiology and Public Health University College London  London UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-1405-7337",
+        "authenticated-orcid": false,
+        "given": "Andre",
+        "family": "Lopes",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Cancer Research UK and Cancer Trials Centre University College London  London UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6412-5430",
+        "authenticated-orcid": false,
+        "given": "Annie",
+        "family": "Britton",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Epidemiology and Public Health University College London  London UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "311",
+    "published-online": {
+      "date-parts": [
+        [
+          2026,
+          8,
+          26
+        ]
+      ]
+    },
+    "reference": [
+      {
+        "key": "e_1_2_10_2_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41591‐020‐0786‐7"
+      },
+      {
+        "key": "e_1_2_10_3_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1186/s12889‐017‐4921‐4"
+      },
+      {
+        "key": "e_1_2_10_4_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.pcad.2010.04.001"
+      },
+      {
+        "key": "e_1_2_10_5_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1161/circulationaha.107.699579"
+      },
+      {
+        "key": "e_1_2_10_6_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1161/01.cir.97.18.1837"
+      },
+      {
+        "key": "e_1_2_10_7_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/s0140‐6736(11)60679‐x"
+      },
+      {
+        "key": "e_1_2_10_8_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1136/bmj.b880"
+      },
+      {
+        "key": "e_1_2_10_9_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1136/bmj.j5019"
+      },
+      {
+        "key": "e_1_2_10_10_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1136/jech.2009.102244"
+      },
+      {
+        "key": "e_1_2_10_11_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002/1520‐7560(200005/06)16:3<164::aid‐dmrr103>3.0.co;2‐r"
+      },
+      {
+        "key": "e_1_2_10_12_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1111/j.1464‐5491.2010.03037.x"
+      },
+      {
+        "key": "e_1_2_10_13_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.2337/diacare.28.8.2013"
+      },
+      {
+        "key": "e_1_2_10_14_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.2337/diacare.26.3.725"
+      },
+      {
+        "key": "e_1_2_10_15_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.2337/dc07‐1150"
+      },
+      {
+        "key": "e_1_2_10_16_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41574‐019‐0176‐8"
+      },
+      {
+        "key": "e_1_2_10_17_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1017/S136898001700338X"
+      },
+      {
+        "key": "e_1_2_10_18_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1017/S136898001300267X"
+      },
+      {
+        "key": "e_1_2_10_19_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002/ajhb.22909"
+      },
+      {
+        "key": "e_1_2_10_20_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.diabres.2018.07.029"
+      },
+      {
+        "key": "e_1_2_10_21_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002/oby.23849"
+      },
+      {
+        "key": "e_1_2_10_22_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1001/archinte.167.10.1068"
+      },
+      {
+        "key": "e_1_2_10_23_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371/journal.pone.0253537"
+      },
+      {
+        "key": "e_1_2_10_24_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.2147/DMSO.S305919"
+      },
+      {
+        "key": "e_1_2_10_25_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/ije/dyh372"
+      },
+      {
+        "key": "e_1_2_10_26_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/0140‐6736(91)93068‐k"
+      },
+      {
+        "key": "e_1_2_10_27_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/ije/dys168"
+      },
+      {
+        "key": "e_1_2_10_28_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.2478/bsrj‐2021‐0015"
+      },
+      {
+        "key": "e_1_2_10_29_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1001/jama.2021.4001"
+      },
+      {
+        "key": "e_1_2_10_30_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/S0140‐6736(09)60619‐X"
+      },
+      {
+        "key": "e_1_2_10_31_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.18637/jss.v062.i05"
+      },
+      {
+        "key": "e_1_2_10_32_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.18637/jss.v106.i01"
+      },
+      {
+        "key": "e_1_2_10_33_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.patrec.2010.03.014"
+      },
+      {
+        "key": "e_1_2_10_34_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1214/15‐AOS1388"
+      },
+      {
+        "key": "e_1_2_10_35_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/aje/kwq026"
+      },
+      {
+        "key": "e_1_2_10_36_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002/sim.6370"
+      },
+      {
+        "key": "e_1_2_10_37_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.2337/dc13‐0593"
+      },
+      {
+        "key": "e_1_2_10_38_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.24095/hpcdp.32.1.04"
+      },
+      {
+        "key": "e_1_2_10_39_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/s2213‐8587(13)70103‐7"
+      },
+      {
+        "key": "e_1_2_10_40_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1097/EDE.0b013e3181c30fb2"
+      },
+      {
+        "key": "e_1_2_10_41_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1210/jc.2010‐0288"
+      },
+      {
+        "key": "e_1_2_10_42_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1089/met.2008.0034"
+      },
+      {
+        "key": "e_1_2_10_43_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1111/j.1464‐5491.2007.02068.x"
+      },
+      {
+        "key": "e_1_2_10_44_1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1097/ede.0000000000000184"
+      }
+    ],
+    "container-title": [
+      "Diabetes, Obesity and Metabolism"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://dom-pubs.onlinelibrary.wiley.com/doi/pdf/10.1111/dom.71289",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://dom-pubs.onlinelibrary.wiley.com/doi/full-xml/10.1111/dom.71289",
+        "content-type": "application/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://dom-pubs.onlinelibrary.wiley.com/doi/pdf/10.1111/dom.71289",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          19
+        ]
+      ],
+      "date-time": "2026-10-19T04:19:32Z",
+      "timestamp": 1792383572000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://dom-pubs.onlinelibrary.wiley.com/doi/10.1111/dom.71289"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2026,
+          8,
+          26
+        ]
+      ]
+    },
+    "references-count": 43,
+    "journal-issue": {
+      "issue": "11",
+      "published-print": {
+        "date-parts": [
+          [
+            2026,
+            11
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "10.1111/dom.71289"
+    ],
+    "URL": "https://doi.org/10.1111/dom.71289",
+    "archive": [
+      "Portico"
+    ],
+    "relation": {
+      "has-review": [
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v1/review3",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v2/review1",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v1/review4",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v1/decision1",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v2/review2",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v1/review1",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v2/review3",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v1/review2",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v2/response1",
+          "asserted-by": "object"
+        },
+        {
+          "id-type": "doi",
+          "id": "10.1111/DOM.71289/v2/decision1",
+          "asserted-by": "object"
+        }
+      ]
+    },
+    "ISSN": [
+      "1462-8902",
+      "1463-1326"
+    ],
+    "issn-type": [
+      {
+        "value": "1462-8902",
+        "type": "print"
+      },
+      {
+        "value": "1463-1326",
+        "type": "electronic"
+      }
+    ],
+    "subject": [],
+    "published": {
+      "date-parts": [
+        [
+          2026,
+          8,
+          26
+        ]
+      ]
+    },
+    "assertion": [
+      {
+        "value": "2026-06-16",
+        "order": 0,
+        "name": "received",
+        "label": "Received",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      },
+      {
+        "value": "2026-08-20",
+        "order": 2,
+        "name": "accepted",
+        "label": "Accepted",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      },
+      {
+        "value": "2026-08-26",
+        "order": 3,
+        "name": "published",
+        "label": "Published",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      }
+    ]
+  },
+  "unpaywall": {
+    "best_oa_location": {
+      "endpoint_id": null,
+      "evidence": "deprecated",
+      "host_type": "publisher",
+      "is_best": true,
+      "license": "cc-by",
+      "oa_date": "2026-08-26",
+      "pmh_id": null,
+      "repository_institution": null,
+      "updated": "deprecated",
+      "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/dom.71289",
+      "url_for_landing_page": "https://doi.org/10.1111/dom.71289",
+      "url_for_pdf": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/dom.71289",
+      "version": "publishedVersion"
+    },
+    "data_standard": 2,
+    "doi": "10.1111/dom.71289",
+    "doi_url": "https://doi.org/10.1111/dom.71289",
+    "first_oa_location": {
+      "endpoint_id": null,
+      "evidence": "deprecated",
+      "host_type": "publisher",
+      "is_best": true,
+      "license": "cc-by",
+      "oa_date": "2026-08-26",
+      "pmh_id": null,
+      "repository_institution": null,
+      "updated": "deprecated",
+      "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/dom.71289",
+      "url_for_landing_page": "https://doi.org/10.1111/dom.71289",
+      "url_for_pdf": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/dom.71289",
+      "version": "publishedVersion"
+    },
+    "genre": "journal-article",
+    "has_repository_copy": true,
+    "is_oa": true,
+    "is_paratext": false,
+    "journal_is_in_doaj": false,
+    "journal_is_oa": false,
+    "journal_issn_l": "1462-8902",
+    "journal_issns": "1462-8902,1463-1326",
+    "journal_name": "Diabetes Obesity and Metabolism",
+    "oa_locations": [
+      {
+        "endpoint_id": null,
+        "evidence": "deprecated",
+        "host_type": "publisher",
+        "is_best": true,
+        "license": "cc-by",
+        "oa_date": "2026-08-26",
+        "pmh_id": null,
+        "repository_institution": null,
+        "updated": "deprecated",
+        "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/dom.71289",
+        "url_for_landing_page": "https://doi.org/10.1111/dom.71289",
+        "url_for_pdf": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/dom.71289",
+        "version": "publishedVersion"
+      },
+      {
+        "endpoint_id": "ac9de7698155b820de7",
+        "evidence": "deprecated",
+        "host_type": "repository",
+        "is_best": false,
+        "license": "cc-by",
+        "oa_date": "2026-08-26",
+        "pmh_id": "oai:pubmedcentral.nih.gov:13646339",
+        "repository_institution": "National Institutes of Health",
+        "updated": "deprecated",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13646339/",
+        "url_for_landing_page": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13646339/",
+        "url_for_pdf": null,
+        "version": "publishedVersion"
+      }
+    ],
+    "oa_locations_embargoed": [],
+    "oa_status": "hybrid",
+    "published_date": "2026-08-26",
+    "publisher": "Wiley",
+    "title": "Improving Short‐ and Long‐Term Type 2 Diabetes Risk Prediction for Middle‐Aged British Adults",
+    "updated": "2026-10-29T10:15:11Z",
+    "year": 2026,
+    "z_authors": [
+      {
+        "author_position": "first",
+        "is_corresponding": true,
+        "raw_affiliation_strings": [
+          "Department of Epidemiology and Public Health University College London  London UK"
+        ],
+        "raw_author_name": "Cunrong Huang"
+      },
+      {
+        "author_position": "middle",
+        "is_corresponding": false,
+        "raw_affiliation_strings": [
+          "Cancer Research UK and Cancer Trials Centre University College London  London UK"
+        ],
+        "raw_author_name": "Andre Lopes"
+      },
+      {
+        "author_position": "last",
+        "is_corresponding": true,
+        "raw_affiliation_strings": [
+          "Department of Epidemiology and Public Health University College London  London UK"
+        ],
+        "raw_author_name": "Annie Britton"
+      }
+    ]
+  },
+  "pdf_verification": null
+}

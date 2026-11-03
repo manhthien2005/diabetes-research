@@ -1,0 +1,168 @@
+{
+  "paper_id": "huang2026_british_short_long_risk",
+  "title": "Improving Short‐ and Long‐Term Type 2 Diabetes Risk Prediction for Middle‐Aged British Adults",
+  "authors": [
+    "Cunrong Huang",
+    "Andre Lopes",
+    "Annie Britton"
+  ],
+  "year": 2026,
+  "journal": "Diabetes, Obesity and Metabolism",
+  "doi": "10.1111/dom.71289",
+  "pmid": "42649111",
+  "pmcid": "PMC13646339",
+  "source": "crossref; Unpaywall; Europe PMC",
+  "layer": 3,
+  "layer_reason": "Clinical longitudinal cohorts and independent-cohort validation are central to the study.",
+  "prediction_horizon": "long_term_risk",
+  "horizon_years": [
+    5,
+    10,
+    15
+  ],
+  "status": "searched",
+  "analysis_status": "analyzed",
+  "pdf_status": "provided_by_user",
+  "source_pdf": "source.pdf",
+  "page_count": 12,
+  "pdf_sha256": "b360e3a2210dd230ee796beeecd595bdb5939570dc4d7bfc31ee4890b24284c1",
+  "download_link": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/dom.71289",
+  "license": "cc-by",
+  "pdf_fetch_attempts": [
+    {
+      "kind": "unpaywall",
+      "url": "https://api.unpaywall.org/v2/10.1111/dom.71289?email=phandienmanhthienk16%40siu.edu.vn",
+      "final_url": "https://api.unpaywall.org/v2/10.1111/dom.71289?email=phandienmanhthienk16%40siu.edu.vn",
+      "status": "received",
+      "content_type": "application/json",
+      "bytes": 3017,
+      "seconds": 0.88
+    },
+    {
+      "kind": "crossref",
+      "url": "https://api.crossref.org/works/10.1111/dom.71289",
+      "final_url": "https://api.crossref.org/works/10.1111/dom.71289",
+      "status": "received",
+      "content_type": "application/json",
+      "bytes": 12632,
+      "seconds": 0.85
+    },
+    {
+      "kind": "publisher_pdf",
+      "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/dom.71289",
+      "status": "failed",
+      "error": "HTTP Error 403: Forbidden",
+      "seconds": 0.16
+    },
+    {
+      "kind": "europepmc_render",
+      "url": "https://europepmc.org/articles/PMC13646339?pdf=render",
+      "status": "failed",
+      "error": "HTTP Error 403: Forbidden",
+      "seconds": 0.19
+    },
+    {
+      "kind": "europepmc_fulltext_xml",
+      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13646339/fullTextXML",
+      "final_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13646339/fullTextXML",
+      "status": "received",
+      "content_type": "application/xml",
+      "bytes": 134727,
+      "seconds": 6.28
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13646339/pdf/DOM-28-10574.pdf",
+      "final_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13646339/pdf/DOM-28-10574.pdf",
+      "bytes": 21466,
+      "content_type": "text/html; charset=utf-8",
+      "status": "received"
+    },
+    {
+      "url": "https://europepmc.org/articles/PMC13646339/bin/DOM-28-10574.pdf",
+      "status": "failed",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13646339/supplementaryFiles",
+      "final_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13646339/supplementaryFiles",
+      "bytes": 7663670,
+      "content_type": "application/zip",
+      "status": "received"
+    },
+    {
+      "kind": "user_supplied_pdf",
+      "status": "verified",
+      "date": "2026-11-03",
+      "bytes": 486899,
+      "pages": 12,
+      "sha256": "b360e3a2210dd230ee796beeecd595bdb5939570dc4d7bfc31ee4890b24284c1"
+    }
+  ],
+  "fetched_on": "2026-11-03",
+  "candidate_roles": [
+    "evidence_candidate"
+  ],
+  "recommended_action": "retain_in_pool",
+  "decision_state": "recommendation_ready",
+  "human_instruction": "2026-11-03: download, organize, extract and explain for reading; not promotion approval.",
+  "integrity": {
+    "identity_verified": true,
+    "retraction_status": "unclear",
+    "metadata_conflicts": []
+  },
+  "integrity_check_scope": "CrossRef DOI/title resolved; update-to and relations captured in source_metadata.json; exhaustive correction/retraction audit not performed.",
+  "provided_on": "2026-11-03",
+  "source_origin": "User downloaded publisher PDF and supplied a local path",
+  "source_original_filename": "Diabetes Obesity Metabolism - 2026 - Huang - Improving Short‐ and Long‐Term Type 2 Diabetes Risk Prediction for Middle‐Aged.pdf",
+  "extraction_status": "extracted_and_manually_reviewed",
+  "analyzed_at": "2026-11-03T20:30:00+07:00",
+  "candidate_assessment": {
+    "evidence_candidate": {
+      "eligible": true,
+      "reasons": [
+        "Directly relevant longitudinal incident-risk design with clear baseline/horizons",
+        "Independent cohort origin and uncertainty/calibration reporting",
+        "Explicitly documents selection-induced optimism and other limitations"
+      ],
+      "limitations": [
+        "External evaluation participated in tool selection",
+        "Outcome ascertainment differs across cohorts",
+        "No clinical impact evaluation or competing-risk analysis"
+      ]
+    },
+    "reproduction_candidate": {
+      "eligible": false,
+      "reasons": [],
+      "limitations": [
+        "Access to controlled WHII/ELSA data not established for this project",
+        "Executable pipeline/code availability not established",
+        "RSF configuration, seeds, estimator details and numeric baseline survival incompletely verified"
+      ]
+    }
+  },
+  "reproducibility": {
+    "dataset_access": "controlled",
+    "code_access": "unclear",
+    "methods_operationalized": "partial",
+    "variable_mapping_feasible": "partial",
+    "overall": "low",
+    "notes": [
+      "Data Availability Statement p10583 requires applications to custodians; no access obtained or presumed",
+      "Code not reported in inspected main text/tables; has_code null avoids inventing a negative fact",
+      "Main equations visually checked; they do not alone specify absolute risk without baseline survival and centering",
+      "Current project dataset not fixed; civil-service SES mapping may not transfer"
+    ]
+  },
+  "extraction_report": "extraction_report.json",
+  "analysis_artifacts": [
+    "analysis.html",
+    "summary.json",
+    "rob_audit.json",
+    "READING_EXPLANATION_VI.md"
+  ],
+  "local_source_assets": {
+    "source.pdf": "user-provided original; ignored by repository PDF policy",
+    "supplementary.docx": "publisher original extracted from Europe PMC archive",
+    "supporting_files.zip": "locally preserved acquisition archive; not required for reading"
+  }
+}

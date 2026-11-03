@@ -1,0 +1,80 @@
+{
+  "paper_id": "huang2026_british_short_long_risk",
+  "audited_at": "2026-11-03T20:20:43+07:00",
+  "auditor": "paper-analyzer; local-source review",
+  "probe_hits": [
+    "CP1"
+  ],
+  "leakage_types": [
+    "E"
+  ],
+  "validation_level": "external",
+  "calibration_reported": true,
+  "survey_design_handled": null,
+  "prevalence_realistic": true,
+  "evidence_ref": "2.5.1.4-5 p10577; 4.3 p10583; Table S9",
+  "confidence": "high",
+  "notes": "External cohort origin is real, but test/external-informed selection can cause optimism. This is a mini-audit, not a complete PROBAST+AI assessment. No data or code execution was performed.",
+  "probe_details": {
+    "CP1": {
+      "status": "concern",
+      "finding": "Held-out data existed, but WHII Test and ELSA informed candidate/tool selection. No untouched final evaluation of the selected tools is established.",
+      "evidence": "Sections 2.5.1.4-5 p10577; 4.3 p10583"
+    },
+    "CP2": {
+      "status": "partially_supported",
+      "finding": "Predictor selection was reported within WHII Training. Full pipeline reselection within evaluation bootstrap folds and all preprocessing isolation are unclear. No confirmed whole-dataset Type C violation.",
+      "evidence": "2.5.1.1 p10576"
+    },
+    "CP3": {
+      "status": "not_applicable",
+      "finding": "SMOTE/oversampling/class rebalancing not reported in inspected pipeline. No confirmed Type D.",
+      "evidence": "2.5 pp10576-10577"
+    },
+    "CP4": {
+      "status": "reported_with_external_gap",
+      "finding": "WHII calibration plots, slopes and horizon-specific O/E reported. External grouped incidence comparisons exist, but external calibration slope/intercept not verified.",
+      "evidence": "2.5.1.3 p10576; Tables S9, S15, S16"
+    },
+    "CP5": {
+      "status": "external_source_selection_influenced",
+      "finding": "ELSA is an independent cohort by origin, but its results participated in model/tool selection.",
+      "evidence": "2.1 p10575; 2.5.1.4-5 p10577; 4.3 p10583"
+    },
+    "CP6": {
+      "status": "not_automatic_leakage",
+      "finding": "FPG/TyG measured at baseline predict future diabetes after excluding baseline diabetes; not contemporaneous label reconstruction. Residual baseline disease and event timing require dataset-level verification.",
+      "evidence": "2.2-2.4 p10575"
+    },
+    "O11": {
+      "status": "not_applicable_to_named_survey_probe",
+      "finding": "Not NHANES/BRFSS/KNHANES. ELSA sampling weights not reported in inspected text; do not infer weighted population estimates.",
+      "evidence": "Table S1; 2.5 pp10576-10577"
+    }
+  },
+  "validation_caveat": "External-source, selection-influenced evaluation; no confirmed untouched final test for the selected tools.",
+  "leakage_taxonomy": {
+    "B": "Unclear for MICE sensitivity isolation; not confirmed in primary complete-case pipeline",
+    "C": "Not detected: feature selection reported within Training",
+    "D": "Not detected: no resampling/balancing reported",
+    "E": "Detected: WHII Test/ELSA performance informed tool selection",
+    "F": "Not established: baseline FPG predicts future event; timing differs",
+    "G": "Not detected: no artificial 50/50 balancing reported"
+  },
+  "additional_concerns": [
+    "Complete-case and missing-follow-up selection",
+    "ELSA self-reported diabetes and differential outcome ascertainment",
+    "TyG/TG multicollinearity",
+    "No competing-risk analysis",
+    "PH assumption verification not found in inspected text/tables",
+    "DCA thresholds and quartile groups are not validated clinical decision thresholds"
+  ],
+  "unresolved": [
+    "All 34 supplement drawings not visually audited",
+    "PH/Schoenfeld check not found",
+    "Exact event-date/interval assignment",
+    "ELSA pre-complete-case selection denominator",
+    "External calibration slope/intercept",
+    "Executable code, random seed, RSF configuration and exact numerical baseline survival"
+  ]
+}

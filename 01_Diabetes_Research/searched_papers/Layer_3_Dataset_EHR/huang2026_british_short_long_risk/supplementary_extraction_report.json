@@ -1,0 +1,7 @@
+{
+  "source": "supplementary.docx",
+  "method": "DOCX document.xml body-order text/table extraction",
+  "tables": 29,
+  "drawings_not_transcribed": 34,
+  "status": "text_and_tables_extracted; drawings_require_original_review"
+}

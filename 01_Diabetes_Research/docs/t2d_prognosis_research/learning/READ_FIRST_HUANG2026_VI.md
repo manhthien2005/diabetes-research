@@ -2,6 +2,8 @@
 
 Ngày chọn để đọc: **03/11/2026**. Đây là lựa chọn học và đối chiếu câu hỏi, chưa phải chọn paper baseline, dataset, protocol hoặc promote bài vào kho đã chọn.
 
+**Cập nhật cùng ngày:** anh đã cung cấp PDF gốc. [Thư mục đọc](../../../searched_papers/Layer_3_Dataset_EHR/huang2026_british_short_long_risk/README.md) hiện có PDF, toàn văn trích xuất, phụ lục và phân tích chi tiết. Mở [bản giải thích tiếng Việt](../../../searched_papers/Layer_3_Dataset_EHR/huang2026_british_short_long_risk/READING_EXPLANATION_VI.md) để học từng phần. Ghi chú truy cập web bên dưới phản ánh lượt khảo sát trước khi nhận PDF.
+
 ## 1. Một bài cụ thể
 
 **Cunrong Huang, Andre Lopes, Annie Britton (2026)** — *Improving Short- and Long-Term Type 2 Diabetes Risk Prediction for Middle-Aged British Adults*.

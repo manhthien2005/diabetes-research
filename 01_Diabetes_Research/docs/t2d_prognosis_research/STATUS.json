@@ -5,7 +5,7 @@
   "timezone": "Asia/Bangkok",
   "branch": "codex/t2d-prognosis-research",
   "base_commit": "6ac22b221415270c4fd32e038a71dd9e7743ee0d",
-  "status": "human_results_received_first_reading_selected",
+  "status": "huang_fulltext_reading_pack_prepared",
   "working_topic": "Predict incident type 2 diabetes risk over a future horizon from health data available at the prediction time.",
   "decision_state": "exploratory",
   "final_topic_selected": false,
@@ -33,12 +33,12 @@
     "literature_scan": "initial_8_studies_plus_targeted_followup_recorded",
     "learning_pack": "ready_3_documents_34_terms",
     "dataset_readiness": "metadata_checklist_created",
-    "deep_comparison": "first_reading_guide_ready_full_methodological_audit_pending",
+    "deep_comparison": "huang_fulltext_extraction_analysis_and_reading_guide_prepared",
     "row_level_feasibility": "not_started",
     "final_topic_decision": "not_started"
   },
   "next_steps": [
-    "Read Huang 2026 using learning/READ_FIRST_HUANG2026_VI.md; answer six short reading questions before another broad search",
+    "Read the Huang PDF alongside its READING_EXPLANATION_VI.md; use analysis.html for methodological appraisal before discussing the next dataset or paper",
     "Read the introductory lesson and answer self-check questions",
     "Read selected full texts of the closest baseline-prognosis studies",
     "Audit one legally accessible dataset and its codebook before fixing the horizon",
@@ -61,7 +61,10 @@
   },
   "human_search_results": {
     "received_on": "2026-11-03",
-    "providers_reported_by_user": ["Sonnet 5.5 high", "Perplexity"],
+    "providers_reported_by_user": [
+      "Sonnet 5.5 high",
+      "Perplexity"
+    ],
     "review": "evidence/human_results_review_20261103.json",
     "first_reading": "huang2026_british_short_long_risk",
     "reading_guide": "learning/READ_FIRST_HUANG2026_VI.md",
@@ -76,5 +79,21 @@
     "repository_agent_tests_passed": 104,
     "repository_skill_tests_passed": 49,
     "managed_skill_mirrors_in_parity": 14
+  },
+  "first_paper_reading_pack": {
+    "paper_id": "huang2026_british_short_long_risk",
+    "folder": "../../searched_papers/Layer_3_Dataset_EHR/huang2026_british_short_long_risk",
+    "pdf_origin": "provided_by_user",
+    "pdf_pages": 12,
+    "fulltext_extracted": true,
+    "supplement_text_and_tables_extracted": true,
+    "supplement_figures_fully_reviewed": false,
+    "topic_selection_unchanged": true
+  },
+  "reading_pack_validation": {
+    "status": "passed",
+    "report": "../../searched_papers/Layer_3_Dataset_EHR/huang2026_british_short_long_risk/reading_pack_validation.json",
+    "claims_validated": 24,
+    "quick_review_rows": 48
   }
 }

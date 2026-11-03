@@ -25,6 +25,8 @@ Theo chỉ đạo ngày 03/11/2026: giữ hướng gốc, nghiên cứu tình h�
 3. [Từ điển thuật ngữ](learning/GLOSSARY_VI.md): tra khi gặp từ mới.
 4. [Bài báo đầu tiên — Huang 2026](learning/READ_FIRST_HUANG2026_VI.md): cách đọc trong một buổi và sáu câu để cùng thảo luận.
 
+Đã có [thư mục đọc Huang 2026](../../searched_papers/Layer_3_Dataset_EHR/huang2026_british_short_long_risk/README.md), gồm PDF anh cung cấp, phụ lục, toàn văn trích xuất, bản giải thích tiếng Việt và phân tích phương pháp. Anh có thể bắt đầu trực tiếp bằng [bản giải thích](../../searched_papers/Layer_3_Dataset_EHR/huang2026_british_short_long_risk/READING_EXPLANATION_VI.md) bên cạnh PDF.
+
 ## Theo dõi phần nghiên cứu
 
 - [Kế hoạch khảo sát](RESEARCH_PLAN_VI.md): câu hỏi, phạm vi và điều kiện để tiến tới chọn đề tài cụ thể.
