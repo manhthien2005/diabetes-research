@@ -1,0 +1,282 @@
+{
+  "record_type": "targeted_followup_search",
+  "access_date": "2026-11-03",
+  "status": "exploratory_no_final_topic_decision",
+  "scope": "Baseline health-data prognosis of incident diabetes/T2D; five years provisional. Three prior sources rechecked plus one additional lead and an official data record.",
+  "sources": [
+    {
+      "paper_id": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "pmid": "42649111",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42649111/",
+      "role_in_followup": "Previously catalogued close study rechecked; not a new discovery",
+      "reading_level": "PubMed abstract and previously inspected selected full-text passages",
+      "identity": {
+        "pubmed_title_match": true,
+        "crossref_title_match": true,
+        "crossref_first_author": "Huang",
+        "crossref_published": "2026-08-26",
+        "issue_date": "2026-11",
+        "crossref_type": "journal-article",
+        "update_to": [],
+        "relations_observed": [
+          "has-review"
+        ]
+      },
+      "dataset_access": "UNKNOWN; no access application or row-level audit"
+    },
+    {
+      "paper_id": "xu2024_jphc_five_year",
+      "doi": "10.2188/jea.JE20220329",
+      "pmid": "37211395",
+      "url": "https://www.jstage.jst.go.jp/article/jea/34/4/34_JE20220329/_article",
+      "role_in_followup": "Previously catalogued close five-year study rechecked",
+      "reading_level": "Official publisher abstract and publication/version metadata",
+      "identity": {
+        "pubmed_title_match": true,
+        "crossref_title_match": true,
+        "crossref_first_author": "Xu",
+        "crossref_published": "2024-04-05",
+        "crossref_type": "journal-article",
+        "update_to": [],
+        "relation": {},
+        "publisher_version_note": "J-STAGE lists online version 1 (2023-05-20) and version 2 (2023-10-31); substantive changes not inspected"
+      },
+      "dataset_access": "UNKNOWN"
+    },
+    {
+      "paper_id": "sasagawa2024_deepsurv_jecoh",
+      "doi": "10.1097/HJH.0000000000003626",
+      "pmid": "38088426",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38088426/",
+      "role_in_followup": "Previously catalogued methodology comparison rechecked; broader diabetes endpoint",
+      "reading_level": "PubMed abstract and previous selected full-text assessment",
+      "identity": {
+        "pubmed_title_match": true,
+        "crossref_title_match": true,
+        "crossref_first_author": "Sasagawa",
+        "crossref_published": "2023-12-13",
+        "issue_year": 2024,
+        "crossref_type": "journal-article",
+        "update_to": [],
+        "relation": {}
+      },
+      "dataset_access": "Not verified in this follow-up"
+    },
+    {
+      "paper_id": "wu2021_three_year_incident_diabetes",
+      "title": "Machine Learning for Predicting the 3-Year Risk of Incident Diabetes in Chinese Adults",
+      "first_author": "Yang Wu",
+      "year": 2021,
+      "doi": "10.3389/fpubh.2021.626331",
+      "pmid": "34268283",
+      "url": "https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2021.626331/full",
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/34268283/",
+      "role_in_followup": "Additional lead for baseline incident-diabetes prediction and public-data lineage",
+      "reading_level": "Selected full text",
+      "sections_read": [
+        "Abstract",
+        "Study Design and Participants",
+        "Discussion",
+        "Data availability statement"
+      ],
+      "prediction_horizon": "long_term_risk",
+      "horizon_years": 3,
+      "layer": 2,
+      "target": "Incident diabetes; isolated T2D subtype ascertainment not established by this follow-up",
+      "candidate_roles": [
+        "evidence_candidate"
+      ],
+      "recommended_action": "needs_more_review",
+      "decision_state": "recommendation_ready",
+      "reproduction_candidate": false,
+      "reproduction_feasibility": "UNKNOWN",
+      "limitations": [
+        "Removes censored and lost-to-follow-up participants for the three-year analysis",
+        "Complete-case selection",
+        "Random internal validation split",
+        "Not an exact five-year survival protocol"
+      ],
+      "identity": {
+        "pubmed_title_match": true,
+        "crossref_title_match": true,
+        "crossref_first_author": "Wu",
+        "crossref_published": "2021-06-29",
+        "crossref_type": "journal-article",
+        "update_to": [],
+        "relation": {}
+      },
+      "dataset_access": "Study links its lineage to public RICH/Dryad data; workbook, licensing conditions and analytical eligibility not audited locally"
+    },
+    {
+      "id": "RICH_DRYAD",
+      "url": "https://datadryad.org/dataset/doi:10.5061/dryad.ft8750v",
+      "doi": "10.5061/dryad.ft8750v",
+      "reading_level": "Official metadata / Data files / Abstract / Usage notes",
+      "local_files_verified": false,
+      "confirmed": "Official record lists RC Health Care Data-20180820.xlsx and describes longitudinal baseline-diabetes-free cohort; median follow-up 3.1 years.",
+      "unknowns": [
+        "T2D subtype distinction",
+        "Horizon-specific eligible participants and events",
+        "Full variable coding and timing",
+        "Analysis suitability and current download/licence details"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim": "Huang and colleagues developed baseline-predictor Cox models using Whitehall II and externally evaluated them in ELSA, including five-year risk estimates.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "Abstract / Materials and Methods; Abstract / Results",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The JPHC study developed logistic models for five-year incident type 2 diabetes prediction and validated them using J-ECOH data.",
+      "source": "xu2024_jphc_five_year",
+      "doi": "10.2188/jea.JE20220329",
+      "location": {
+        "section": "Abstract / Background; Methods; Results",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The RICH Dryad record publicly lists RC Health Care Data-20180820.xlsx and describes a median follow-up of 3.1 years.",
+      "source": "RICH_DRYAD",
+      "doi": "10.5061/dryad.ft8750v",
+      "location": {
+        "section": "Data files; Abstract",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Wu and colleagues state that participants lost to follow-up during the three-year window and censored data were excluded from their prediction analysis.",
+      "source": "wu2021_three_year_incident_diabetes",
+      "doi": "10.3389/fpubh.2021.626331",
+      "location": {
+        "section": "Study Design and Participants",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Sasagawa and colleagues compared DeepSurv-based prediction models with Cox proportional hazards models using J-ECOH data.",
+      "source": "sasagawa2024_deepsurv_jecoh",
+      "doi": "10.1097/HJH.0000000000003626",
+      "location": {
+        "section": "Abstract / Methods",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    }
+  ],
+  "search_log": [
+    {
+      "query": "\"Improving Short- and Long-Term Type 2 Diabetes Risk Prediction\" 71289",
+      "engine": "web search"
+    },
+    {
+      "query": "\"type 2 diabetes\" \"five-year\" \"prediction\" \"baseline\" \"2026\" cohort",
+      "engine": "web search"
+    },
+    {
+      "query": "\"type 2 diabetes\" \"prediction\" \"Dryad\" \"survival\" \"5-year\"",
+      "engine": "web search"
+    },
+    {
+      "query": "\"Machine Learning for Predicting the 3-Year Risk of Incident Diabetes in Chinese Adults\" DOI",
+      "engine": "web search"
+    },
+    {
+      "query": "\"37211395\" diabetes prediction",
+      "engine": "web search"
+    },
+    {
+      "action": "Inspect holdings and prior dossier to avoid duplicate discoveries",
+      "paths": [
+        "01_Diabetes_Research/searched_papers/",
+        "01_Diabetes_Research/chosed_papers/",
+        "01_Diabetes_Research/docs/t2d_prognosis_research/evidence/literature_scan.json"
+      ]
+    },
+    {
+      "action": "CrossRef DOI metadata verification",
+      "dois": [
+        "10.1111/dom.71289",
+        "10.2188/jea.JE20220329",
+        "10.1097/HJH.0000000000003626",
+        "10.3389/fpubh.2021.626331"
+      ],
+      "fields": [
+        "DOI",
+        "title",
+        "first author",
+        "published date",
+        "type",
+        "update-to",
+        "relation"
+      ]
+    },
+    {
+      "action": "PubMed and publisher title comparison",
+      "pmids": [
+        "42649111",
+        "37211395",
+        "38088426",
+        "34268283"
+      ]
+    }
+  ],
+  "access_issues": [
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13646339/",
+      "result": "browser challenge; PubMed/search-index source used; prior selected reading remains distinguished"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8275929/",
+      "result": "browser challenge; Frontiers primary full text used"
+    },
+    {
+      "service": "CrossRef",
+      "dois": [
+        "10.1111/dom.71289",
+        "10.3389/fpubh.2021.626331"
+      ],
+      "result": "Initial parallel requests returned HTTP 429; sequential retry resolved both"
+    }
+  ],
+  "integrity_limitations": "No correction/retraction notice appeared in checked CrossRef work metadata. This does not establish absence of all notices; no exhaustive integrity audit. JPHC publisher version update is explicitly retained.",
+  "advisory_assessment": {
+    "topic_change_required_by_current_evidence": false,
+    "meaning": "No current evidence requires abandoning the baseline-prognosis direction; not proof that the eventual study is novel or feasible.",
+    "novelty": "Not established for the group's proposed study",
+    "dataset_feasibility": "Public and controlled cohort routes exist; specific file, outcome, horizon and event sufficiency remain unverified",
+    "human_collaboration_prompt": "HUMAN_SEARCH_PROMPT_VI.md"
+  },
+  "validation": {
+    "status": "passed",
+    "dossier_json_files_parsed": 6,
+    "dossier_claims_matching_canonical_schema": 25,
+    "dossier_local_markdown_links_checked": 31,
+    "followup_claim_source_ids_consistent": true,
+    "agent_tests_passed": 104,
+    "skill_tests_passed": 49,
+    "managed_skill_mirrors_in_parity": 14,
+    "note": "Schema validation used the standard-library checker covering all keywords in the current canonical claim schema; reference identity is distinct from full methodological or integrity audit."
+  }
+}

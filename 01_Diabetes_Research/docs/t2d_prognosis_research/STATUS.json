@@ -5,7 +5,7 @@
   "timezone": "Asia/Bangkok",
   "branch": "codex/t2d-prognosis-research",
   "base_commit": "6ac22b221415270c4fd32e038a71dd9e7743ee0d",
-  "status": "initial_research_and_learning_pack_ready",
+  "status": "targeted_search_and_human_collaboration",
   "working_topic": "Predict incident type 2 diabetes risk over a future horizon from health data available at the prediction time.",
   "decision_state": "exploratory",
   "final_topic_selected": false,
@@ -30,7 +30,7 @@
     "human_selects_final_scope": true
   },
   "workstreams": {
-    "literature_scan": "initial_targeted_scan_ready_8_studies",
+    "literature_scan": "initial_8_studies_plus_targeted_followup_recorded",
     "learning_pack": "ready_3_documents_34_terms",
     "dataset_readiness": "metadata_checklist_created",
     "deep_comparison": "not_started",
@@ -38,6 +38,7 @@
     "final_topic_decision": "not_started"
   },
   "next_steps": [
+    "Collect human search results using HUMAN_SEARCH_PROMPT_VI.md and deduplicate by DOI or PMID",
     "Read the introductory lesson and answer self-check questions",
     "Read selected full texts of the closest baseline-prognosis studies",
     "Audit one legally accessible dataset and its codebook before fixing the horizon",
@@ -49,6 +50,15 @@
     "No paper promotion, permanent rejection, or data deletion",
     "No credentials, access applications, or communications to third parties"
   ],
+  "followup_search": {
+    "date": "2026-11-03",
+    "report": "FOLLOWUP_SEARCH_20261103_VI.md",
+    "evidence": "evidence/followup_search_20261103.json",
+    "human_prompt": "HUMAN_SEARCH_PROMPT_VI.md",
+    "previous_papers_rechecked": 3,
+    "additional_leads": 1,
+    "formal_paper_folders_created": 0
+  },
   "validation": {
     "status": "passed",
     "report": "evidence/validation.json",

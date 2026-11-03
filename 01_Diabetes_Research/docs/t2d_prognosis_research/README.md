@@ -28,6 +28,8 @@ Theo chỉ đạo ngày 03/11/2026: giữ hướng gốc, nghiên cứu tình h�
 
 - [Kế hoạch khảo sát](RESEARCH_PLAN_VI.md): câu hỏi, phạm vi và điều kiện để tiến tới chọn đề tài cụ thể.
 - [Khảo sát tài liệu vòng đầu](LITERATURE_SCAN_VI.md): nguồn đã đọc và mức kết luận hiện có.
+- [Lượt tìm bổ sung 03/11](FOLLOWUP_SEARCH_20261103_VI.md): đối chiếu ba bài sát và kiểm tra đầu mối dữ liệu RICH.
+- [Prompt để anh tìm bài song song](HUMAN_SEARCH_PROMPT_VI.md): phạm vi tìm kiếm và thông tin cần giữ để đối chiếu.
 - [Kiểm tra mức sẵn sàng của dữ liệu](DATA_READINESS_VI.md): tiêu chí để anh tìm dataset và để em kiểm tra lại.
 - [Trạng thái công việc](STATUS.json): chỉ quản lý hồ sơ khảo sát này; không thay thế `PROGRESS.json` của nghiên cứu khác.
 - `evidence/`: nguồn, truy vấn, mức độ đã đọc và provenance. Một bản ghi nguồn không có nghĩa là bài đã được đọc sâu hoặc được chọn làm baseline.
