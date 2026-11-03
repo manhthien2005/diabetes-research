@@ -31,3 +31,7 @@ Nguồn dữ liệu RICH được [Dryad chính thức](https://datadryad.org/da
 Anh có thể dùng [prompt tìm bài](HUMAN_SEARCH_PROMPT_VI.md) để tìm trên công cụ khác và gửi kết quả. Phần trợ lý tập trung đối chiếu bài gốc, nhãn, timing, cách xử lý follow-up và đường dữ liệu. Kết quả của hai bên sẽ được khử trùng theo DOI/PMID. Một bài private có thể có giá trị bằng chứng dù không tái lập được; một dataset public vẫn phải kiểm tra khả thi.
 
 Nhật ký nguồn, truy vấn và claims của lượt này: [followup_search_20261103.json](evidence/followup_search_20261103.json). Đây vẫn là tìm có mục tiêu, chưa phải systematic review hoặc kết luận đã tìm đủ.
+
+## Bổ sung sau khi tiếp nhận kết quả Sonnet/Perplexity — 03/11/2026
+
+Đã kiểm tra lại Wu 2021: ngoài random internal split, bài còn có external validation trên NAGALA, được nêu tại *Statistical Analysis* và *External Validation*. Mô tả lượt trước chưa bao quát phần này. Lưu ý loại dữ liệu censored và complete-case vẫn giữ nguyên; không diễn giải bản ghi random internal split trước đó thành “không có external validation”. Bằng chứng bổ sung ở [nhật ký mới](evidence/human_results_review_20261103.json). Bước đọc đầu tiên được thu hẹp thành [Huang 2026](learning/READ_FIRST_HUANG2026_VI.md); chưa cần thêm một lượt tìm tổng quát.

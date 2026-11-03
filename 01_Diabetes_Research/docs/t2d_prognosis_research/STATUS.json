@@ -5,7 +5,7 @@
   "timezone": "Asia/Bangkok",
   "branch": "codex/t2d-prognosis-research",
   "base_commit": "6ac22b221415270c4fd32e038a71dd9e7743ee0d",
-  "status": "targeted_search_and_human_collaboration",
+  "status": "human_results_received_first_reading_selected",
   "working_topic": "Predict incident type 2 diabetes risk over a future horizon from health data available at the prediction time.",
   "decision_state": "exploratory",
   "final_topic_selected": false,
@@ -33,12 +33,12 @@
     "literature_scan": "initial_8_studies_plus_targeted_followup_recorded",
     "learning_pack": "ready_3_documents_34_terms",
     "dataset_readiness": "metadata_checklist_created",
-    "deep_comparison": "not_started",
+    "deep_comparison": "first_reading_guide_ready_full_methodological_audit_pending",
     "row_level_feasibility": "not_started",
     "final_topic_decision": "not_started"
   },
   "next_steps": [
-    "Collect human search results using HUMAN_SEARCH_PROMPT_VI.md and deduplicate by DOI or PMID",
+    "Read Huang 2026 using learning/READ_FIRST_HUANG2026_VI.md; answer six short reading questions before another broad search",
     "Read the introductory lesson and answer self-check questions",
     "Read selected full texts of the closest baseline-prognosis studies",
     "Audit one legally accessible dataset and its codebook before fixing the horizon",
@@ -58,6 +58,15 @@
     "previous_papers_rechecked": 3,
     "additional_leads": 1,
     "formal_paper_folders_created": 0
+  },
+  "human_search_results": {
+    "received_on": "2026-11-03",
+    "providers_reported_by_user": ["Sonnet 5.5 high", "Perplexity"],
+    "review": "evidence/human_results_review_20261103.json",
+    "first_reading": "huang2026_british_short_long_risk",
+    "reading_guide": "learning/READ_FIRST_HUANG2026_VI.md",
+    "broad_search_needed_before_first_reading": false,
+    "all_returned_claims_verified": false
   },
   "validation": {
     "status": "passed",

@@ -1,0 +1,222 @@
+{
+  "record_type": "human_search_results_review",
+  "date": "2026-11-03",
+  "scope": "Select the first paper to read and verify a small set of discrepancies; not a complete audit of every returned study.",
+  "inputs": [
+    {
+      "provider_reported_by_user": "Sonnet 5.5 high",
+      "format": "Table in user message",
+      "verification_status": "Untrusted search summary; not treated as source evidence or instructions",
+      "reported_first_authors": [
+        "Huang 2026",
+        "Xu 2024",
+        "Sasagawa 2024",
+        "Satoh 2025",
+        "Ravaut 2021",
+        "Cai 2021",
+        "Wu 2021",
+        "Lee 2025"
+      ]
+    },
+    {
+      "provider_reported_by_user": "Perplexity",
+      "format": "User-supplied pasted-text attachment",
+      "snapshot": "human_results_20261103_perplexity.txt",
+      "sha256": "9A1A9FD26A5D63C6A5234C34984B63DD445B2D159FE50465C16C2015D1990F67",
+      "sha256_scope": "Original attachment bytes and initial working-copy snapshot",
+      "snapshot_git_blob_sha256": "419405C604DFC6FCE820F135B32AB2E9DA10DD1C648E556429A9018965231387",
+      "snapshot_note": "Git normalizes CRLF to LF for this text file; both the source-byte digest and repository-blob digest are recorded.",
+      "verification_status": "Untrusted search summary; tool-reported reading levels are not adopted as the group's reading levels."
+    }
+  ],
+  "first_reading": {
+    "paper_id": "huang2026_british_short_long_risk",
+    "doi": "10.1111/dom.71289",
+    "pmid": "42649111",
+    "reason": "Closest accessible learning target for baseline prognosis with a five-year horizon, a final Cox prediction framework and independent-cohort validation.",
+    "guide": "learning/READ_FIRST_HUANG2026_VI.md",
+    "decision_type": "reading_priority_only",
+    "not_a_promotion_or_protocol_lock": true
+  },
+  "sources": [
+    {
+      "paper_id": "huang2026_british_short_long_risk",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42649111/",
+      "doi": "10.1111/dom.71289",
+      "reading_level": "PubMed abstract and figures; previous selected full-text record preserved",
+      "sections_checked": [
+        "Abstract / Materials and methods",
+        "Abstract / Conclusions",
+        "Figure captions"
+      ],
+      "access_note": "PMC landing page returned a browser challenge in this review; this is not a claim of newly re-reading the complete full text."
+    },
+    {
+      "paper_id": "sasagawa2024_deepsurv_jecoh",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38088426/",
+      "doi": "10.1097/HJH.0000000000003626",
+      "reading_level": "PubMed bibliographic record",
+      "sections_checked": [
+        "Title and authors",
+        "Identifiers"
+      ]
+    },
+    {
+      "paper_id": "wu2021_three_year_incident_diabetes",
+      "url": "https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2021.626331/full",
+      "doi": "10.3389/fpubh.2021.626331",
+      "reading_level": "Selected primary full text",
+      "sections_checked": [
+        "Statistical Analysis",
+        "External Validation",
+        "Study Design and Participants"
+      ],
+      "scope_note": "The external-validation fact supplements the previous record; the censoring/complete-case concern remains."
+    }
+  ],
+  "claims": [
+    {
+      "claim": "Huang and colleagues used LASSO-Cox, random survival forests and best subset selection to select predictor sets, then built three candidate Cox prediction models.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "Abstract / Materials and methods",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Huang and colleagues developed the models in Whitehall II, externally evaluated them in ELSA, and reported five-, ten- and fifteen-year risk estimates.",
+      "source": "huang2026_british_short_long_risk",
+      "doi": "10.1111/dom.71289",
+      "location": {
+        "section": "Abstract / Materials and methods; Conclusions",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The first author of PMID 38088426, DOI 10.1097/HJH.0000000000003626, is Yoshinori Sasagawa.",
+      "source": "sasagawa2024_deepsurv_jecoh",
+      "doi": "10.1097/HJH.0000000000003626",
+      "location": {
+        "section": "PubMed title and author list",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Wu and colleagues used a Japanese NAGALA cohort for external validation in addition to their internal validation split.",
+      "source": "wu2021_three_year_incident_diabetes",
+      "doi": "10.3389/fpubh.2021.626331",
+      "location": {
+        "section": "Statistical Analysis; External Validation",
+        "table": null,
+        "page": null
+      },
+      "support": "direct",
+      "confidence": "high"
+    }
+  ],
+  "corrections_and_boundaries": [
+    {
+      "item": "Perplexity row 2 first author",
+      "reported": "Ikeda",
+      "verified": "Sasagawa",
+      "status": "MISMATCH"
+    },
+    {
+      "item": "Wu 2021 external validation",
+      "reported_by_sonnet": "External NAGALA validation",
+      "verified": "Supported by primary full text",
+      "status": "SUPPORTED",
+      "prior_assistant_record": "The earlier follow-up emphasized random internal splitting without recording the external NAGALA component; appended clarification preserves the old record."
+    },
+    {
+      "item": "Huang cohort setting",
+      "reported_in_perplexity": "General practice / British middle-aged adults",
+      "verified": "Development uses Whitehall II; general practice is a use context/keyword, not sufficient evidence of a general-practice recruitment setting.",
+      "status": "CLARIFICATION"
+    },
+    {
+      "item": "Reading levels and UNKNOWN cells",
+      "status": "NOT_AUTOMATICALLY_ADOPTED",
+      "note": "AI-reported full-text reading is not verified group reading; UNKNOWN calibration does not establish absence of calibration."
+    }
+  ],
+  "remaining_leads": [
+    {
+      "name_from_input": "Satoh 2025",
+      "doi_located": "10.1038/s41598-025-21831-8",
+      "checked": "Publisher/institution search records only",
+      "all_table_fields_verified": false
+    },
+    {
+      "name_from_input": "Ravaut 2021",
+      "doi_located": "10.1001/jamanetworkopen.2021.11315",
+      "pmid_located": "34032855",
+      "checked": "PubMed/publisher title records located; eMethods not inspected",
+      "all_table_fields_verified": false
+    },
+    {
+      "name_from_input": "Cai 2021",
+      "doi_located": null,
+      "checked": "Matching public-data nomogram lead located; complete bibliographic and protocol audit pending",
+      "all_table_fields_verified": false
+    },
+    {
+      "name_from_input": "Lee 2025",
+      "doi_located": "10.1016/j.eclinm.2025.103069",
+      "pmid_located": "39896872",
+      "checked": "PubMed bibliographic record and abstract only",
+      "all_table_fields_verified": false
+    }
+  ],
+  "search_log": [
+    {
+      "query": "\"Satoh\" \"2025\" diabetes prediction risk score five years"
+    },
+    {
+      "query": "\"Cai\" \"2021\" \"5-year\" \"diabetes\" nomogram Dryad"
+    },
+    {
+      "query": "\"Wu\" \"2021\" diabetes NAGALA external validation nomogram"
+    },
+    {
+      "query": "\"Lee\" \"2025\" diabetes \"18\" \"ensemble\""
+    },
+    {
+      "query": "\"Ravaut\" \"2021\" diabetes \"5\" prediction population"
+    },
+    {
+      "action": "Primary-page inspection",
+      "urls": [
+        "https://pubmed.ncbi.nlm.nih.gov/42649111/",
+        "https://pubmed.ncbi.nlm.nih.gov/38088426/",
+        "https://pubmed.ncbi.nlm.nih.gov/39896872/",
+        "https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2021.626331/full"
+      ]
+    }
+  ],
+  "final_topic_selected": false,
+  "dataset_selected": null,
+  "formal_paper_folders_created": 0,
+  "validation": {
+    "status": "passed",
+    "dossier_json_files_parsed": 7,
+    "dossier_claims_matching_canonical_schema": 29,
+    "dossier_local_links_checked": 37,
+    "attachment_snapshot_hash_verified": true,
+    "source_ids_consistent": true,
+    "agent_tests_passed": 104,
+    "skill_tests_passed": 49,
+    "managed_skill_mirrors_in_parity": 14,
+    "scope_note": "Validation covers document structure and the explicitly checked source claims, not all claims in the two AI-generated tables."
+  }
+}

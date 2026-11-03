@@ -23,6 +23,7 @@ Theo chỉ đạo ngày 03/11/2026: giữ hướng gốc, nghiên cứu tình h�
 1. [Bài 1 — hiểu đúng bài toán](learning/LESSON_01_VI.md): một buổi học ngắn, có ví dụ giả định và đáp án.
 2. [Lộ trình học](learning/LEARNING_PATH_VI.md): học theo mô-đun, không cần học tất cả ngay.
 3. [Từ điển thuật ngữ](learning/GLOSSARY_VI.md): tra khi gặp từ mới.
+4. [Bài báo đầu tiên — Huang 2026](learning/READ_FIRST_HUANG2026_VI.md): cách đọc trong một buổi và sáu câu để cùng thảo luận.
 
 ## Theo dõi phần nghiên cứu
 
