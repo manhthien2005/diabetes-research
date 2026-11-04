@@ -29,6 +29,8 @@ Theo chỉ đạo ngày 03/11/2026: giữ hướng gốc, nghiên cứu tình h�
 
 ## Theo dõi phần nghiên cứu
 
+- [Xin tiếp cận WHII và ELSA — 04/11](data_access_20261104/README_VI.md): đã gửi thư hỏi WHII và yêu cầu username UK Data Service; đang chờ phản hồi, chưa có quyền dùng dữ liệu.
+
 - [Kế hoạch khảo sát](RESEARCH_PLAN_VI.md): câu hỏi, phạm vi và điều kiện để tiến tới chọn đề tài cụ thể.
 - [Khảo sát tài liệu vòng đầu](LITERATURE_SCAN_VI.md): nguồn đã đọc và mức kết luận hiện có.
 - [Lượt tìm bổ sung 03/11](FOLLOWUP_SEARCH_20261103_VI.md): đối chiếu ba bài sát và kiểm tra đầu mối dữ liệu RICH.

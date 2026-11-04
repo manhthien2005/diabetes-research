@@ -1,0 +1,96 @@
+{
+  "checked_on": "2026-11-04",
+  "scope": "Official access routes and dataset design; no row-level data audit",
+  "claim_provenance": [
+    {
+      "claim": "ELSA End User Licence data are accessible via UK Data Service; users outside the UK may request a username. Higher access tiers have additional restrictions.",
+      "source": "https://www.elsa-project.ac.uk/accessing-elsa-data",
+      "doi": null,
+      "location": {"section": "Accessing ELSA data", "table": null, "page": null},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "UCL lists bespoke collaboration and DPUK access routes for WHII. Its free-DPUK statement should be reconciled with the redirected portal's current pricing before assuming a price.",
+      "source": "https://www.ucl.ac.uk/brain-sciences/psychiatry/research/mental-health-older-people/projects/whitehall-ii/data-sharing/collaborating-whitehall-ii",
+      "doi": null,
+      "location": {"section": "Applying for data; Payment", "table": null, "page": null},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The redirected NDP Dementias Hub states that new access requests use cost recovery with a quotation before Data Owner approval.",
+      "source": "https://dementiashub.ndp.serp.ac.uk/",
+      "doi": null,
+      "location": {"section": "Welcome; Access", "table": null, "page": null},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "NDP welcomes higher education students but requires their academic sponsor or supervisor as Lead Researcher, with the student as co-applicant.",
+      "source": "https://dementiashub.ndp.serp.ac.uk/apply-for-access/application-process-2025/",
+      "doi": null,
+      "location": {"section": "Who can access the NDP Dementias Hub?", "table": null, "page": null},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "NDP data remain inside its remote trusted research environment; local download is prohibited and output release is reviewed.",
+      "source": "https://dementiashub.ndp.serp.ac.uk/apply-for-access/application-process-2025/",
+      "doi": null,
+      "location": {"section": "Working securely within the Dementias Hub", "table": null, "page": null},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The current NDP Applicant Guide requires CVs and an AI risk assessment report where AI/ML methods are proposed.",
+      "source": "https://dementiashub.ndp.serp.ac.uk/wp-content/uploads/2026/10/NDP_Dementias_Hub_Applicant_Guide.pdf",
+      "doi": null,
+      "location": {"section": "Upload supporting documents", "table": null, "page": "PDF 4"},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "CDC describes BRFSS as a cross-sectional telephone survey collecting prevalence information.",
+      "source": "https://portugues.cdc.gov/brfss/data_documentation/index.htm",
+      "doi": null,
+      "location": {"section": "Survey Data and Documentation", "table": null, "page": null},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "NCHS describes continuous NHANES as a nationally representative cross-sectional sample.",
+      "source": "https://www.cdc.gov/nchs/data/datalinkage/2019ndi-linkage-methods-and-analytic-considerations-508.pdf",
+      "doi": null,
+      "location": {"section": "2.1.2 National Health and Nutrition Examination Survey", "table": null, "page": null},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Peking University describes CHARLS respondents as followed every two years.",
+      "source": "https://www.isss.pku.edu.cn/english/data/charls/index.htm",
+      "doi": null,
+      "location": {"section": "China Health and Retirement Longitudinal Study", "table": null, "page": null},
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The ward postal-code list published on a Vietnamese government website lists Binh Trung as 71322 and An Khanh as 71108.",
+      "source": "https://thienhung.dongnai.gov.vn/uploads/thienhung/news/2025_09/ma-buu-chinh_1.pdf",
+      "doi": null,
+      "location": {"section": "TP. HO CHI MINH", "table": "Rows 76 and 78", "page": "PDF 42"},
+      "support": "direct",
+      "confidence": "high"
+    }
+  ],
+  "analyst_assessments": [
+    "WHII and ELSA fit the specific incident-risk design more directly than ordinary BRFSS and continuous NHANES files",
+    "No general superiority over CHARLS established",
+    "Access to a named cohort does not guarantee the identical analysis dataset or exact reproducibility"
+  ],
+  "limitations": [
+    "ELSA release and variable-level suitability remain unaudited",
+    "No NDP quotation or data-owner approval received",
+    "Official form download attempts returned 403; no alternative fetch attempts performed"
+  ]
+}

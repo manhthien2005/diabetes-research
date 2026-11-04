@@ -1,0 +1,26 @@
+[
+  {
+    "filename": "whii_application_policy.docx",
+    "source_url": "https://www.ucl.ac.uk/psychiatry/sites/psychiatry/files/w2_data_sharing_policy_v31.docx",
+    "attempts": 1,
+    "retrieved_on": "2026-11-04",
+    "status": "not_downloaded",
+    "error": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+    "filename": "whii_data_dictionary.xlsx",
+    "source_url": "https://www.ucl.ac.uk/psychiatry/sites/psychiatry/files/w2_data_dictionary_dpuk_v0.51.xlsx",
+    "attempts": 1,
+    "retrieved_on": "2026-11-04",
+    "status": "not_downloaded",
+    "error": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+    "filename": "ndp_applicant_guide.pdf",
+    "source_url": "https://dementiashub.ndp.serp.ac.uk/wp-content/uploads/2026/10/NDP_Dementias_Hub_Applicant_Guide.pdf",
+    "attempts": 1,
+    "retrieved_on": "2026-11-04",
+    "status": "not_downloaded",
+    "error": "HTTPError: HTTP Error 403: Forbidden"
+  }
+]

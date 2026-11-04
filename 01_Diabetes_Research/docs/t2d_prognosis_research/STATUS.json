@@ -1,7 +1,14 @@
 {
   "version": 1,
   "created_on": "2026-11-03",
-  "updated_on": "2026-11-03",
+  "updated_on": "2026-11-04",
+  "data_access_workstream": {
+    "folder": "data_access_20261104",
+    "status": "waiting_for_provider_responses",
+    "whii_enquiry_sent": true,
+    "ukds_username_request_submitted": true,
+    "data_access_granted": false
+  },
   "timezone": "Asia/Bangkok",
   "branch": "codex/t2d-prognosis-research",
   "base_commit": "6ac22b221415270c4fd32e038a71dd9e7743ee0d",

@@ -1,0 +1,43 @@
+{
+  "updated_on": "2026-11-04",
+  "status": "waiting_for_provider_responses",
+  "dataset_selected": null,
+  "protocol_frozen": false,
+  "data_access_granted": false,
+  "row_level_data_downloaded": false,
+  "whii": {
+    "status": "initial_enquiry_sent",
+    "recipient": "whitehall2@ucl.ac.uk",
+    "subject": "Whitehall II access enquiry: student research on incident type 2 diabetes prediction",
+    "gmail_message_id": "1a1a6938535b5231",
+    "gmail_thread_id": "1a1a6938535b5231",
+    "provider_label": "SENT",
+    "body_file": "WHII_ENQUIRY.html",
+    "formal_application_submitted": false,
+    "fees_committed": false,
+    "agreements_signed": false
+  },
+  "elsa": {
+    "status": "ukds_username_request_submitted_pending_processing",
+    "registration_url": "https://beta.ukdataservice.ac.uk/myaccount/credentials",
+    "email_verified_by_user": true,
+    "private_account_fields_completed_by_user": true,
+    "terms_checkbox_accepted_by_user_before_submission": true,
+    "confirmation_heading": "Applied for a username",
+    "provider_target_processing": "three working days; may take longer",
+    "dataset_licence_and_download_not_completed": true
+  },
+  "academic_contact": {
+    "name": "Huỳnh Đệ Thủ",
+    "institution": "Saigon International University",
+    "source": "User supplied; public SIU profile checked",
+    "formal_lead_researcher_signature_obtained": false
+  },
+  "personal_account_fields_kept_out_of_repository": true,
+  "next_actions": [
+    "Wait for the UK Data Service username response, then complete registration and review the appropriate ELSA release and licence",
+    "Wait for WHII guidance on eligibility, current route, variables and charges",
+    "Prepare institutional sponsorship and supporting documents if progressing to NDP",
+    "Assess actual longitudinal variables before selecting the study dataset"
+  ]
+}

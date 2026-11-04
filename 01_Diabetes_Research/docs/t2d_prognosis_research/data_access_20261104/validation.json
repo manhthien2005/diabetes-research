@@ -1,0 +1,14 @@
+{
+  "validated_on": "2026-11-04",
+  "status": "passed",
+  "canonical_claims_schema_validated": 10,
+  "local_document_links_checked": 5,
+  "broken_local_document_links": 0,
+  "agent_unit_tests_passed": 104,
+  "skill_unit_tests_passed": 49,
+  "managed_skill_mirrors_in_parity": 14,
+  "whii_message_sent_verified_with_gmail_metadata": true,
+  "ukds_username_request_receipt_verified_in_browser": true,
+  "data_access_or_dataset_download_claimed": false,
+  "study_decisions_frozen": false
+}
