@@ -164,5 +164,13 @@
     "source.pdf": "user-provided original; ignored by repository PDF policy",
     "supplementary.docx": "publisher original extracted from Europe PMC archive",
     "supporting_files.zip": "locally preserved acquisition archive; not required for reading"
+  },
+  "translation": {
+    "language": "vi",
+    "file": "extracted.vi.md",
+    "status": "complete",
+    "translated_on": "2026-11-04",
+    "report": "translation_report.json",
+    "bilingual_alignment": "39 matched sections; available through the existing Research Hub reader"
   }
 }

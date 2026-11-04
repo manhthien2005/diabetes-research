@@ -10,6 +10,8 @@
 
 Trong bản giải thích, “PDF trang 6 / trang in 10579” là cùng một trang. Bài có 12 trang, từ trang in 10574 đến 10585.
 
+**Bản dịch và song ngữ — cập nhật 04/11/2026:** đã có [bản dịch tiếng Việt](extracted.vi.md) của nội dung bài báo. Trong Research Hub, mở **Đọc song ngữ → EN | VN** để đối chiếu từng mục, hoặc chọn **VN** để chỉ đọc tiếng Việt. Tab **PDF + Bản dịch** đặt bản dịch cạnh PDF và hỗ trợ đánh dấu. Giữ nguyên các mục tài liệu tham khảo, công thức và dữ liệu trong bảng; xem [báo cáo kiểm tra bản dịch](translation_report.json). Phụ lục DOCX riêng chưa được dịch trong lượt này.
+
 ## Tài liệu trong thư mục
 
 | Tệp | Công dụng |
@@ -18,6 +20,7 @@ Trong bản giải thích, “PDF trang 6 / trang in 10579” là cùng một tr
 | [READING_EXPLANATION_VI.md](READING_EXPLANATION_VI.md) | Hướng dẫn đọc cho người mới |
 | [analysis.html](analysis.html) | Phân tích sâu bằng tiếng Việt |
 | [extracted.md](extracted.md) | Toàn văn trích xuất, đã sửa hai công thức bằng đối chiếu hình gốc |
+| [extracted.vi.md](extracted.vi.md) | Bản dịch tiếng Việt, khớp 39 mục với nguyên văn để đọc song ngữ trên web |
 | [extracted.prev.md](extracted.prev.md) | Bản trích xuất tự động trước khi sửa, giữ để đối chiếu |
 | [extraction_manual_review.md](extraction_manual_review.md) | Phạm vi kiểm tra và giới hạn của trích xuất |
 | [supplementary.docx](supplementary.docx) | Phụ lục gốc của nhà xuất bản |
