@@ -1,0 +1,81 @@
+{
+  "record_type": "targeted_next_reading_search",
+  "date": "2026-11-04",
+  "scope": "Select a manageable next reading and a conditional public-data reproduction exercise after Huang; not a systematic review or final study selection.",
+  "queries": [
+    "Cai 2021 type 2 diabetes nomogram LASSO Cox Dryad 5 year",
+    "Sasagawa 2024 DeepSurv Cox diabetes prediction 3626",
+    "type 2 diabetes survival prediction NAGALA github random survival forest DeepSurv",
+    "diabetes random survival forest Dryad prediction",
+    "incident type 2 diabetes code availability Cox",
+    "10.2147/DMSO.S304994 correction retraction",
+    "10.1097/HJH.0000000000003626 retraction correction"
+  ],
+  "repository_duplicate_check": "Inspected metadata.json titles across searched_papers. Neither recommended paper has a formal paper folder; both were already literature leads in the human results or initial scan.",
+  "candidates": [
+    {
+      "paper_id": "cai2021_nonobese_five_year",
+      "title": "Derivation and Validation of a Prediction Model for Predicting the 5-Year Incidence of Type 2 Diabetes in Non-Obese Adults: A Population-Based Cohort Study",
+      "doi": "10.2147/DMSO.S304994",
+      "year": 2021,
+      "pmid": "34007195",
+      "pmcid": "PMC8123981",
+      "layer": 3,
+      "layer_reason": "Longitudinal health-check cohort with baseline predictors and incident diabetes follow-up.",
+      "prediction_horizon": "long_term_risk",
+      "horizon_years": 5,
+      "candidate_roles": ["evidence_candidate", "reproduction_candidate"],
+      "candidate_assessment": {
+        "evidence_candidate": {"eligible": true, "reasons": ["Direct baseline-to-future Cox prediction example."], "limitations": ["Internal random split only; selected Japanese non-obese cohort; 201 events."]},
+        "reproduction_candidate": {"eligible": true, "reasons": ["Paper identifies a public Dryad dataset with incident event and follow-up duration variables."], "limitations": ["Conditional method reconstruction, not verified exact numerical replication; raw data and codebook not audited; author code and split seed not confirmed."]}
+      },
+      "integrity": {"identity_verified": true, "doi_resolved": true, "title_match": true, "crossref_type": "journal-article", "retraction_status": "not_retracted", "has_correction": false, "metadata_conflicts": [], "checked_at": "2026-11-04", "check_source": "Live CrossRef /works record plus PubMed and targeted notice search", "limits": "No retraction/correction notice found in inspected records. Empty CrossRef relations/update fields do not guarantee exhaustive notice detection."},
+      "reproducibility": {"dataset_access": "public", "code_access": "unclear", "methods_operationalized": "partial", "variable_mapping_feasible": "unclear", "overall": "medium", "notes": ["Dryad landing page lists Data set Int J Obesity.xlsx, 3.26 MB; file not downloaded or audited in this task.", "Code access unclear means not verified, not a claim that code does not exist."]},
+      "reading_level": "PubMed identity/abstract; indexed primary full-text sections and Table 1; not full PDF/supplement audit. Direct PMC opening returned browser challenge.",
+      "source_urls": ["https://pubmed.ncbi.nlm.nih.gov/34007195/", "https://pmc.ncbi.nlm.nih.gov/articles/PMC8123981/", "https://api.crossref.org/works/10.2147/DMSO.S304994", "https://datadryad.org/dataset/doi:10.5061/dryad.8q0p192"],
+      "recommended_action": "retain_in_pool",
+      "decision_state": "recommendation_ready",
+      "reading_priority": 1
+    },
+    {
+      "paper_id": "sasagawa2024_deepsurv_jecoh",
+      "title": "Application of deep neural survival networks to the development of risk prediction models for diabetes mellitus, hypertension, and dyslipidemia",
+      "doi": "10.1097/HJH.0000000000003626",
+      "year": 2024,
+      "online_year": 2023,
+      "pmid": "38088426",
+      "pmcid": "PMC10842670",
+      "layer": 2,
+      "layer_reason": "Main learning contribution is a direct neural survival versus Cox comparison.",
+      "prediction_horizon": "long_term_risk",
+      "horizon_years": 7,
+      "candidate_roles": ["evidence_candidate"],
+      "candidate_assessment": {
+        "evidence_candidate": {"eligible": true, "reasons": ["Direct DeepSurv/Cox comparison with horizon-specific performance and calibration."], "limitations": ["Internal validation, restricted cohort data, outcome does not distinguish diabetes types."]},
+        "reproduction_candidate": {"eligible": false, "reasons": [], "limitations": ["Same-data reproduction is currently unconfirmed because public deposition is restricted and access has not been secured."]}
+      },
+      "integrity": {"identity_verified": true, "doi_resolved": true, "title_match": true, "crossref_type": "journal-article", "retraction_status": "not_retracted", "has_correction": false, "metadata_conflicts": ["CrossRef published date is 2023-12-13; PubMed issue is March 2024. This is online-versus-issue dating, not an identity conflict."], "checked_at": "2026-11-04", "check_source": "Live CrossRef /works record, PubMed, PMC and targeted notice search", "limits": "No retraction/correction notice found in inspected records; registry silence is not an exhaustive guarantee."},
+      "reproducibility": {"dataset_access": "controlled", "code_access": "unclear", "methods_operationalized": "partial", "variable_mapping_feasible": "unclear", "overall": "low", "notes": ["Low refers to current same-data execution feasibility, not scientific evidence value.", "Reimplementing DeepSurv on NAGALA would be a method transfer, not replication of the J-ECOH findings."]},
+      "reading_level": "Selected current full text: Statistical analysis, Table 3, Discussion, Acknowledgements / Data availability.",
+      "source_urls": ["https://pubmed.ncbi.nlm.nih.gov/38088426/", "https://pmc.ncbi.nlm.nih.gov/articles/PMC10842670/", "https://api.crossref.org/works/10.1097/HJH.0000000000003626"],
+      "recommended_action": "retain_in_pool",
+      "decision_state": "recommendation_ready",
+      "reading_priority": 2
+    }
+  ],
+  "other_leads": [
+    {"title": "Development of a dynamic type 2 diabetes risk prediction tool: a UK Biobank study", "url": "https://arxiv.org/abs/2104.10108", "status": "Discovery lead only, abstract inspected; not proposed as an integrity-cleared new paper. Restricted UK Biobank data does not solve immediate execution access."},
+    {"paper_id": "wu2021_three_year_incident_diabetes", "doi": "10.3389/fpubh.2021.626331", "status": "Existing lead, not promoted into this newly cleared pair; live CrossRef lookup returned HTTP 429. Prior external-validation correction remains valid. No repeated lookup attempted."}
+  ],
+  "claims": [
+    {"claim": "Cai analyzed 12940 non-obese participants, with 201 incident events: 154 in derivation and 47 in internal validation.", "source": "cai2021_nonobese_five_year", "doi": "10.2147/DMSO.S304994", "location": {"section": "Results / Characteristics of the Derivation and Validation Cohorts", "table": "Table 1", "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Cai used LASSO selection followed by multivariable Cox modeling to construct a five-year nomogram with age, fatty liver, GGT, TG, HbA1c and FPG.", "source": "cai2021_nonobese_five_year", "doi": "10.2147/DMSO.S304994", "location": {"section": "Abstract / Patients and Methods; Results / Establishment of a Predicting Nomogram", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Cai identifies Dryad 10.5061/dryad.8q0p192 as the source and states that raw variables include incident T2D and follow-up duration.", "source": "cai2021_nonobese_five_year", "doi": "10.2147/DMSO.S304994", "location": {"section": "Materials and Methods / Data Source", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "The Dryad dataset landing page lists Data set Int J Obesity.xlsx, 3.26 MB, as a download; the actual workbook has not been inspected in this task.", "source": "https://datadryad.org/dataset/doi:10.5061/dryad.8q0p192", "doi": "10.5061/dryad.8q0p192", "location": {"section": "Data files", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Sasagawa randomly assigned participants within J-ECOH to derivation and validation and developed seven-year DeepSurv and Cox models.", "source": "sasagawa2024_deepsurv_jecoh", "doi": "10.1097/HJH.0000000000003626", "location": {"section": "Statistical analysis", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "For diabetes Sasagawa reports AUROC 0.878 for DeepSurv and 0.872 for Cox; Discussion states no significant AUROC/Brier difference despite improved NRI/IDI.", "source": "sasagawa2024_deepsurv_jecoh", "doi": "10.1097/HJH.0000000000003626", "location": {"section": "Results; Discussion", "table": "Table 3", "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Sasagawa reports ethical or legal restrictions on public dataset deposition.", "source": "sasagawa2024_deepsurv_jecoh", "doi": "10.1097/HJH.0000000000003626", "location": {"section": "Acknowledgements / Data availability", "table": null, "page": null}, "support": "direct", "confidence": "high"}
+  ],
+  "actions": {"formal_paper_folders_created": 0, "pdf_download_attempts": 0, "row_level_data_downloaded": false, "training_performed": false, "paper_promotion_performed": false, "frozen_parameters_modified": false},
+  "report": "../NEXT_READING_20261104_VI.md"
+}

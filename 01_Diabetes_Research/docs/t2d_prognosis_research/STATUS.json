@@ -12,7 +12,16 @@
   "timezone": "Asia/Bangkok",
   "branch": "codex/t2d-prognosis-research",
   "base_commit": "6ac22b221415270c4fd32e038a71dd9e7743ee0d",
-  "status": "huang_fulltext_reading_pack_prepared",
+  "status": "next_reading_recommendation_prepared_while_waiting_for_data_access",
+  "next_reading": {
+    "date": "2026-11-04",
+    "report": "NEXT_READING_20261104_VI.md",
+    "evidence": "evidence/next_reading_20261104.json",
+    "first": "cai2021_nonobese_five_year",
+    "second": "sasagawa2024_deepsurv_jecoh",
+    "purpose": "Reading priority and conditional method reconstruction exercise; not final baseline selection",
+    "decision_state": "recommendation_ready"
+  },
   "working_topic": "Predict incident type 2 diabetes risk over a future horizon from health data available at the prediction time.",
   "decision_state": "exploratory",
   "final_topic_selected": false,
@@ -45,7 +54,7 @@
     "final_topic_decision": "not_started"
   },
   "next_steps": [
-    "Read the Huang PDF alongside its READING_EXPLANATION_VI.md; use analysis.html for methodological appraisal before discussing the next dataset or paper",
+    "Read Cai 2021 using NEXT_READING_20261104_VI.md; verify public-data definitions before any method reconstruction",
     "Read the introductory lesson and answer self-check questions",
     "Read selected full texts of the closest baseline-prognosis studies",
     "Audit one legally accessible dataset and its codebook before fixing the horizon",

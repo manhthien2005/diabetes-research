@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-04",
+  "artifact": "next_reading_20261104.json",
+  "status": "passed",
+  "canonical_claims_validated": 7,
+  "local_markdown_links_validated": 15,
+  "candidate_doi_resolution_checks_passed": 2,
+  "governance_tests": {"agents": 104, "skills": 49, "failures": 0},
+  "managed_skill_mirror_parity": {"checked": 14, "passed": true},
+  "scope_checks": {"frozen_parameters_unchanged": true, "dataset_not_selected": true, "no_training": true, "no_promotion": true},
+  "limitations": ["Validation checks artifact consistency, not clinical correctness or exact computational reproducibility.", "No row-level data, model code execution, or full Cai PDF/supplement audit performed."]
+}

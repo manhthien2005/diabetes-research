@@ -29,6 +29,7 @@ Theo chỉ đạo ngày 03/11/2026: giữ hướng gốc, nghiên cứu tình h�
 
 ## Theo dõi phần nghiên cứu
 
+- [Bài tiếp theo sau Huang — 04/11](NEXT_READING_20261104_VI.md): Cai 2021 để học và chuẩn bị dựng lại Cox trên NAGALA; Sasagawa 2024 để học cách so sánh DeepSurv–Cox.
 - [Xin tiếp cận WHII và ELSA — 04/11](data_access_20261104/README_VI.md): đã gửi thư hỏi WHII và yêu cầu username UK Data Service; đang chờ phản hồi, chưa có quyền dùng dữ liệu.
 
 - [Kế hoạch khảo sát](RESEARCH_PLAN_VI.md): câu hỏi, phạm vi và điều kiện để tiến tới chọn đề tài cụ thể.
