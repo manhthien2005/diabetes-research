@@ -2,7 +2,7 @@
 
 Mục tiêu: **same-data method reconstruction**, tự fit LASSO → Cox trên NAGALA; không cam kết khớp từng chữ số của tác giả. Đây là module riêng; không đổi nghiên cứu NHANES/BRFSS và không promote bài.
 
-Đọc [đặc tả](docs/RECONSTRUCTION_SPEC.md), [data dictionary](docs/DATA_DICTIONARY.md), [audit dữ liệu](qc/phase_a_20261105/data_audit.json) và [PROGRESS.json](PROGRESS.json) trước khi chạy. Thư mục `NAGAL` giữ đúng tên anh đã tạo.
+Đọc [đặc tả](docs/RECONSTRUCTION_SPEC.md), [giải thích phương pháp](docs/EXPLAIN_METHOD_VI.md), [data dictionary](docs/DATA_DICTIONARY.md), [báo cáo cohort](docs/COHORT_REPORT_VI.md), [audit dữ liệu](qc/phase_a_20261105/data_audit.json) và [PROGRESS.json](PROGRESS.json) trước khi chạy. Thư mục `NAGAL` giữ đúng tên anh đã tạo.
 
 ## Dữ liệu và nguồn
 
@@ -28,6 +28,8 @@ Mỗi output directory phải mới để bảo toàn lịch sử. Không chạy
 CPU, dataset và notebook mới. Anh đã cập nhật yêu cầu và cho phép public trong chat ngày 05/11/2026. Notebook tải các tệp source từ đúng Git commit, kiểm tra SHA256 từng tệp, cài môi trường riêng và gọi `src/run_study.py`; không có bản pipeline thứ hai. Source commit/hash, workbook checksum, cấu hình, seed, thư viện, notebook/version và output được ghi trong run manifest và bản read-back.
 
 Tạo bản upload từ source đã commit bằng `python kaggle/prepare.py --username phaninmnhthink16 --data data/raw/doi_10_5061_dryad_8q0p192__v20190219.zip --public --suffix <ma-run-moi>`. Trong `kaggle/upload/<ma-run-moi>/`, dùng Kaggle CLI tạo dataset từ `dataset/` và push notebook từ `notebook/`. Không dùng cùng slug để ghi đè notebook khác. Không đặt token trong notebook hoặc repository. Trạng thái thực tế nằm trong PROGRESS.json; một notebook đã upload chưa đồng nghĩa chạy thành công.
+
+Lượt đang theo dõi: [notebook attempt 2, version 1](https://www.kaggle.com/code/phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2?scriptVersionId=1), dùng [dataset gốc version 1](https://www.kaggle.com/datasets/phaninmnhthink16/cai2021-nagala-original-20261105). Kiểm tra trạng thái bằng Kaggle CLI. Sau khi kết thúc, dùng `python kaggle/readback.py --launch qc/kaggle_launch_attempt2_20261105.json --output runs/kaggle_attempt2_v1` để tải output và kiểm tra provenance. Thư mục output phải mới. Nếu đọc lại cùng output đã tải, không tự ghi đè hoặc gửi một run mới.
 
 ## Hiểu kết quả
 
