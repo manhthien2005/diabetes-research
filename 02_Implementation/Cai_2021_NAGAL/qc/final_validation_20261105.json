@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "source_file_hashes_against_recorded_git_commit": {
+    "config.json": true,
+    "requirements.txt": true,
+    "src/build_dictionary.py": true,
+    "src/cox_model.py": true,
+    "src/nagala_data.py": true,
+    "src/run_study.py": true,
+    "src/survival_eval.py": true,
+    "tests/test_evaluation.py": true,
+    "tests/test_integrity.py": true
+  },
+  "canonical_variable_schema": "PASS",
+  "json_files_parsed": 26,
+  "report_file_links": "PASS",
+  "module_tests": 9,
+  "governance_tests": 104,
+  "skill_tests": 49,
+  "mirror_parity": 14,
+  "references_verified": 2,
+  "kaggle_output_provenance": "ALL CHECKS PASS",
+  "calibration_figures": "Both visually inspected",
+  "raw_data_in_git": false,
+  "final_test_used_for_changes": false
+}

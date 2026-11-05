@@ -1,0 +1,536 @@
+[{"stream_name":"stderr","time":9.786093537,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.78614709,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.786154257,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.786158785,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":10.672336181,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.672515991000001,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.672528714,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.672534359,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":13.023644416,"data":"Verified committed source: 71b4045941d6b99e012effc16d58b460c0253863\n"}
+,{"stream_name":"stdout","time":14.807538808,"data":"Collecting numpy==2.4.6 (from -r /tmp/cai2021-source/requirements.txt (line 1))\n"}
+,{"stream_name":"stdout","time":14.921594053,"data":"  Downloading numpy-2.4.6-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)\n"}
+,{"stream_name":"stdout","time":15.01009812,"data":"Collecting numpy==2.4.6 (from -r /tmp/cai2021-source/requirements.txt (line 1))\n"}
+,{"stream_name":"stdout","time":15.010134282,"data":"  Downloading numpy-2.4.6-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)\n"}
+,{"stream_name":"stdout","time":15.322087689,"data":"Collecting pandas==2.3.3 (from -r /tmp/cai2021-source/requirements.txt (line 2))\n"}
+,{"stream_name":"stdout","time":15.328192386,"data":"  Downloading pandas-2.3.3-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)\n"}
+,{"stream_name":"stdout","time":15.525093457,"data":"Collecting pandas==2.3.3 (from -r /tmp/cai2021-source/requirements.txt (line 2))\n"}
+,{"stream_name":"stdout","time":15.525133789,"data":"  Downloading pandas-2.3.3-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)\n"}
+,{"stream_name":"stdout","time":15.785079303,"data":"Collecting scipy==1.18.0 (from -r /tmp/cai2021-source/requirements.txt (line 3))\n"}
+,{"stream_name":"stdout","time":15.800333301,"data":"  Downloading scipy-1.18.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)\n"}
+,{"stream_name":"stdout","time":15.988421318,"data":"Collecting scipy==1.18.0 (from -r /tmp/cai2021-source/requirements.txt (line 3))\n"}
+,{"stream_name":"stdout","time":15.988452925,"data":"  Downloading scipy-1.18.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)\n"}
+,{"stream_name":"stdout","time":16.083433856,"data":"Collecting scikit-learn==1.9.0 (from -r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":16.094081088,"data":"  Downloading scikit_learn-1.9.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (11 kB)\n"}
+,{"stream_name":"stdout","time":16.243929589,"data":"Collecting scikit-survival==0.28.0 (from -r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":16.250910407,"data":"  Downloading scikit_survival-0.28.0-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (7.0 kB)\n"}
+,{"stream_name":"stdout","time":16.286298448,"data":"Collecting scikit-learn==1.9.0 (from -r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":16.286324663,"data":"  Downloading scikit_learn-1.9.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (11 kB)\n"}
+,{"stream_name":"stdout","time":16.286350975,"data":"Collecting scikit-survival==0.28.0 (from -r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":16.286356568,"data":"  Downloading scikit_survival-0.28.0-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (7.0 kB)\n"}
+,{"stream_name":"stdout","time":16.36496554,"data":"Collecting lifelines==0.30.3 (from -r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":16.371344521,"data":"  Downloading lifelines-0.30.3-py3-none-any.whl.metadata (3.5 kB)\n"}
+,{"stream_name":"stdout","time":16.439131,"data":"Collecting openpyxl==3.1.5 (from -r /tmp/cai2021-source/requirements.txt (line 7))\n"}
+,{"stream_name":"stdout","time":16.445741502,"data":"  Downloading openpyxl-3.1.5-py2.py3-none-any.whl.metadata (2.5 kB)\n"}
+,{"stream_name":"stdout","time":16.56813803,"data":"Collecting lifelines==0.30.3 (from -r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":16.568175873,"data":"  Downloading lifelines-0.30.3-py3-none-any.whl.metadata (3.5 kB)\n"}
+,{"stream_name":"stdout","time":16.568182496,"data":"Collecting openpyxl==3.1.5 (from -r /tmp/cai2021-source/requirements.txt (line 7))\n"}
+,{"stream_name":"stdout","time":16.568186117,"data":"  Downloading openpyxl-3.1.5-py2.py3-none-any.whl.metadata (2.5 kB)\n"}
+,{"stream_name":"stdout","time":16.852065836,"data":"Collecting matplotlib==3.11.2 (from -r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":16.859704274,"data":"  Downloading matplotlib-3.11.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (80 kB)\n"}
+,{"stream_name":"stdout","time":16.986932783,"data":"Collecting jsonschema==4.26.0 (from -r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":16.993723409,"data":"  Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)\n"}
+,{"stream_name":"stdout","time":17.055213561,"data":"Collecting matplotlib==3.11.2 (from -r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":17.055249801,"data":"  Downloading matplotlib-3.11.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (80 kB)\n"}
+,{"stream_name":"stdout","time":17.055254075,"data":"Collecting jsonschema==4.26.0 (from -r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":17.055257496,"data":"  Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)\n"}
+,{"stream_name":"stdout","time":17.074812654,"data":"Collecting python-dateutil\u003e=2.8.2 (from pandas==2.3.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 2))\n"}
+,{"stream_name":"stdout","time":17.08069475,"data":"  Downloading python_dateutil-4.0.0-py3-none-any.whl.metadata (7.3 kB)\n"}
+,{"stream_name":"stdout","time":17.235170724,"data":"Collecting pytz\u003e=2020.1 (from pandas==2.3.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 2))\n"}
+,{"stream_name":"stdout","time":17.241065364,"data":"  Downloading pytz-2026.6-py2.py3-none-any.whl.metadata (22 kB)\n"}
+,{"stream_name":"stdout","time":17.277718146,"data":"Collecting python-dateutil\u003e=2.8.2 (from pandas==2.3.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 2))\n"}
+,{"stream_name":"stdout","time":17.277757334,"data":"  Downloading python_dateutil-4.0.0-py3-none-any.whl.metadata (7.3 kB)\n"}
+,{"stream_name":"stdout","time":17.277763713,"data":"Collecting pytz\u003e=2020.1 (from pandas==2.3.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 2))\n"}
+,{"stream_name":"stdout","time":17.277769104,"data":"  Downloading pytz-2026.6-py2.py3-none-any.whl.metadata (22 kB)\n"}
+,{"stream_name":"stdout","time":17.307242107,"data":"Collecting tzdata\u003e=2022.7 (from pandas==2.3.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 2))\n"}
+,{"stream_name":"stdout","time":17.313825668,"data":"  Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)\n"}
+,{"stream_name":"stdout","time":17.419260113,"data":"Collecting joblib\u003e=1.4.0 (from scikit-learn==1.9.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":17.426588915,"data":"  Downloading joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)\n"}
+,{"stream_name":"stdout","time":17.510334696,"data":"Collecting tzdata\u003e=2022.7 (from pandas==2.3.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 2))\n"}
+,{"stream_name":"stdout","time":17.51037536,"data":"  Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)\n"}
+,{"stream_name":"stdout","time":17.510381416,"data":"Collecting joblib\u003e=1.4.0 (from scikit-learn==1.9.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":17.510386635,"data":"  Downloading joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)\n"}
+,{"stream_name":"stdout","time":17.558793594,"data":"Collecting narwhals\u003e=2.0.1 (from scikit-learn==1.9.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":17.565424421,"data":"  Downloading narwhals-2.28.0-py3-none-any.whl.metadata (15 kB)\n"}
+,{"stream_name":"stdout","time":17.641322911,"data":"Collecting threadpoolctl\u003e=3.5.0 (from scikit-learn==1.9.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":17.647532854,"data":"  Downloading threadpoolctl-3.8.0-py3-none-any.whl.metadata (29 kB)\n"}
+,{"stream_name":"stdout","time":17.746167622,"data":"Collecting ecos (from scikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":17.755739107,"data":"  Downloading ecos-2.0.14.tar.gz (142 kB)\n"}
+,{"stream_name":"stdout","time":17.761652006,"data":"Collecting narwhals\u003e=2.0.1 (from scikit-learn==1.9.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":17.761684837,"data":"  Downloading narwhals-2.28.0-py3-none-any.whl.metadata (15 kB)\n"}
+,{"stream_name":"stdout","time":17.761690354,"data":"Collecting threadpoolctl\u003e=3.5.0 (from scikit-learn==1.9.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":17.761695696,"data":"  Downloading threadpoolctl-3.8.0-py3-none-any.whl.metadata (29 kB)\n"}
+,{"stream_name":"stdout","time":17.76170062,"data":"Collecting ecos (from scikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":17.761705778,"data":"  Downloading ecos-2.0.14.tar.gz (142 kB)\n"}
+,{"stream_name":"stdout","time":17.822392921,"data":"  Installing build dependencies: started\n"}
+,{"stream_name":"stdout","time":18.025201258,"data":"  Installing build dependencies: started\n"}
+,{"stream_name":"stdout","time":25.14141975,"data":"  Installing build dependencies: finished with status 'done'\n"}
+,{"stream_name":"stdout","time":25.14313475,"data":"  Getting requirements to build wheel: started\n"}
+,{"stream_name":"stdout","time":25.344275929,"data":"  Installing build dependencies: finished with status 'done'\n"}
+,{"stream_name":"stdout","time":25.344305895,"data":"  Getting requirements to build wheel: started\n"}
+,{"stream_name":"stdout","time":25.657719383,"data":"  Getting requirements to build wheel: finished with status 'done'\n"}
+,{"stream_name":"stdout","time":25.659994379,"data":"  Preparing metadata (pyproject.toml): started\n"}
+,{"stream_name":"stdout","time":25.860622035,"data":"  Getting requirements to build wheel: finished with status 'done'\n"}
+,{"stream_name":"stdout","time":25.860658615,"data":"  Preparing metadata (pyproject.toml): started\n"}
+,{"stream_name":"stdout","time":26.423773865,"data":"  Preparing metadata (pyproject.toml): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":26.627266651,"data":"  Preparing metadata (pyproject.toml): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":26.658873189,"data":"Collecting numexpr (from scikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":26.668449659,"data":"  Downloading numexpr-2.14.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.0 kB)\n"}
+,{"stream_name":"stdout","time":26.861866811,"data":"Collecting numexpr (from scikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":26.861893788,"data":"  Downloading numexpr-2.14.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.0 kB)\n"}
+,{"stream_name":"stdout","time":26.873511523,"data":"Collecting osqp\u003e=1.0.2 (from scikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":26.8863415,"data":"  Downloading osqp-1.1.3-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (2.2 kB)\n"}
+,{"stream_name":"stdout","time":26.954522765,"data":"Collecting autograd\u003e=1.5 (from lifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":26.968550042,"data":"  Downloading autograd-1.9.1-py3-none-any.whl.metadata (6.1 kB)\n"}
+,{"stream_name":"stdout","time":27.023723751,"data":"Collecting autograd-gamma\u003e=0.3 (from lifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":27.030229663,"data":"  Downloading autograd-gamma-0.5.0.tar.gz (4.0 kB)\n"}
+,{"stream_name":"stdout","time":27.06661949,"data":"  Installing build dependencies: started\n"}
+,{"stream_name":"stdout","time":27.076620805,"data":"Collecting osqp\u003e=1.0.2 (from scikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":27.076656579,"data":"  Downloading osqp-1.1.3-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (2.2 kB)\n"}
+,{"stream_name":"stdout","time":27.076662403,"data":"Collecting autograd\u003e=1.5 (from lifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":27.076667546,"data":"  Downloading autograd-1.9.1-py3-none-any.whl.metadata (6.1 kB)\n"}
+,{"stream_name":"stdout","time":27.076672275,"data":"Collecting autograd-gamma\u003e=0.3 (from lifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":27.076677185,"data":"  Downloading autograd-gamma-0.5.0.tar.gz (4.0 kB)\n"}
+,{"stream_name":"stdout","time":27.076681785,"data":"  Installing build dependencies: started\n"}
+,{"stream_name":"stdout","time":29.861464192,"data":"  Installing build dependencies: finished with status 'done'\n"}
+,{"stream_name":"stdout","time":29.862463591,"data":"  Getting requirements to build wheel: started\n"}
+,{"stream_name":"stdout","time":30.065011792,"data":"  Installing build dependencies: finished with status 'done'\n"}
+,{"stream_name":"stdout","time":30.065045258,"data":"  Getting requirements to build wheel: started\n"}
+,{"stream_name":"stdout","time":30.421787897,"data":"  Getting requirements to build wheel: finished with status 'done'\n"}
+,{"stream_name":"stdout","time":30.423754419,"data":"  Preparing metadata (pyproject.toml): started\n"}
+,{"stream_name":"stdout","time":30.625026982,"data":"  Getting requirements to build wheel: finished with status 'done'\n"}
+,{"stream_name":"stdout","time":30.625058964,"data":"  Preparing metadata (pyproject.toml): started\n"}
+,{"stream_name":"stdout","time":30.741279814,"data":"  Preparing metadata (pyproject.toml): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":30.794706288,"data":"Collecting formulaic\u003e=0.2.2 (from lifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":30.801945181,"data":"  Downloading formulaic-1.2.2-py3-none-any.whl.metadata (7.0 kB)\n"}
+,{"stream_name":"stdout","time":30.869303512,"data":"Collecting et-xmlfile (from openpyxl==3.1.5-\u003e-r /tmp/cai2021-source/requirements.txt (line 7))\n"}
+,{"stream_name":"stdout","time":30.876082245,"data":"  Downloading et_xmlfile-2.0.0-py3-none-any.whl.metadata (2.7 kB)\n"}
+,{"stream_name":"stdout","time":30.944200743,"data":"  Preparing metadata (pyproject.toml): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":30.944237317,"data":"Collecting formulaic\u003e=0.2.2 (from lifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":30.944244119,"data":"  Downloading formulaic-1.2.2-py3-none-any.whl.metadata (7.0 kB)\n"}
+,{"stream_name":"stdout","time":30.944249117,"data":"Collecting et-xmlfile (from openpyxl==3.1.5-\u003e-r /tmp/cai2021-source/requirements.txt (line 7))\n"}
+,{"stream_name":"stdout","time":30.944254268999998,"data":"  Downloading et_xmlfile-2.0.0-py3-none-any.whl.metadata (2.7 kB)\n"}
+,{"stream_name":"stdout","time":31.104168145,"data":"Collecting contourpy\u003e=1.0.1 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":31.111053319,"data":"  Downloading contourpy-1.4.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)\n"}
+,{"stream_name":"stdout","time":31.178059882,"data":"Collecting cycler\u003e=0.10 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":31.184869019,"data":"  Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)\n"}
+,{"stream_name":"stdout","time":31.307179272,"data":"Collecting contourpy\u003e=1.0.1 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":31.307219861,"data":"  Downloading contourpy-1.4.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)\n"}
+,{"stream_name":"stdout","time":31.307226557,"data":"Collecting cycler\u003e=0.10 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":31.30723215,"data":"  Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)\n"}
+,{"stream_name":"stdout","time":31.66446461,"data":"Collecting fonttools\u003e=4.28.2 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":31.67121465,"data":"  Downloading fonttools-4.68.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (139 kB)\n"}
+,{"stream_name":"stdout","time":31.867658639,"data":"Collecting fonttools\u003e=4.28.2 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":31.867694112,"data":"  Downloading fonttools-4.68.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (139 kB)\n"}
+,{"stream_name":"stdout","time":31.919859908,"data":"Collecting kiwisolver\u003e=1.3.1 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":31.925678898,"data":"  Downloading kiwisolver-1.5.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.2 kB)\n"}
+,{"stream_name":"stdout","time":31.977416783,"data":"Collecting packaging\u003e=20.0 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":31.980026461,"data":"  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)\n"}
+,{"stream_name":"stdout","time":32.123238868,"data":"Collecting kiwisolver\u003e=1.3.1 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":32.123281595,"data":"  Downloading kiwisolver-1.5.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.2 kB)\n"}
+,{"stream_name":"stdout","time":32.123288148,"data":"Collecting packaging\u003e=20.0 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":32.123293995,"data":"  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)\n"}
+,{"stream_name":"stdout","time":32.521963022,"data":"Collecting pillow\u003e=9 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":32.527785398,"data":"  Downloading pillow-13.0.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)\n"}
+,{"stream_name":"stdout","time":32.627477419,"data":"Collecting pyparsing\u003e=3 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":32.633212151,"data":"  Downloading pyparsing-3.3.3-py3-none-any.whl.metadata (5.9 kB)\n"}
+,{"stream_name":"stdout","time":32.693176789,"data":"Collecting attrs\u003e=22.2.0 (from jsonschema==4.26.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":32.699684575,"data":"  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)\n"}
+,{"stream_name":"stdout","time":32.725006805,"data":"Collecting pillow\u003e=9 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":32.725040917,"data":"  Downloading pillow-13.0.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)\n"}
+,{"stream_name":"stdout","time":32.725047168,"data":"Collecting pyparsing\u003e=3 (from matplotlib==3.11.2-\u003e-r /tmp/cai2021-source/requirements.txt (line 8))\n"}
+,{"stream_name":"stdout","time":32.725052444,"data":"  Downloading pyparsing-3.3.3-py3-none-any.whl.metadata (5.9 kB)\n"}
+,{"stream_name":"stdout","time":32.725057341,"data":"Collecting attrs\u003e=22.2.0 (from jsonschema==4.26.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":32.725062607,"data":"  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)\n"}
+,{"stream_name":"stdout","time":32.790458309,"data":"Collecting jsonschema-specifications\u003e=2023.03.6 (from jsonschema==4.26.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":32.796251056,"data":"  Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)\n"}
+,{"stream_name":"stdout","time":32.884967692000004,"data":"Collecting referencing\u003e=0.28.4 (from jsonschema==4.26.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":32.891381362,"data":"  Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)\n"}
+,{"stream_name":"stdout","time":32.993266305,"data":"Collecting jsonschema-specifications\u003e=2023.03.6 (from jsonschema==4.26.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":32.993325245,"data":"  Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)\n"}
+,{"stream_name":"stdout","time":32.993331788,"data":"Collecting referencing\u003e=0.28.4 (from jsonschema==4.26.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":32.993337547,"data":"  Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)\n"}
+,{"stream_name":"stdout","time":33.646446737,"data":"Collecting rpds-py\u003e=0.25.0 (from jsonschema==4.26.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":33.652970509,"data":"  Downloading rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)\n"}
+,{"stream_name":"stdout","time":33.716145313,"data":"Collecting interface-meta\u003e=1.2.0 (from formulaic\u003e=0.2.2-\u003elifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":33.722693274,"data":"  Downloading interface_meta-2.0.1-py3-none-any.whl.metadata (6.4 kB)\n"}
+,{"stream_name":"stdout","time":33.803462696,"data":"Collecting typing-extensions\u003e=4.2.0 (from formulaic\u003e=0.2.2-\u003elifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":33.809529607,"data":"  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)\n"}
+,{"stream_name":"stdout","time":33.849291545,"data":"Collecting rpds-py\u003e=0.25.0 (from jsonschema==4.26.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 9))\n"}
+,{"stream_name":"stdout","time":33.849320987,"data":"  Downloading rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)\n"}
+,{"stream_name":"stdout","time":33.849327058,"data":"Collecting interface-meta\u003e=1.2.0 (from formulaic\u003e=0.2.2-\u003elifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":33.849332933,"data":"  Downloading interface_meta-2.0.1-py3-none-any.whl.metadata (6.4 kB)\n"}
+,{"stream_name":"stdout","time":33.849337923,"data":"Collecting typing-extensions\u003e=4.2.0 (from formulaic\u003e=0.2.2-\u003elifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":33.849343143,"data":"  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)\n"}
+,{"stream_name":"stdout","time":34.852036811,"data":"Collecting wrapt\u003e=1.17.0rc1 (from formulaic\u003e=0.2.2-\u003elifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":34.858523368,"data":"  Downloading wrapt-2.6.0.dev1-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (7.6 kB)\n"}
+,{"stream_name":"stdout","time":34.935195469,"data":"Collecting cloudpickle\u003e=3.0 (from joblib\u003e=1.4.0-\u003escikit-learn==1.9.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":34.941641115,"data":"  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)\n"}
+,{"stream_name":"stdout","time":35.034173546,"data":"Collecting jinja2 (from osqp\u003e=1.0.2-\u003escikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":35.040936719,"data":"  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)\n"}
+,{"stream_name":"stdout","time":35.054725397,"data":"Collecting wrapt\u003e=1.17.0rc1 (from formulaic\u003e=0.2.2-\u003elifelines==0.30.3-\u003e-r /tmp/cai2021-source/requirements.txt (line 6))\n"}
+,{"stream_name":"stdout","time":35.054761933,"data":"  Downloading wrapt-2.6.0.dev1-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (7.6 kB)\n"}
+,{"stream_name":"stdout","time":35.054783066,"data":"Collecting cloudpickle\u003e=3.0 (from joblib\u003e=1.4.0-\u003escikit-learn==1.9.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 4))\n"}
+,{"stream_name":"stdout","time":35.054793697,"data":"  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)\n"}
+,{"stream_name":"stdout","time":35.05479856,"data":"Collecting jinja2 (from osqp\u003e=1.0.2-\u003escikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":35.054803619,"data":"  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)\n"}
+,{"stream_name":"stdout","time":35.283919213,"data":"Collecting setuptools (from osqp\u003e=1.0.2-\u003escikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":35.286506648,"data":"  Using cached setuptools-84.2.1-py3-none-any.whl.metadata (6.6 kB)\n"}
+,{"stream_name":"stdout","time":35.479564164,"data":"Collecting MarkupSafe\u003e=2.0 (from jinja2-\u003eosqp\u003e=1.0.2-\u003escikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":35.487076725,"data":"  Downloading markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)\n"}
+,{"stream_name":"stdout","time":35.487250545,"data":"Collecting setuptools (from osqp\u003e=1.0.2-\u003escikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":35.487262895,"data":"  Using cached setuptools-84.2.1-py3-none-any.whl.metadata (6.6 kB)\n"}
+,{"stream_name":"stdout","time":35.48726814,"data":"Collecting MarkupSafe\u003e=2.0 (from jinja2-\u003eosqp\u003e=1.0.2-\u003escikit-survival==0.28.0-\u003e-r /tmp/cai2021-source/requirements.txt (line 5))\n"}
+,{"stream_name":"stdout","time":35.519277095,"data":"Downloading numpy-2.4.6-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)\n"}
+,{"stream_name":"stdout","time":35.649561072,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.6/16.6 MB 129.9 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":35.654999422,"data":"Downloading pandas-2.3.3-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.3 MB)\n"}
+,{"stream_name":"stdout","time":35.69018648,"data":"  Downloading markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)\n"}
+,{"stream_name":"stdout","time":35.690226209,"data":"Downloading numpy-2.4.6-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)\n"}
+,{"stream_name":"stdout","time":35.690232606,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.6/16.6 MB 129.9 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":35.690239267,"data":"Downloading pandas-2.3.3-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.3 MB)\n"}
+,{"stream_name":"stdout","time":35.747381082,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 135.8 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":35.753660633,"data":"Downloading scipy-1.18.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)\n"}
+,{"stream_name":"stdout","time":35.952149936,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 135.8 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":35.952183787,"data":"Downloading scipy-1.18.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)\n"}
+,{"stream_name":"stdout","time":36.213449168,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 76.8 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.219728223,"data":"Downloading scikit_learn-1.9.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.1 MB)\n"}
+,{"stream_name":"stdout","time":36.305201303,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.1/9.1 MB 108.0 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.314754498,"data":"Downloading scikit_survival-0.28.0-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (4.0 MB)\n"}
+,{"stream_name":"stdout","time":36.407524454,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.0/4.0 MB 42.4 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.416122371,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 76.8 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.416146666,"data":"Downloading scikit_learn-1.9.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.1 MB)\n"}
+,{"stream_name":"stdout","time":36.416152286,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.1/9.1 MB 108.0 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.416157618,"data":"Downloading scikit_survival-0.28.0-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (4.0 MB)\n"}
+,{"stream_name":"stdout","time":36.416162319,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.0/4.0 MB 42.4 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.416439298,"data":"Downloading lifelines-0.30.3-py3-none-any.whl (409 kB)\n"}
+,{"stream_name":"stdout","time":36.454134624,"data":"Downloading openpyxl-3.1.5-py2.py3-none-any.whl (250 kB)\n"}
+,{"stream_name":"stdout","time":36.499349459,"data":"Downloading matplotlib-3.11.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (9.9 MB)\n"}
+,{"stream_name":"stdout","time":36.582827678,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.9/9.9 MB 120.2 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.589157785,"data":"Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)\n"}
+,{"stream_name":"stdout","time":36.619604166,"data":"Downloading lifelines-0.30.3-py3-none-any.whl (409 kB)\n"}
+,{"stream_name":"stdout","time":36.619644241,"data":"Downloading openpyxl-3.1.5-py2.py3-none-any.whl (250 kB)\n"}
+,{"stream_name":"stdout","time":36.619650488,"data":"Downloading matplotlib-3.11.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (9.9 MB)\n"}
+,{"stream_name":"stdout","time":36.619655341,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.9/9.9 MB 120.2 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.619662373,"data":"Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)\n"}
+,{"stream_name":"stdout","time":36.630692493,"data":"Downloading attrs-26.1.0-py3-none-any.whl (67 kB)\n"}
+,{"stream_name":"stdout","time":36.664725774,"data":"Downloading autograd-1.9.1-py3-none-any.whl (54 kB)\n"}
+,{"stream_name":"stdout","time":36.698438963,"data":"Downloading contourpy-1.4.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (384 kB)\n"}
+,{"stream_name":"stdout","time":36.736964552,"data":"Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)\n"}
+,{"stream_name":"stdout","time":36.779708948,"data":"Downloading fonttools-4.68.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.4 MB)\n"}
+,{"stream_name":"stdout","time":36.834303249,"data":"Downloading attrs-26.1.0-py3-none-any.whl (67 kB)\n"}
+,{"stream_name":"stdout","time":36.834457222,"data":"Downloading autograd-1.9.1-py3-none-any.whl (54 kB)\n"}
+,{"stream_name":"stdout","time":36.834478191,"data":"Downloading contourpy-1.4.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (384 kB)\n"}
+,{"stream_name":"stdout","time":36.834482635,"data":"Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)\n"}
+,{"stream_name":"stdout","time":36.834486064000004,"data":"Downloading fonttools-4.68.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.4 MB)\n"}
+,{"stream_name":"stdout","time":36.836618712,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 99.6 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":36.842555686,"data":"Downloading formulaic-1.2.2-py3-none-any.whl (118 kB)\n"}
+,{"stream_name":"stdout","time":36.883372428,"data":"Downloading interface_meta-2.0.1-py3-none-any.whl (15 kB)\n"}
+,{"stream_name":"stdout","time":36.915063992,"data":"Downloading joblib-1.6.0-py3-none-any.whl (306 kB)\n"}
+,{"stream_name":"stdout","time":36.964950807,"data":"Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)\n"}
+,{"stream_name":"stdout","time":36.999849774,"data":"Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)\n"}
+,{"stream_name":"stdout","time":37.028217667,"data":"Downloading kiwisolver-1.5.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.5 MB)\n"}
+,{"stream_name":"stdout","time":37.039304717,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 99.6 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":37.039343236,"data":"Downloading formulaic-1.2.2-py3-none-any.whl (118 kB)\n"}
+,{"stream_name":"stdout","time":37.039349024,"data":"Downloading interface_meta-2.0.1-py3-none-any.whl (15 kB)\n"}
+,{"stream_name":"stdout","time":37.039353778,"data":"Downloading joblib-1.6.0-py3-none-any.whl (306 kB)\n"}
+,{"stream_name":"stdout","time":37.039358421,"data":"Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)\n"}
+,{"stream_name":"stdout","time":37.039363345,"data":"Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)\n"}
+,{"stream_name":"stdout","time":37.039368172,"data":"Downloading kiwisolver-1.5.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.5 MB)\n"}
+,{"stream_name":"stdout","time":37.071960351,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 30.7 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":37.082614017,"data":"Downloading narwhals-2.28.0-py3-none-any.whl (490 kB)\n"}
+,{"stream_name":"stdout","time":37.125634481,"data":"Downloading osqp-1.1.3-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (354 kB)\n"}
+,{"stream_name":"stdout","time":37.160250861,"data":"Using cached packaging-26.3-py3-none-any.whl (129 kB)\n"}
+,{"stream_name":"stdout","time":37.166723507,"data":"Downloading pillow-13.0.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)\n"}
+,{"stream_name":"stdout","time":37.234249582,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 108.0 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":37.24043775,"data":"Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)\n"}
+,{"stream_name":"stdout","time":37.274584064,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 30.7 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":37.27461124,"data":"Downloading narwhals-2.28.0-py3-none-any.whl (490 kB)\n"}
+,{"stream_name":"stdout","time":37.274615266,"data":"Downloading osqp-1.1.3-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (354 kB)\n"}
+,{"stream_name":"stdout","time":37.274619184,"data":"Using cached packaging-26.3-py3-none-any.whl (129 kB)\n"}
+,{"stream_name":"stdout","time":37.274622864,"data":"Downloading pillow-13.0.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)\n"}
+,{"stream_name":"stdout","time":37.274626198,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 108.0 MB/s  0:00:00\n"}
+,{"stream_name":"stdout","time":37.274629565,"data":"Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)\n"}
+,{"stream_name":"stdout","time":37.286108623,"data":"Downloading python_dateutil-4.0.0-py3-none-any.whl (92 kB)\n"}
+,{"stream_name":"stdout","time":37.319921424,"data":"Downloading pytz-2026.6-py2.py3-none-any.whl (506 kB)\n"}
+,{"stream_name":"stdout","time":37.3582648,"data":"Downloading referencing-0.37.0-py3-none-any.whl (26 kB)\n"}
+,{"stream_name":"stdout","time":37.401134646,"data":"Downloading rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (370 kB)\n"}
+,{"stream_name":"stdout","time":37.44435443,"data":"Downloading threadpoolctl-3.8.0-py3-none-any.whl (32 kB)\n"}
+,{"stream_name":"stdout","time":37.478303923,"data":"Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)\n"}
+,{"stream_name":"stdout","time":37.488805464,"data":"Downloading python_dateutil-4.0.0-py3-none-any.whl (92 kB)\n"}
+,{"stream_name":"stdout","time":37.488840535,"data":"Downloading pytz-2026.6-py2.py3-none-any.whl (506 kB)\n"}
+,{"stream_name":"stdout","time":37.488846129,"data":"Downloading referencing-0.37.0-py3-none-any.whl (26 kB)\n"}
+,{"stream_name":"stdout","time":37.488851253,"data":"Downloading rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (370 kB)\n"}
+,{"stream_name":"stdout","time":37.488856258,"data":"Downloading threadpoolctl-3.8.0-py3-none-any.whl (32 kB)\n"}
+,{"stream_name":"stdout","time":37.488861344,"data":"Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)\n"}
+,{"stream_name":"stdout","time":37.516110343,"data":"Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)\n"}
+,{"stream_name":"stdout","time":37.554630774,"data":"Downloading wrapt-2.6.0.dev1-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (248 kB)\n"}
+,{"stream_name":"stdout","time":37.587310134,"data":"Downloading et_xmlfile-2.0.0-py3-none-any.whl (18 kB)\n"}
+,{"stream_name":"stdout","time":37.610139564,"data":"Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)\n"}
+,{"stream_name":"stdout","time":37.646299941,"data":"Downloading markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)\n"}
+,{"stream_name":"stdout","time":37.682639626,"data":"Downloading numexpr-2.14.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (448 kB)\n"}
+,{"stream_name":"stdout","time":37.713101132,"data":"Using cached setuptools-84.2.1-py3-none-any.whl (876 kB)\n"}
+,{"stream_name":"stdout","time":37.719061201,"data":"Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)\n"}
+,{"stream_name":"stdout","time":37.719105375,"data":"Downloading wrapt-2.6.0.dev1-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (248 kB)\n"}
+,{"stream_name":"stdout","time":37.719131745,"data":"Downloading et_xmlfile-2.0.0-py3-none-any.whl (18 kB)\n"}
+,{"stream_name":"stdout","time":37.719135511,"data":"Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)\n"}
+,{"stream_name":"stdout","time":37.719138684,"data":"Downloading markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)\n"}
+,{"stream_name":"stdout","time":37.719141924,"data":"Downloading numexpr-2.14.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (448 kB)\n"}
+,{"stream_name":"stdout","time":37.719145009,"data":"Using cached setuptools-84.2.1-py3-none-any.whl (876 kB)\n"}
+,{"stream_name":"stdout","time":38.468041401,"data":"Building wheels for collected packages: autograd-gamma, ecos\n"}
+,{"stream_name":"stdout","time":38.469599172,"data":"  Building wheel for autograd-gamma (pyproject.toml): started\n"}
+,{"stream_name":"stdout","time":38.670788399,"data":"Building wheels for collected packages: autograd-gamma, ecos\n"}
+,{"stream_name":"stdout","time":38.670821801,"data":"  Building wheel for autograd-gamma (pyproject.toml): started\n"}
+,{"stream_name":"stdout","time":38.845536934,"data":"  Building wheel for autograd-gamma (pyproject.toml): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":38.846494446,"data":"  Created wheel for autograd-gamma: filename=autograd_gamma-0.5.0-py3-none-any.whl size=4118 sha256=0e07f1da7e87afd5334e4da0550387457b8bc29ad9e86bbf5112d4110218fdce\n"}
+,{"stream_name":"stdout","time":38.84665007,"data":"  Stored in directory: /root/.cache/pip/wheels/7e/16/46/9477f188924292d3bf1fb8fb42844201591abfc19b7ba6d868\n"}
+,{"stream_name":"stdout","time":38.850376217,"data":"  Building wheel for ecos (pyproject.toml): started\n"}
+,{"stream_name":"stdout","time":39.048537283,"data":"  Building wheel for autograd-gamma (pyproject.toml): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":39.048575782,"data":"  Created wheel for autograd-gamma: filename=autograd_gamma-0.5.0-py3-none-any.whl size=4118 sha256=0e07f1da7e87afd5334e4da0550387457b8bc29ad9e86bbf5112d4110218fdce\n"}
+,{"stream_name":"stdout","time":39.048581966,"data":"  Stored in directory: /root/.cache/pip/wheels/7e/16/46/9477f188924292d3bf1fb8fb42844201591abfc19b7ba6d868\n"}
+,{"stream_name":"stdout","time":39.048587186,"data":"  Building wheel for ecos (pyproject.toml): started\n"}
+,{"stream_name":"stdout","time":46.648904277,"data":"  Building wheel for ecos (pyproject.toml): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":46.65081679,"data":"  Created wheel for ecos: filename=ecos-2.0.14-cp313-cp313-linux_x86_64.whl size=204010 sha256=d55eb727a5bfda0785adc2c85e37529f04b7f66152b193ad7bde83c85c2630fe\n"}
+,{"stream_name":"stdout","time":46.651208095,"data":"  Stored in directory: /root/.cache/pip/wheels/6b/82/0b/4bb5aa6c4618f367601a45db8710205d56858808423974e92a\n"}
+,{"stream_name":"stdout","time":46.655104668,"data":"Successfully built autograd-gamma ecos\n"}
+,{"stream_name":"stdout","time":46.857715693,"data":"  Building wheel for ecos (pyproject.toml): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":46.857744101,"data":"  Created wheel for ecos: filename=ecos-2.0.14-cp313-cp313-linux_x86_64.whl size=204010 sha256=d55eb727a5bfda0785adc2c85e37529f04b7f66152b193ad7bde83c85c2630fe\n"}
+,{"stream_name":"stdout","time":46.857751341,"data":"  Stored in directory: /root/.cache/pip/wheels/6b/82/0b/4bb5aa6c4618f367601a45db8710205d56858808423974e92a\n"}
+,{"stream_name":"stdout","time":46.857757769,"data":"Successfully built autograd-gamma ecos\n"}
+,{"stream_name":"stdout","time":48.327541403,"data":"Installing collected packages: pytz, wrapt, tzdata, typing-extensions, threadpoolctl, setuptools, rpds-py, pyparsing, pillow, packaging, numpy, narwhals, MarkupSafe, kiwisolver, interface-meta, fonttools, et-xmlfile, cycler, cloudpickle, attrs, scipy, referencing, python-dateutil, openpyxl, numexpr, joblib, jinja2, contourpy, autograd, scikit-learn, pandas, osqp, matplotlib, jsonschema-specifications, ecos, autograd-gamma, scikit-survival, jsonschema, formulaic, lifelines\n"}
+,{"stream_name":"stdout","time":48.530808879,"data":"Installing collected packages: pytz, wrapt, tzdata, typing-extensions, threadpoolctl, setuptools, rpds-py, pyparsing, pillow, packaging, numpy, narwhals, MarkupSafe, kiwisolver, interface-meta, fonttools, et-xmlfile, cycler, cloudpickle, attrs, scipy, referencing, python-dateutil, openpyxl, numexpr, joblib, jinja2, contourpy, autograd, scikit-learn, pandas, osqp, matplotlib, jsonschema-specifications, ecos, autograd-gamma, scikit-survival, jsonschema, formulaic, lifelines\n"}
+,{"stream_name":"stdout","time":79.732933894,"data":"\n"}
+,{"stream_name":"stderr","time":79.735022783,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":79.735051203,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":79.735059503,"data":"nilearn 0.14.1 requires scikit-learn!=1.7.0,!=1.9.0,\u003e=1.5.0, but you have scikit-learn 1.9.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.73506581,"data":"ydata-profiling 4.18.4 requires matplotlib\u003c=3.10,\u003e=3.5, but you have matplotlib 3.11.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735071075,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.4.6 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735076955,"data":"ydata-profiling 4.18.4 requires scipy\u003c1.17,\u003e=1.8, but you have scipy 1.18.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735083048,"data":"aiobotocore 2.26.0 requires python-dateutil\u003c3.0.0,\u003e=2.1, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735088657,"data":"aiobotocore 2.26.0 requires wrapt\u003c2.0.0,\u003e=1.10.10, but you have wrapt 2.6.0.dev1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735312483,"data":"botocore 1.41.5 requires python-dateutil\u003c3.0.0,\u003e=2.1, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735335947,"data":"google-colab 1.0.0 requires jupyter-server==2.20.0, but you have jupyter-server 2.12.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735343315,"data":"google-colab 1.0.0 requires pandas==2.2.3, but you have pandas 2.3.3 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735349081,"data":"google-colab 1.0.0 requires requests==2.32.4, but you have requests 2.34.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735355097,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735361042,"data":"holidays 0.107 requires python-dateutil\u003c3,\u003e=2.9.0.post0, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735367428,"data":"ibis-framework 9.5.0 requires python-dateutil\u003c3,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735373301,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735380051,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735418003,"data":"bigframes 2.51.0 requires python-dateutil\u003c3,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735426438,"data":"torch 2.11.0+cpu requires setuptools\u003c82, but you have setuptools 84.2.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735431568,"data":"google-cloud-bigquery 3.46.2 requires python-dateutil\u003c3.0.0,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735436214,"data":"betterproto 2.0.0b7 requires python-dateutil\u003c3.0,\u003e=2.8, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735440922,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.4.6 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.735445644,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":79.740531723,"data":"Successfully installed MarkupSafe-3.0.4 attrs-26.1.0 autograd-1.9.1 autograd-gamma-0.5.0 cloudpickle-3.1.2 contourpy-1.4.0 cycler-0.12.1 ecos-2.0.14 et-xmlfile-2.0.0 fonttools-4.68.0 formulaic-1.2.2 interface-meta-2.0.1 jinja2-3.1.6 joblib-1.6.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 kiwisolver-1.5.1 lifelines-0.30.3 matplotlib-3.11.2 narwhals-2.28.0 numexpr-2.14.2 numpy-2.4.6 openpyxl-3.1.5 osqp-1.1.3 packaging-26.3 pandas-2.3.3 pillow-13.0.0 pyparsing-3.3.3 python-dateutil-4.0.0 pytz-2026.6 referencing-0.37.0 rpds-py-2026.9.1 scikit-learn-1.9.0 scikit-survival-0.28.0 scipy-1.18.0 setuptools-84.2.1 threadpoolctl-3.8.0 typing-extensions-4.16.0 tzdata-2026.6 wrapt-2.6.0.dev1\n"}
+,{"stream_name":"stdout","time":79.939044815,"data":"\n"}
+,{"stream_name":"stdout","time":79.939073997,"data":"Successfully installed MarkupSafe-3.0.4 attrs-26.1.0 autograd-1.9.1 autograd-gamma-0.5.0 cloudpickle-3.1.2 contourpy-1.4.0 cycler-0.12.1 ecos-2.0.14 et-xmlfile-2.0.0 fonttools-4.68.0 formulaic-1.2.2 interface-meta-2.0.1 jinja2-3.1.6 joblib-1.6.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 kiwisolver-1.5.1 lifelines-0.30.3 matplotlib-3.11.2 narwhals-2.28.0 numexpr-2.14.2 numpy-2.4.6 openpyxl-3.1.5 osqp-1.1.3 packaging-26.3 pandas-2.3.3 pillow-13.0.0 pyparsing-3.3.3 python-dateutil-4.0.0 pytz-2026.6 referencing-0.37.0 rpds-py-2026.9.1 scikit-learn-1.9.0 scikit-survival-0.28.0 scipy-1.18.0 setuptools-84.2.1 threadpoolctl-3.8.0 typing-extensions-4.16.0 tzdata-2026.6 wrapt-2.6.0.dev1\n"}
+,{"stream_name":"stderr","time":79.940454984,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":79.94048305,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":79.940504419,"data":"nilearn 0.14.1 requires scikit-learn!=1.7.0,!=1.9.0,\u003e=1.5.0, but you have scikit-learn 1.9.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940509197,"data":"ydata-profiling 4.18.4 requires matplotlib\u003c=3.10,\u003e=3.5, but you have matplotlib 3.11.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.94051433,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.4.6 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940519059,"data":"ydata-profiling 4.18.4 requires scipy\u003c1.17,\u003e=1.8, but you have scipy 1.18.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940523989,"data":"aiobotocore 2.26.0 requires python-dateutil\u003c3.0.0,\u003e=2.1, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940544599,"data":"aiobotocore 2.26.0 requires wrapt\u003c2.0.0,\u003e=1.10.10, but you have wrapt 2.6.0.dev1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940549985,"data":"botocore 1.41.5 requires python-dateutil\u003c3.0.0,\u003e=2.1, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940555201,"data":"google-colab 1.0.0 requires jupyter-server==2.20.0, but you have jupyter-server 2.12.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940560337,"data":"google-colab 1.0.0 requires pandas==2.2.3, but you have pandas 2.3.3 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940564007,"data":"google-colab 1.0.0 requires requests==2.32.4, but you have requests 2.34.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940567147,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940570275,"data":"holidays 0.107 requires python-dateutil\u003c3,\u003e=2.9.0.post0, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940573592,"data":"ibis-framework 9.5.0 requires python-dateutil\u003c3,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940576759,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940580093,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940583204,"data":"bigframes 2.51.0 requires python-dateutil\u003c3,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940586404,"data":"torch 2.11.0+cpu requires setuptools\u003c82, but you have setuptools 84.2.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940590897,"data":"google-cloud-bigquery 3.46.2 requires python-dateutil\u003c3.0.0,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940594235,"data":"betterproto 2.0.0b7 requires python-dateutil\u003c3.0,\u003e=2.8, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940597526,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.4.6 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940600637,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940603808,"data":"\n"}
+,{"stream_name":"stderr","time":79.940606989,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":79.940610355,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":79.940613445,"data":"nilearn 0.14.1 requires scikit-learn!=1.7.0,!=1.9.0,\u003e=1.5.0, but you have scikit-learn 1.9.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940616545,"data":"ydata-profiling 4.18.4 requires matplotlib\u003c=3.10,\u003e=3.5, but you have matplotlib 3.11.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940619657,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.4.6 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.94062284,"data":"ydata-profiling 4.18.4 requires scipy\u003c1.17,\u003e=1.8, but you have scipy 1.18.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940629129,"data":"aiobotocore 2.26.0 requires python-dateutil\u003c3.0.0,\u003e=2.1, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940632369,"data":"aiobotocore 2.26.0 requires wrapt\u003c2.0.0,\u003e=1.10.10, but you have wrapt 2.6.0.dev1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940635626,"data":"botocore 1.41.5 requires python-dateutil\u003c3.0.0,\u003e=2.1, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940638779,"data":"google-colab 1.0.0 requires jupyter-server==2.20.0, but you have jupyter-server 2.12.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940641853,"data":"google-colab 1.0.0 requires pandas==2.2.3, but you have pandas 2.3.3 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940644853,"data":"google-colab 1.0.0 requires requests==2.32.4, but you have requests 2.34.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.94064796,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940650987,"data":"holidays 0.107 requires python-dateutil\u003c3,\u003e=2.9.0.post0, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940654498,"data":"ibis-framework 9.5.0 requires python-dateutil\u003c3,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940657712,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940660973,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940664039,"data":"bigframes 2.51.0 requires python-dateutil\u003c3,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940667181,"data":"torch 2.11.0+cpu requires setuptools\u003c82, but you have setuptools 84.2.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940670461,"data":"google-cloud-bigquery 3.46.2 requires python-dateutil\u003c3.0.0,\u003e=2.8.2, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940673657,"data":"betterproto 2.0.0b7 requires python-dateutil\u003c3.0,\u003e=2.8, but you have python-dateutil 4.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.94067682,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.4.6 which is incompatible.\n"}
+,{"stream_name":"stderr","time":79.940679896,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":81.244584437,"data":"test_lasso_selection_on_synthetic_development_only (test_evaluation.EvaluationTests.test_lasso_selection_on_synthetic_development_only) ... test_lasso_selection_on_synthetic_development_only (test_evaluation.EvaluationTests.test_lasso_selection_on_synthetic_development_only) ... \n"}
+,{"stream_name":"stderr","time":83.264702454,"data":"test_lasso_selection_on_synthetic_development_only (test_evaluation.EvaluationTests.test_lasso_selection_on_synthetic_development_only) ... ok\n"}
+,{"stream_name":"stderr","time":83.385592405,"data":"test_rare_event_calibration_returns_finite_slope (test_evaluation.EvaluationTests.test_rare_event_calibration_returns_finite_slope) ... ok\n"}
+,{"stream_name":"stderr","time":83.467597671,"data":"test_survival_metrics_handle_early_censoring (test_evaluation.EvaluationTests.test_survival_metrics_handle_early_censoring) ... ok\n"}
+,{"stream_name":"stderr","time":83.467657283,"data":"test_rare_event_calibration_returns_finite_slope (test_evaluation.EvaluationTests.test_rare_event_calibration_returns_finite_slope) ... ok\n"}
+,{"stream_name":"stderr","time":83.467663656,"data":"test_survival_metrics_handle_early_censoring (test_evaluation.EvaluationTests.test_survival_metrics_handle_early_censoring) ... \n"}
+,{"stream_name":"stderr","time":83.467668324,"data":"ok\n"}
+,{"stream_name":"stderr","time":83.467672586,"data":"test_rare_event_calibration_returns_finite_slope (test_evaluation.EvaluationTests.test_rare_event_calibration_returns_finite_slope) ... ok\n"}
+,{"stream_name":"stderr","time":83.470149771,"data":"test_survival_metrics_handle_early_censoring (test_evaluation.EvaluationTests.test_survival_metrics_handle_early_censoring) ... ok\n"}
+,{"stream_name":"stderr","time":83.473196628,"data":"test_cohort_bmi_boundary (test_integrity.IntegrityTests.test_cohort_bmi_boundary) ... ok\n"}
+,{"stream_name":"stderr","time":83.474068374,"data":"test_duplicate_subjects_are_rejected (test_integrity.IntegrityTests.test_duplicate_subjects_are_rejected) ... ok\n"}
+,{"stream_name":"stderr","time":83.474096822,"data":"test_early_censoring_is_unknown_not_control (test_integrity.IntegrityTests.test_early_censoring_is_unknown_not_control) ... ok\n"}
+,{"stream_name":"stderr","time":83.474102583,"data":"test_outcome_and_duration_cannot_enter_predictors (test_integrity.IntegrityTests.test_outcome_and_duration_cannot_enter_predictors) ... ok\n"}
+,{"stream_name":"stderr","time":83.574044999,"data":"test_saved_cox_bundle_recovers_library_step_survival (test_integrity.IntegrityTests.test_saved_cox_bundle_recovers_library_step_survival) ... ok\n"}
+,{"stream_name":"stderr","time":83.581199252,"data":"test_scaling_is_fitted_on_training_only (test_integrity.IntegrityTests.test_scaling_is_fitted_on_training_only) ... ok\n"}
+,{"stream_name":"stderr","time":83.581237009,"data":"\n"}
+,{"stream_name":"stderr","time":83.581242272,"data":"----------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":83.581247141,"data":"Ran 9 tests in 2.541s\n"}
+,{"stream_name":"stderr","time":83.581251417,"data":"\n"}
+,{"stream_name":"stderr","time":83.581255329,"data":"OK\n"}
+,{"stream_name":"stderr","time":83.673255158,"data":"ok\n"}
+,{"stream_name":"stderr","time":83.673290691,"data":"test_cohort_bmi_boundary (test_integrity.IntegrityTests.test_cohort_bmi_boundary) ... ok\n"}
+,{"stream_name":"stderr","time":83.673297063,"data":"test_duplicate_subjects_are_rejected (test_integrity.IntegrityTests.test_duplicate_subjects_are_rejected) ... ok\n"}
+,{"stream_name":"stderr","time":83.673301814,"data":"test_early_censoring_is_unknown_not_control (test_integrity.IntegrityTests.test_early_censoring_is_unknown_not_control) ... ok\n"}
+,{"stream_name":"stderr","time":83.673307099,"data":"test_outcome_and_duration_cannot_enter_predictors (test_integrity.IntegrityTests.test_outcome_and_duration_cannot_enter_predictors) ... ok\n"}
+,{"stream_name":"stderr","time":83.673312153,"data":"test_saved_cox_bundle_recovers_library_step_survival (test_integrity.IntegrityTests.test_saved_cox_bundle_recovers_library_step_survival) ... ok\n"}
+,{"stream_name":"stderr","time":83.673315713,"data":"test_scaling_is_fitted_on_training_only (test_integrity.IntegrityTests.test_scaling_is_fitted_on_training_only) ... ok\n"}
+,{"stream_name":"stderr","time":83.673319004,"data":"\n"}
+,{"stream_name":"stderr","time":83.673322326,"data":"----------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":83.673325506,"data":"Ran 9 tests in 2.541s\n"}
+,{"stream_name":"stderr","time":83.673328417,"data":"\n"}
+,{"stream_name":"stderr","time":83.673359408,"data":"OK\n"}
+,{"stream_name":"stderr","time":83.673362433,"data":"\n"}
+,{"stream_name":"stderr","time":83.673365248,"data":"ok\n"}
+,{"stream_name":"stderr","time":83.673368086,"data":"test_cohort_bmi_boundary (test_integrity.IntegrityTests.test_cohort_bmi_boundary) ... ok\n"}
+,{"stream_name":"stderr","time":83.673371213,"data":"test_duplicate_subjects_are_rejected (test_integrity.IntegrityTests.test_duplicate_subjects_are_rejected) ... ok\n"}
+,{"stream_name":"stderr","time":83.6733743,"data":"test_early_censoring_is_unknown_not_control (test_integrity.IntegrityTests.test_early_censoring_is_unknown_not_control) ... ok\n"}
+,{"stream_name":"stderr","time":83.673377403,"data":"test_outcome_and_duration_cannot_enter_predictors (test_integrity.IntegrityTests.test_outcome_and_duration_cannot_enter_predictors) ... ok\n"}
+,{"stream_name":"stderr","time":83.673380473,"data":"test_saved_cox_bundle_recovers_library_step_survival (test_integrity.IntegrityTests.test_saved_cox_bundle_recovers_library_step_survival) ... ok\n"}
+,{"stream_name":"stderr","time":83.673384081,"data":"test_scaling_is_fitted_on_training_only (test_integrity.IntegrityTests.test_scaling_is_fitted_on_training_only) ... ok\n"}
+,{"stream_name":"stderr","time":83.673387645,"data":"\n"}
+,{"stream_name":"stderr","time":83.673390637,"data":"----------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":83.673393634,"data":"Ran 9 tests in 2.541s\n"}
+,{"stream_name":"stderr","time":83.673396661,"data":"\n"}
+,{"stream_name":"stderr","time":83.673399509,"data":"OK\n"}
+,{"stream_name":"stdout","time":193.546187117,"data":"{\"status\": \"complete\", \"output\": \"/kaggle/working/study\", \"source_sha256\": \"2e94deaf54a56fc3347dfe9973226540f1059ef0fe1dc1273e2001d2deb28f89\"}\n"}
+,{"stream_name":"stdout","time":193.546239418,"data":"\n"}
+,{"stream_name":"stdout","time":193.546246268,"data":"{\n"}
+,{"stream_name":"stdout","time":193.546251348,"data":"  \"status\": \"complete\",\n"}
+,{"stream_name":"stdout","time":193.546257134,"data":"  \"split\": {\n"}
+,{"stream_name":"stdout","time":193.546262702,"data":"    \"development\": {\n"}
+,{"stream_name":"stdout","time":193.54626848,"data":"      \"n\": 9705,\n"}
+,{"stream_name":"stdout","time":193.546273942,"data":"      \"events\": 151,\n"}
+,{"stream_name":"stdout","time":193.546279422,"data":"      \"sorted_ids_sha256\": \"d8f1d898780e0d01ddbe44fb7f8f8a412d7db3c40b26fe9fa3bd92e9ed23417a\"\n"}
+,{"stream_name":"stdout","time":193.546284974,"data":"    },\n"}
+,{"stream_name":"stdout","time":193.546290205,"data":"    \"internal_test\": {\n"}
+,{"stream_name":"stdout","time":193.546295245,"data":"      \"n\": 3235,\n"}
+,{"stream_name":"stdout","time":193.54630053,"data":"      \"events\": 50,\n"}
+,{"stream_name":"stdout","time":193.546305955,"data":"      \"sorted_ids_sha256\": \"69e442a106befee11da90a8d208eeb3c08681f6cc623a0ca1373d44db4360bf5\"\n"}
+,{"stream_name":"stdout","time":193.546311228,"data":"    }\n"}
+,{"stream_name":"stdout","time":193.546315864,"data":"  },\n"}
+,{"stream_name":"stdout","time":193.546320727,"data":"  \"source_sha256\": \"2e94deaf54a56fc3347dfe9973226540f1059ef0fe1dc1273e2001d2deb28f89\"\n"}
+,{"stream_name":"stdout","time":193.546326001,"data":"}\n"}
+,{"stream_name":"stdout","time":193.546331034,"data":"{\n"}
+,{"stream_name":"stdout","time":193.546335854,"data":"  \"published_six_cox\": {\n"}
+,{"stream_name":"stdout","time":193.546341657,"data":"    \"harrell_c\": {\n"}
+,{"stream_name":"stdout","time":193.546346711,"data":"      \"estimate\": 0.8879994479332,\n"}
+,{"stream_name":"stdout","time":193.546364247,"data":"      \"ci95\": [\n"}
+,{"stream_name":"stdout","time":193.546368662,"data":"        0.8284029361785555,\n"}
+,{"stream_name":"stdout","time":193.546372442,"data":"        0.9394283252280885\n"}
+,{"stream_name":"stdout","time":193.546376524,"data":"      ]\n"}
+,{"stream_name":"stdout","time":193.546380284,"data":"    },\n"}
+,{"stream_name":"stdout","time":193.546384138,"data":"    \"auc_5y_ipcw\": {\n"}
+,{"stream_name":"stdout","time":193.54638839,"data":"      \"estimate\": 0.8568290272784138,\n"}
+,{"stream_name":"stdout","time":193.546392965,"data":"      \"ci95\": [\n"}
+,{"stream_name":"stdout","time":193.546397209,"data":"        0.7556362988416703,\n"}
+,{"stream_name":"stdout","time":193.546424098,"data":"        0.9486117129631625\n"}
+,{"stream_name":"stdout","time":193.546428645,"data":"      ]\n"}
+,{"stream_name":"stdout","time":193.546432735,"data":"    },\n"}
+,{"stream_name":"stdout","time":193.546436935,"data":"    \"brier_5y_ipcw\": {\n"}
+,{"stream_name":"stdout","time":193.546441114,"data":"      \"estimate\": 0.006402562042521703,\n"}
+,{"stream_name":"stdout","time":193.546453314,"data":"      \"ci95\": [\n"}
+,{"stream_name":"stdout","time":193.546457228,"data":"        0.003725039181590168,\n"}
+,{"stream_name":"stdout","time":193.546461319,"data":"        0.00949564749142864\n"}
+,{"stream_name":"stdout","time":193.546465682,"data":"      ]\n"}
+,{"stream_name":"stdout","time":193.546469799,"data":"    },\n"}
+,{"stream_name":"stdout","time":193.546474085,"data":"    \"bootstrap_requested\": 1000,\n"}
+,{"stream_name":"stdout","time":193.546479122,"data":"    \"bootstrap_valid\": 1000,\n"}
+,{"stream_name":"stdout","time":193.546483614,"data":"    \"bootstrap_failed\": 0,\n"}
+,{"stream_name":"stdout","time":193.54648827,"data":"    \"ci_scope\": \"test sampling conditional on fitted development model; development censoring distribution fixed\",\n"}
+,{"stream_name":"stdout","time":193.546493272,"data":"    \"calibration\": {\n"}
+,{"stream_name":"stdout","time":193.546497592,"data":"      \"method\": \"IPCW logistic calibration at five years; no recalibration applied\",\n"}
+,{"stream_name":"stdout","time":193.546501851,"data":"      \"censoring_survival_5y_development\": 0.5502499537008018,\n"}
+,{"stream_name":"stdout","time":193.546506332,"data":"      \"intercept_slope_fixed_one\": -0.10208519733562386,\n"}
+,{"stream_name":"stdout","time":193.546510965,"data":"      \"joint_intercept\": -0.5263209636699067,\n"}
+,{"stream_name":"stdout","time":193.546515892,"data":"      \"slope\": 0.8797669521065967,\n"}
+,{"stream_name":"stdout","time":193.546520787,"data":"      \"optimization_messages\": [\n"}
+,{"stream_name":"stdout","time":193.546525505,"data":"        \"Optimization terminated successfully.\",\n"}
+,{"stream_name":"stdout","time":193.54653035,"data":"        \"Optimization terminated successfully.\"\n"}
+,{"stream_name":"stdout","time":193.546535355,"data":"      ],\n"}
+,{"stream_name":"stdout","time":193.546539988,"data":"      \"early_censored_n\": 1473\n"}
+,{"stream_name":"stdout","time":193.546544472,"data":"    }\n"}
+,{"stream_name":"stdout","time":193.54654887,"data":"  },\n"}
+,{"stream_name":"stdout","time":193.546553441,"data":"  \"lasso_cox\": {\n"}
+,{"stream_name":"stdout","time":193.54655831,"data":"    \"harrell_c\": {\n"}
+,{"stream_name":"stdout","time":193.546562965,"data":"      \"estimate\": 0.8786833206818025,\n"}
+,{"stream_name":"stdout","time":193.546567358,"data":"      \"ci95\": [\n"}
+,{"stream_name":"stdout","time":193.546572162,"data":"        0.817321749295275,\n"}
+,{"stream_name":"stdout","time":193.546583572,"data":"        0.9335385757901798\n"}
+,{"stream_name":"stdout","time":193.546588378,"data":"      ]\n"}
+,{"stream_name":"stdout","time":193.546592574,"data":"    },\n"}
+,{"stream_name":"stdout","time":193.546596882,"data":"    \"auc_5y_ipcw\": {\n"}
+,{"stream_name":"stdout","time":193.546601522,"data":"      \"estimate\": 0.8418358987326997,\n"}
+,{"stream_name":"stdout","time":193.54660619,"data":"      \"ci95\": [\n"}
+,{"stream_name":"stdout","time":193.546610784,"data":"        0.7287605536102068,\n"}
+,{"stream_name":"stdout","time":193.546615227,"data":"        0.9420347620202643\n"}
+,{"stream_name":"stdout","time":193.546621641,"data":"      ]\n"}
+,{"stream_name":"stdout","time":193.546626101,"data":"    },\n"}
+,{"stream_name":"stdout","time":193.546630212,"data":"    \"brier_5y_ipcw\": {\n"}
+,{"stream_name":"stdout","time":193.546635074,"data":"      \"estimate\": 0.006882310178833383,\n"}
+,{"stream_name":"stdout","time":193.546639239,"data":"      \"ci95\": [\n"}
+,{"stream_name":"stdout","time":193.546643609,"data":"        0.00421326935077759,\n"}
+,{"stream_name":"stdout","time":193.546648197,"data":"        0.010223634130198594\n"}
+,{"stream_name":"stdout","time":193.546652667,"data":"      ]\n"}
+,{"stream_name":"stdout","time":193.546656855,"data":"    },\n"}
+,{"stream_name":"stdout","time":193.546661399,"data":"    \"bootstrap_requested\": 1000,\n"}
+,{"stream_name":"stdout","time":193.546665487,"data":"    \"bootstrap_valid\": 1000,\n"}
+,{"stream_name":"stdout","time":193.546669712,"data":"    \"bootstrap_failed\": 0,\n"}
+,{"stream_name":"stdout","time":193.546674309,"data":"    \"ci_scope\": \"test sampling conditional on fitted development model; development censoring distribution fixed\",\n"}
+,{"stream_name":"stdout","time":193.546679407,"data":"    \"calibration\": {\n"}
+,{"stream_name":"stdout","time":193.546684042,"data":"      \"method\": \"IPCW logistic calibration at five years; no recalibration applied\",\n"}
+,{"stream_name":"stdout","time":193.546698062,"data":"      \"censoring_survival_5y_development\": 0.5502499537008018,\n"}
+,{"stream_name":"stdout","time":193.546702799,"data":"      \"intercept_slope_fixed_one\": -0.1911639447734091,\n"}
+,{"stream_name":"stdout","time":193.54670769,"data":"      \"joint_intercept\": -1.011925963897464,\n"}
+,{"stream_name":"stdout","time":193.546718951,"data":"      \"slope\": 0.7631622203503853,\n"}
+,{"stream_name":"stdout","time":193.546723648,"data":"      \"optimization_messages\": [\n"}
+,{"stream_name":"stdout","time":193.546728777,"data":"        \"Optimization terminated successfully.\",\n"}
+,{"stream_name":"stdout","time":193.546733718,"data":"        \"Optimization terminated successfully.\"\n"}
+,{"stream_name":"stdout","time":193.546738482,"data":"      ],\n"}
+,{"stream_name":"stdout","time":193.546743027,"data":"      \"early_censored_n\": 1473\n"}
+,{"stream_name":"stdout","time":193.546747335,"data":"    }\n"}
+,{"stream_name":"stdout","time":193.5467518,"data":"  }\n"}
+,{"stream_name":"stdout","time":193.5467563,"data":"}\n"}
+,{"stream_name":"stdout","time":193.546761027,"data":"\n"}
+,{"stream_name":"stderr","time":197.065471799,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":197.06551189,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":197.293123165,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":197.293180782,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":198.326346866,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":198.446823723,"data":"[NbConvertApp] Writing 31970 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":202.090207983,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":202.828010322,"data":"[NbConvertApp] Writing 313446 bytes to __results__.html\n"}
+]

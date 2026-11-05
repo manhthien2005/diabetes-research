@@ -1,12 +1,12 @@
 {
   "study_id": "cai2021_nonobese_five_year",
   "updated_on": "2026-11-05",
-  "status": "ready_for_attempt3",
-  "phase_a": "audited_original_workbook; cohort matches 12940 participants and 201 events",
-  "phase_b": "protocol revision2: fold-relative warm-start Cox LASSO; amendment recorded before final-test use",
-  "phase_c": "Attempt2 numerical failure preserved; full development-only readiness now passes; final test untouched",
-  "phase_d": "not_run",
-  "final_test_evaluated": false,
+  "status": "baseline_completed_with_limitations",
+  "phase_a": "complete: original workbook audited; cohort12940/events201 match",
+  "phase_b": "complete: protocol revision2 frozen before final test",
+  "phase_c": "complete: Kaggle attempt3/version1; outputs downloaded and provenance verified",
+  "phase_d": "complete: Vietnamese comparison, both prespecified models, calibration/PH limitations",
+  "final_test_evaluated": true,
   "workspace": "D:/Dev/Projects/KLTN",
   "module": "02_Implementation/Cai_2021_NAGAL",
   "branch": "codex/t2d-prognosis-research",
@@ -17,17 +17,32 @@
     "acquisition": "Human downloaded official Dryad archive after one automated official download returned HTTP 403"
   },
   "resume": [
-    "Read this file and docs/RECONSTRUCTION_SPEC.md; do not repeat discovery or change modeling choices",
-    "Check recorded Kaggle notebook version status; do not launch another run unless terminal failure is diagnosed",
-    "On COMPLETE, run recorded readback_command; verify freeze/provenance and read study.log before results claims",
-    "If test was used, preserve and report it; do not tune/rerun to chase published numbers",
-    "Write Vietnamese comparison and commit only module outputs, with original raw data kept ignored"
+    "Baseline is complete: read the recorded report and verified outputs; do not repeat discovery or retrain by default",
+    "The internal test has been evaluated once; never use it to choose subsequent modeling changes",
+    "For exact reproducibility checks use pinned source commit, checksum, environment lock and a new run/output ID; preserve old artifacts",
+    "Any method improvement is a new development/validation exercise; no SNN/DeepSurv expansion was performed"
   ],
-  "source_commit": "bda68a9f71dec80f112742121a3824f219b0de41",
+  "source_commit": "71b4045941d6b99e012effc16d58b460c0253863",
   "kaggle_account": "phaninmnhthink16",
   "visibility": "public per later human instruction",
-  "kaggle_notebook": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2",
+  "kaggle_notebook": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r3",
   "kaggle_version": 1,
-  "readback_command": ".venv/Scripts/python kaggle/readback.py --launch qc/kaggle_launch_attempt2_20261105.json --output runs/kaggle_attempt2_v1",
-  "protocol_revision": 2
+  "readback_command": ".venv/Scripts/python kaggle/readback.py --launch qc/kaggle_launch_attempt3_20261105.json --output runs/kaggle_attempt3_v1",
+  "protocol_revision": 2,
+  "successful_final_test_evaluations": 1,
+  "test_used_for_model_changes": false,
+  "verified_output": "qc/run_20261105_attempt3_v1",
+  "report": "docs/BAO_CAO_DOI_CHIEU_VI.md",
+  "primary_metrics": {
+    "harrell_c": 0.8786833206818025,
+    "auc_5y_ipcw": 0.8418358987326997,
+    "brier_5y_ipcw": 0.006882310178833383
+  },
+  "limitations": [
+    "Only16 five-year test events; wide CIs",
+    "HbA1c PH violation diagnostic in development",
+    "Calibration imperfect; no clinical deployment claim",
+    "Original code/seed/full original absolute-risk model unverified",
+    "No external validation or censoring-aware DCA"
+  ]
 }

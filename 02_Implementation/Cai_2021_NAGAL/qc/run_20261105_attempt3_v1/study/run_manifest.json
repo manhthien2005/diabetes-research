@@ -1,0 +1,76 @@
+{
+  "study_id": "cai2021_nonobese_five_year",
+  "started_at_utc": "2026-11-05T15:50:50.100807+00:00",
+  "status": "complete",
+  "config": {
+    "study_id": "cai2021_nonobese_five_year",
+    "seed": 20261105,
+    "horizon_days": 1826.25,
+    "test_fraction": 0.25,
+    "cv_folds": 10,
+    "alpha_min_ratio": 0.01,
+    "alpha_count": 60,
+    "lambda_rule": "one_standard_error",
+    "lasso_family": "cox",
+    "bootstrap_replicates": 1000,
+    "dataset_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+    "sex_resolution": "Use observed 0/1 unchanged; 1=men, 0=women corroborated by Dryad sex counts and Cai Table 1. Human delegated resolution on 2026-11-05.",
+    "models": [
+      "published_six_cox",
+      "lasso_cox"
+    ],
+    "dca": "deferred",
+    "protocol_revision": 2,
+    "development_only_amendment": "After attempt2 numerical failure before final-test use, use library-generated warm-start paths and fold-training alpha_max; tune a common relative-penalty grid. No cohort/outcome/split/horizon or final-test-guided changes."
+  },
+  "source_sha256": "2e94deaf54a56fc3347dfe9973226540f1059ef0fe1dc1273e2001d2deb28f89",
+  "config_sha256": "7cc962390a6d84e7e8b1966915dcae8c9508754655abac3d427f7e02c7e7c1bb",
+  "python": "3.13.18",
+  "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+  "libraries": {
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "scipy": "1.18.0",
+    "scikit-learn": "1.9.0",
+    "scikit-survival": "0.28.0",
+    "lifelines": "0.30.3",
+    "openpyxl": "3.1.5",
+    "matplotlib": "3.11.2"
+  },
+  "git_commit": "71b4045941d6b99e012effc16d58b460c0253863",
+  "kaggle_notebook": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r3",
+  "kaggle_version": "1",
+  "kaggle_run_type": "Batch",
+  "output_path": "/kaggle/working/study",
+  "final_test_used": true,
+  "packaged_source": {
+    "git_commit": "71b4045941d6b99e012effc16d58b460c0253863",
+    "source_files": {
+      "config.json": "7cc962390a6d84e7e8b1966915dcae8c9508754655abac3d427f7e02c7e7c1bb",
+      "requirements.txt": "d6b9b3d417286a5412eda5c45e2ff062da37581eae371eac1cc838f3786ab6f0",
+      "src/build_dictionary.py": "73e462cdc30d175b7d422e322f60d9b0c6b08111087d7c488376d57f22a78c18",
+      "src/cox_model.py": "b6156b11a1ae5073cd3c0bb17116bc8f85538f3ac952b3cb887d4a7072f404e6",
+      "src/nagala_data.py": "82cb3d3019672c14365d645da3eb4bcea3dfe949df9e020023b84c12ee40bc68",
+      "src/run_study.py": "b58df72a3a88399a4764404ab63e6a2f8201b551eea9e41d31a71aba75bef79f",
+      "src/survival_eval.py": "64d5b58391137ebe34c84e23baf6cbbe434ffc53dff837bb461d73d13a2f54a3",
+      "tests/test_evaluation.py": "1aeaeb8c86af61de5ca4167759976abb29f8f5b132820fd3eccef56ce2dad983",
+      "tests/test_integrity.py": "eeab12252029c32568905f461766f048b644053c5099cc7e60b2016a78fb9cf5"
+    },
+    "notebook": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r3"
+  },
+  "dataset_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+  "split": {
+    "development": {
+      "n": 9705,
+      "events": 151,
+      "sorted_ids_sha256": "d8f1d898780e0d01ddbe44fb7f8f8a412d7db3c40b26fe9fa3bd92e9ed23417a"
+    },
+    "internal_test": {
+      "n": 3235,
+      "events": 50,
+      "sorted_ids_sha256": "69e442a106befee11da90a8d208eeb3c08681f6cc623a0ca1373d44db4360bf5"
+    }
+  },
+  "diagnostic_warnings": [],
+  "finished_at_utc": "2026-11-05T15:52:34.473869+00:00"
+}

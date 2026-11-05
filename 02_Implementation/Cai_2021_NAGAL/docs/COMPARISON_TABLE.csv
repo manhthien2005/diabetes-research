@@ -1,0 +1,12 @@
+Mục,Tác giả,Kết quả của mình,Khác biệt thiết kế/cách tính,Giải thích
+Toàn cohort / biến cố toàn follow-up,12.940 / 201,12.940 / 201,BMI <25 trên cùng workbook,"Khớp số người, biến cố và median follow-up; không xác minh lại được mọi loại trừ upstream"
+Development / biến cố,9.651 / 154,9.705 / 151,"75/25 stratified split, seed 20261105; seed gốc UNKNOWN",Không tìm seed để ép khớp
+Internal validation/test / biến cố,3.289 / 47,3.235 / 50,"Cùng NAGALA, random split khác",Không phải external validation
+Biến cố trong 5 năm (toàn cohort / test),UNKNOWN / UNKNOWN,76 / 16,"Mốc 1826,25 ngày; 201/50 là toàn follow-up",Không coi người censor sớm là âm tính
+Predictors cuối,"Tuổi, fatty liver, GGT, TG, HbA1c, FPG","Tuổi, vòng eo, TG, HbA1c, FPG, fatty liver, heavy alcohol contrast","18 concepts / 21 encoded columns; Cox LASSO relative grid, one-SE",Không ép chọn sáu biến; không chọn phương án bằng test
+Validation C-index (95% CI),"0,837 (0,760–0,914)",0.879 (0.817–0.934),Harrell C toàn follow-up; bootstrap test có điều kiện mô hình cố định,"Có thể khác do split, selection và bootstrap; chưa lượng hóa từng nguyên nhân"
+Validation AUC 5 năm (95% CI),"0,829 (0,753–0,905)",0.842 (0.729–0.942),"Cumulative/dynamic IPCW AUC, censoring distribution từ development",Không phải bằng chứng thắng mô hình bài báo; mẫu test khác và CI rộng
+Brier 5 năm (95% CI),UNKNOWN,0.00688 (0.00421–0.01022),IPCW; không gán censor sớm thành non-event,Brier nhỏ chưa đủ chứng minh chất lượng khi sự kiện hiếm
+Calibration,Tác giả báo cáo phù hợp; Hosmer–Lemeshow và đường calibration,Intercept=-0.191; slope=0.763,IPCW logistic diagnostics; nhóm nguy cơ đối chiếu 1−KM(5y),"Mốc lý tưởng 0 / 1; chưa hoàn hảo, không tái hiệu chỉnh bằng test"
+PH assumption,UNKNOWN,"HbA1c: p=0,000559 trong Cox sau LASSO",Schoenfeld rank test trên development,Có dấu hiệu tác động thay đổi theo thời gian; cần ghi hạn chế
+DCA,Thực hiện trên toàn cohort theo bài,Chưa thực hiện,Chỉ làm khi xử lý censoring phù hợp,Không có khẳng định clinical utility từ thực hành này

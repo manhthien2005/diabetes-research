@@ -1,0 +1,39 @@
+{
+  "harrell_c": {
+    "estimate": 0.8786833206818025,
+    "ci95": [
+      0.817321749295275,
+      0.9335385757901798
+    ]
+  },
+  "auc_5y_ipcw": {
+    "estimate": 0.8418358987326997,
+    "ci95": [
+      0.7287605536102068,
+      0.9420347620202643
+    ]
+  },
+  "brier_5y_ipcw": {
+    "estimate": 0.006882310178833383,
+    "ci95": [
+      0.00421326935077759,
+      0.010223634130198594
+    ]
+  },
+  "bootstrap_requested": 1000,
+  "bootstrap_valid": 1000,
+  "bootstrap_failed": 0,
+  "ci_scope": "test sampling conditional on fitted development model; development censoring distribution fixed",
+  "calibration": {
+    "method": "IPCW logistic calibration at five years; no recalibration applied",
+    "censoring_survival_5y_development": 0.5502499537008018,
+    "intercept_slope_fixed_one": -0.1911639447734091,
+    "joint_intercept": -1.011925963897464,
+    "slope": 0.7631622203503853,
+    "optimization_messages": [
+      "Optimization terminated successfully.",
+      "Optimization terminated successfully."
+    ],
+    "early_censored_n": 1473
+  }
+}

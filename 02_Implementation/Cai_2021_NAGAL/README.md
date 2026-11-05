@@ -1,5 +1,7 @@
 # Cai 2021 — thực hành tái dựng dự báo T2D 5 năm
 
+**Đã hoàn thành baseline:** [báo cáo đối chiếu tiếng Việt](docs/BAO_CAO_DOI_CHIEU_VI.md). Cox sau LASSO: C-index 0,879; IPCW AUC 5 năm 0,842; Brier 0,00688. Có dấu hiệu vi phạm PH của HbA1c và chỉ 16 biến cố trong 5 năm ở test; chưa kết luận phù hợp lâm sàng.
+
 Mục tiêu: **same-data method reconstruction**, tự fit LASSO → Cox trên NAGALA; không cam kết khớp từng chữ số của tác giả. Đây là module riêng; không đổi nghiên cứu NHANES/BRFSS và không promote bài.
 
 Đọc [đặc tả](docs/RECONSTRUCTION_SPEC.md), [giải thích phương pháp](docs/EXPLAIN_METHOD_VI.md), [data dictionary](docs/DATA_DICTIONARY.md), [báo cáo cohort](docs/COHORT_REPORT_VI.md), [audit dữ liệu](qc/phase_a_20261105/data_audit.json) và [PROGRESS.json](PROGRESS.json) trước khi chạy. Thư mục `NAGAL` giữ đúng tên anh đã tạo.
@@ -29,8 +31,10 @@ CPU, dataset và notebook mới. Anh đã cập nhật yêu cầu và cho phép 
 
 Tạo bản upload từ source đã commit bằng `python kaggle/prepare.py --username phaninmnhthink16 --data data/raw/doi_10_5061_dryad_8q0p192__v20190219.zip --public --suffix <ma-run-moi>`. Trong `kaggle/upload/<ma-run-moi>/`, dùng Kaggle CLI tạo dataset từ `dataset/` và push notebook từ `notebook/`. Không dùng cùng slug để ghi đè notebook khác. Không đặt token trong notebook hoặc repository. Trạng thái thực tế nằm trong PROGRESS.json; một notebook đã upload chưa đồng nghĩa chạy thành công.
 
-Lượt đang theo dõi: [notebook attempt 2](https://www.kaggle.com/code/phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2), version number 1 theo API, dùng [dataset gốc version 1](https://www.kaggle.com/datasets/phaninmnhthink16/cai2021-nagala-original-20261105). Kiểm tra trạng thái bằng Kaggle CLI. Sau khi kết thúc, dùng `python kaggle/readback.py --launch qc/kaggle_launch_attempt2_20261105.json --output runs/kaggle_attempt2_v1` để tải output và kiểm tra provenance. Thư mục output phải mới. Nếu đọc lại cùng output đã tải, không tự ghi đè hoặc gửi một run mới.
+Lượt thành công đã đọc output/log: [notebook attempt 3](https://www.kaggle.com/code/phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r3), version number 1 theo API, dùng [dataset gốc version 1](https://www.kaggle.com/datasets/phaninmnhthink16/cai2021-nagala-original-20261105). Kiểm tra trạng thái bằng Kaggle CLI. Sau khi kết thúc, dùng `python kaggle/readback.py --launch qc/kaggle_launch_attempt3_20261105.json --output runs/readback_moi` để tải output và kiểm tra provenance. Thư mục output phải mới. Nếu đọc lại cùng output đã tải, không tự ghi đè hoặc gửi một run mới.
 
 ## Hiểu kết quả
 
 Hai mô hình được chỉ định trước: Cox sáu biến công bố (kiểm tra kỹ thuật), và Cox sau chọn biến bằng Cox LASSO (bản tái dựng). Đọc C-index cùng IPCW AUC/Brier, calibration và kiểm tra proportional hazards. Đây là internal validation trên cùng cohort. LASSO family, candidate encoding, split seed, missing-data handling và bootstrap có những giả định khác bài: tất cả ghi trong đặc tả. Table 2 của bài không được dùng làm hệ số Cox cuối; mô hình tự fit phải lưu baseline survival và centering để tái tạo xác suất.
+
+Output đã xác minh được lưu tại [qc/run_20261105_attempt3_v1](qc/run_20261105_attempt3_v1/), gồm manifest, freeze, hai predictive bundles, CV/selection, PH tests, kết quả/CI, calibration figures, môi trường và logs. Hai attempt lỗi trước test được giữ trong `qc/failed_runs/`.

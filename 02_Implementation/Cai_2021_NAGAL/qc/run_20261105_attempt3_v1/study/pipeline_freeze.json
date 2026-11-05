@@ -1,0 +1,10 @@
+{
+  "source_sha256": "2e94deaf54a56fc3347dfe9973226540f1059ef0fe1dc1273e2001d2deb28f89",
+  "config_sha256": "7cc962390a6d84e7e8b1966915dcae8c9508754655abac3d427f7e02c7e7c1bb",
+  "models_sha256": {
+    "published_six_cox": "d4d6cfc36bbc81b727b4caab88f31b29170e78962a9b4bc9d3999b25d0bf306d",
+    "lasso_cox": "4a1045ee7474e32fe7d972df84349a575f72066f076f0790fe48ff2affa036d3"
+  },
+  "frozen_before_final_test": true,
+  "test_used_for_model_selection": false
+}
