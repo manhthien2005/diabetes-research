@@ -1,0 +1,2 @@
+# Preserve downloaded execution-log bytes for immutable SHA256 audits.
+qc/**/*.log -text
