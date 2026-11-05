@@ -2,6 +2,17 @@
   "version": 1,
   "created_on": "2026-11-03",
   "updated_on": "2026-11-05",
+  "three_paper_review": {
+    "date": "2026-11-05",
+    "report": "THREE_PAPER_REVIEW_20261105_VI.md",
+    "evidence": "evidence/three_paper_review_20261105.json",
+    "reviewed": ["cai2021_nonobese_five_year", "han2023_prediabetes_five_year", "liu2026_index_component_prediction"],
+    "selected_for_first_learning_exercise": "cai2021_nonobese_five_year",
+    "replication_scope": "Conditional method reconstruction on the original dataset",
+    "exact_replication_confirmed": false,
+    "decision_state": "recommendation_ready",
+    "research_baseline_promoted": false
+  },
   "learning_reproduction_search": {
     "date": "2026-11-05",
     "preferred_candidate": "cai2021_nonobese_five_year",
