@@ -1,0 +1,52 @@
+[{"stream_name":"stderr","time":9.413416222,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.413464995,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.413470208,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.413472987,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":10.184922184,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.184959184,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.184964476,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.184968322,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":12.881196234,"data":"Verified committed source: 1d2458644922333ae35773cb3b3e27bce255de42\n"}
+,{"stream_name":"stderr","time":13.03941676,"data":"Error: Command '['/tmp/cai2021-env/bin/python3', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1.\n"}
+,{"stream_name":"stderr","time":13.0685086,"data":"Error: Command '['/tmp/cai2021-env/bin/python3', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1.\n"}
+,{"stream_name":"stderr","time":13.068541474,"data":"\n"}
+,{"stream_name":"stderr","time":13.068546201,"data":"Error: Command '['/tmp/cai2021-env/bin/python3', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1.\n"}
+,{"stream_name":"stderr","time":13.395207161,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":13.395859245,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":13.395879912,"data":"    import sys;import papermill as pm;pm.execute_notebook(\"__notebook__.ipynb\",\"__notebook__.ipynb\",progress_bar=False,log_output=True,stdout_file=sys.stdout,stderr_file=sys.stderr,allow_errors=False,timeout=7200)\n"}
+,{"stream_name":"stderr","time":13.395888099,"data":"                                      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":13.39589328,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":13.395897598,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":13.395901528,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":13.395905209,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":13.395909319,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":13.395912977,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":13.395916693,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":13.395920827,"data":"Exception encountered at \"In [2]\":\n"}
+,{"stream_name":"stderr","time":13.395923363,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":13.395925743,"data":"CalledProcessError                        Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":13.39593774,"data":"/tmp/ipykernel_17/2436607435.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":13.395940587,"data":"----\u003e 1 subprocess.run([sys.executable, \"-m\", \"venv\", \"/tmp/cai2021-env\"], check=True)\n"}
+,{"stream_name":"stderr","time":13.3959435,"data":"      2 python = \"/tmp/cai2021-env/bin/python\"\n"}
+,{"stream_name":"stderr","time":13.395945933,"data":"      3 subprocess.run([python, \"-m\", \"pip\", \"install\", \"-r\", str(source/\"requirements.txt\")], check=True)\n"}
+,{"stream_name":"stderr","time":13.395948858,"data":"      4 subprocess.run([python, \"-m\", \"unittest\", \"discover\", \"-s\", str(source/\"tests\"), \"-v\"], check=True)\n"}
+,{"stream_name":"stderr","time":13.39595206,"data":"      5 freeze = subprocess.check_output([python, \"-m\", \"pip\", \"freeze\"], text=True)\n"}
+,{"stream_name":"stderr","time":13.395955989,"data":"\n"}
+,{"stream_name":"stderr","time":13.395959387,"data":"/usr/lib/python3.13/subprocess.py in run(input, capture_output, timeout, check, *popenargs, **kwargs)\n"}
+,{"stream_name":"stderr","time":13.395963567,"data":"    576         retcode = process.poll()\n"}
+,{"stream_name":"stderr","time":13.395966981,"data":"    577         if check and retcode:\n"}
+,{"stream_name":"stderr","time":13.39597091,"data":"--\u003e 578             raise CalledProcessError(retcode, process.args,\n"}
+,{"stream_name":"stderr","time":13.395974769,"data":"    579                                      output=stdout, stderr=stderr)\n"}
+,{"stream_name":"stderr","time":13.395978934,"data":"    580     return CompletedProcess(process.args, retcode, stdout, stderr)\n"}
+,{"stream_name":"stderr","time":13.395983167,"data":"\n"}
+,{"stream_name":"stderr","time":13.395987814,"data":"CalledProcessError: Command '['/usr/bin/python3', '-m', 'venv', '/tmp/cai2021-env']' returned non-zero exit status 1.\n"}
+,{"stream_name":"stderr","time":13.395991835,"data":"\n"}
+,{"stream_name":"stderr","time":16.14151215,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":16.141555792,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":16.348230987,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":16.348261003,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":17.220607672,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":17.308054159,"data":"[NbConvertApp] Writing 12592 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":20.286682746,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":20.90726262,"data":"[NbConvertApp] Writing 296560 bytes to __results__.html\n"}
+]

@@ -1,0 +1,17 @@
+{
+  "scope": "src modules and scientific specification; no participant data",
+  "reviewer": "independent subagent explicitly routed by requesting-code-review skill",
+  "initial_findings": [
+    "Calibration numerical precision: analytic gradient implemented with rare-event regression test",
+    "Preserve per-model test metrics immediately: implemented",
+    "Separate notebook version and run type: implemented"
+  ],
+  "followup": "All findings confirmed addressed; 3 evaluation tests rerun by reviewer",
+  "module_tests": 9,
+  "governance_tests": 104,
+  "skill_tests": 49,
+  "mirror": "14 skills byte-parity PASS",
+  "references": "2 of 2 verified against PubMed/CrossRef",
+  "schema": "variable registry conforms to canonical JSON schema",
+  "final_test_used_at_review": false
+}

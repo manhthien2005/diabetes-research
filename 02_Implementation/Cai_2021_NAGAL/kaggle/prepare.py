@@ -22,6 +22,7 @@ def main():
     p.add_argument('--data', required=True)
     p.add_argument('--public', action='store_true')
     p.add_argument('--suffix', default='20261105')
+    p.add_argument('--dataset-ref', help='Reuse an already created dataset as a read-only notebook input')
     args = p.parse_args()
     commit = git('rev-parse', 'HEAD').decode().strip()
     tracked = git('ls-tree', '-r', '--name-only', 'HEAD', MODULE).decode().splitlines()
@@ -47,7 +48,9 @@ def main():
     if hashlib.sha256(blob).hexdigest() != config['dataset_sha256']:
         raise ValueError('Workbook checksum mismatch')
     (dataset/'Data set Int J Obesity.xlsx').write_bytes(blob)
-    data_ref = args.username+'/cai2021-nagala-original-'+args.suffix
+    data_ref = args.dataset_ref or args.username+'/cai2021-nagala-original-'+args.suffix
+    if not data_ref.startswith(args.username+'/cai2021-nagala-original-'):
+        raise ValueError('Dataset input must belong to this reconstruction account/module')
     notebook_ref = args.username+'/cai2021-nagala-reconstruction-'+args.suffix
     meta = {'title': 'Cai2021 NAGALA Original '+args.suffix, 'id': data_ref, 'licenses': [{'name': 'CC0-1.0'}],
             'description': 'Unmodified workbook from Okamura et al., Dryad 10.5061/dryad.8q0p192, listed version 2019-02-19. Original study DOI 10.1038/s41366-018-0076-3. Rehosted for same-data method reconstruction of Cai 2021 (10.2147/DMSO.S304994). Cite the original data creators. Workbook SHA256: '+config['dataset_sha256']}

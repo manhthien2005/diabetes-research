@@ -1,10 +1,10 @@
 {
   "study_id": "cai2021_nonobese_five_year",
   "updated_on": "2026-11-05",
-  "status": "implementation_in_progress",
+  "status": "kaggle_run_submitting",
   "phase_a": "audited_original_workbook; cohort matches 12940 participants and 201 events",
   "phase_b": "specification_written_before_model_fit",
-  "phase_c": "local_tests_and_Kaggle_auth_pending",
+  "phase_c": "source committed/pushed; 9 synthetic tests pass; Kaggle OAuth and owned read verified; new public dataset ready",
   "phase_d": "not_run",
   "final_test_evaluated": false,
   "workspace": "D:/Dev/Projects/KLTN",
@@ -22,5 +22,8 @@
     "Verify Kaggle account and create new private resources; never modify BRFSS resources",
     "Freeze source/config before final test, monitor Kaggle run to completion and download outputs",
     "Write Vietnamese comparison and update status with actual evidence"
-  ]
+  ],
+  "source_commit": "1d2458644922333ae35773cb3b3e27bce255de42",
+  "kaggle_account": "phaninmnhthink16",
+  "visibility": "public per later human instruction"
 }

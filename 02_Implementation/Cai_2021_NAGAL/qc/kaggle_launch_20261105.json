@@ -1,0 +1,18 @@
+{
+  "created_at_utc": "2026-11-05T15:14:28.856535+00:00",
+  "source_commit": "1d2458644922333ae35773cb3b3e27bce255de42",
+  "account": "phaninmnhthink16",
+  "dataset_ref": "phaninmnhthink16/cai2021-nagala-original-20261105",
+  "notebook_ref": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105",
+  "public_authorization": "Human explicitly allowed public Kaggle resources in chat on 2026-11-05",
+  "dataset_url": "https://www.kaggle.com/datasets/phaninmnhthink16/cai2021-nagala-original-20261105",
+  "dataset_creation_status": "Ok",
+  "dataset_error": null,
+  "workbook_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+  "status": "notebook_submitted",
+  "notebook_url": "https://www.kaggle.com/code/phaninmnhthink16/cai2021-nagala-reconstruction-20261105",
+  "notebook_version": 1,
+  "kernel_id": 142905989,
+  "notebook_error": null,
+  "invalid_dataset_sources": []
+}

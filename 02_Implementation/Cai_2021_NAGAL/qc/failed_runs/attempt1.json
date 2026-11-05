@@ -1,0 +1,9 @@
+{
+  "notebook": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105",
+  "version": 1,
+  "status": "ERROR",
+  "cause": "Kaggle Python 3.13 venv ensurepip unavailable",
+  "stage": "environment setup before tests, workbook read or model fitting",
+  "final_test_used": false,
+  "remedy": "Install pinned packages to isolated /tmp target and set child-process PYTHONPATH; no model/config change"
+}

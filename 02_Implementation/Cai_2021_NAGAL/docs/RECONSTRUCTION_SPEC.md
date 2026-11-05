@@ -19,7 +19,7 @@ Primary source: Cai et al. (2021), DOI 10.2147/DMSO.S304994, [full text](https:/
 
 ## Frozen implementation choices
 
-Python 3.12 CPU, scikit-survival Coxnet LASSO and lifelines Cox PH. R/glmnet would more closely mirror the reported R 3.6.1 ecosystem; Python supports a single tested code path across this local environment and Kaggle. This choice does not imply numerical equivalence to glmnet.
+Python >=3.12 CPU (local 3.12; Kaggle 3.13 observed), scikit-survival Coxnet LASSO and lifelines Cox PH. R/glmnet would more closely mirror the reported R 3.6.1 ecosystem; Python supports a single tested code path across this local environment and Kaggle. This choice does not imply numerical equivalence to glmnet. Kaggle attempt 1 failed in venv/ensurepip before data/model execution; attempt 2 uses a separate dependency target with child-process PYTHONPATH, retaining all pinned scientific library versions and model/config choices.
 
 Candidate concepts are the 18 baseline variables in Table 1: age, BMI, waist, ALT, AST, GGT, HDL-C, TC, TG, HbA1c, FPG, SBP, DBP, sex, fatty liver, exercise, alcohol category, smoking category. Use mmol/L lipids, mmol/mol HbA1c, mg/dL FPG from explicitly labelled workbook columns. No duplicate unit columns; no phenotype composites, body weight, ethanol amount, IDs, follow-up, or event as predictors. This candidate-set reconstruction is an assumption because no executable list is available. Alcohol and smoking use fixed one-hot contrasts; 18 concepts therefore exceed 18 design-matrix parameters. Binary codes remain numeric indicators.
 
