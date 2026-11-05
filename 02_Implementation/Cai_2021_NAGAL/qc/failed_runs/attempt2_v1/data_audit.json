@@ -1,0 +1,108 @@
+{
+  "source_file": "Data set Int J Obesity.xlsx",
+  "workbook_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+  "archive_sha256": null,
+  "source_bytes": 3255571,
+  "sheet_names": [
+    "Sheet 1"
+  ],
+  "raw_shape": [
+    15464,
+    31
+  ],
+  "raw_missing": {
+    "Patient Number": 0,
+    "Sex, 1:Men, 2:Women": 0,
+    "Baseline Age, yrs": 0,
+    "Baseline Ethanol consumption g/wk": 0,
+    "Baseline Fatty liver 0/1": 0,
+    "Baseline BMI, kg/m2": 0,
+    "Baseline Waist circumference(WC), cm": 0,
+    "Baseline WC≥90 in Men, ≥80 in Women 0/1": 0,
+    "Baseline BMI≥25 0/1": 0,
+    "Obesity phenotype 1-8": 0,
+    "Follow up duration, days": 0,
+    "Baseline ALT, IU/L": 0,
+    "Baseline AST, IU/L": 0,
+    "Baseline Body Weight, kg": 0,
+    "Baseline Habit of exercise 0/1": 0,
+    "Baseline GGT, IU/L": 0,
+    "Baseline HDL-cholesterol, mg/dL": 11,
+    "Baseline HDL-cholesterol, mmol/L": 0,
+    "Baseline Total Cholesterol, mg/dL": 0,
+    "Baseline Total Cholesterol, mmol/L": 0,
+    "Baseline Triglycerides, mg/dL": 0,
+    "Baseline Triglycerides, mmol/L": 0,
+    "Baseline HbA1c, %": 0,
+    "Baseline HbA1c, mmol/mol": 0,
+    "Baseline Alcohol consumption, non:1, light:2, moderate:3, heavy:4": 0,
+    "Baseline Smoking status, 1:never, 2:past, 3:current": 0,
+    "Baseline Fasting plasma glucose, mg/dl": 0,
+    "Baseline Fasting plasma glucose, mmol/L": 0,
+    "Baseline Systolic blood pressure, mmHg": 0,
+    "Baseline Diastolic blood pressure, mmHg": 0,
+    "Incident DM 0/1": 0
+  },
+  "hdl_paired_zero_missing": 11,
+  "duplicate_rows": 0,
+  "duplicate_ids": 0,
+  "source_event_counts": {
+    "0": 15091,
+    "1": 373
+  },
+  "source_sex_counts": {
+    "1": 8430,
+    "0": 7034
+  },
+  "cohort": {
+    "rule": "baseline BMI <25 kg/m2; supplied source cohort upstream exclusions not independently reconstructable",
+    "raw_n": 15464,
+    "excluded_bmi_ge25": 2524,
+    "n": 12940,
+    "events_all_followup": 201,
+    "followup_quantiles_days": {
+      "0.0": 164.0,
+      "0.25": 1017.0,
+      "0.5": 2016.0,
+      "0.75": 3465.25,
+      "1.0": 4729.0
+    },
+    "censored_before_five_years": 5820,
+    "events_by_five_years": 76,
+    "at_risk_at_five_years": 7044,
+    "missing_after_sentinel_handling": {
+      "age": 0,
+      "bmi": 0,
+      "waist": 0,
+      "alt": 0,
+      "ast": 0,
+      "ggt": 0,
+      "hdl": 8,
+      "tc": 0,
+      "tg": 0,
+      "hba1c": 0,
+      "fpg": 0,
+      "sbp": 0,
+      "dbp": 0,
+      "sex": 0,
+      "fatty_liver": 0,
+      "exercise": 0,
+      "alcohol": 0,
+      "smoking": 0
+    },
+    "sex_counts": {
+      "1": 6534,
+      "0": 6406
+    },
+    "fatty_liver_counts": {
+      "0": 11603,
+      "1": 1337
+    },
+    "exercise_counts": {
+      "0": 10614,
+      "1": 2326
+    }
+  },
+  "matches_published_n_and_events": true,
+  "coding_resolution": "Use observed 0/1 unchanged; 1=men, 0=women corroborated by Dryad sex counts and Cai Table 1. Human delegated resolution on 2026-11-05."
+}

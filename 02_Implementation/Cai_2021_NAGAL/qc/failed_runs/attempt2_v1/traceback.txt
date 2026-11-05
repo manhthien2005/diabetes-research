@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/tmp/cai2021-source/src/run_study.py", line 76, in main
+    selected, cv_table, selection = select_lasso(x.iloc[tr], dev.time.to_numpy(), dev.event.to_numpy(), config)
+                                    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/cai2021-source/src/cox_model.py", line 50, in select_lasso
+    single.fit(a, Surv.from_arrays(events[tr].astype(bool), times[tr]))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/cai2021-dependencies/sksurv/linear_model/coxnet.py", line 286, in fit
+    coef, alphas, deviance_ratio, n_iter = call_fit_coxnet(
+                                           ~~~~~~~~~~~~~~~^
+        X,
+        ^^
+    ...<9 lines>...
+        self.verbose,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "sksurv/linear_model/_coxnet.pyx", line 68, in sksurv.linear_model._coxnet.call_fit_coxnet
+ArithmeticError: Numerical error, because weights are too large. Consider increasing alpha.

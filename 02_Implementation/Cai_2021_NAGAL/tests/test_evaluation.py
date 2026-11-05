@@ -41,11 +41,13 @@ class EvaluationTests(unittest.TestCase):
         x = pd.DataFrame({'age': rng.normal(size=350), 'ggt': rng.normal(size=350)})
         t = rng.exponential(2000 / np.exp(x.age.to_numpy() * .9))+1
         c = rng.uniform(1500, 5000, len(x))
-        config = {'alpha_max': .1, 'alpha_min': .001, 'alpha_count': 10, 'cv_folds': 3, 'seed': 8}
+        config = {'alpha_min_ratio': .01, 'alpha_count': 10, 'cv_folds': 3, 'seed': 8}
         features, table, detail = select_lasso(x, np.minimum(t, c), (t <= c).astype(int), config)
         self.assertIn('age', features)
         self.assertEqual(int(table.selected.sum()), 1)
         self.assertEqual(detail['candidate_features'], ['age', 'ggt'])
+        self.assertIn('penalty_ratio', table.columns)
+        self.assertEqual(len(detail['fold_alpha_max']), 3)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,21 @@
+{
+  "stage": "development-only technical check",
+  "final_test_used": false,
+  "runtime_seconds": 4.457535500005179,
+  "selected_features": [
+    "age",
+    "waist",
+    "tg",
+    "hba1c",
+    "fpg",
+    "fatty_liver",
+    "alcohol_4"
+  ],
+  "all_cv_path_points": 60,
+  "models_fitted": [
+    "published_six_cox",
+    "lasso_cox"
+  ],
+  "ph_tests_saved": true,
+  "independent_review": "No Critical or Important findings in relative-path amendment; fold isolation/path alignment confirmed"
+}

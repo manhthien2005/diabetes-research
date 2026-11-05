@@ -1,10 +1,10 @@
 {
   "study_id": "cai2021_nonobese_five_year",
   "updated_on": "2026-11-05",
-  "status": "kaggle_attempt2_running",
+  "status": "ready_for_attempt3",
   "phase_a": "audited_original_workbook; cohort matches 12940 participants and 201 events",
-  "phase_b": "specification_written_before_model_fit",
-  "phase_c": "Attempt1 failed before data/model in ensurepip; attempt2 running on same scientific config with isolated target packages",
+  "phase_b": "protocol revision2: fold-relative warm-start Cox LASSO; amendment recorded before final-test use",
+  "phase_c": "Attempt2 numerical failure preserved; full development-only readiness now passes; final test untouched",
   "phase_d": "not_run",
   "final_test_evaluated": false,
   "workspace": "D:/Dev/Projects/KLTN",
@@ -28,5 +28,6 @@
   "visibility": "public per later human instruction",
   "kaggle_notebook": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2",
   "kaggle_version": 1,
-  "readback_command": ".venv/Scripts/python kaggle/readback.py --launch qc/kaggle_launch_attempt2_20261105.json --output runs/kaggle_attempt2_v1"
+  "readback_command": ".venv/Scripts/python kaggle/readback.py --launch qc/kaggle_launch_attempt2_20261105.json --output runs/kaggle_attempt2_v1",
+  "protocol_revision": 2
 }

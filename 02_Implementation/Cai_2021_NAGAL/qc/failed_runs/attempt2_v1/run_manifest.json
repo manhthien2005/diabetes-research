@@ -1,0 +1,76 @@
+{
+  "study_id": "cai2021_nonobese_five_year",
+  "started_at_utc": "2026-11-05T15:20:24.895409+00:00",
+  "status": "failed",
+  "config": {
+    "study_id": "cai2021_nonobese_five_year",
+    "seed": 20261105,
+    "horizon_days": 1826.25,
+    "test_fraction": 0.25,
+    "cv_folds": 10,
+    "alpha_min": 0.0001,
+    "alpha_max": 0.1,
+    "alpha_count": 60,
+    "lambda_rule": "one_standard_error",
+    "lasso_family": "cox",
+    "bootstrap_replicates": 1000,
+    "dataset_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+    "sex_resolution": "Use observed 0/1 unchanged; 1=men, 0=women corroborated by Dryad sex counts and Cai Table 1. Human delegated resolution on 2026-11-05.",
+    "models": [
+      "published_six_cox",
+      "lasso_cox"
+    ],
+    "dca": "deferred"
+  },
+  "source_sha256": "895256c5d4b728d022aed577cf15acc54b6ec8a0f4e3582a7077241bc3af4c48",
+  "config_sha256": "b6b653926562794a52131ef3cb1517568404be333c082270a54b777abde74192",
+  "python": "3.13.18",
+  "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+  "libraries": {
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "scipy": "1.18.0",
+    "scikit-learn": "1.9.0",
+    "scikit-survival": "0.28.0",
+    "lifelines": "0.30.3",
+    "openpyxl": "3.1.5",
+    "matplotlib": "3.11.2"
+  },
+  "git_commit": "bda68a9f71dec80f112742121a3824f219b0de41",
+  "kaggle_notebook": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2",
+  "kaggle_version": "1",
+  "kaggle_run_type": "Batch",
+  "output_path": "/kaggle/working/study",
+  "final_test_used": false,
+  "packaged_source": {
+    "git_commit": "bda68a9f71dec80f112742121a3824f219b0de41",
+    "source_files": {
+      "config.json": "b6b653926562794a52131ef3cb1517568404be333c082270a54b777abde74192",
+      "requirements.txt": "d6b9b3d417286a5412eda5c45e2ff062da37581eae371eac1cc838f3786ab6f0",
+      "src/build_dictionary.py": "73e462cdc30d175b7d422e322f60d9b0c6b08111087d7c488376d57f22a78c18",
+      "src/cox_model.py": "2059ef20e95abec1fa0e54d320a1ed56f1efba3e65bb4ffd68111f144f09f0dc",
+      "src/nagala_data.py": "82cb3d3019672c14365d645da3eb4bcea3dfe949df9e020023b84c12ee40bc68",
+      "src/run_study.py": "b58df72a3a88399a4764404ab63e6a2f8201b551eea9e41d31a71aba75bef79f",
+      "src/survival_eval.py": "64d5b58391137ebe34c84e23baf6cbbe434ffc53dff837bb461d73d13a2f54a3",
+      "tests/test_evaluation.py": "02aa2f50db664292a5765f23bfff2f449031b19bfc9d8ed97e67787703037061",
+      "tests/test_integrity.py": "eeab12252029c32568905f461766f048b644053c5099cc7e60b2016a78fb9cf5"
+    },
+    "notebook": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2"
+  },
+  "dataset_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+  "split": {
+    "development": {
+      "n": 9705,
+      "events": 151,
+      "sorted_ids_sha256": "d8f1d898780e0d01ddbe44fb7f8f8a412d7db3c40b26fe9fa3bd92e9ed23417a"
+    },
+    "internal_test": {
+      "n": 3235,
+      "events": 50,
+      "sorted_ids_sha256": "69e442a106befee11da90a8d208eeb3c08681f6cc623a0ca1373d44db4360bf5"
+    }
+  },
+  "error_type": "ArithmeticError",
+  "error": "Numerical error, because weights are too large. Consider increasing alpha.",
+  "finished_at_utc": "2026-11-05T15:41:18.454635+00:00"
+}

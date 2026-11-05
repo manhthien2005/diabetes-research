@@ -1,10 +1,12 @@
 """Development-only estimation and portable Cox prediction."""
+import warnings
 import numpy as np
 import pandas as pd
 from lifelines import CoxPHFitter
 from lifelines.statistics import proportional_hazard_test
 from scipy.special import logsumexp
 from sklearn.impute import SimpleImputer
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.model_selection import StratifiedKFold
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -32,43 +34,51 @@ def validation_deviance(times, events, eta):
 
 def select_lasso(x, times, events, config):
     assert_predictors(x.columns.tolist())
-    alphas = np.geomspace(config['alpha_max'], config['alpha_min'], config['alpha_count'])
+    ratios = np.geomspace(1., config['alpha_min_ratio'], config['alpha_count'])
     folds = StratifiedKFold(n_splits=config['cv_folds'], shuffle=True, random_state=config['seed'])
-    scores = []
+    scores, alpha_maxima, path_lengths = [], [], []
+
+    def fit_path(values, fold_times, fold_events):
+        # Library-generated path starts at the TRAINING fold's alpha_max and
+        # uses warm starts. Independent cold fits at tiny penalties were unstable.
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', ConvergenceWarning)
+            path = CoxnetSurvivalAnalysis(n_alphas=config['alpha_count'], alpha_min_ratio=config['alpha_min_ratio'],
+                                         l1_ratio=1., max_iter=100000, tol=1e-7)
+            path.fit(values, Surv.from_arrays(fold_events.astype(bool), fold_times))
+        return path
+
     for fold, (tr, va) in enumerate(folds.split(x, events)):
         a, b, _ = scale_fold(x.iloc[tr], x.iloc[va])
-        path = CoxnetSurvivalAnalysis(alphas=alphas, l1_ratio=1., max_iter=100000, tol=1e-7)
-        path.fit(a, Surv.from_arrays(events[tr].astype(bool), times[tr]))
-        coefficients = []
-        for j, alpha in enumerate(alphas):
-            if j < len(path.alphas_):
-                coefficients.append(path.coef_[:, j])
-            else:
-                # Coxnet may stop a multi-alpha path early after little gain.
-                # Complete the prespecified grid, without changing it or using test.
-                single = CoxnetSurvivalAnalysis(alphas=[alpha], l1_ratio=1., max_iter=100000, tol=1e-7)
-                single.fit(a, Surv.from_arrays(events[tr].astype(bool), times[tr]))
-                coefficients.append(single.coef_[:, 0])
-        scores.append([validation_deviance(times[va], events[va], b @ coef) for coef in coefficients])
-    scores = np.asarray(scores)
+        path = fit_path(a, times[tr], events[tr])
+        alpha_maxima.append(float(path.alphas_[0])); path_lengths.append(len(path.alphas_))
+        scores.append([validation_deviance(times[va], events[va], b @ path.coef_[:, j]) for j in range(len(path.alphas_))])
+    prep = make_pipeline(SimpleImputer(strategy='median'), StandardScaler())
+    a = prep.fit_transform(x)
+    model = fit_path(a, times, events)
+    # Early-stopped tails are not extrapolated or cold-restarted. Compare only
+    # the ratio-grid prefix that every fold and full-development fit supports.
+    common = min(min(path_lengths), len(model.alphas_))
+    if common < 2:
+        raise ValueError('Insufficient shared Coxnet path; inspect development fit')
+    scores = np.asarray([row[:common] for row in scores])
     means = scores.mean(axis=0)
     se = scores.std(axis=0, ddof=1) / np.sqrt(len(scores))
     minimum = int(np.argmin(means))
     selected = int(np.flatnonzero(means <= means[minimum] + se[minimum])[0])
-    prep = make_pipeline(SimpleImputer(strategy='median'), StandardScaler())
-    a = prep.fit_transform(x)
-    model = CoxnetSurvivalAnalysis(alphas=[alphas[selected]], l1_ratio=1., max_iter=100000, tol=1e-7)
-    model.fit(a, Surv.from_arrays(events.astype(bool), times))
-    names = x.columns[np.abs(model.coef_[:, 0]) > 1e-8].tolist()
+    names = x.columns[np.abs(model.coef_[:, selected]) > 1e-8].tolist()
     if not names:
         raise ValueError('One-SE LASSO selected no predictors; no test-guided fallback')
-    table = pd.DataFrame({'alpha': alphas, 'mean_deviance': means, 'se': se, 'selected': np.arange(len(alphas)) == selected})
+    table = pd.DataFrame({'penalty_ratio': ratios[:common], 'alpha_full_development': model.alphas_[:common],
+                          'mean_deviance': means, 'se': se, 'selected': np.arange(common) == selected})
     for fold in range(len(scores)):
         table[f'fold_{fold + 1}'] = scores[fold]
-    detail = {'selected_alpha': float(alphas[selected]), 'minimum_alpha': float(alphas[minimum]), 'selected_features': names,
+    detail = {'selected_alpha': float(model.alphas_[selected]), 'minimum_alpha': float(model.alphas_[minimum]),
+              'selected_penalty_ratio': float(ratios[selected]), 'fold_alpha_max': alpha_maxima,
+              'fold_path_lengths': path_lengths, 'full_development_path_length': len(model.alphas_), 'common_path_length': common, 'selected_features': names,
               'candidate_features': x.columns.tolist(), 'development_imputation_medians': prep.named_steps['simpleimputer'].statistics_.tolist(),
               'development_scaler_mean': prep.named_steps['standardscaler'].mean_.tolist(), 'development_scaler_scale': prep.named_steps['standardscaler'].scale_.tolist(),
-              'penalized_coefficients_standardized': model.coef_[:, 0].tolist()}
+              'penalized_coefficients_standardized': model.coef_[:, selected].tolist()}
     return names, table, detail
 
 

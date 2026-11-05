@@ -1,0 +1,25 @@
+{
+  "platform_status": "ERROR",
+  "notebook_ref": "phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2",
+  "notebook_version": 1,
+  "kernel_id": 142906409,
+  "expected_git_commit": "bda68a9f71dec80f112742121a3824f219b0de41",
+  "checks": {
+    "commit": true,
+    "workbook": true,
+    "notebook_version": true,
+    "notebook_ref": true,
+    "freeze_before_test": false
+  },
+  "study_path": "02_Implementation\\Cai_2021_NAGAL\\runs\\kaggle_attempt2_v1\\study",
+  "study_status": "failed",
+  "final_test_used": false,
+  "files_sha256": {
+    "cai2021-nagala-reconstruction-20261105-r2.log": "696fe9b4e137b79373179c818d8e97b1c759b216a9be56c3cdf2f7cf889669ea",
+    "environment-lock.txt": "a85bd8f4113b2b99c08dde4fd34a097b1c95afdb91ccb26c0f06135ef145e3f1",
+    "study.log": "ccbd37f6bce3d45bd250134381bec5715803e4178e82c052c49a2d079aa9193c",
+    "study/data_audit.json": "7e45d65cbee95da6b6ecdda3b07226f2f647bd5921ba802c85b28f4e1cdcd271",
+    "study/run_manifest.json": "99ca4a476169ed420de5aefcef83840ed87cf1435575b3d47bd775041d98f05e",
+    "study/traceback.txt": "1687d23c3105050faddea613aa5f96aeba5979cb042f8a29959e64e817c6cab7"
+  }
+}

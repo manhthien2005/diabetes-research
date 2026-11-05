@@ -29,7 +29,7 @@ CPU, dataset và notebook mới. Anh đã cập nhật yêu cầu và cho phép 
 
 Tạo bản upload từ source đã commit bằng `python kaggle/prepare.py --username phaninmnhthink16 --data data/raw/doi_10_5061_dryad_8q0p192__v20190219.zip --public --suffix <ma-run-moi>`. Trong `kaggle/upload/<ma-run-moi>/`, dùng Kaggle CLI tạo dataset từ `dataset/` và push notebook từ `notebook/`. Không dùng cùng slug để ghi đè notebook khác. Không đặt token trong notebook hoặc repository. Trạng thái thực tế nằm trong PROGRESS.json; một notebook đã upload chưa đồng nghĩa chạy thành công.
 
-Lượt đang theo dõi: [notebook attempt 2, version 1](https://www.kaggle.com/code/phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2?scriptVersionId=1), dùng [dataset gốc version 1](https://www.kaggle.com/datasets/phaninmnhthink16/cai2021-nagala-original-20261105). Kiểm tra trạng thái bằng Kaggle CLI. Sau khi kết thúc, dùng `python kaggle/readback.py --launch qc/kaggle_launch_attempt2_20261105.json --output runs/kaggle_attempt2_v1` để tải output và kiểm tra provenance. Thư mục output phải mới. Nếu đọc lại cùng output đã tải, không tự ghi đè hoặc gửi một run mới.
+Lượt đang theo dõi: [notebook attempt 2](https://www.kaggle.com/code/phaninmnhthink16/cai2021-nagala-reconstruction-20261105-r2), version number 1 theo API, dùng [dataset gốc version 1](https://www.kaggle.com/datasets/phaninmnhthink16/cai2021-nagala-original-20261105). Kiểm tra trạng thái bằng Kaggle CLI. Sau khi kết thúc, dùng `python kaggle/readback.py --launch qc/kaggle_launch_attempt2_20261105.json --output runs/kaggle_attempt2_v1` để tải output và kiểm tra provenance. Thư mục output phải mới. Nếu đọc lại cùng output đã tải, không tự ghi đè hoặc gửi một run mới.
 
 ## Hiểu kết quả
 

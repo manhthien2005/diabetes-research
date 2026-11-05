@@ -4,8 +4,7 @@
   "horizon_days": 1826.25,
   "test_fraction": 0.25,
   "cv_folds": 10,
-  "alpha_min": 0.0001,
-  "alpha_max": 0.1,
+  "alpha_min_ratio": 0.01,
   "alpha_count": 60,
   "lambda_rule": "one_standard_error",
   "lasso_family": "cox",
@@ -13,5 +12,7 @@
   "dataset_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
   "sex_resolution": "Use observed 0/1 unchanged; 1=men, 0=women corroborated by Dryad sex counts and Cai Table 1. Human delegated resolution on 2026-11-05.",
   "models": ["published_six_cox", "lasso_cox"],
-  "dca": "deferred"
+  "dca": "deferred",
+  "protocol_revision": 2,
+  "development_only_amendment": "After attempt2 numerical failure before final-test use, use library-generated warm-start paths and fold-training alpha_max; tune a common relative-penalty grid. No cohort/outcome/split/horizon or final-test-guided changes."
 }
