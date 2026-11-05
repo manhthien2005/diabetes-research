@@ -34,3 +34,9 @@ Cập nhật: **05/11/2026** · DOI: **10.2147/DMSO.S304994** · NAGALA · Dự 
 PDF gốc từ kho phân phối công khai của NCBI; XML nhà xuất bản qua [Europe PMC](https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8123981/fullTextXML). Bản xuất bản mang giấy phép **CC BY-NC 3.0**; bản dịch phục vụ đọc và học, không phải bản dịch được tác giả phê duyệt. Giữ tên tác giả, DOI và nguồn khi sử dụng.
 
 Các tệp kiểm tra: [trích xuất](extraction_manual_review.md), [đối chiếu bản dịch](translation_report.json), [kiểm tra bộ đọc](reading_pack_validation.json), [claims và nguồn](summary.json), [rà soát phương pháp](rob_audit.json). Tệp `extracted.prev.md` giữ kết quả Docling ban đầu; `source.fulltext.xml` giữ nguyên XML nguồn. Các hình gốc nằm trong `figures/`; web dùng bản WebP nhẹ với cùng nội dung.
+
+## Làm rõ khả năng tái lập — 05/11/2026
+
+**Dataset được công khai trên Dryad.** Trang chính thức liệt kê `Data set Int J Obesity.xlsx` (3.26 MB). Lần thử tải trực tiếp bằng công cụ trả HTTP 403, nên chưa có tệp để kiểm tra. Không suy từ lỗi này rằng dữ liệu không public. Xem [bản kiểm tra](data_access_check_20261105.json).
+
+**Dựng lại phương pháp để học: mức trung bình, có điều kiện**, cần tải và kiểm tra workbook/codebook. **Khớp chính xác kết quả tác giả: chưa xác nhận**, do chưa kiểm chứng code gốc, seed chia tập và một số cấu hình. Nhãn `low` trước đây xét mục tiêu khớp chính xác và đã gây hiểu nhầm khi hiển thị chung trên web; đánh giá hiện tại đã tách hai mục tiêu.

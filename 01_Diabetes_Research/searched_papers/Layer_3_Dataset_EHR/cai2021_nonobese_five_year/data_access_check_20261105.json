@@ -1,0 +1,20 @@
+{
+  "checked_on": "2026-11-05",
+  "dataset_doi": "10.5061/dryad.8q0p192",
+  "landing_page": "https://datadryad.org/dataset/doi:10.5061/dryad.8q0p192",
+  "public_listing_confirmed": true,
+  "listed_file": "Data set Int J Obesity.xlsx",
+  "listed_size": "3.26 MB",
+  "listed_publication_date": "2019-02-19",
+  "download_url": "https://datadryad.org/downloads/file_stream/76808",
+  "download_check": {
+    "method": "One direct click on official file link via web tool in this follow-up",
+    "http_status": 403,
+    "file_downloaded": false,
+    "file_contents_inspected": false,
+    "other_download_routes_attempted": false
+  },
+  "interpretation": "Public listing and a file-download link are verified. HTTP403 from this automated request does not establish restricted access or unavailability. Successful manual download remains to be checked.",
+  "assessment_scope_correction": "Previous overall low applied to exact numerical replication. Current overall medium is advisory for conditional same-data method reconstruction; this is a scope clarification, not a successful download or new empirical result.",
+  "code_status": "No original executable code repository verified; absence of code is not established."
+}

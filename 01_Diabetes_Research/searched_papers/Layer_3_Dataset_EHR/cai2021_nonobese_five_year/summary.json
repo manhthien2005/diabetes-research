@@ -17,14 +17,15 @@
   ],
   "has_code": null,
   "code_url": null,
-  "reproducible": "low",
+  "reproducible": "medium",
   "vs_baseline": "No verified same-cohort head-to-head baseline. Historical Discussion comparisons do not establish superiority. Not numerically comparable with Paper_01_NHANES_NoLab cross-sectional no-lab screening.",
   "gap": "No external/temporal validation; whole-cohort DCA and incomplete executable reporting; 47 holdout events.",
   "verdict": "maybe",
   "verdict_reason": "Useful first reading and conditional reconstruction for a true 5-year prognosis task; exact replication and clinical transportability are unestablished.",
   "analyzed_at": "2026-11-05T05:30:48.527Z",
   "candidate_roles": [
-    "evidence_candidate"
+    "evidence_candidate",
+    "reproduction_candidate"
   ],
   "candidate_assessment": {
     "evidence_candidate": {
@@ -39,13 +40,15 @@
       ]
     },
     "reproduction_candidate": {
-      "eligible": false,
+      "eligible": true,
       "reasons": [
-        "Public data package and core method make conditional reconstruction B promising once data are verified."
+        "Advisory conditional candidate for same-data method reconstruction, not exact numerical replication.",
+        "Original cohort data package publicly listed on Dryad; paper describes baseline predictors, follow-up, incident outcome and core LASSO→Cox workflow."
       ],
       "limitations": [
-        "Workbook/codebook retrieval and inspection pending after automated 403.",
-        "No verified original code/seed; candidate-count/family and full absolute-risk specification unresolved."
+        "Actual workbook acquisition and variable/codebook audit remain pending; direct automated request returned403.",
+        "Original code/split seed not verified; LASSO family and full absolute-risk specification remain unresolved.",
+        "Candidate eligibility is not execution readiness or repository promotion."
       ]
     }
   },
@@ -54,13 +57,14 @@
     "code_access": "unclear",
     "methods_operationalized": "partial",
     "variable_mapping_feasible": "partial",
-    "overall": "low",
+    "overall": "medium",
     "notes": [
       "Public Dryad package is cited: 10.5061/dryad.8q0p192. Main-agent automated workbook retrieval returned403; workbook/codebook remain uninspected. Public availability is documented, not disproved by403.",
       "No verified original code repository, split seed or executable specification. Code availability is UNKNOWN, not proven nonexistent.",
       "Learning route B is conditional same-data method reconstruction after obtaining and verifying original data/codebook; not exact numerical replication.",
       "18/19 count, LASSO family, encoding/standardization, final Cox coefficients and baseline survival are unresolved.",
-      "Conceptual mapping does not establish transportability to Paper_01_NHANES_NoLab: its target is cross-sectional no-lab screening."
+      "Conceptual mapping does not establish transportability to Paper_01_NHANES_NoLab: its target is cross-sectional no-lab screening.",
+      "Scope clarification on2026-11-05: overall medium refers to conditional method reconstruction for learning. Exact numerical replication remains unconfirmed; no new download or row-level inspection. See data_access_check_20261105.json."
     ]
   },
   "claim_provenance": [
@@ -435,5 +439,44 @@
     "Figure 2 loss labels partial likelihood deviance (binomial deviance).",
     "Study Population2004–2015 versus Figure 1 registration1994–2016.",
     "Crude incidence text1.6/1.4 per 100 person-years versus event proportions1.60%/1.43% in Table 1: person-time requires verification."
-  ]
+  ],
+  "assessment_revisions": [
+    {
+      "date": "2026-11-05",
+      "reason": "Clarify method reconstruction versus exact numerical replication after human query; public Dryad listing rechecked, automated file request403. No row-level data inspected.",
+      "previous_candidate_roles": [
+        "evidence_candidate"
+      ],
+      "previous_reproducibility": {
+        "dataset_access": "public",
+        "code_access": "unclear",
+        "methods_operationalized": "partial",
+        "variable_mapping_feasible": "partial",
+        "overall": "low",
+        "notes": [
+          "Public Dryad package is cited: 10.5061/dryad.8q0p192. Main-agent automated workbook retrieval returned403; workbook/codebook remain uninspected. Public availability is documented, not disproved by403.",
+          "No verified original code repository, split seed or executable specification. Code availability is UNKNOWN, not proven nonexistent.",
+          "Learning route B is conditional same-data method reconstruction after obtaining and verifying original data/codebook; not exact numerical replication.",
+          "18/19 count, LASSO family, encoding/standardization, final Cox coefficients and baseline survival are unresolved.",
+          "Conceptual mapping does not establish transportability to Paper_01_NHANES_NoLab: its target is cross-sectional no-lab screening."
+        ]
+      },
+      "previous_reproduction_assessment": {
+        "eligible": false,
+        "reasons": [
+          "Public data package and core method make conditional reconstruction B promising once data are verified."
+        ],
+        "limitations": [
+          "Workbook/codebook retrieval and inspection pending after automated 403.",
+          "No verified original code/seed; candidate-count/family and full absolute-risk specification unresolved."
+        ]
+      }
+    }
+  ],
+  "replication_scope_assessment": {
+    "method_reconstruction": "medium_conditional_on_workbook_and_variable_audit",
+    "exact_numerical_replication": "unconfirmed_missing_original_code_split_and_settings",
+    "public_dataset_listing_confirmed": true,
+    "successful_download_confirmed": false
+  }
 }

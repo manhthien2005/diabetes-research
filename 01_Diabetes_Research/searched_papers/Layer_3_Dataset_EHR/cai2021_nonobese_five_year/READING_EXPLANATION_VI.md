@@ -96,7 +96,7 @@ Chọn **B — conditional same-data method reconstruction**: có workbook/codeb
 
 **A — exact numerical replication** cần code/split/setting/data khớp, hiện chưa đủ. **C — adaptation** dùng câu hỏi/data khác là nghiên cứu mới.
 
-Dryad 10.5061/dryad.8q0p192 được công bố trong bài. Automated workbook retrieval trong phiên này trả 403; không đồng nghĩa dataset không tồn tại hoặc không public. Workbook/codebook chưa được xem. Code availability là UNKNOWN, không phải “không có code”. Reproduction eligibility hiện chờ kiểm chứng, không phải từ chối vĩnh viễn.
+Dryad 10.5061/dryad.8q0p192 được công bố trong bài. Automated workbook retrieval trong phiên này trả 403; không đồng nghĩa dataset không tồn tại hoặc không public. Workbook/codebook chưa được xem. Code availability là UNKNOWN, không phải “không có code”. Đây là ứng viên dựng lại phương pháp có điều kiện; cần kiểm tra tệp và định nghĩa biến trước khi chạy. Đánh giá mức trung bình áp dụng cho mục tiêu học này; việc khớp chính xác kết quả gốc chưa được xác nhận.
 
 Khi có dữ liệu: kiểm tra cohort counts và event/time/units trước; lập variable contract; ghi family/seed/encoding/estimator là assumptions nếu nguồn thiếu; tách test; phát triển trong train; đánh giá test sau khi chốt. Nếu không ra N 12,940/E 201, giải thích cohort trước khi tối ưu. Không sửa pipeline theo test để đuổi AUC 0.829.
 
