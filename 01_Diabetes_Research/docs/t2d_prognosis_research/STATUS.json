@@ -1,7 +1,18 @@
 {
   "version": 1,
   "created_on": "2026-11-03",
-  "updated_on": "2026-11-04",
+  "updated_on": "2026-11-05",
+  "learning_reproduction_search": {
+    "date": "2026-11-05",
+    "preferred_candidate": "cai2021_nonobese_five_year",
+    "additional_comparator": "liu2026_index_component_prediction",
+    "report": "REPRODUCTION_CHOICE_20261105_VI.md",
+    "prompt": "REPRODUCTION_SEARCH_PROMPT_VI.md",
+    "evidence": "evidence/reproduction_search_20261105.json",
+    "status": "provisional_recommendation_for_independent_comparison",
+    "exact_replication_confirmed": false,
+    "public_data_download_confirmed": false
+  },
   "data_access_workstream": {
     "folder": "data_access_20261104",
     "status": "waiting_for_provider_responses",

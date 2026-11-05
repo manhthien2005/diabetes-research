@@ -1,0 +1,66 @@
+{
+  "record_type": "first_learning_reproduction_candidate_search",
+  "date": "2026-11-05",
+  "selection_status": "provisional_recommendation_for_independent_comparison",
+  "recommendation": "cai2021_nonobese_five_year",
+  "recommendation_scope": "Conditional same-data method reconstruction for learning, not confirmed exact numerical replication or final research baseline",
+  "queries": ["diabetes survival NAGALA prediction code", "incident diabetes survival github", "type 2 diabetes risk prediction Dryad Cox model", "incident diabetes prediction code publicly available survival cohort", "NAGALA prediction model code", "incident diabetes random survival forests dataset", "Composite indices of insulin resistance code github", "10.2147/DMSO.S304994 code github correction retraction", "10.3389/fendo.2026.1957473 correction retraction"],
+  "candidates": [
+    {
+      "paper_id": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "pmid": "34007195",
+      "year": 2021,
+      "title": "Derivation and Validation of a Prediction Model for Predicting the 5-Year Incidence of Type 2 Diabetes in Non-Obese Adults: A Population-Based Cohort Study",
+      "layer": 3,
+      "prediction_horizon": "long_term_risk",
+      "horizon_years": 5,
+      "candidate_roles": ["evidence_candidate", "reproduction_candidate"],
+      "reproducibility": {"dataset_access": "public", "code_access": "unclear", "methods_operationalized": "partial", "variable_mapping_feasible": "unclear", "overall": "medium", "notes": ["Public refers to the documented Dryad dataset, not a successful download in this task.", "Same-data reconstruction is conditional on acquiring and auditing the workbook; exact result matching is not promised."]},
+      "reading_level": "Current PubMed/abstract, indexed primary full-text passages, prior 20261104 targeted assessment. No complete PDF/supplement audit.",
+      "integrity": {"identity_verified": true, "doi_resolved": true, "title_match": true, "crossref_type": "journal-article", "retraction_status": "not_retracted", "has_correction": false, "metadata_conflicts": [], "checked_at": "2026-11-05", "check_source": "Live CrossRef API, PubMed and targeted correction/retraction searches", "limits": "No notice found in inspected sources; registry silence does not guarantee exhaustive notice detection."},
+      "recommended_action": "retain_in_pool",
+      "decision_state": "recommendation_ready"
+    },
+    {
+      "paper_id": "liu2026_index_component_prediction",
+      "doi": "10.3389/fendo.2026.1957473",
+      "pmid": "42923095",
+      "year": 2026,
+      "title": "Composite indices of insulin resistance and sensitivity versus matched component-variable models for incident diabetes prediction",
+      "layer": 3,
+      "prediction_horizon": "long_term_risk",
+      "horizon_years": 3,
+      "candidate_roles": ["evidence_candidate", "reproduction_candidate"],
+      "reproducibility": {"dataset_access": "public", "code_access": "unclear", "methods_operationalized": "partial", "variable_mapping_feasible": "unclear", "overall": "medium", "notes": ["Two documented public datasets; higher reconstruction complexity than the preferred first exercise.", "Supplement not read and author analysis scripts not verified."]},
+      "reading_level": "Selected current primary full text: abstract, Sections 2.1/2.5/2.6, results and data availability; no supplement audit.",
+      "integrity": {"identity_verified": true, "doi_resolved": true, "title_match": true, "crossref_type": "journal-article", "retraction_status": "not_retracted", "has_correction": false, "metadata_conflicts": [], "checked_at": "2026-11-05", "check_source": "Live CrossRef API, PubMed and publisher/PMC plus targeted notice search", "limits": "No notice found; not an exhaustive guarantee."},
+      "recommended_action": "retain_in_pool",
+      "decision_state": "recommendation_ready"
+    }
+  ],
+  "additional_leads": [
+    {"doi": "10.1038/s41598-020-78716-1", "title": "A prediction nomogram for the 3-year risk of incident diabetes among Chinese adults", "crossref_title_verified": true, "primary_fulltext_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7729957/", "triage": "Fixed-horizon logistic candidate; not preferred for a first time-to-event exercise. No permanent repository exclusion."},
+    {"paper_id": "huang2026_british_short_long_risk", "triage": "Reuse existing reading pack and documented data-access status, not a new full-text reading."},
+    {"paper_id": "sasagawa2024_deepsurv_jecoh", "triage": "Reuse previously verified restricted-data limitation; not a new full-text reading."}
+  ],
+  "access_checks": [
+    {"resource": "NAGALA dataset landing page", "url": "https://datadryad.org/dataset/doi:10.5061/dryad.8q0p192", "result": "Official listing inspected; Data set Int J Obesity.xlsx, 3.26 MB", "download_verified": false},
+    {"resource": "NAGALA file", "url": "https://datadryad.org/downloads/file_stream/76808", "result": "One web click returned HTTP 403; no alternate download routes tried", "download_verified": false},
+    {"resource": "RICH dataset landing page", "url": "https://datadryad.org/dataset/doi:10.5061/dryad.ft8750v", "result": "Official listing inspected; RC Health Care Data-20180820.xlsx, 28.34 MB; not downloaded", "download_verified": false},
+    {"resource": "Cai publisher PDF", "url": "https://www.dovepress.com/getfile.php?fileID=69257", "result": "One direct request returned 404 text/html; no PDF saved or alternative routes tried", "download_verified": false},
+    {"resource": "Liu supplementary PDF", "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/13686858/bin/SupplementaryFile1.pdf", "result": "One web click returned cache miss; content not read, no alternative routes tried", "download_verified": false}
+  ],
+  "claims": [
+    {"claim": "Cai develops a five-year T2D prediction nomogram using LASSO selection followed by multivariable Cox modeling, with six final predictors.", "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8123981/", "doi": "10.2147/DMSO.S304994", "location": {"section": "Abstract; Results / Establishment of a Predicting Nomogram", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Cai's analyzed cohort includes 12940 participants and 201 incident events, including 47 events in internal validation.", "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8123981/", "doi": "10.2147/DMSO.S304994", "location": {"section": "Results / Characteristics of the Derivation and Validation Cohorts", "table": "Table 1", "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Cai identifies Dryad 10.5061/dryad.8q0p192 as the data source and describes baseline predictors, incident T2D and follow-up duration in the original file.", "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8123981/", "doi": "10.2147/DMSO.S304994", "location": {"section": "Materials and Methods / Data Source", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Liu develops Cox prediction comparisons in RICH and applies frozen coefficients, standardization parameters and baseline risk to NAGALA for three-year external validation.", "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13686858/", "doi": "10.3389/fendo.2026.1957473", "location": {"section": "2.1 Datasets; 2.6 Statistical analysis", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Liu reports IPCW AUC/Brier, calibration and bootstrap/leave-one-center-out validation, and cites two public Dryad datasets.", "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13686858/", "doi": "10.3389/fendo.2026.1957473", "location": {"section": "2.6 Statistical analysis; Data availability statement", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "Liu treats decision curves as exploratory rather than establishing clinical utility because no intervention-linked threshold was prespecified and transported probabilities were not recalibrated.", "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13686858/", "doi": "10.3389/fendo.2026.1957473", "location": {"section": "Discussion", "table": null, "page": null}, "support": "direct", "confidence": "high"},
+    {"claim": "The 2020 Chinese three-year nomogram compares full, stepwise, MFP and LASSO logistic models, rather than providing the preferred survival exercise.", "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7729957/", "doi": "10.1038/s41598-020-78716-1", "location": {"section": "Development and validation of risk prediction models", "table": null, "page": null}, "support": "direct", "confidence": "high"}
+  ],
+  "actions": {"formal_paper_folders_created": 0, "raw_data_downloaded": false, "row_level_data_inspected": false, "training_performed": false, "exact_replication_achieved": false, "frozen_parameters_modified": false, "paper_promoted": false},
+  "report": "../REPRODUCTION_CHOICE_20261105_VI.md",
+  "independent_search_prompt": "../REPRODUCTION_SEARCH_PROMPT_VI.md"
+}

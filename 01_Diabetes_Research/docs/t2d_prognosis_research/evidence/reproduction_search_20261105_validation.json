@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-05",
+  "status": "passed",
+  "artifact": "reproduction_search_20261105.json",
+  "canonical_claims_validated": 7,
+  "local_markdown_links_validated": 18,
+  "recommended_candidate_identities_verified": 2,
+  "governance_tests": {"agents": 104, "skills": 49, "failures": 0},
+  "managed_skill_mirrors": {"checked": 14, "passed": true},
+  "diff_whitespace_check_passed": true,
+  "frozen_parameters_unchanged": true,
+  "limits": ["No raw workbook download or variable audit completed.", "No training, execution of author code, or exact reproduction verified.", "This validates the search record and its governance, not clinical validity of every study method."]
+}
