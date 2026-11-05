@@ -1,0 +1,159 @@
+{
+  "columns": [
+    {
+      "source_header": "Patient Number",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Sex, 1:Men, 2:Women",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Age, yrs",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Ethanol consumption g/wk",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Fatty liver 0/1",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline BMI, kg/m2",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Waist circumference(WC), cm",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline WC≥90 in Men, ≥80 in Women 0/1",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline BMI≥25 0/1",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Obesity phenotype 1-8",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Follow up duration, days",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline ALT, IU/L",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline AST, IU/L",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Body Weight, kg",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Habit of exercise 0/1",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline GGT, IU/L",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline HDL-cholesterol, mg/dL",
+      "dtype": "float64",
+      "missing": 11
+    },
+    {
+      "source_header": "Baseline HDL-cholesterol, mmol/L",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Total Cholesterol, mg/dL",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Total Cholesterol, mmol/L",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Triglycerides, mg/dL",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Triglycerides, mmol/L",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline HbA1c, %",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline HbA1c, mmol/mol",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Alcohol consumption, non:1, light:2, moderate:3, heavy:4",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Smoking status, 1:never, 2:past, 3:current",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Fasting plasma glucose, mg/dl",
+      "dtype": "int64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Fasting plasma glucose, mmol/L",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Systolic blood pressure, mmHg",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Baseline Diastolic blood pressure, mmHg",
+      "dtype": "float64",
+      "missing": 0
+    },
+    {
+      "source_header": "Incident DM 0/1",
+      "dtype": "int64",
+      "missing": 0
+    }
+  ]
+}

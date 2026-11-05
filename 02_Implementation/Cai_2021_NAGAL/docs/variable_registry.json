@@ -1,0 +1,1551 @@
+{
+  "study_id": "cai2021_nonobese_five_year",
+  "dataset": "NAGALA Dryad 10.5061/dryad.8q0p192",
+  "registry_version": "2026-11-05.1",
+  "prediction_horizon": "long_term_risk",
+  "definitions": [
+    {
+      "canonical_name": "age",
+      "role": "predictor",
+      "concept": "Baseline age",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Age, yrs",
+          "source_label": "Baseline Age, yrs",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "years",
+        "analysis_unit": "years",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "bmi",
+      "role": "predictor",
+      "concept": "Baseline bmi",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline BMI, kg/m2",
+          "source_label": "Baseline BMI, kg/m2",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "kg/m2",
+        "analysis_unit": "kg/m2",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "waist",
+      "role": "predictor",
+      "concept": "Baseline waist",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Waist circumference(WC), cm",
+          "source_label": "Baseline Waist circumference(WC), cm",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "cm",
+        "analysis_unit": "cm",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "alt",
+      "role": "predictor",
+      "concept": "Baseline alt",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline ALT, IU/L",
+          "source_label": "Baseline ALT, IU/L",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "IU/L",
+        "analysis_unit": "IU/L",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "ast",
+      "role": "predictor",
+      "concept": "Baseline ast",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline AST, IU/L",
+          "source_label": "Baseline AST, IU/L",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "IU/L",
+        "analysis_unit": "IU/L",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "ggt",
+      "role": "predictor",
+      "concept": "Baseline ggt",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline GGT, IU/L",
+          "source_label": "Baseline GGT, IU/L",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "IU/L",
+        "analysis_unit": "IU/L",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "hdl",
+      "role": "predictor",
+      "concept": "Baseline hdl",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline HDL-cholesterol, mmol/L",
+          "source_label": "Baseline HDL-cholesterol, mmol/L",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "mmol/L",
+        "analysis_unit": "mmol/L",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [
+          0
+        ],
+        "structural_missingness": false,
+        "skip_pattern": "HDL mmol/L=0 only when paired mg/dL is blank",
+        "planned_handling": "paired zero to missing; fold-isolated median imputation"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "tc",
+      "role": "predictor",
+      "concept": "Baseline tc",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Total Cholesterol, mmol/L",
+          "source_label": "Baseline Total Cholesterol, mmol/L",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "mmol/L",
+        "analysis_unit": "mmol/L",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "tg",
+      "role": "predictor",
+      "concept": "Baseline tg",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Triglycerides, mmol/L",
+          "source_label": "Baseline Triglycerides, mmol/L",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "mmol/L",
+        "analysis_unit": "mmol/L",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "hba1c",
+      "role": "predictor",
+      "concept": "Baseline hba1c",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline HbA1c, mmol/mol",
+          "source_label": "Baseline HbA1c, mmol/mol",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "mmol/mol",
+        "analysis_unit": "mmol/mol",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "fpg",
+      "role": "predictor",
+      "concept": "Baseline fpg",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Fasting plasma glucose, mg/dl",
+          "source_label": "Baseline Fasting plasma glucose, mg/dl",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "mg/dL",
+        "analysis_unit": "mg/dL",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "sbp",
+      "role": "predictor",
+      "concept": "Baseline sbp",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Systolic blood pressure, mmHg",
+          "source_label": "Baseline Systolic blood pressure, mmHg",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "mmHg",
+        "analysis_unit": "mmHg",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "dbp",
+      "role": "predictor",
+      "concept": "Baseline dbp",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Diastolic blood pressure, mmHg",
+          "source_label": "Baseline Diastolic blood pressure, mmHg",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": "mmHg",
+        "analysis_unit": "mmHg",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "sex",
+      "role": "predictor",
+      "concept": "Baseline sex",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Sex, 1:Men, 2:Women",
+          "source_label": "Sex, 1:Men, 2:Women",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "binary",
+        "source_codes": {
+          "0": "women",
+          "1": "men"
+        },
+        "analysis_mapping": {
+          "0": "women",
+          "1": "men"
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "fatty_liver",
+      "role": "predictor",
+      "concept": "Baseline fatty_liver",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Fatty liver 0/1",
+          "source_label": "Baseline Fatty liver 0/1",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "binary",
+        "source_codes": {
+          "0": "no",
+          "1": "yes"
+        },
+        "analysis_mapping": {
+          "0": "no",
+          "1": "yes"
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "exercise",
+      "role": "predictor",
+      "concept": "Baseline exercise",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Habit of exercise 0/1",
+          "source_label": "Baseline Habit of exercise 0/1",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "binary",
+        "source_codes": {
+          "0": "no",
+          "1": "yes"
+        },
+        "analysis_mapping": {
+          "0": "no",
+          "1": "yes"
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "alcohol",
+      "role": "predictor",
+      "concept": "Baseline alcohol",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Alcohol consumption, non:1, light:2, moderate:3, heavy:4",
+          "source_label": "Baseline Alcohol consumption, non:1, light:2, moderate:3, heavy:4",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "categorical",
+        "source_codes": {
+          "1": "non/minimal",
+          "2": "light",
+          "3": "moderate",
+          "4": "heavy"
+        },
+        "analysis_mapping": {
+          "1": "non/minimal",
+          "2": "light",
+          "3": "moderate",
+          "4": "heavy"
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "smoking",
+      "role": "predictor",
+      "concept": "Baseline smoking",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Baseline Smoking status, 1:never, 2:past, 3:current",
+          "source_label": "Baseline Smoking status, 1:never, 2:past, 3:current",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "at_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "categorical",
+        "source_codes": {
+          "1": "never",
+          "2": "past",
+          "3": "current"
+        },
+        "analysis_mapping": {
+          "1": "never",
+          "2": "past",
+          "3": "current"
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "allowed_predictor",
+        "reason": "Measured at baseline; future distinct measurements ascertain outcome"
+      }
+    },
+    {
+      "canonical_name": "patient_id",
+      "role": "identifier",
+      "concept": "Anonymous source participant identifier",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Patient Number",
+          "source_label": "Patient Number",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "not_applicable",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline through last observed follow-up"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "identifier",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "not_a_predictor",
+        "reason": "Identifier or post-index outcome/time: barred from all feature sets"
+      }
+    },
+    {
+      "canonical_name": "time",
+      "role": "time_anchor",
+      "concept": "Supplied duration to observed incident diabetes or last follow-up; exact visit history unavailable",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Follow up duration, days",
+          "source_label": "Follow up duration, days",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "post_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline through last observed follow-up"
+      },
+      "unit": {
+        "source_unit": "days",
+        "analysis_unit": "days",
+        "conversion": null
+      },
+      "coding": {
+        "type": "continuous",
+        "source_codes": null,
+        "analysis_mapping": null
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "not_a_predictor",
+        "reason": "Identifier or post-index outcome/time: barred from all feature sets"
+      }
+    },
+    {
+      "canonical_name": "event",
+      "role": "outcome",
+      "concept": "Supplied incident diabetes during follow-up: reported FPG >=126 mg/dL or HbA1c >=48 mmol/mol or self-report; not a five-year binary label",
+      "prediction_horizon": "long_term_risk",
+      "source_bindings": [
+        {
+          "dataset": "NAGALA Dryad",
+          "cycle": "2019-02-19",
+          "source_name": "Incident DM 0/1",
+          "source_label": "Incident DM 0/1",
+          "source_reference": {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        }
+      ],
+      "timing": {
+        "availability": "post_index",
+        "index_time_definition": "NAGALA baseline health examination",
+        "measurement_window": "baseline through last observed follow-up"
+      },
+      "unit": {
+        "source_unit": null,
+        "analysis_unit": null,
+        "conversion": null
+      },
+      "coding": {
+        "type": "binary",
+        "source_codes": {
+          "0": "no event observed by own last follow-up (censored)",
+          "1": "incident diabetes during follow-up"
+        },
+        "analysis_mapping": {
+          "0": "no event observed by own last follow-up (censored)",
+          "1": "incident diabetes during follow-up"
+        }
+      },
+      "missingness": {
+        "source_missing_codes": [],
+        "structural_missingness": false,
+        "skip_pattern": null,
+        "planned_handling": "stop on undocumented missingness"
+      },
+      "derivation": {
+        "is_derived": false,
+        "formula_or_rule": null,
+        "components": []
+      },
+      "verification": {
+        "status": "verified",
+        "evidence": [
+          {
+            "type": "codebook",
+            "title": "Dryad original workbook header, Sheet 1 row 1",
+            "url_or_identifier": "10.5061/dryad.8q0p192",
+            "location": "Sheet 1; header row; SHA256 671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+            "accessed_or_verified_date": "2026-11-05"
+          },
+          {
+            "type": "publication",
+            "title": "Cai et al. 2021",
+            "url_or_identifier": "10.2147/DMSO.S304994",
+            "location": "Data Source; Definitions; Table 1",
+            "accessed_or_verified_date": "2026-11-05"
+          }
+        ],
+        "conflicts": []
+      },
+      "leakage_assessment": {
+        "status": "not_a_predictor",
+        "reason": "Identifier or post-index outcome/time: barred from all feature sets"
+      }
+    }
+  ],
+  "resolved_discrepancies": [
+    "Sex header says 2=women but observed 0=women: verified via Dryad 8430 men/7034 women and Cai Table 1 6534 men/6406 women; human delegated resolution.",
+    "HDL mmol/L zeros paired with missing mg/dL: 11 source, 8 eligible; treat as missing."
+  ],
+  "limits": [
+    "Verified source-field semantics, not independently adjudicated visit-level diagnosis.",
+    "Undocumented upstream exclusions cannot be re-derived."
+  ]
+}

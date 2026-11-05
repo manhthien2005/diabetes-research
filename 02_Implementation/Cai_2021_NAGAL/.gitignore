@@ -1,0 +1,10 @@
+data/raw/*
+!data/raw/.gitkeep
+data/processed/
+.venv/
+runtime/
+runs/
+kaggle/upload/
+*.zip
+*.xlsx
+*.pkl

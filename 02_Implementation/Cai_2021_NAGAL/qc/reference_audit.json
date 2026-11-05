@@ -1,0 +1,65 @@
+{
+  "detector": "verify_refs",
+  "schema_version": 4,
+  "source": "docs/references.tsv",
+  "total_references": 2,
+  "counts": {
+    "OK": 2
+  },
+  "duplicate_findings": [],
+  "submission_safe": true,
+  "fully_verified": true,
+  "requires_manual_reference_check": false,
+  "records": [
+    {
+      "ref_id": "ref_1",
+      "raw": "Cai 2021 Derivation and Validation of a Prediction Model for Predicting the 5-Year Incidence of Type 2 Diabetes in Non-Obese Adults: A Population-Based Cohort Study 10.2147/DMSO.S304994 34007195",
+      "title_guess": "Derivation and Validation of a Prediction Model for Predicting the 5-Year Incidence of Type 2 Diabetes in Non-Obese Adults: A Population-Based Cohort Study",
+      "doi": "10.2147/dmso.s304994",
+      "pmid": "34007195",
+      "year_guess": "",
+      "first_author_guess": "Cai",
+      "cited_authors": [],
+      "actual_authors": [
+        "Cai",
+        "Ji",
+        "Liu",
+        "Wang",
+        "Heizhati",
+        "Li"
+      ],
+      "cited_author_count": 0,
+      "actual_author_count": 6,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "PubMed efetch returned no author elements | PubMed PMID lookup failed | CrossRef DOI OK; title=Derivation and Validation of a Prediction Model for Predicting the 5-Year Incidence of Type 2 Diabetes in Non-Obese Adul; year=2021; authors=6 (first=Cai) | source=crossref",
+      "note": ""
+    },
+    {
+      "ref_id": "ref_2",
+      "raw": "Okamura 2019 Ectopic fat obesity presents the greatest risk for incident type 2 diabetes: a population-based longitudinal study 10.1038/s41366-018-0076-3",
+      "title_guess": "Ectopic fat obesity presents the greatest risk for incident type 2 diabetes: a population-based longitudinal study",
+      "doi": "10.1038/s41366-018-0076-3",
+      "pmid": "",
+      "year_guess": "",
+      "first_author_guess": "Okamura",
+      "cited_authors": [],
+      "actual_authors": [
+        "Okamura",
+        "Hashimoto",
+        "Hamaguchi",
+        "Obora",
+        "Kojima",
+        "Fukui"
+      ],
+      "cited_author_count": 0,
+      "actual_author_count": 6,
+      "audit_truncated": false,
+      "corporate_author": false,
+      "status": "OK",
+      "evidence": "CrossRef DOI OK; title=Ectopic fat obesity presents the greatest risk for incident type 2 diabetes: a population-based longitudinal study; year=2018; authors=6 (first=Okamura) | source=crossref",
+      "note": ""
+    }
+  ]
+}

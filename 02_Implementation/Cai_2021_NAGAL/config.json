@@ -1,0 +1,17 @@
+{
+  "study_id": "cai2021_nonobese_five_year",
+  "seed": 20261105,
+  "horizon_days": 1826.25,
+  "test_fraction": 0.25,
+  "cv_folds": 10,
+  "alpha_min": 0.0001,
+  "alpha_max": 0.1,
+  "alpha_count": 60,
+  "lambda_rule": "one_standard_error",
+  "lasso_family": "cox",
+  "bootstrap_replicates": 1000,
+  "dataset_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+  "sex_resolution": "Use observed 0/1 unchanged; 1=men, 0=women corroborated by Dryad sex counts and Cai Table 1. Human delegated resolution on 2026-11-05.",
+  "models": ["published_six_cox", "lasso_cox"],
+  "dca": "deferred"
+}

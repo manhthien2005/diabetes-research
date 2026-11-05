@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "study_id": "cai2021_nonobese_five_year",
+  "dataset": "NAGALA Dryad 10.5061/dryad.8q0p192",
+  "total_variables": 21,
+  "errors_count": 0,
+  "warnings_count": 19,
+  "errors": [],
+  "warnings": [
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'age' has empty or unspecified source_missing_codes.",
+      "variable": "age"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'bmi' has empty or unspecified source_missing_codes.",
+      "variable": "bmi"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'waist' has empty or unspecified source_missing_codes.",
+      "variable": "waist"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'alt' has empty or unspecified source_missing_codes.",
+      "variable": "alt"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'ast' has empty or unspecified source_missing_codes.",
+      "variable": "ast"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'ggt' has empty or unspecified source_missing_codes.",
+      "variable": "ggt"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'tc' has empty or unspecified source_missing_codes.",
+      "variable": "tc"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'tg' has empty or unspecified source_missing_codes.",
+      "variable": "tg"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'hba1c' has empty or unspecified source_missing_codes.",
+      "variable": "hba1c"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'fpg' has empty or unspecified source_missing_codes.",
+      "variable": "fpg"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'sbp' has empty or unspecified source_missing_codes.",
+      "variable": "sbp"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'dbp' has empty or unspecified source_missing_codes.",
+      "variable": "dbp"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'sex' has empty or unspecified source_missing_codes.",
+      "variable": "sex"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'fatty_liver' has empty or unspecified source_missing_codes.",
+      "variable": "fatty_liver"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'exercise' has empty or unspecified source_missing_codes.",
+      "variable": "exercise"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'alcohol' has empty or unspecified source_missing_codes.",
+      "variable": "alcohol"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'smoking' has empty or unspecified source_missing_codes.",
+      "variable": "smoking"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'time' has empty or unspecified source_missing_codes.",
+      "variable": "time"
+    },
+    {
+      "code": "EMPTY_MISSING_CODES",
+      "message": "Variable 'event' has empty or unspecified source_missing_codes.",
+      "variable": "event"
+    }
+  ],
+  "modeling_ready": true,
+  "leakage_summary": {
+    "post_index_variables": [
+      "time",
+      "event"
+    ],
+    "outcome_leakage_variables": []
+  },
+  "variables_not_ready_for_modeling": []
+}

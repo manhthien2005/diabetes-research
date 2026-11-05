@@ -1,0 +1,26 @@
+{
+  "study_id": "cai2021_nonobese_five_year",
+  "updated_on": "2026-11-05",
+  "status": "implementation_in_progress",
+  "phase_a": "audited_original_workbook; cohort matches 12940 participants and 201 events",
+  "phase_b": "specification_written_before_model_fit",
+  "phase_c": "local_tests_and_Kaggle_auth_pending",
+  "phase_d": "not_run",
+  "final_test_evaluated": false,
+  "workspace": "D:/Dev/Projects/KLTN",
+  "module": "02_Implementation/Cai_2021_NAGAL",
+  "branch": "codex/t2d-prognosis-research",
+  "data": {
+    "archive": "data/raw/doi_10_5061_dryad_8q0p192__v20190219.zip",
+    "workbook_sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+    "archive_sha256": "87faa363be28075ffdaf5faeec567e21d7a250aaed4739bc9de34305e1edd940",
+    "acquisition": "Human downloaded official Dryad archive after one automated official download returned HTTP 403"
+  },
+  "resume": [
+    "Read this file and docs/RECONSTRUCTION_SPEC.md; do not redo data discovery",
+    "Complete and verify module tests on synthetic data, without inspecting real test performance",
+    "Verify Kaggle account and create new private resources; never modify BRFSS resources",
+    "Freeze source/config before final test, monitor Kaggle run to completion and download outputs",
+    "Write Vietnamese comparison and update status with actual evidence"
+  ]
+}
