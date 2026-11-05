@@ -1,0 +1,93 @@
+{
+  "paper_id": "cai2021_nonobese_five_year",
+  "artifact": "extracted.vi.md",
+  "language": "vi",
+  "translation_type": "full faithful reading translation",
+  "status": "complete",
+  "source_file": "extracted.md",
+  "source_sha256": "9533bae75674ff790f83be6454bb7ac89076927b3b660c0551791ee477974266",
+  "translation_sha256": "b4b5e33e82d02d6f33822fe3e3780f2d9f17c4e198a6fb4be8f2a2e360f432d0",
+  "counts": {
+    "source_blocks": 175,
+    "translation_blocks": 175,
+    "source_headings": 36,
+    "translation_headings": 36,
+    "main_tables": 3,
+    "images": 7,
+    "bibliography_entries": 73,
+    "numeric_tokens_checked": 1350,
+    "citation_markers_checked": 81,
+    "translated_blocks": 90
+  },
+  "checks": {
+    "block_count_equal": true,
+    "heading_level_sequence_equal": true,
+    "numeric_sequence_mismatch_blocks": [],
+    "signed_numeric_sequence_mismatch_blocks": [],
+    "citation_sequence_mismatch_blocks": [],
+    "unit_sequence_mismatch_blocks": [],
+    "html_tag_sequence_equal": true,
+    "image_markdown_verbatim_equal": true,
+    "link_targets_equal": true,
+    "references_verbatim_equal": true,
+    "all_table_dimensions_equal": true,
+    "all_numeric_table_cells_verbatim_equal": true
+  },
+  "tables": [
+    {
+      "block_index_zero_based": 47,
+      "rows_including_header_and_separator": 38,
+      "columns": 5,
+      "dimensions_equal": true,
+      "numeric_cells_verbatim_equal": true,
+      "numeric_cells_checked": 110
+    },
+    {
+      "block_index_zero_based": 58,
+      "rows_including_header_and_separator": 8,
+      "columns": 3,
+      "dimensions_equal": true,
+      "numeric_cells_verbatim_equal": true,
+      "numeric_cells_checked": 7
+    },
+    {
+      "block_index_zero_based": 74,
+      "rows_including_header_and_separator": 4,
+      "columns": 6,
+      "dimensions_equal": true,
+      "numeric_cells_verbatim_equal": true,
+      "numeric_cells_checked": 10
+    }
+  ],
+  "preserved_original_blocks": {
+    "metadata": "Author names, affiliations, correspondence, and extraction comment remain verbatim.",
+    "images": "Original images, paths and alt text remain verbatim.",
+    "bibliography": "All 73 entries remain verbatim and in original order."
+  },
+  "terminology": {
+    "derivation_cohort": "tập phát triển",
+    "validation_cohort": "tập kiểm định nội bộ",
+    "hazard_ratio": "tỷ số nguy hại (HR)"
+  },
+  "source_discrepancies_preserved": [
+    "18 indicators in narrative versus 19 features in Figure 2 caption",
+    "partial likelihood deviance (binomial deviance) caption wording",
+    "15,744 original study recruitment count",
+    "2004 to 2015 narrative dates versus figure timeline",
+    "crude incidence wording and units",
+    "retrospective design claimed to reduce selection and information bias",
+    "decreased insulin resistance and impaired hepatic insulin resistance wording"
+  ],
+  "limitations": [
+    "Translation reproduces author claims and source inconsistencies without correction or added critique.",
+    "Embedded text in original figure images is not translated; surrounding captions are fully translated.",
+    "Bibliography and author metadata remain in their original language.",
+    "This report verifies translation alignment and preservation, not independent validity of scientific claims or references."
+  ],
+  "web_image_paths": {
+    "rewritten_in_both_languages": true,
+    "pattern": "/reading-figures/cai2021_nonobese_five_year/figure_NN.webp"
+  },
+  "post_integration_numeric_tokens_checked": 1384,
+  "counting_note": "175 blank-line blocks include the extraction comment; 174 reader-content blocks after stripping that comment. Original 1350-token QA precedes web image URL rewriting; final check includes URL digits."
+}

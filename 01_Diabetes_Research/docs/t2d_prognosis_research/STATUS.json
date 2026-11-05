@@ -6,7 +6,11 @@
     "date": "2026-11-05",
     "report": "THREE_PAPER_REVIEW_20261105_VI.md",
     "evidence": "evidence/three_paper_review_20261105.json",
-    "reviewed": ["cai2021_nonobese_five_year", "han2023_prediabetes_five_year", "liu2026_index_component_prediction"],
+    "reviewed": [
+      "cai2021_nonobese_five_year",
+      "han2023_prediabetes_five_year",
+      "liu2026_index_component_prediction"
+    ],
     "selected_for_first_learning_exercise": "cai2021_nonobese_five_year",
     "replication_scope": "Conditional method reconstruction on the original dataset",
     "exact_replication_confirmed": false,
@@ -34,7 +38,7 @@
   "timezone": "Asia/Bangkok",
   "branch": "codex/t2d-prognosis-research",
   "base_commit": "6ac22b221415270c4fd32e038a71dd9e7743ee0d",
-  "status": "next_reading_recommendation_prepared_while_waiting_for_data_access",
+  "status": "cai_full_reading_translation_and_analysis_pack_ready",
   "next_reading": {
     "date": "2026-11-04",
     "report": "NEXT_READING_20261104_VI.md",
@@ -73,10 +77,11 @@
     "dataset_readiness": "metadata_checklist_created",
     "deep_comparison": "huang_fulltext_extraction_analysis_and_reading_guide_prepared",
     "row_level_feasibility": "not_started",
-    "final_topic_decision": "not_started"
+    "final_topic_decision": "not_started",
+    "cai_reading_pack": "original_pdf_full_vi_translation_bilingual_and_analysis_ready"
   },
   "next_steps": [
-    "Read Cai 2021 using NEXT_READING_20261104_VI.md; verify public-data definitions before any method reconstruction",
+    "Read the Cai 2021 bilingual pack and methodological explanation; obtain and audit the public workbook/codebook before method reconstruction",
     "Read the introductory lesson and answer self-check questions",
     "Read selected full texts of the closest baseline-prognosis studies",
     "Audit one legally accessible dataset and its codebook before fixing the horizon",
@@ -133,5 +138,20 @@
     "report": "../../searched_papers/Layer_3_Dataset_EHR/huang2026_british_short_long_risk/reading_pack_validation.json",
     "claims_validated": 24,
     "quick_review_rows": 48
+  },
+  "cai_reading_pack": {
+    "paper_id": "cai2021_nonobese_five_year",
+    "prepared_on": "2026-11-05",
+    "folder": "../../searched_papers/Layer_3_Dataset_EHR/cai2021_nonobese_five_year",
+    "pdf_pages": 15,
+    "full_vietnamese_translation": true,
+    "analysis_blocks": 8,
+    "quick_review_rows": 48,
+    "validation_report": "../../searched_papers/Layer_3_Dataset_EHR/cai2021_nonobese_five_year/reading_pack_validation.json",
+    "public_workbook_inspected": false,
+    "original_code_verified": false,
+    "method_reconstruction": "conditional_not_started",
+    "topic_selection_unchanged": true,
+    "promoted_to_chosed_papers": false
   }
 }

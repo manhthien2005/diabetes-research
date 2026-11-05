@@ -1,0 +1,118 @@
+{
+  "paper_id": "cai2021_nonobese_five_year",
+  "audited_at": "2026-11-05T05:30:48.527Z",
+  "auditor": "paper-analyzer — original local source audit",
+  "probe_namespace": "paper-analyzer/SKILL.md; peer-review definitions recorded separately",
+  "probe_hits": [
+    "CP4",
+    "CP5"
+  ],
+  "leakage_types": [],
+  "validation_level": "internal",
+  "calibration_reported": true,
+  "survey_design_handled": null,
+  "prevalence_realistic": true,
+  "evidence_ref": "Statistical Analyses p. 2090; Table 1 p. 2092; Results p. 2094; Figures 6–7 pp. 2096–2097",
+  "confidence": "medium",
+  "notes": "No confirmed B–G leakage from inspected paper. Empty leakage_types is not proof that uninspected code is leakage-free. Whole-cohort DCA includes derivation subjects; 1000 bootstraps alone do not establish complete optimism correction. Baseline glycemic biomarkers predicting future T2D are not inherently leakage. This mini-audit is not a full PROBAST assessment.",
+  "probes": [
+    {
+      "id": "CP1",
+      "definition": "Genuine holdout or nested CV; tuning separated from testing",
+      "status": "partially_supported",
+      "finding": "Random internal holdout exists. LASSO/Cox are described in derivation. Actual data flow and split seed remain unverified. A genuine held-out test does not automatically require nested CV.",
+      "evidence_ref": "Abstract p. 2087; Statistical Analyses p. 2090"
+    },
+    {
+      "id": "CP2",
+      "definition": "Feature selection isolated from final test; fold placement",
+      "status": "partially_supported",
+      "finding": "LASSO is described in derivation with 10-fold lambda CV. Per-fold preprocessing and executable workflow are unclear; no demonstrated whole-cohort selection.",
+      "evidence_ref": "Abstract p. 2087; Statistical Analyses p. 2090; Results pp. 2091–2093"
+    },
+    {
+      "id": "CP3",
+      "definition": "Oversampling/SMOTE within training folds",
+      "status": "not_applicable",
+      "finding": "Oversampling/SMOTE is not reported. No pre-split resampling violation is demonstrated.",
+      "evidence_ref": "Statistical Analyses p. 2090"
+    },
+    {
+      "id": "CP4",
+      "definition": "Calibration curve, slope and intercept",
+      "status": "partial",
+      "finding": "Curves and H–L P>0.05 are reported; slope/intercept are Not reported; censoring-aware calibration implementation is Unclear. Non-significant H–L does not establish equivalence.",
+      "evidence_ref": "Results p. 2094; Figure 6 p. 2096"
+    },
+    {
+      "id": "CP5",
+      "definition": "External or temporal validation",
+      "status": "concern",
+      "finding": "Only random internal validation. Authors acknowledge further external validation is needed.",
+      "evidence_ref": "Statistical Analyses p. 2090; Discussion p. 2099"
+    },
+    {
+      "id": "CP6",
+      "definition": "Label-defining biomarkers in features, adjudicated using timing",
+      "status": "no_confirmed_leakage",
+      "finding": "FPG/HbA1c are baseline predictors of later incident disease. The same analytes at distinct timepoints are not automatically target leakage. Actual workbook timing remains unverified.",
+      "evidence_ref": "Data Source; Definitions pp. 2089–2090; Table 2 p. 2093"
+    },
+    {
+      "id": "O11",
+      "definition": "Complex survey weights, strata and PSU",
+      "status": "not_applicable",
+      "finding": "NAGALA hospital health-check cohort is not a NHANES/BRFSS probability survey.",
+      "evidence_ref": "Study Population p. 2089"
+    }
+  ],
+  "peer_review_crosswalk": [
+    {
+      "id": "peer-review.CP1",
+      "definition": "Apparent versus optimism-corrected performance",
+      "finding": "Concern: whole-cohort DCA includes derivation. Complete refit/optimism correction is unclear."
+    },
+    {
+      "id": "peer-review.CP2",
+      "definition": "Incremental-value null versus marginal-effect null",
+      "finding": "Not applicable to a negative incremental-value claim; no nested-model incremental-value comparison established."
+    },
+    {
+      "id": "peer-review.CP3",
+      "definition": "Events per variable in each model",
+      "finding": "154 derivation events/6 final listed predictors =25.7 events per listed predictor (analyst arithmetic). Candidate screening and coding complexity also matter. Holdout has 47 events."
+    },
+    {
+      "id": "peer-review.CP4",
+      "definition": "Net benefit is not policy endorsement",
+      "finding": "DCA does not demonstrate reduced incidence, costs or strategy effectiveness."
+    },
+    {
+      "id": "peer-review.CP5",
+      "definition": "Claim-timepoint versus feature availability",
+      "finding": "No confirmed mismatch in text: selected predictors are baseline. Workbook timing not verified."
+    },
+    {
+      "id": "peer-review.CP6",
+      "definition": "Development versus test nomenclature",
+      "finding": "Random split is internal. CV/bootstrap do not constitute external validation."
+    }
+  ],
+  "survival_specific_findings": [
+    {
+      "topic": "Proportional hazards",
+      "status": "Not reported",
+      "detail": "No PH diagnostic found in inspected Methods/Results; no proven violation either."
+    },
+    {
+      "topic": "Censoring and time-dependent metrics",
+      "status": "Unclear",
+      "detail": "Time-to-event and time-dependent ROC described; exact estimator, package and censoring adjustment are not fully operationalized."
+    },
+    {
+      "topic": "Absolute risk model",
+      "status": "partial",
+      "detail": "Nomogram and rounded HRs given; exact final coefficients, centering and baseline survival are not verified as a full executable specification."
+    }
+  ]
+}

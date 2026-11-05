@@ -1,0 +1,439 @@
+{
+  "paper_id": "cai2021_nonobese_five_year",
+  "title": "Derivation and Validation of a Prediction Model for Predicting the 5-Year Incidence of Type 2 Diabetes in Non-Obese Adults: A Population-Based Cohort Study",
+  "doi": "10.2147/DMSO.S304994",
+  "year": 2021,
+  "source": "Original source.pdf and source.fulltext.xml; identity checks recorded by main agent in metadata.json",
+  "layer": 3,
+  "prediction_horizon": "long_term_risk",
+  "horizon_years": [
+    5
+  ],
+  "contribution": "Six-predictor Cox nomogram for 5-year incident T2D among non-obese Japanese health-check participants, with random internal validation.",
+  "method": "Derivation LASSO selection (10-fold lambda CV; family ambiguous) → multivariable Cox → nomogram",
+  "best_metric": "Internal validation 5-year AUC 0.829 (95%CI 0.753–0.905), Results p. 2094; C-index0.837 (0.760–0.914), Table 3 p. 2095",
+  "datasets": [
+    "NAGALA — Murakami Memorial Hospital; Dryad 10.5061/dryad.8q0p192"
+  ],
+  "has_code": null,
+  "code_url": null,
+  "reproducible": "low",
+  "vs_baseline": "No verified same-cohort head-to-head baseline. Historical Discussion comparisons do not establish superiority. Not numerically comparable with Paper_01_NHANES_NoLab cross-sectional no-lab screening.",
+  "gap": "No external/temporal validation; whole-cohort DCA and incomplete executable reporting; 47 holdout events.",
+  "verdict": "maybe",
+  "verdict_reason": "Useful first reading and conditional reconstruction for a true 5-year prognosis task; exact replication and clinical transportability are unestablished.",
+  "analyzed_at": "2026-11-05T05:30:48.527Z",
+  "candidate_roles": [
+    "evidence_candidate"
+  ],
+  "candidate_assessment": {
+    "evidence_candidate": {
+      "eligible": true,
+      "reasons": [
+        "Direct5-year incident-T2D question in a baseline diabetes-free cohort.",
+        "Reports cohort/events, selected predictors, discrimination, calibration and DCA for critical reading."
+      ],
+      "limitations": [
+        "Random internal split only; selected Japanese health-check population.",
+        "Whole-cohort DCA, incomplete bootstrap operationalization and source inconsistencies limit inference."
+      ]
+    },
+    "reproduction_candidate": {
+      "eligible": false,
+      "reasons": [
+        "Public data package and core method make conditional reconstruction B promising once data are verified."
+      ],
+      "limitations": [
+        "Workbook/codebook retrieval and inspection pending after automated 403.",
+        "No verified original code/seed; candidate-count/family and full absolute-risk specification unresolved."
+      ]
+    }
+  },
+  "reproducibility": {
+    "dataset_access": "public",
+    "code_access": "unclear",
+    "methods_operationalized": "partial",
+    "variable_mapping_feasible": "partial",
+    "overall": "low",
+    "notes": [
+      "Public Dryad package is cited: 10.5061/dryad.8q0p192. Main-agent automated workbook retrieval returned403; workbook/codebook remain uninspected. Public availability is documented, not disproved by403.",
+      "No verified original code repository, split seed or executable specification. Code availability is UNKNOWN, not proven nonexistent.",
+      "Learning route B is conditional same-data method reconstruction after obtaining and verifying original data/codebook; not exact numerical replication.",
+      "18/19 count, LASSO family, encoding/standardization, final Cox coefficients and baseline survival are unresolved.",
+      "Conceptual mapping does not establish transportability to Paper_01_NHANES_NoLab: its target is cross-sectional no-lab screening."
+    ]
+  },
+  "claim_provenance": [
+    {
+      "claim": "Secondary historical cohort analysis used NAGALA health-check data from Murakami Memorial Hospital, Gifu, Japan, obtained via Dryad.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Materials and Methods — Data Source; Study Population",
+        "table": null,
+        "page": "2088–2089"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The analysis included 12,940 participants and 201 incident T2D events; derivation n=9651/events=154 and validation n=3289/events=47.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Characteristics of the Derivation and Validation Cohorts",
+        "table": "Table 1",
+        "page": 2092
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Median follow-up was 2016 days overall, 1972 days in derivation and 2131 days in validation.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Characteristics of the Derivation and Validation Cohorts",
+        "table": "Table 1",
+        "page": 2092
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Incident T2D during follow-up was defined by FPG >=126 mg/dL, HbA1c >=48 mmol/mol or self-report.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Materials and Methods — Definitions",
+        "table": null,
+        "page": "2089–2090"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Participants with missing covariates were excluded; obesity was defined with BMI 25 kg/m2 as the cutoff.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Materials and Methods — Study Population; Definitions",
+        "table": null,
+        "page": "2089–2090"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The theoretical random split was 3:1. Lambda was selected using 10-fold cross-validation, followed by multivariable Cox regression.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Materials and Methods — Statistical Analyses",
+        "table": null,
+        "page": 2090
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The six selected baseline predictors were age, fatty liver, GGT, TG, HbA1c and FPG.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Characteristics Selection by LASSO Regression Analysis",
+        "table": "Table 2",
+        "page": "2092–2093"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Table 2 reports LASSO coefficients and lambda.1se=0.0051; these are not final Cox coefficients or baseline survival.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Characteristics Selection by LASSO Regression Analysis",
+        "table": "Table 2",
+        "page": 2093
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Results refers to 18 indicators whereas the Figure 2 caption refers to 19 features and uses the phrase partial likelihood deviance (binomial deviance).",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Characteristics Selection by LASSO Regression Analysis",
+        "table": "Figure 2",
+        "page": "2091–2093"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Derivation C-index was 0.906 (95% CI 0.878–0.934); internal validation C-index was 0.837 (95% CI 0.760–0.914).",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Model Performance for Derivation and Validation Cohort",
+        "table": "Table 3",
+        "page": 2095
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Five-year AUC was 0.916 (95% CI 0.889–0.943) in derivation and 0.829 (95% CI 0.753–0.905) in validation.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Model Performance for Derivation and Validation Cohort",
+        "table": null,
+        "page": 2094
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Calibration curves were presented for both cohorts; the reported Hosmer–Lemeshow test had P >0.05.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Model Performance for Derivation and Validation Cohort",
+        "table": "Figure 6",
+        "page": "2094; 2096"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The Methods report 1000 bootstrap resamplings for C-index, ROC, calibration and DCA to reduce overfitting bias; a complete refit-based optimism-correction algorithm is not specified there.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Materials and Methods — Statistical Analyses",
+        "table": null,
+        "page": 2090
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "DCA used the whole cohort and reported more net benefit than both default strategies over thresholds 1%–69.5%.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Results — Clinical Usefulness of the Predicting Nomogram",
+        "table": "Figure 7",
+        "page": "2094; 2097"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "Study Population gives 2004–2015; Figure 1 gives registration May 1, 1994–December 31, 2016.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Materials and Methods — Study Population; Results — Characteristics of the Derivation and Validation Cohorts",
+        "table": "Figure 1",
+        "page": "2089; 2091"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The authors acknowledge no OGTT ascertainment, complete-case selection and the need for external validation in other populations.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Discussion",
+        "table": null,
+        "page": "2098–2099"
+      },
+      "support": "direct",
+      "confidence": "high"
+    },
+    {
+      "claim": "The validation cohort constitutes external validation.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Materials and Methods — Statistical Analyses",
+        "table": null,
+        "page": 2090
+      },
+      "support": "unsupported",
+      "confidence": "high"
+    },
+    {
+      "claim": "The study demonstrates that implementing the nomogram reduces diabetes incidence or health-care costs.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Discussion; Conclusion",
+        "table": null,
+        "page": "2098–2099"
+      },
+      "support": "unsupported",
+      "confidence": "high"
+    },
+    {
+      "claim": "The cohort establishes a causal biological mechanism linking GGT or fatty liver to diabetes.",
+      "source": "cai2021_nonobese_five_year",
+      "doi": "10.2147/DMSO.S304994",
+      "location": {
+        "section": "Discussion",
+        "table": null,
+        "page": 2098
+      },
+      "support": "unsupported",
+      "confidence": "high"
+    }
+  ],
+  "recommended_action": "retain_in_pool",
+  "decision_state": "recommendation_ready",
+  "rob_audit": {
+    "paper_id": "cai2021_nonobese_five_year",
+    "audited_at": "2026-11-05T05:30:48.527Z",
+    "auditor": "paper-analyzer — original local source audit",
+    "probe_namespace": "paper-analyzer/SKILL.md; peer-review definitions recorded separately",
+    "probe_hits": [
+      "CP4",
+      "CP5"
+    ],
+    "leakage_types": [],
+    "validation_level": "internal",
+    "calibration_reported": true,
+    "survey_design_handled": null,
+    "prevalence_realistic": true,
+    "evidence_ref": "Statistical Analyses p. 2090; Table 1 p. 2092; Results p. 2094; Figures 6–7 pp. 2096–2097",
+    "confidence": "medium",
+    "notes": "No confirmed B–G leakage from inspected paper. Empty leakage_types is not proof that uninspected code is leakage-free. Whole-cohort DCA includes derivation subjects; 1000 bootstraps alone do not establish complete optimism correction. Baseline glycemic biomarkers predicting future T2D are not inherently leakage. This mini-audit is not a full PROBAST assessment.",
+    "probes": [
+      {
+        "id": "CP1",
+        "definition": "Genuine holdout or nested CV; tuning separated from testing",
+        "status": "partially_supported",
+        "finding": "Random internal holdout exists. LASSO/Cox are described in derivation. Actual data flow and split seed remain unverified. A genuine held-out test does not automatically require nested CV.",
+        "evidence_ref": "Abstract p. 2087; Statistical Analyses p. 2090"
+      },
+      {
+        "id": "CP2",
+        "definition": "Feature selection isolated from final test; fold placement",
+        "status": "partially_supported",
+        "finding": "LASSO is described in derivation with 10-fold lambda CV. Per-fold preprocessing and executable workflow are unclear; no demonstrated whole-cohort selection.",
+        "evidence_ref": "Abstract p. 2087; Statistical Analyses p. 2090; Results pp. 2091–2093"
+      },
+      {
+        "id": "CP3",
+        "definition": "Oversampling/SMOTE within training folds",
+        "status": "not_applicable",
+        "finding": "Oversampling/SMOTE is not reported. No pre-split resampling violation is demonstrated.",
+        "evidence_ref": "Statistical Analyses p. 2090"
+      },
+      {
+        "id": "CP4",
+        "definition": "Calibration curve, slope and intercept",
+        "status": "partial",
+        "finding": "Curves and H–L P>0.05 are reported; slope/intercept are Not reported; censoring-aware calibration implementation is Unclear. Non-significant H–L does not establish equivalence.",
+        "evidence_ref": "Results p. 2094; Figure 6 p. 2096"
+      },
+      {
+        "id": "CP5",
+        "definition": "External or temporal validation",
+        "status": "concern",
+        "finding": "Only random internal validation. Authors acknowledge further external validation is needed.",
+        "evidence_ref": "Statistical Analyses p. 2090; Discussion p. 2099"
+      },
+      {
+        "id": "CP6",
+        "definition": "Label-defining biomarkers in features, adjudicated using timing",
+        "status": "no_confirmed_leakage",
+        "finding": "FPG/HbA1c are baseline predictors of later incident disease. The same analytes at distinct timepoints are not automatically target leakage. Actual workbook timing remains unverified.",
+        "evidence_ref": "Data Source; Definitions pp. 2089–2090; Table 2 p. 2093"
+      },
+      {
+        "id": "O11",
+        "definition": "Complex survey weights, strata and PSU",
+        "status": "not_applicable",
+        "finding": "NAGALA hospital health-check cohort is not a NHANES/BRFSS probability survey.",
+        "evidence_ref": "Study Population p. 2089"
+      }
+    ],
+    "peer_review_crosswalk": [
+      {
+        "id": "peer-review.CP1",
+        "definition": "Apparent versus optimism-corrected performance",
+        "finding": "Concern: whole-cohort DCA includes derivation. Complete refit/optimism correction is unclear."
+      },
+      {
+        "id": "peer-review.CP2",
+        "definition": "Incremental-value null versus marginal-effect null",
+        "finding": "Not applicable to a negative incremental-value claim; no nested-model incremental-value comparison established."
+      },
+      {
+        "id": "peer-review.CP3",
+        "definition": "Events per variable in each model",
+        "finding": "154 derivation events/6 final listed predictors =25.7 events per listed predictor (analyst arithmetic). Candidate screening and coding complexity also matter. Holdout has 47 events."
+      },
+      {
+        "id": "peer-review.CP4",
+        "definition": "Net benefit is not policy endorsement",
+        "finding": "DCA does not demonstrate reduced incidence, costs or strategy effectiveness."
+      },
+      {
+        "id": "peer-review.CP5",
+        "definition": "Claim-timepoint versus feature availability",
+        "finding": "No confirmed mismatch in text: selected predictors are baseline. Workbook timing not verified."
+      },
+      {
+        "id": "peer-review.CP6",
+        "definition": "Development versus test nomenclature",
+        "finding": "Random split is internal. CV/bootstrap do not constitute external validation."
+      }
+    ],
+    "survival_specific_findings": [
+      {
+        "topic": "Proportional hazards",
+        "status": "Not reported",
+        "detail": "No PH diagnostic found in inspected Methods/Results; no proven violation either."
+      },
+      {
+        "topic": "Censoring and time-dependent metrics",
+        "status": "Unclear",
+        "detail": "Time-to-event and time-dependent ROC described; exact estimator, package and censoring adjustment are not fully operationalized."
+      },
+      {
+        "topic": "Absolute risk model",
+        "status": "partial",
+        "detail": "Nomogram and rounded HRs given; exact final coefficients, centering and baseline survival are not verified as a full executable specification."
+      }
+    ]
+  },
+  "learning_reproduction": {
+    "route": "B",
+    "name": "Conditional same-data method reconstruction",
+    "status": "conditional_pending_data_and_codebook_verification",
+    "exact_numerical_replication": false,
+    "training_run_performed": false,
+    "next_gate": "Obtain workbook; verify provenance, baseline timing, units, event/follow-up columns and cohort counts; document reconstruction assumptions before modeling."
+  },
+  "cohort": {
+    "n": 12940,
+    "events": 201,
+    "derivation_n": 9651,
+    "derivation_events": 154,
+    "validation_n": 3289,
+    "validation_events": 47,
+    "median_followup_days": 2016
+  },
+  "source_reporting_issues": [
+    "18 indicators in Results versus19 features in Figure 2.",
+    "Figure 2 loss labels partial likelihood deviance (binomial deviance).",
+    "Study Population2004–2015 versus Figure 1 registration1994–2016.",
+    "Crude incidence text1.6/1.4 per 100 person-years versus event proportions1.60%/1.43% in Table 1: person-time requires verification."
+  ]
+}

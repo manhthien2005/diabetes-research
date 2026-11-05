@@ -1,0 +1,35 @@
+{
+  "paper": "cai2021_nonobese_five_year",
+  "status": "OK",
+  "engine": "docling",
+  "ocr_used": false,
+  "secs": 141.8,
+  "pages": 15,
+  "failed_pages": [],
+  "source_text_chars": 65300,
+  "scanned_pages": [],
+  "mostly_scanned": false,
+  "removed_boilerplate_lines": 31,
+  "qa": {
+    "out_chars": 62449,
+    "n_markdown_tables": 3,
+    "source_table_captions": 3,
+    "table_coverage": 1.0,
+    "n_garbled_tables": 0,
+    "garbled_tables": [],
+    "n_equationish_lines": 0,
+    "text_density": 0.956,
+    "score": 100,
+    "warnings": []
+  },
+  "canonical_reader_reconciliation": {
+    "source": "Publisher JATS via Europe PMC, cross-checked against original PDF",
+    "raw_docling_output": "extracted.prev.md",
+    "raw_docling_sha256": "ecea68484e8994fb426ba79e7b86a190f898875cd2f0c901ad814b961d25ec40",
+    "canonical_sha256": "9533bae75674ff790f83be6454bb7ac89076927b3b660c0551791ee477974266",
+    "reason": "Continuous publisher paragraphs and exact table cells/figure captions avoid PDF column and page-boundary artifacts; all 3 main tables, 7 figures, 73 references retained. Original source discrepancies preserved.",
+    "qa_scope_note": "Existing automated qa score evaluates original Docling extraction, not an independent certification of the reconciled XML reader text.",
+    "author_correspondence_restored": true,
+    "figure_paths": "Absolute Research Hub static paths; same paths in English and Vietnamese"
+  }
+}

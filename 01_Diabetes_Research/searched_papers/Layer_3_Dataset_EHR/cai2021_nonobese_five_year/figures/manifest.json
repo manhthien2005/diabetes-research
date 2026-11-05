@@ -1,0 +1,86 @@
+[
+  {
+    "figure": 1,
+    "pdf_page": 5,
+    "journal_page": 2091,
+    "file": "figure_01.png",
+    "width": 6024,
+    "height": 6661,
+    "web_file": "/reading-figures/cai2021_nonobese_five_year/figure_01.webp",
+    "web_width": 1809,
+    "web_height": 2000,
+    "web_bytes": 155878
+  },
+  {
+    "figure": 2,
+    "pdf_page": 7,
+    "journal_page": 2093,
+    "file": "figure_02.png",
+    "width": 6024,
+    "height": 2910,
+    "web_file": "/reading-figures/cai2021_nonobese_five_year/figure_02.webp",
+    "web_width": 2000,
+    "web_height": 966,
+    "web_bytes": 74744
+  },
+  {
+    "figure": 3,
+    "pdf_page": 8,
+    "journal_page": 2094,
+    "file": "figure_03.png",
+    "width": 4500,
+    "height": 3485,
+    "web_file": "/reading-figures/cai2021_nonobese_five_year/figure_03.webp",
+    "web_width": 2000,
+    "web_height": 1549,
+    "web_bytes": 56364
+  },
+  {
+    "figure": 4,
+    "pdf_page": 9,
+    "journal_page": 2095,
+    "file": "figure_04.png",
+    "width": 8031,
+    "height": 7238,
+    "web_file": "/reading-figures/cai2021_nonobese_five_year/figure_04.webp",
+    "web_width": 2000,
+    "web_height": 1803,
+    "web_bytes": 75956
+  },
+  {
+    "figure": 5,
+    "pdf_page": 10,
+    "journal_page": 2096,
+    "file": "figure_05.png",
+    "width": 8031,
+    "height": 3869,
+    "web_file": "/reading-figures/cai2021_nonobese_five_year/figure_05.webp",
+    "web_width": 2000,
+    "web_height": 964,
+    "web_bytes": 38948
+  },
+  {
+    "figure": 6,
+    "pdf_page": 10,
+    "journal_page": 2096,
+    "file": "figure_06.png",
+    "width": 6024,
+    "height": 2913,
+    "web_file": "/reading-figures/cai2021_nonobese_five_year/figure_06.webp",
+    "web_width": 2000,
+    "web_height": 967,
+    "web_bytes": 66528
+  },
+  {
+    "figure": 7,
+    "pdf_page": 11,
+    "journal_page": 2097,
+    "file": "figure_07.png",
+    "width": 4500,
+    "height": 4248,
+    "web_file": "/reading-figures/cai2021_nonobese_five_year/figure_07.webp",
+    "web_width": 2000,
+    "web_height": 1888,
+    "web_bytes": 56158
+  }
+]

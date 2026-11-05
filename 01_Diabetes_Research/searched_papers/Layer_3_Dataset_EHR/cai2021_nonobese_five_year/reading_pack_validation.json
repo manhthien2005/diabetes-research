@@ -1,0 +1,83 @@
+{
+  "paper_id": "cai2021_nonobese_five_year",
+  "checked_on": "2026-11-05",
+  "status": "passed",
+  "pdf": {
+    "pages": 15,
+    "sha256": "9932f8337b0cb466a30efc0f0fd80d6383a57f1800ebed6c0ac9bc805dacfbdd",
+    "identity_source": "metadata.json"
+  },
+  "content": {
+    "bilingual_blocks": 174,
+    "heading_sections": 36,
+    "main_tables": 3,
+    "figures": 7,
+    "references": 73,
+    "numeric_tokens_per_language": 1384,
+    "numeric_sequence_mismatch_blocks": 0,
+    "citation_sequence_mismatch_blocks": 0,
+    "source_xml_numeric_table_cells_checked": 133,
+    "reference_lists_verbatim_equal": true,
+    "figure_assets_present": true
+  },
+  "hashes": {
+    "extracted.md": "9533bae75674ff790f83be6454bb7ac89076927b3b660c0551791ee477974266",
+    "extracted.vi.md": "b4b5e33e82d02d6f33822fe3e3780f2d9f17c4e198a6fb4be8f2a2e360f432d0",
+    "source.fulltext.xml": "c7a2d67216173b6ea5c6c51a0ef0a0dff40041976d96d4ff2bc9473fb89d3c1d"
+  },
+  "limits": [
+    "Alignment and numeric checks do not certify translation accuracy or scientific validity.",
+    "Embedded figure labels and references remain in original English.",
+    "No model trained or row-level dataset inspected.",
+    "All 73 reference entries preserved; not all 73 independently audited."
+  ],
+  "analysis": {
+    "blocks": 8,
+    "quick_review_rows": 48,
+    "canonical_claims_validated": 19,
+    "paper_record_schema_files": [
+      "metadata.json",
+      "summary.json"
+    ],
+    "rob_audit_matches_summary": true
+  },
+  "web": {
+    "base_url": "http://127.0.0.1:3000",
+    "reading_api": 200,
+    "heading_sections_per_language": 36,
+    "source_pdf_range_response": 206,
+    "analysis_api": 200,
+    "static_figure_assets_200": 7,
+    "ui_observation": {
+      "tool": "cua_repl",
+      "bilingual_text_visible": true,
+      "figure_images_loaded": 14,
+      "unique_figures": 7,
+      "analysis_iframe_visible": true,
+      "pdf_canvas_rendering_observed": true,
+      "final_mode": "EN | VN",
+      "tab_marked_deliverable": true,
+      "annotations_written": false
+    }
+  },
+  "repository_checks": {
+    "agent_unit_tests": 104,
+    "skill_unit_tests": 49,
+    "managed_skill_mirrors_in_parity": 14,
+    "all_commands_exit_code": 0
+  },
+  "translation_review": {
+    "sampled_sections": [
+      "Abstract",
+      "Study Population",
+      "Definitions",
+      "Statistical Analyses",
+      "Table1",
+      "LASSO selection and Figure2",
+      "Discussion limitations"
+    ],
+    "source_discrepancies_kept": true,
+    "embedded_figure_text_translated": false
+  },
+  "source_pdf_local_only": "Ignored by repository *.pdf rule; original file remains in this local reading folder."
+}

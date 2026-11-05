@@ -1,6 +1,6 @@
 # Nghiên cứu tiên lượng nguy cơ mắc mới T2D
 
-Cập nhật: **03/11/2026**. Nhánh làm việc: `codex/t2d-prognosis-research`.
+Cập nhật: **05/11/2026**. Nhánh làm việc: `codex/t2d-prognosis-research`.
 
 ## Điểm xuất phát
 
@@ -29,6 +29,7 @@ Theo chỉ đạo ngày 03/11/2026: giữ hướng gốc, nghiên cứu tình h�
 
 ## Theo dõi phần nghiên cứu
 
+- [Bộ đọc Cai 2021 — PDF, dịch đầy đủ, song ngữ và phân tích](../../searched_papers/Layer_3_Dataset_EHR/cai2021_nonobese_five_year/README.md): bài thực hành đầu tiên để học LASSO → Cox → nomogram; chưa chạy mô hình hoặc xác minh workbook/codebook.
 - [Review độc lập Cai–Han–Liu — 05/11](THREE_PAPER_REVIEW_20261105_VI.md): kiểm chứng ba ứng viên theo cùng tiêu chí; chọn Cai 2021 cho bài thực hành đầu tiên, kèm giới hạn và mục tiêu đối chiếu.
 - [Đề cử tái lập để học — 05/11](REPRODUCTION_CHOICE_20261105_VI.md): đánh giá Cai 2021, đối chiếu thêm Liu 2026 và [prompt tìm độc lập cho các agent](REPRODUCTION_SEARCH_PROMPT_VI.md).
 - [Bài tiếp theo sau Huang — 04/11](NEXT_READING_20261104_VI.md): Cai 2021 để học và chuẩn bị dựng lại Cox trên NAGALA; Sasagawa 2024 để học cách so sánh DeepSurv–Cox.

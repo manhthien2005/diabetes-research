@@ -1,0 +1,109 @@
+{
+  "paper_id": "cai2021_nonobese_five_year",
+  "title": "Derivation and Validation of a Prediction Model for Predicting the 5-Year Incidence of Type 2 Diabetes in Non-Obese Adults: A Population-Based Cohort Study",
+  "authors": [
+    "Xin-Tian Cai",
+    "Li-Wei Ji",
+    "Sha-Sha Liu",
+    "Meng-Ru Wang",
+    "Mulalibieke Heizhati",
+    "Nan-Fang Li"
+  ],
+  "year": 2021,
+  "journal": "Diabetes, Metabolic Syndrome and Obesity: Targets and Therapy",
+  "doi": "10.2147/DMSO.S304994",
+  "pmid": "34007195",
+  "pmcid": "PMC8123981",
+  "source": "CrossRef; PubMed; Unpaywall; NCBI public PDF distribution",
+  "layer": 3,
+  "prediction_horizon": "long_term_risk",
+  "horizon_years": [
+    5
+  ],
+  "status": "searched",
+  "analysis_status": "analyzed",
+  "pdf_status": "downloaded",
+  "source_pdf": "source.pdf",
+  "page_count": 15,
+  "page_range": "2087-2101",
+  "pdf_sha256": "9932f8337b0cb466a30efc0f0fd80d6383a57f1800ebed6c0ac9bc805dacfbdd",
+  "download_link": "https://rcastoragev2.blob.core.windows.net/d3afce0834c67705b394df342c77cfd6/PMC8123981.pdf",
+  "license": "CC BY-NC 3.0; see original PDF and publisher terms",
+  "pdf_fetch_attempts": [
+    {
+      "date": "2026-11-05",
+      "kind": "unpaywall_and_crossref_metadata",
+      "result": "OA publisher URL and repository record verified; known obsolete publisher PDF route not retried"
+    },
+    {
+      "date": "2026-11-05",
+      "kind": "NCBI_public_PDF_distribution",
+      "url": "https://rcastoragev2.blob.core.windows.net/d3afce0834c67705b394df342c77cfd6/PMC8123981.pdf",
+      "requests": 2,
+      "result": "Genuine 15-page PDF, 4562966 bytes. First-page-only DOI/whitespace assertions were overly strict; second response preserved locally and identity confirmed from normalized title, author list, document metadata and full-text DOI token."
+    }
+  ],
+  "integrity": {
+    "identity_verified": true,
+    "retraction_status": "not_retracted",
+    "metadata_conflicts": []
+  },
+  "candidate_roles": [
+    "evidence_candidate"
+  ],
+  "reproducibility": {
+    "dataset_access": "public",
+    "code_access": "unclear",
+    "methods_operationalized": "partial",
+    "variable_mapping_feasible": "partial",
+    "overall": "low",
+    "notes": [
+      "Public Dryad package is cited: 10.5061/dryad.8q0p192. Main-agent automated workbook retrieval returned403; workbook/codebook remain uninspected. Public availability is documented, not disproved by403.",
+      "No verified original code repository, split seed or executable specification. Code availability is UNKNOWN, not proven nonexistent.",
+      "Learning route B is conditional same-data method reconstruction after obtaining and verifying original data/codebook; not exact numerical replication.",
+      "18/19 count, LASSO family, encoding/standardization, final Cox coefficients and baseline survival are unresolved.",
+      "Conceptual mapping does not establish transportability to Paper_01_NHANES_NoLab: its target is cross-sectional no-lab screening."
+    ]
+  },
+  "recommended_action": "retain_in_pool",
+  "decision_state": "recommendation_ready",
+  "human_authorization": "User explicitly requested download, organization, Vietnamese translation and analysis on 2026-11-05. This does not authorize promotion or a frozen research protocol.",
+  "venue": "Diabetes, Metabolic Syndrome and Obesity: Targets and Therapy",
+  "datasets": [
+    "NAGALA — Murakami Memorial Hospital; Dryad 10.5061/dryad.8q0p192"
+  ],
+  "has_code": null,
+  "code_url": null,
+  "candidate_assessment": {
+    "evidence_candidate": {
+      "eligible": true,
+      "reasons": [
+        "Direct5-year incident-T2D question in a baseline diabetes-free cohort.",
+        "Reports cohort/events, selected predictors, discrimination, calibration and DCA for critical reading."
+      ],
+      "limitations": [
+        "Random internal split only; selected Japanese health-check population.",
+        "Whole-cohort DCA, incomplete bootstrap operationalization and source inconsistencies limit inference."
+      ]
+    },
+    "reproduction_candidate": {
+      "eligible": false,
+      "reasons": [
+        "Public data package and core method make conditional reconstruction B promising once data are verified."
+      ],
+      "limitations": [
+        "Workbook/codebook retrieval and inspection pending after automated 403.",
+        "No verified original code/seed; candidate-count/family and full absolute-risk specification unresolved."
+      ]
+    }
+  },
+  "integrity_verification_details": {
+    "doi_resolved": true,
+    "title_match": true,
+    "crossref_type": "journal-article",
+    "has_correction": false,
+    "checked_at": "2026-11-05",
+    "check_source": "CrossRef API, PubMed, original PDF; same-day notice search",
+    "limits": "No notice identified in inspected sources; not an exhaustive guarantee."
+  }
+}
